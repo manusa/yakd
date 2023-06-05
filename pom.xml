@@ -128,6 +128,9 @@
                 <configuration>
                   <workingDirectory>src/main/frontend</workingDirectory>
                   <executable>npm</executable>
+                  <environmentVariables>
+                    <NODE_OPTIONS>--openssl-legacy-provider</NODE_OPTIONS> <!-- TODO: Remove when React Scripts updated -->
+                  </environmentVariables>
                   <arguments>
                     <argument>run</argument>
                     <argument>build</argument>
