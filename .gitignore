@@ -1,0 +1,8 @@
+.idea
+*.iml
+build/
+target/
+node_modules/
+npm-debug.log*
+**/tailwind.css
+

@@ -1,0 +1,9 @@
+.pods-logs-page .ReactVirtualized__List {
+  border: 0;
+  outline: none;
+  overflow-x: visible !important;
+}
+
+.pods-logs-page .ReactVirtualized__Grid__innerScrollContainer {
+  overflow: visible !important;
+}
