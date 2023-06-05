@@ -1,7 +1,6 @@
-# YAKC - Kubernetes Dashboard
+# YAKD - Yet Another Kubernetes Dashboard
 
-PoC to show how to build a Kubernetes dashboard with YAKC,
-[Quarkus](https://quarkus.io) and [React](https://www.reactjs.org).
+Kubernetes Dashboard built with [Quarkus](https://quarkus.io) and [React](https://www.reactjs.org).
 
 ## Click the video to see a demo of the Dashboard
 
@@ -12,7 +11,7 @@ PoC to show how to build a Kubernetes dashboard with YAKC,
 
 ### Minikube
 
-If you want just to check-out the final project the easiest way is to deploy the
+If you just want to try out the final project the easiest way is to deploy the
 [released snapshot](https://hub.docker.com/r/marcnuri/yakc-kubernetes-dashboard)
 into Minikube (or any other k8s cluster - needs access to node):
 
