@@ -18,23 +18,30 @@ const selectors = {};
 
 selectors.statusReplicas = deployment => deployment?.status?.replicas ?? 0;
 
-selectors.statusReadyReplicas = deployment => deployment?.status?.readyReplicas ?? 0;
+selectors.statusReadyReplicas = deployment =>
+  deployment?.status?.readyReplicas ?? 0;
 
-selectors.isReady = deployment => selectors.statusReplicas(deployment) === selectors.statusReadyReplicas(deployment);
+selectors.isReady = deployment =>
+  selectors.statusReplicas(deployment) ===
+  selectors.statusReadyReplicas(deployment);
 
-selectors.containers = deployment => deployment?.spec?.template?.spec?.containers ?? [];
+selectors.containers = deployment =>
+  deployment?.spec?.template?.spec?.containers ?? [];
 
-selectors.images = deployment => selectors.containers(deployment).map(c => c.image);
+selectors.images = deployment =>
+  selectors.containers(deployment).map(c => c.image);
 
 selectors.specReplicas = deployment => deployment?.spec?.replicas ?? 0;
 
-selectors.specStrategyType = deployment => deployment?.spec?.strategy?.type ?? '';
+selectors.specStrategyType = deployment =>
+  deployment?.spec?.strategy?.type ?? '';
 
 // Selectors for array of Deployments
 
-selectors.readyCount = deployments => deployments.reduce(
-  (count, deployment) => selectors.isReady(deployment) ? count + 1 : count,
-  0
-);
+selectors.readyCount = deployments =>
+  deployments.reduce(
+    (count, deployment) => (selectors.isReady(deployment) ? count + 1 : count),
+    0
+  );
 
 export default selectors;

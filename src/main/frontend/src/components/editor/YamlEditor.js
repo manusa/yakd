@@ -18,13 +18,10 @@ import React from 'react';
 import AceEditor from 'react-ace';
 
 import 'ace-builds/src-noconflict/mode-yaml';
-import 'ace-builds/src-noconflict/theme-twilight'
+import 'ace-builds/src-noconflict/theme-twilight';
 import 'ace-builds/src-noconflict/ext-searchbox';
 
-const YamlEditor = ({
-                  onChange = () => {},
-                  value = ''
-                }) => (
+const YamlEditor = ({onChange = () => {}, value = ''}) => (
   <AceEditor
     className='relative w-full h-full outline-none'
     style={{'--scrollbar-color': 'rgba(235, 218, 180, 0.4)'}}

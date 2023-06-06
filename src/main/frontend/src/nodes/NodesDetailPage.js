@@ -27,7 +27,13 @@ import Minikube from '../components/icons/Minikube';
 import ResourceDetailPage from '../components/ResourceDetailPage';
 import DonutChart from '../components/DonutChart';
 
-const Dial = ({title, description, partial, total, percent = partial / total * 100}) => (
+const Dial = ({
+  title,
+  description,
+  partial,
+  total,
+  percent = (partial / total) * 100
+}) => (
   <div>
     <div className='font-semibold text-center text-lg'>{title}</div>
     <DonutChart className='w-40 h-40 mx-auto' percent={percent}>
@@ -50,7 +56,9 @@ const NodesDetailPage = ({node, isMinikube, pods}) => {
   const requestedCpu = requests
     .map(r => r.cpu ?? 0)
     .reduce((acc, c) => acc + metrics.selectors.quantityToScalar(c), 0);
-  const allocatableMemory = metrics.selectors.quantityToScalar(n.selectors.statusAllocatableMemory(node));
+  const allocatableMemory = metrics.selectors.quantityToScalar(
+    n.selectors.statusAllocatableMemory(node)
+  );
   const requestedMemory = requests
     .map(r => r.memory ?? 0)
     .reduce((acc, c) => acc + metrics.selectors.quantityToScalar(c), 0);
@@ -68,12 +76,14 @@ const NodesDetailPage = ({node, isMinikube, pods}) => {
               title='CPU'
               description='Requested vs. allocatable'
               partial={requestedCpu.toFixed(3)}
-              total={metrics.selectors.quantityToScalar(n.selectors.statusAllocatableCpu(node)).toFixed(3)}
+              total={metrics.selectors
+                .quantityToScalar(n.selectors.statusAllocatableCpu(node))
+                .toFixed(3)}
             />
             <Dial
               title='Memory'
               description='Requested vs. allocatable'
-              percent={(requestedMemory / allocatableMemory * 100)}
+              percent={(requestedMemory / allocatableMemory) * 100}
               partial={metrics.selectors.bytesToHumanReadable(requestedMemory)}
               total={metrics.selectors.bytesToHumanReadable(allocatableMemory)}
             />
@@ -87,7 +97,8 @@ const NodesDetailPage = ({node, isMinikube, pods}) => {
 
           <metadata.Details resource={node} />
           <Form.Field label='OS'>
-            {n.selectors.statusNodeInfoOS(node)} ({n.selectors.statusNodeInfoArchitecture(node)})
+            {n.selectors.statusNodeInfoOS(node)} (
+            {n.selectors.statusNodeInfoArchitecture(node)})
           </Form.Field>
           <Form.Field label='Kernel Version'>
             {n.selectors.statusNodeInfoKernelVersion(node)}
@@ -109,7 +120,7 @@ const NodesDetailPage = ({node, isMinikube, pods}) => {
       />
     </ResourceDetailPage>
   );
-}
+};
 
 const mapStateToProps = ({nodes, pods}) => ({
   nodes,
@@ -121,8 +132,11 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
   ...dispatchProps,
   ...ownProps,
   isMinikube: n.selectors.isMinikube(stateProps.nodes),
-  node: Object.values(stateProps.nodes).find(node =>
-    metadata.selectors.name(node) === ownProps.params.name)
+  node: Object.values(stateProps.nodes).find(
+    node => metadata.selectors.name(node) === ownProps.params.name
+  )
 });
 
-export default withParams(connect(mapStateToProps, null, mergeProps)(NodesDetailPage));
+export default withParams(
+  connect(mapStateToProps, null, mergeProps)(NodesDetailPage)
+);

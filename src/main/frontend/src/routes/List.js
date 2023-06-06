@@ -23,7 +23,9 @@ import ResourceList from '../components/ResourceList';
 import Table from '../components/Table';
 
 const headers = [
-  <span><Icon icon='fa-id-card' /> Name</span>,
+  <span>
+    <Icon icon='fa-id-card' /> Name
+  </span>,
   'Namespace',
   'Hosts',
   'Paths',
@@ -32,31 +34,29 @@ const headers = [
 
 const Rows = ({routes}) => {
   const deleteRoute = route => () => r.api.delete(route);
-  return routes
-    .sort(metadata.selectors.sortByCreationTimeStamp)
-    .map(route => (
-        <Table.ResourceRow key={metadata.selectors.uid(route)} resource={route}>
-          <Table.Cell>
-            <Link.Route to={`/routes/${metadata.selectors.uid(route)}`}>
-              {metadata.selectors.name(route)}
-            </Link.Route>
-          </Table.Cell>
-          <Table.Cell className='whitespace-no-wrap'>
-            <Link.Namespace to={`/namespaces/${metadata.selectors.namespace(route)}`}>
-              {metadata.selectors.namespace(route)}
-            </Link.Namespace>
-          </Table.Cell>
-          <Table.Cell>
-            <r.Host route={route} />
-          </Table.Cell>
-          <Table.Cell>
-            {r.selectors.specPath(route)}
-          </Table.Cell>
-          <Table.Cell>
-            <Table.DeleteButton onClick={deleteRoute(route)} />
-          </Table.Cell>
-        </Table.ResourceRow>
-    ));
+  return routes.sort(metadata.selectors.sortByCreationTimeStamp).map(route => (
+    <Table.ResourceRow key={metadata.selectors.uid(route)} resource={route}>
+      <Table.Cell>
+        <Link.Route to={`/routes/${metadata.selectors.uid(route)}`}>
+          {metadata.selectors.name(route)}
+        </Link.Route>
+      </Table.Cell>
+      <Table.Cell className='whitespace-no-wrap'>
+        <Link.Namespace
+          to={`/namespaces/${metadata.selectors.namespace(route)}`}
+        >
+          {metadata.selectors.namespace(route)}
+        </Link.Namespace>
+      </Table.Cell>
+      <Table.Cell>
+        <r.Host route={route} />
+      </Table.Cell>
+      <Table.Cell>{r.selectors.specPath(route)}</Table.Cell>
+      <Table.Cell>
+        <Table.DeleteButton onClick={deleteRoute(route)} />
+      </Table.Cell>
+    </Table.ResourceRow>
+  ));
 };
 
 const List = ({resources, crudDelete, loadedResources, ...properties}) => (
@@ -66,4 +66,3 @@ const List = ({resources, crudDelete, loadedResources, ...properties}) => (
 );
 
 export default ResourceList.resourceListConnect('routes')(List);
-

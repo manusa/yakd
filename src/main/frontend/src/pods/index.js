@@ -20,7 +20,7 @@ import selectors from './selectors';
 import useContainers from './useContainers';
 import useExec from './useExec';
 import useLogs from './useLogs';
-import List from './List'
+import List from './List';
 import PodsCard from './PodsCard';
 import PodsDetailPage from './PodsDetailPage';
 import PodsEditPage from './PodsEditPage';

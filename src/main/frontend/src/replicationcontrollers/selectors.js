@@ -16,22 +16,29 @@
  */
 const selectors = {};
 
-selectors.statusReplicas = replicationController => replicationController?.status?.replicas ?? 0;
+selectors.statusReplicas = replicationController =>
+  replicationController?.status?.replicas ?? 0;
 
-selectors.statusReadyReplicas = replicationController => replicationController?.status?.readyReplicas ?? 0;
+selectors.statusReadyReplicas = replicationController =>
+  replicationController?.status?.readyReplicas ?? 0;
 
 selectors.isReady = replicationController =>
-  selectors.statusReplicas(replicationController) === selectors.statusReadyReplicas(replicationController);
+  selectors.statusReplicas(replicationController) ===
+  selectors.statusReadyReplicas(replicationController);
 
-selectors.specReplicas = replicationController => replicationController?.spec?.replicas ?? 0;
+selectors.specReplicas = replicationController =>
+  replicationController?.spec?.replicas ?? 0;
 
-selectors.containers = replicationController => replicationController?.spec?.template?.spec?.containers ?? [];
+selectors.containers = replicationController =>
+  replicationController?.spec?.template?.spec?.containers ?? [];
 
 // Selectors for array of ReplicationControllers
 
-selectors.readyCount = replicationControllers => replicationControllers.reduce(
-  (count, replicationController) => selectors.isReady(replicationController) ? count + 1 : count,
-  0
-);
+selectors.readyCount = replicationControllers =>
+  replicationControllers.reduce(
+    (count, replicationController) =>
+      selectors.isReady(replicationController) ? count + 1 : count,
+    0
+  );
 
 export default selectors;

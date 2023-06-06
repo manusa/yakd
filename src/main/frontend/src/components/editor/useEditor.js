@@ -32,7 +32,7 @@ const useEditor = saveFunction => {
       setError(e.message);
     }
   };
-  return ({error, setError, resourceYaml, setResourceYaml, save});
+  return {error, setError, resourceYaml, setResourceYaml, save};
 };
 
 export default useEditor;

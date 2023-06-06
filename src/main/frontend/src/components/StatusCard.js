@@ -20,23 +20,29 @@ import icons from '../components/icons';
 import Tooltip from './Tooltip';
 
 const Progress = ({
-  bg='bg-orange-400',
+  bg = 'bg-orange-400',
   ready,
   readyProgress,
   readyColor = 'bg-blue-700',
   succeeded,
   succeededProgress,
-  succeededColor = 'bg-blue-400',
+  succeededColor = 'bg-blue-400'
 }) => (
   <div className='self-stretch mx-6'>
     <div className={`w-full rounded flex ${bg}`}>
       <Tooltip
-        className={`leading-none py-1 rounded-l ${succeededProgress === 0 ? 'rounded-r' : ''} ${readyColor}`} gutter={12}
-        style={{width: `${readyProgress}%`}} content={`Ready: ${ready}`}
+        className={`leading-none py-1 rounded-l ${
+          succeededProgress === 0 ? 'rounded-r' : ''
+        } ${readyColor}`}
+        gutter={12}
+        style={{width: `${readyProgress}%`}}
+        content={`Ready: ${ready}`}
       />
       <Tooltip
-        className={`leading-none py-1 rounded-r ${succeededColor}`} gutter={12}
-        style={{width: `${succeededProgress}%`}} content={`Succeeded: ${succeeded}`}
+        className={`leading-none py-1 rounded-r ${succeededColor}`}
+        gutter={12}
+        style={{width: `${succeededProgress}%`}}
+        content={`Succeeded: ${succeeded}`}
       />
     </div>
   </div>
@@ -59,26 +65,33 @@ const StatusCard = ({
     if (to) {
       navigate(to);
     }
-  }
+  };
   return (
     <div className={responsiveClassName}>
-      <div className={`
+      <div
+        className={`
         flex flex-col items-center py-6 shadow-sm rounded-md bg-white border-gray-700
         ${className}
-      `}>
+      `}
+      >
         <h2 className='font-semibold text-lg mb-2'>{header}</h2>
         <Icon
           onClick={onClick}
           className='cursor-pointer w-20'
           alt={`Icon for ${header} status`}
         />
-        <h3 className='text-lg my-2'>{ready} / {total}</h3>
+        <h3 className='text-lg my-2'>
+          {ready} / {total}
+        </h3>
         <Progress
-          ready={ready} readyProgress={readyProgress} succeeded={succeeded} succeededProgress={succeededProgress}
+          ready={ready}
+          readyProgress={readyProgress}
+          succeeded={succeeded}
+          succeededProgress={succeededProgress}
         />
       </div>
     </div>
   );
-}
+};
 
 export default StatusCard;

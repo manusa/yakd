@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-import k8s from './assets/k8s-icons/k8s.svg'
+import k8s from './assets/k8s-icons/k8s.svg';
 import deployment from './assets/k8s-icons/deploy.svg';
 import ing from './assets/k8s-icons/ing.svg';
 import node from './assets/k8s-icons/node.svg';

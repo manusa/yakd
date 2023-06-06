@@ -16,21 +16,27 @@
  */
 import React from 'react';
 
-const Modal = ({visible, children}) => (visible ?
+const Modal = ({visible, children}) =>
+  visible ? (
     <div className='fixed z-10 inset-0 overflow-hidden'>
-      <div className='flex items-center justify-center min-h-screen lg:pl-64'> {/* pl-64 for sidebar */}
+      <div className='flex items-center justify-center min-h-screen lg:pl-64'>
+        {' '}
+        {/* pl-64 for sidebar */}
         <div className='fixed inset-0 transition-opacity' aria-hidden='true'>
           <div className='absolute inset-0 bg-gray-500 opacity-75' />
         </div>
         <div
           className='inline-block w-full max-h-screen max-w-6xl overflow-hidden shadow-xl transform transition-all'
-          role='dialog' aria-modal='true' aria-labelledby='modal-headline'
+          role='dialog'
+          aria-modal='true'
+          aria-labelledby='modal-headline'
         >
           {children}
         </div>
       </div>
-    </div> :
+    </div>
+  ) : (
     ''
-);
+  );
 
 export default Modal;

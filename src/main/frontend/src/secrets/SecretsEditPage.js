@@ -25,9 +25,11 @@ const SecretsEditPage = ({params: {uid}}) => (
   <ResourceEditPage
     kind='Secrets'
     path='secrets'
-    cardTitle={resource =>
-      <Link.RouterLink to={`/secrets/${uid}`}>{md.selectors.name(resource)}</Link.RouterLink>
-    }
+    cardTitle={resource => (
+      <Link.RouterLink to={`/secrets/${uid}`}>
+        {md.selectors.name(resource)}
+      </Link.RouterLink>
+    )}
     save={async resource => await s.api.update(resource)}
     resourceFromState={state => state.secrets[uid]}
   />

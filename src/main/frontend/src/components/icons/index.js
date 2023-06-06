@@ -29,11 +29,11 @@ import Kubernetes from './Kubernetes';
 import Minikube from './Minikube';
 import Namespace from './Namespace';
 import Node from './Node';
-import OpenShift from "./OpenShift";
+import OpenShift from './OpenShift';
 import PersistentVolume from './PersistentVolume';
 import PersistentVolumeClaim from './PersistentVolumeClaim';
 import Pod from './Pod';
-import ReplicaSet from './ReplicaSet'
+import ReplicaSet from './ReplicaSet';
 import Role from './Role';
 import Secret from './Secret';
 import Service from './Service';
@@ -48,8 +48,10 @@ icons.ConfigMap = ConfigMap;
 icons.CronJob = CronJob;
 icons.CustomResourceDefinition = CustomResourceDefinition;
 icons.DaemonSet = DaemonSet;
-icons.DeploymentConfig = ({...props}) => <Deployment kubernetesColor='#db212e' {...props} />;
-icons.Deployment = Deployment
+icons.DeploymentConfig = ({...props}) => (
+  <Deployment kubernetesColor='#db212e' {...props} />
+);
+icons.Deployment = Deployment;
 icons.HorizontalPodAutoscaler = HorizontalPodAutoscaler;
 icons.Ingress = Ingress;
 icons.Job = Job;

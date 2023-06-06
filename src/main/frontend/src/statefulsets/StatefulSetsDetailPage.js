@@ -43,7 +43,7 @@ const StatefulSetsDetailPage = ({statefulSet}) => (
         onClick={() => sts.api.restart(statefulSet)}
         title='Restart'
       >
-        <Icon stylePrefix='fas' icon='fa-redo-alt' className='mr-2'/>
+        <Icon stylePrefix='fas' icon='fa-redo-alt' className='mr-2' />
         Restart
       </Link>
     }
@@ -62,21 +62,25 @@ const StatefulSetsDetailPage = ({statefulSet}) => (
       title='Containers'
       titleVariant={Card.titleVariants.medium}
       className='mt-2'
-      containers={sts.selectors.containers(statefulSet)} />
+      containers={sts.selectors.containers(statefulSet)}
+    />
     <pods.List
       title='Pods'
       titleVariant={Card.titleVariants.medium}
       className='mt-2'
-      ownerUid={metadata.selectors.uid(statefulSet)} />
+      ownerUid={metadata.selectors.uid(statefulSet)}
+    />
   </ResourceDetailPage>
 );
 
 const mapStateToProps = ({statefulSets}) => ({
-  statefulSets,
+  statefulSets
 });
 
 const mergeProps = ({statefulSets}, dispatchProps, ownProps) => ({
-  statefulSet: statefulSets[ownProps.params.uid],
+  statefulSet: statefulSets[ownProps.params.uid]
 });
 
-export default withParams(connect(mapStateToProps, null, mergeProps)(StatefulSetsDetailPage));
+export default withParams(
+  connect(mapStateToProps, null, mergeProps)(StatefulSetsDetailPage)
+);

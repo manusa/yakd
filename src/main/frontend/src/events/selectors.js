@@ -18,7 +18,8 @@ const selectors = {};
 
 selectors.involvedObjectKind = event => event?.involvedObject?.kind ?? '';
 selectors.involvedObjectName = event => event?.involvedObject?.name ?? '';
-selectors.involvedObjectNamespace = event => event?.involvedObject?.namespace ?? '';
+selectors.involvedObjectNamespace = event =>
+  event?.involvedObject?.namespace ?? '';
 selectors.involvedObjectUid = event => event?.involvedObject?.uid ?? '';
 
 selectors.type = event => event?.type ?? '';

@@ -23,12 +23,8 @@ import Icon from './Icon';
 
 const Table = ({title, titleVariant, className, children, ...props}) => (
   <Card className={className} {...props}>
-    {title && (
-      <Card.Title titleVariant={titleVariant}>{title}</Card.Title>
-    )}
-    <table className='min-w-full'>
-      {children}
-    </table>
+    {title && <Card.Title titleVariant={titleVariant}>{title}</Card.Title>}
+    <table className='min-w-full'>{children}</table>
   </Card>
 );
 
@@ -38,7 +34,8 @@ Table.Head = ({columns}) => (
       {columns.map((col, idx) => (
         <th
           key={idx}
-          className='px-3 py-2 text-left leading-4 font-semibold text-sm text-gray-600 uppercase'>
+          className='px-3 py-2 text-left leading-4 font-semibold text-sm text-gray-600 uppercase'
+        >
           {col}
         </th>
       ))}
@@ -52,21 +49,34 @@ Table.Body = ({children}) => (
 
 // For stripes to work need to add 'even' variant to specific property in tailwind.config.js
 Table.Row = ({children, className = ''}) => (
-  <tr className={`even:bg-opacity-50 even:bg-gray-200 ${className}`}>{children}</tr>
+  <tr className={`even:bg-opacity-50 even:bg-gray-200 ${className}`}>
+    {children}
+  </tr>
 );
 Table.ResourceRow = ({resource, children, ...properties}) => (
   <Table.Row
-    className={metadata.selectors.deletionTimestamp(resource) ? 'line-through' : ''} {...properties}
+    className={
+      metadata.selectors.deletionTimestamp(resource) ? 'line-through' : ''
+    }
+    {...properties}
   >
     {children}
   </Table.Row>
-)
+);
 
-Table.Cell = ({children, textColor = 'text-gray-800', textSize = 'text-sm', className = '', ...properties}) => (
+Table.Cell = ({
+  children,
+  textColor = 'text-gray-800',
+  textSize = 'text-sm',
+  className = '',
+  ...properties
+}) => (
   <td
     className={`px-3 py-2 ${textColor} ${textSize} ${className}`}
     {...properties}
-  >{children}</td>
+  >
+    {children}
+  </td>
 );
 
 Table.NoResultsRow = ({colSpan = 1}) => (
@@ -84,20 +94,26 @@ Table.Loading = ({colSpan = 1}) => (
 );
 
 Table.CellButton = ({
-  title, variant, icon, iconStylePrefix,  onClick, ...props
+  title,
+  variant,
+  icon,
+  iconStylePrefix,
+  onClick,
+  ...props
 }) => (
-  <Link
-    variant={variant}
-    onClick={onClick}
-    title={title}
-    {...props}
-  ><Icon stylePrefix={iconStylePrefix} icon={icon} /></Link>
+  <Link variant={variant} onClick={onClick} title={title} {...props}>
+    <Icon stylePrefix={iconStylePrefix} icon={icon} />
+  </Link>
 );
 
-Table.DeleteButton = ({...props}) => <Table.CellButton
-  variant={Link.variants.outlineDanger}
-  title='Delete' iconStylePrefix='far' icon='fa-trash-alt'
-  {...props}
-/>;
+Table.DeleteButton = ({...props}) => (
+  <Table.CellButton
+    variant={Link.variants.outlineDanger}
+    title='Delete'
+    iconStylePrefix='far'
+    icon='fa-trash-alt'
+    {...props}
+  />
+);
 
 export default Table;

@@ -27,11 +27,20 @@ import Link from '../components/Link';
 import 'xterm/css/xterm.css';
 
 const PodsExecPage = ({uid, namespace, name, containers}) => {
-  const {ref, selectedContainer, setSelectedContainer} = p.useExec(namespace, name, containers);
+  const {ref, selectedContainer, setSelectedContainer} = p.useExec(
+    namespace,
+    name,
+    containers
+  );
   return (
     <DashboardPage
       title={
-        <DashboardPage.Title path='pods' kind='Pods' namespace={namespace} name={name}>
+        <DashboardPage.Title
+          path='pods'
+          kind='Pods'
+          namespace={namespace}
+          name={name}
+        >
           &nbsp;- Terminal
         </DashboardPage.Title>
       }
@@ -43,15 +52,23 @@ const PodsExecPage = ({uid, namespace, name, containers}) => {
             <div className='flex-1 flex items-center flex-wrap'>
               <span className='mr-2'>
                 Terminal
-                <Link.RouterLink className='ml-2' to={`/pods/${uid}`}>{name}</Link.RouterLink>
+                <Link.RouterLink className='ml-2' to={`/pods/${uid}`}>
+                  {name}
+                </Link.RouterLink>
               </span>
               <cnt.ContainerDropdown
-                containers={containers} onContainerSelect={setSelectedContainer} selectedContainer={selectedContainer}
+                containers={containers}
+                onContainerSelect={setSelectedContainer}
+                selectedContainer={selectedContainer}
               />
             </div>
           </Card.Title>
           <Card.Body padding='p-0' className='relative flex-1 bg-black'>
-            <div ref={ref} className='absolute' style={{top: '1rem', bottom: '1rem', left: '1rem', right: '1rem'}}/>
+            <div
+              ref={ref}
+              className='absolute'
+              style={{top: '1rem', bottom: '1rem', left: '1rem', right: '1rem'}}
+            />
           </Card.Body>
         </Card>
       </div>
@@ -69,4 +86,6 @@ const mergeProps = ({pods}, dispatchProps, {params: {uid}}) => ({
   containers: p.selectors.containers(pods[uid])
 });
 
-export default withParams(connect(mapStateToProps, null, mergeProps)(PodsExecPage));
+export default withParams(
+  connect(mapStateToProps, null, mergeProps)(PodsExecPage)
+);

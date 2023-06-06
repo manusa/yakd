@@ -20,8 +20,12 @@ import crd from './index';
 import DashboardPage from '../components/DashboardPage';
 
 const DashboardPageTitle = ({customResourceDefinition, children}) => (
-  <DashboardPage.Title path='customresourcedefinitions' kind='CustomResourceDefinitions'>
-    &nbsp;-&nbsp;<crd.GroupLink customResourceDefinition={customResourceDefinition} />
+  <DashboardPage.Title
+    path='customresourcedefinitions'
+    kind='CustomResourceDefinitions'
+  >
+    &nbsp;-&nbsp;
+    <crd.GroupLink customResourceDefinition={customResourceDefinition} />
     &nbsp;- {metadata.selectors.name(customResourceDefinition)}
     {children}
   </DashboardPage.Title>

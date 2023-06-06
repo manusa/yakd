@@ -43,7 +43,7 @@ const DeploymentsDetailPage = ({deployment, replicaSetsUids}) => (
         onClick={() => d.api.restart(deployment)}
         title='Restart'
       >
-        <Icon stylePrefix='fas' icon='fa-redo-alt' className='mr-2'/>
+        <Icon stylePrefix='fas' icon='fa-redo-alt' className='mr-2' />
         Restart
       </Link>
     }
@@ -55,7 +55,9 @@ const DeploymentsDetailPage = ({deployment, replicaSetsUids}) => (
           replicas={d.selectors.specReplicas(deployment)}
           updateReplicas={d.api.updateReplicas}
         />
-        <Form.Field label='Strategy'>{d.selectors.specStrategyType(deployment)}</Form.Field>
+        <Form.Field label='Strategy'>
+          {d.selectors.specStrategyType(deployment)}
+        </Form.Field>
       </Form>
     }
   >
@@ -63,17 +65,20 @@ const DeploymentsDetailPage = ({deployment, replicaSetsUids}) => (
       title='Containers'
       titleVariant={Card.titleVariants.medium}
       className='mt-2'
-      containers={d.selectors.containers(deployment)} />
+      containers={d.selectors.containers(deployment)}
+    />
     <rs.List
       title='Replica Sets'
       titleVariant={Card.titleVariants.medium}
       className='mt-2'
-      ownerUid={metadata.selectors.uid(deployment)} />
+      ownerUid={metadata.selectors.uid(deployment)}
+    />
     <pods.List
       title='Pods'
       titleVariant={Card.titleVariants.medium}
       className='mt-2'
-      ownerUids={replicaSetsUids} />
+      ownerUids={replicaSetsUids}
+    />
   </ResourceDetailPage>
 );
 
@@ -88,9 +93,16 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
   ...ownProps,
   deployment: stateProps.deployments[ownProps.params.uid],
   replicaSetsUids: Object.values(stateProps.replicaSets)
-    .filter(replicaSet => metadata.selectors.ownerReferencesUids(replicaSet)
-      .includes(metadata.selectors.uid(stateProps.deployments[ownProps.params.uid])))
+    .filter(replicaSet =>
+      metadata.selectors
+        .ownerReferencesUids(replicaSet)
+        .includes(
+          metadata.selectors.uid(stateProps.deployments[ownProps.params.uid])
+        )
+    )
     .map(replicaSet => metadata.selectors.uid(replicaSet))
 });
 
-export default withParams(connect(mapStateToProps, null, mergeProps)(DeploymentsDetailPage));
+export default withParams(
+  connect(mapStateToProps, null, mergeProps)(DeploymentsDetailPage)
+);

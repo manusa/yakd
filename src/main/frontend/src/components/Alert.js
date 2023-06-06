@@ -21,10 +21,15 @@ const Alert = ({
   visible = true,
   margin = 'm-2',
   className = '',
-  children}) => (
+  children
+}) => (
   <div
     className={`
-      ${children ? `block translate-y-0 ${margin} py-1` : '-translate-y-full py-0'}
+      ${
+        children
+          ? `block translate-y-0 ${margin} py-1`
+          : '-translate-y-full py-0'
+      }
       ${visible ? '' : 'invisible'}
       border rounded bg-red-200 border-red-300 p-2
       cursor-pointer text-red-500 text-sm select-none

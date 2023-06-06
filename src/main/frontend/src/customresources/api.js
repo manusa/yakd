@@ -24,19 +24,18 @@ import {
 import crds from '../customresourcedefinitions';
 
 const basePath = (crd, version = crds.selectors.specVersionsLatest(crd)) =>
-  `customresources/${crds.selectors.specGroup(crd)}/${version}/${crds.selectors.specNamesPlural(crd)}`;
+  `customresources/${crds.selectors.specGroup(
+    crd
+  )}/${version}/${crds.selectors.specNamesPlural(crd)}`;
 
 const api = {
-  list: (crd, version) => listResource(
-    `customresources/${
-      crds.selectors.specGroup(crd)
-    }/${
-      version ? version : crds.selectors.specVersionsLatest(crd)
-    }/${
-      crds.selectors.specNamesPlural(crd)
-    }`,
-    crds.selectors.specNamesKind(crd)
-  ),
+  list: (crd, version) =>
+    listResource(
+      `customresources/${crds.selectors.specGroup(crd)}/${
+        version ? version : crds.selectors.specVersionsLatest(crd)
+      }/${crds.selectors.specNamesPlural(crd)}`,
+      crds.selectors.specNamesKind(crd)
+    ),
   delete: (crd, version) => {
     const path = basePath(crd, version);
     if (crds.selectors.isNamespaced(crd)) {

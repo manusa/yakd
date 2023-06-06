@@ -25,9 +25,11 @@ const PersistentVolumeClaimsEditPage = ({params: {uid}}) => (
   <ResourceEditPage
     kind='PersistentVolumeClaims'
     path='persistentvolumeclaims'
-    cardTitle={resource =>
-      <Link.RouterLink to={`/persistentvolumeclaims/${uid}`}>{md.selectors.name(resource)}</Link.RouterLink>
-    }
+    cardTitle={resource => (
+      <Link.RouterLink to={`/persistentvolumeclaims/${uid}`}>
+        {md.selectors.name(resource)}
+      </Link.RouterLink>
+    )}
     save={async resource => await pvc.api.update(resource)}
     resourceFromState={state => state.persistentVolumeClaims[uid]}
   />

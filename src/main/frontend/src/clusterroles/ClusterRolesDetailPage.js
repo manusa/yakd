@@ -32,14 +32,18 @@ const ClusterRolesDetailPage = ({clusterRole}) => (
     deleteFunction={cRoles.api.delete}
     body={
       <Form>
-        <metadata.Details resource={clusterRole}/>
+        <metadata.Details resource={clusterRole} />
       </Form>
     }
   >
-    <cRoles.RuleList className='mt-2' rules={cRoles.selectors.rules(clusterRole)}/>
+    <cRoles.RuleList
+      className='mt-2'
+      rules={cRoles.selectors.rules(clusterRole)}
+    />
     <crb.List
       title='Bindings'
-      titleVariant={Card.titleVariants.medium} className='mt-2'
+      titleVariant={Card.titleVariants.medium}
+      className='mt-2'
       roleRefName={metadata.selectors.name(clusterRole)}
     />
   </ResourceDetailPage>
@@ -53,7 +57,12 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
   ...stateProps,
   ...dispatchProps,
   ...ownProps,
-  clusterRole: metadata.selectors.byUidOrName(stateProps.clusterRoles, ownProps.params.uidOrName)
+  clusterRole: metadata.selectors.byUidOrName(
+    stateProps.clusterRoles,
+    ownProps.params.uidOrName
+  )
 });
 
-export default withParams(connect(mapStateToProps, null, mergeProps)(ClusterRolesDetailPage));
+export default withParams(
+  connect(mapStateToProps, null, mergeProps)(ClusterRolesDetailPage)
+);

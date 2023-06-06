@@ -21,7 +21,7 @@ import DashboardPage from '../components/DashboardPage';
 const NodesPage = () => (
   <DashboardPage title='Nodes'>
     <div className='flex justify-center'>
-      <nodes.NodesCard responsiveClassName='w-full'/>
+      <nodes.NodesCard responsiveClassName='w-full' />
     </div>
     <nodes.List className='mt-4' />
   </DashboardPage>

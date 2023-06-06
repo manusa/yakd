@@ -25,9 +25,11 @@ const IngressesEditPage = ({params: {uid}}) => (
   <ResourceEditPage
     kind='Ingresses'
     path='ingresses'
-    cardTitle={resource =>
-      <Link.RouterLink to={`/ingresses/${uid}`}>{md.selectors.name(resource)}</Link.RouterLink>
-    }
+    cardTitle={resource => (
+      <Link.RouterLink to={`/ingresses/${uid}`}>
+        {md.selectors.name(resource)}
+      </Link.RouterLink>
+    )}
     save={async resource => await i.api.update(resource)}
     resourceFromState={state => state.ingresses[uid]}
   />

@@ -24,7 +24,9 @@ import Table from '../components/Table';
 
 const headers = [
   '',
-  <span><Icon icon='fa-id-card' /> Name</span>,
+  <span>
+    <Icon icon='fa-id-card' /> Name
+  </span>,
   'Namespace',
   'Schedule',
   'Suspended',
@@ -37,11 +39,20 @@ const Rows = ({cronJobs}) => {
   return cronJobs
     .sort(metadata.selectors.sortByCreationTimeStamp)
     .map(cronJob => (
-      <Table.ResourceRow key={metadata.selectors.uid(cronJob)} resource={cronJob}>
+      <Table.ResourceRow
+        key={metadata.selectors.uid(cronJob)}
+        resource={cronJob}
+      >
         <Table.Cell className='whitespace-no-wrap w-3 text-center'>
           <Icon
-            className={cj.selectors.isReady(cronJob) ? 'text-green-500' : 'text-red-500'}
-            icon={cj.selectors.isReady(cronJob) ? 'fa-check' : 'fa-exclamation-circle'}
+            className={
+              cj.selectors.isReady(cronJob) ? 'text-green-500' : 'text-red-500'
+            }
+            icon={
+              cj.selectors.isReady(cronJob)
+                ? 'fa-check'
+                : 'fa-exclamation-circle'
+            }
           />
         </Table.Cell>
         <Table.Cell className='whitespace-no-wrap'>
@@ -50,19 +61,15 @@ const Rows = ({cronJobs}) => {
           </Link.CronJob>
         </Table.Cell>
         <Table.Cell className='whitespace-no-wrap'>
-          <Link.Namespace to={`/namespaces/${metadata.selectors.namespace(cronJob)}`}>
+          <Link.Namespace
+            to={`/namespaces/${metadata.selectors.namespace(cronJob)}`}
+          >
             {metadata.selectors.namespace(cronJob)}
           </Link.Namespace>
         </Table.Cell>
-        <Table.Cell>
-          {cj.selectors.specSchedule(cronJob)}
-        </Table.Cell>
-        <Table.Cell>
-          {cj.selectors.specSuspend(cronJob).toString()}
-        </Table.Cell>
-        <Table.Cell>
-          {cj.selectors.statusActive(cronJob).length}
-        </Table.Cell>
+        <Table.Cell>{cj.selectors.specSchedule(cronJob)}</Table.Cell>
+        <Table.Cell>{cj.selectors.specSuspend(cronJob).toString()}</Table.Cell>
+        <Table.Cell>{cj.selectors.statusActive(cronJob).length}</Table.Cell>
         <Table.Cell className='whitespace-no-wrap text-center'>
           <Table.DeleteButton onClick={deleteJob(cronJob)} />
         </Table.Cell>

@@ -52,7 +52,9 @@ const ServicesDetailPage = ({service}) => (
         <Form.Field label='Type'>
           <svc.Type service={service} />
         </Form.Field>
-        <Form.Field label='Cluster IP'>{svc.selectors.specClusterIP(service)}</Form.Field>
+        <Form.Field label='Cluster IP'>
+          {svc.selectors.specClusterIP(service)}
+        </Form.Field>
         <ExternalIps ips={svc.selectors.specExternalIPs(service)} />
       </Form>
     }
@@ -74,7 +76,9 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
   ...stateProps,
   ...dispatchProps,
   ...ownProps,
-  service: stateProps.services[ownProps.params.uid],
+  service: stateProps.services[ownProps.params.uid]
 });
 
-export default withParams(connect(mapStateToProps, null, mergeProps)(ServicesDetailPage));
+export default withParams(
+  connect(mapStateToProps, null, mergeProps)(ServicesDetailPage)
+);

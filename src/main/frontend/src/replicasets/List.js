@@ -24,22 +24,36 @@ import Table from '../components/Table';
 
 const headers = [
   '',
-  <span><Icon icon='fa-id-card' /> Name</span>,
+  <span>
+    <Icon icon='fa-id-card' /> Name
+  </span>,
   'Namespace',
   'Replicas',
   ''
 ];
 
 const Rows = ({replicaSets}) => {
-  const deleteReplicaSet = replicaSet => async () => await rs.api.requestDelete(replicaSet);
+  const deleteReplicaSet = replicaSet => async () =>
+    await rs.api.requestDelete(replicaSet);
   return replicaSets
     .sort(metadata.selectors.sortByCreationTimeStamp)
     .map(replicaSet => (
-      <Table.ResourceRow key={metadata.selectors.uid(replicaSet)} resource={replicaSet}>
+      <Table.ResourceRow
+        key={metadata.selectors.uid(replicaSet)}
+        resource={replicaSet}
+      >
         <Table.Cell className='whitespace-no-wrap w-3 text-center'>
           <Icon
-            className={rs.selectors.isReady(replicaSet) ? 'text-green-500' : 'text-red-500'}
-            icon={rs.selectors.isReady(replicaSet) ? 'fa-check' : 'fa-exclamation-circle'}
+            className={
+              rs.selectors.isReady(replicaSet)
+                ? 'text-green-500'
+                : 'text-red-500'
+            }
+            icon={
+              rs.selectors.isReady(replicaSet)
+                ? 'fa-check'
+                : 'fa-exclamation-circle'
+            }
           />
         </Table.Cell>
         <Table.Cell className='whitespace-no-wrap'>
@@ -56,9 +70,15 @@ const Rows = ({replicaSets}) => {
         </Table.Cell>
       </Table.ResourceRow>
     ));
-}
+};
 
-const List = ({resources, ownerUid, crudDelete, loadedResources, ...properties}) => (
+const List = ({
+  resources,
+  ownerUid,
+  crudDelete,
+  loadedResources,
+  ...properties
+}) => (
   <ResourceList headers={headers} resources={resources} {...properties}>
     <Rows replicaSets={resources} />
   </ResourceList>
@@ -69,4 +89,3 @@ List.propTypes = {
 };
 
 export default ResourceList.resourceListConnect('replicaSets')(List);
-

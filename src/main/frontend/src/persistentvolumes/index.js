@@ -22,7 +22,7 @@ import PersistentVolumesDetailPage from './PersistentVolumesDetailPage';
 import PersistentVolumesEditPage from './PersistentVolumesEditPage';
 import PersistentVolumesPage from './PersistentVolumesPage';
 
-const pv = {}
+const pv = {};
 
 pv.api = api;
 pv.reducer = reducer;

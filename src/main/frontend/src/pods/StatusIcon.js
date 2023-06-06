@@ -18,14 +18,17 @@ import React from 'react';
 import Icon from '../components/Icon';
 
 const iconMap = {
-  'Failed': 'fa-times-circle',
-  'Running': 'fa-sync-alt',
-  'Succeeded': 'fa-check-circle',
-  'Terminated': 'fa-ban'
-}
+  Failed: 'fa-times-circle',
+  Running: 'fa-sync-alt',
+  Succeeded: 'fa-check-circle',
+  Terminated: 'fa-ban'
+};
 
 const StatusIcon = ({statusPhase, className}) => (
-  <Icon icon={iconMap[statusPhase] ?? 'fa-question-circle'} className={className} />
+  <Icon
+    icon={iconMap[statusPhase] ?? 'fa-question-circle'}
+    className={className}
+  />
 );
 
 export default StatusIcon;

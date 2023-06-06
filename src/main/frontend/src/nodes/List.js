@@ -15,9 +15,9 @@
  *
  */
 import React from 'react';
-import {connect} from 'react-redux'
+import {connect} from 'react-redux';
 import metadata from '../metadata';
-import n from './'
+import n from './';
 import Icon from '../components/Icon';
 import Link from '../components/Link';
 import ResourceList from '../components/ResourceList';
@@ -25,45 +25,52 @@ import Table from '../components/Table';
 
 const headers = [
   '',
-  <span className='whitespace-no-wrap'><Icon icon='fa-id-card' /> Name</span>,
-  <span className='whitespace-no-wrap'><Icon icon='fa-server' /> Roles</span>,
-  <span><Icon icon='fa-tags' /> Labels</span>
+  <span className='whitespace-no-wrap'>
+    <Icon icon='fa-id-card' /> Name
+  </span>,
+  <span className='whitespace-no-wrap'>
+    <Icon icon='fa-server' /> Roles
+  </span>,
+  <span>
+    <Icon icon='fa-tags' /> Labels
+  </span>
 ];
 
 const Rows = ({nodes}) => {
-  return nodes
-    .sort(metadata.selectors.sortByCreationTimeStamp)
-    .map(node => (
-      <Table.ResourceRow key={metadata.selectors.uid(node)} resource={node}>
-        <Table.Cell className='whitespace-no-wrap w-3 text-center'>
-          <Icon
-            className={n.selectors.isReady(node) ? 'text-green-500' : 'text-red-500'}
-            icon={n.selectors.isReady(node) ? 'fa-check' : 'fa-exclamation-circle'}
-          />
-        </Table.Cell>
-        <Table.Cell className='text-nowrap'>
-          <Link.Node
-            to={`/nodes/${metadata.selectors.name(node)}`}
-          >{metadata.selectors.name(node)}
-          </Link.Node>
-        </Table.Cell>
-        <Table.Cell className='text-nowrap'>
-          {(roles => {
-            if (roles.length === 0){
-              return '<none>';
-            }
-            return roles.map((role, idx) => <div key={idx}>{role}</div>);
-          })(n.selectors.roles(node))}
-        </Table.Cell>
-        <Table.Cell>
-          <metadata.KeyValueList
-            keyValues={metadata.selectors.labels(node)}
-            maxEntries={2}
-          />
-        </Table.Cell>
-      </Table.ResourceRow>
-    ));
-}
+  return nodes.sort(metadata.selectors.sortByCreationTimeStamp).map(node => (
+    <Table.ResourceRow key={metadata.selectors.uid(node)} resource={node}>
+      <Table.Cell className='whitespace-no-wrap w-3 text-center'>
+        <Icon
+          className={
+            n.selectors.isReady(node) ? 'text-green-500' : 'text-red-500'
+          }
+          icon={
+            n.selectors.isReady(node) ? 'fa-check' : 'fa-exclamation-circle'
+          }
+        />
+      </Table.Cell>
+      <Table.Cell className='text-nowrap'>
+        <Link.Node to={`/nodes/${metadata.selectors.name(node)}`}>
+          {metadata.selectors.name(node)}
+        </Link.Node>
+      </Table.Cell>
+      <Table.Cell className='text-nowrap'>
+        {(roles => {
+          if (roles.length === 0) {
+            return '<none>';
+          }
+          return roles.map((role, idx) => <div key={idx}>{role}</div>);
+        })(n.selectors.roles(node))}
+      </Table.Cell>
+      <Table.Cell>
+        <metadata.KeyValueList
+          keyValues={metadata.selectors.labels(node)}
+          maxEntries={2}
+        />
+      </Table.Cell>
+    </Table.ResourceRow>
+  ));
+};
 
 const List = ({nodes, ...properties}) => (
   <ResourceList headers={headers} resources={nodes} {...properties}>
@@ -76,4 +83,3 @@ const mapStateToProps = ({nodes}) => ({
 });
 
 export default connect(mapStateToProps)(List);
-

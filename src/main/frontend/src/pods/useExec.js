@@ -38,7 +38,7 @@ const startTerminal = (ref, namespace, name, selectedContainer) => {
   window.addEventListener('resize', xterm.resizeEventListener);
   xterm.selectedContainer = selectedContainer;
   return xterm;
-}
+};
 
 const useExec = (namespace, name, containers) => {
   const ref = useRef(null);
@@ -53,14 +53,17 @@ const useExec = (namespace, name, containers) => {
       setTerminal(startTerminal(ref, namespace, name, selectedContainer));
     }
   }, [terminal, setTerminal, namespace, name, selectedContainer]);
-  useEffect(() => () => {
-    if (terminal) {
-      if (terminal.resizeEventListener) {
-        window.removeEventListener('resize', terminal.resizeEventListener);
+  useEffect(
+    () => () => {
+      if (terminal) {
+        if (terminal.resizeEventListener) {
+          window.removeEventListener('resize', terminal.resizeEventListener);
+        }
+        terminal.dispose();
       }
-      terminal.dispose();
-    }
-  }, [terminal])
+    },
+    [terminal]
+  );
   return {ref, selectedContainer, setSelectedContainer};
 };
 

@@ -24,31 +24,53 @@ import Table from '../components/Table';
 
 const headers = [
   '',
-  <span><Icon icon='fa-id-card' /> Name</span>,
+  <span>
+    <Icon icon='fa-id-card' /> Name
+  </span>,
   'Namespace',
   <span>Scale Target</span>,
   ''
 ];
 
 const Rows = ({horizontalPodAutoscalers}) => {
-  const deleteAction = horizontalPodAutoscaler => () => hpa.api.delete(horizontalPodAutoscaler);
+  const deleteAction = horizontalPodAutoscaler => () =>
+    hpa.api.delete(horizontalPodAutoscaler);
   return horizontalPodAutoscalers
     .sort(metadata.selectors.sortByCreationTimeStamp)
     .map(horizontalPodAutoscaler => (
-      <Table.ResourceRow key={metadata.selectors.uid(horizontalPodAutoscaler)} resource={horizontalPodAutoscaler}>
+      <Table.ResourceRow
+        key={metadata.selectors.uid(horizontalPodAutoscaler)}
+        resource={horizontalPodAutoscaler}
+      >
         <Table.Cell className='whitespace-no-wrap w-3 text-center'>
           <Icon
-            className={hpa.selectors.isReady(horizontalPodAutoscaler) ? 'text-green-500' : 'text-red-500'}
-            icon={hpa.selectors.isReady(horizontalPodAutoscaler) ? 'fa-check' : 'fa-exclamation-circle'}
+            className={
+              hpa.selectors.isReady(horizontalPodAutoscaler)
+                ? 'text-green-500'
+                : 'text-red-500'
+            }
+            icon={
+              hpa.selectors.isReady(horizontalPodAutoscaler)
+                ? 'fa-check'
+                : 'fa-exclamation-circle'
+            }
           />
         </Table.Cell>
         <Table.Cell className='whitespace-no-wrap'>
-          <Link.HorizontalPodAutoscaler to={`/horizontalpodautoscalers/${metadata.selectors.uid(horizontalPodAutoscaler)}`}>
+          <Link.HorizontalPodAutoscaler
+            to={`/horizontalpodautoscalers/${metadata.selectors.uid(
+              horizontalPodAutoscaler
+            )}`}
+          >
             {metadata.selectors.name(horizontalPodAutoscaler)}
           </Link.HorizontalPodAutoscaler>
         </Table.Cell>
         <Table.Cell className='whitespace-no-wrap'>
-          <Link.Namespace to={`/namespaces/${metadata.selectors.namespace(horizontalPodAutoscaler)}`}>
+          <Link.Namespace
+            to={`/namespaces/${metadata.selectors.namespace(
+              horizontalPodAutoscaler
+            )}`}
+          >
             {metadata.selectors.namespace(horizontalPodAutoscaler)}
           </Link.Namespace>
         </Table.Cell>
@@ -64,8 +86,13 @@ const Rows = ({horizontalPodAutoscalers}) => {
 
 const List = ({resources, crudDelete, loadedResources, ...properties}) => (
   <ResourceList headers={headers} resources={resources} {...properties}>
-    <Rows horizontalPodAutoscalers={resources} loadedResources={loadedResources} />
+    <Rows
+      horizontalPodAutoscalers={resources}
+      loadedResources={loadedResources}
+    />
   </ResourceList>
 );
 
-export default ResourceList.resourceListConnect('horizontalPodAutoscalers')(List);
+export default ResourceList.resourceListConnect('horizontalPodAutoscalers')(
+  List
+);

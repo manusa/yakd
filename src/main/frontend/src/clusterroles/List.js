@@ -24,35 +24,53 @@ import Table from '../components/Table';
 import Tooltip from '../components/Tooltip';
 
 const headers = [
-  <span><Icon className='fa-id-card' /> Name</span>,
-  <span><Icon stylePrefix='far' icon='fa-clock' /> Time</span>,
+  <span>
+    <Icon className='fa-id-card' /> Name
+  </span>,
+  <span>
+    <Icon stylePrefix='far' icon='fa-clock' /> Time
+  </span>,
   ''
 ];
 
 const Rows = ({clusterRoles}) => {
-  const deleteClusterRole = clusterRole => async () => await cRoles.api.delete(clusterRole);
+  const deleteClusterRole = clusterRole => async () =>
+    await cRoles.api.delete(clusterRole);
   return clusterRoles
     .sort(metadata.selectors.sortByCreationTimeStamp)
     .map(clusterRole => (
-        <Table.ResourceRow key={metadata.selectors.uid(clusterRole)} resource={clusterRole}>
-          <Table.Cell>
-            <Link.ClusterRole to={`/clusterroles/${metadata.selectors.uid(clusterRole)}`}>
-              {metadata.selectors.name(clusterRole)}
-            </Link.ClusterRole>
-          </Table.Cell>
-          <Table.Cell>
-            <Tooltip
-              content={`${metadata.selectors.creationTimestamp(clusterRole).toLocaleDateString()}
-                ${metadata.selectors.creationTimestamp(clusterRole).toLocaleTimeString()}`}
-              className='cursor-default'
-            >
-              <span>{metadata.selectors.creationTimestamp(clusterRole).toLocaleDateString()}</span>
-            </Tooltip>
-          </Table.Cell>
-          <Table.Cell>
-            <Table.DeleteButton onClick={deleteClusterRole(clusterRole)} />
-          </Table.Cell>
-        </Table.ResourceRow>
+      <Table.ResourceRow
+        key={metadata.selectors.uid(clusterRole)}
+        resource={clusterRole}
+      >
+        <Table.Cell>
+          <Link.ClusterRole
+            to={`/clusterroles/${metadata.selectors.uid(clusterRole)}`}
+          >
+            {metadata.selectors.name(clusterRole)}
+          </Link.ClusterRole>
+        </Table.Cell>
+        <Table.Cell>
+          <Tooltip
+            content={`${metadata.selectors
+              .creationTimestamp(clusterRole)
+              .toLocaleDateString()}
+                ${metadata.selectors
+                  .creationTimestamp(clusterRole)
+                  .toLocaleTimeString()}`}
+            className='cursor-default'
+          >
+            <span>
+              {metadata.selectors
+                .creationTimestamp(clusterRole)
+                .toLocaleDateString()}
+            </span>
+          </Tooltip>
+        </Table.Cell>
+        <Table.Cell>
+          <Table.DeleteButton onClick={deleteClusterRole(clusterRole)} />
+        </Table.Cell>
+      </Table.ResourceRow>
     ));
 };
 
@@ -63,4 +81,3 @@ const List = ({resources, loadedResources, crudDelete, ...properties}) => (
 );
 
 export default ResourceList.resourceListConnect('clusterRoles')(List);
-

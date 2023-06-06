@@ -19,7 +19,9 @@ import Icon from '../components/Icon';
 import Table from '../components/Table';
 
 const headers = [
-  <span><Icon icon='fa-id-card' /> Name</span>,
+  <span>
+    <Icon icon='fa-id-card' /> Name
+  </span>,
   'App Protocol',
   'Node Port',
   'Port',
@@ -27,22 +29,21 @@ const headers = [
   'Target Port'
 ];
 
-const Rows = ({ports}) => ports.map((port, idx) => (
-  <Table.Row key={`${idx}-${port.name}`}>
-    <Table.Cell>{port.name}</Table.Cell>
-    <Table.Cell>{port.appProtocol}</Table.Cell>
-    <Table.Cell>{port.nodePort}</Table.Cell>
-    <Table.Cell>{port.port}</Table.Cell>
-    <Table.Cell>{port.protocol}</Table.Cell>
-    <Table.Cell>{port.targetPort}</Table.Cell>
-  </Table.Row>
-));
+const Rows = ({ports}) =>
+  ports.map((port, idx) => (
+    <Table.Row key={`${idx}-${port.name}`}>
+      <Table.Cell>{port.name}</Table.Cell>
+      <Table.Cell>{port.appProtocol}</Table.Cell>
+      <Table.Cell>{port.nodePort}</Table.Cell>
+      <Table.Cell>{port.port}</Table.Cell>
+      <Table.Cell>{port.protocol}</Table.Cell>
+      <Table.Cell>{port.targetPort}</Table.Cell>
+    </Table.Row>
+  ));
 
 const PortList = ({ports, ...properties}) => (
   <Table {...properties}>
-    <Table.Head
-      columns={headers}
-    />
+    <Table.Head columns={headers} />
     <Table.Body>
       <Rows ports={ports} />
     </Table.Body>

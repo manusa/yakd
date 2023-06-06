@@ -17,10 +17,11 @@
 import React from 'react';
 
 const Form = ({formClassName, className, children}) => (
-  <form className={`w-full ${formClassName ?? ''}`} onSubmit={e => e.preventDefault()}>
-    <div className={`flex flex-wrap -px-2 ${className ?? ''}`}>
-      {children}
-    </div>
+  <form
+    className={`w-full ${formClassName ?? ''}`}
+    onSubmit={e => e.preventDefault()}
+  >
+    <div className={`flex flex-wrap -px-2 ${className ?? ''}`}>{children}</div>
   </form>
 );
 
@@ -30,11 +31,15 @@ Form.widths = {
   third: 'w-full md:w-1/3'
 };
 
-Form.Field = ({className, label, labelClassName, children, width = Form.widths.third, ...props}) => (
-  <div
-    className={`my-2 text-gray-900 ${width} ${className ?? ''}`}
-    {...props}
-  >
+Form.Field = ({
+  className,
+  label,
+  labelClassName,
+  children,
+  width = Form.widths.third,
+  ...props
+}) => (
+  <div className={`my-2 text-gray-900 ${width} ${className ?? ''}`} {...props}>
     <label
       className={`block relative uppercase tracking-wide text-gray-700 text-xs font-bold mb-1
         ${labelClassName ?? ''}`}

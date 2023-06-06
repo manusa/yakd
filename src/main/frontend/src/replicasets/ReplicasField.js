@@ -21,7 +21,7 @@ import Icon from '../components/Icon';
 const ReplicasField = ({replicas, resource, updateReplicas}) => (
   <Form.Field label='Replicas'>
     <div className='flex items-center'>
-      <Icon stylePrefix='far' icon='fa-copy' className='text-gray-600 mr-2'/>
+      <Icon stylePrefix='far' icon='fa-copy' className='text-gray-600 mr-2' />
       {replicas}
       <div className='flex flex-col ml-2 text-blue-600'>
         <Icon
@@ -31,8 +31,11 @@ const ReplicasField = ({replicas, resource, updateReplicas}) => (
         />
         <Icon
           icon='fa-caret-down'
-          className={`leading-3 ${replicas > 0
-            ? 'hover:text-blue-800 cursor-pointer' : 'text-gray-600'}`}
+          className={`leading-3 ${
+            replicas > 0
+              ? 'hover:text-blue-800 cursor-pointer'
+              : 'text-gray-600'
+          }`}
           onClick={() => updateReplicas(resource, replicas - 1)}
         />
       </div>

@@ -24,10 +24,10 @@ const Spinner = ({
   className = ''
 }) => (
   <>
-  <div
-    className={`w-${size} h-${size} border-${borderSize} border-${color} rounded-full animate-spin yakc-spinner ${className}`}
-    style={{borderRightColor: shadowColor}}
-  />
+    <div
+      className={`w-${size} h-${size} border-${borderSize} border-${color} rounded-full animate-spin yakc-spinner ${className}`}
+      style={{borderRightColor: shadowColor}}
+    />
   </>
 );
 

@@ -29,7 +29,10 @@ import ResourceDetailPage from '../components/ResourceDetailPage';
 import Link from '../components/Link';
 import Icon from '../components/Icon';
 
-const DeploymentConfigsDetailPage = ({deploymentConfig, replicationControllersUids}) => (
+const DeploymentConfigsDetailPage = ({
+  deploymentConfig,
+  replicationControllersUids
+}) => (
   <ResourceDetailPage
     kind='DeploymentConfigs'
     path='deploymentconfigs'
@@ -44,7 +47,7 @@ const DeploymentConfigsDetailPage = ({deploymentConfig, replicationControllersUi
         onClick={() => dc.api.restart(deploymentConfig)}
         title='Restart'
       >
-        <Icon stylePrefix='fas' icon='fa-redo-alt' className='mr-2'/>
+        <Icon stylePrefix='fas' icon='fa-redo-alt' className='mr-2' />
         Restart
       </Link>
     }
@@ -56,7 +59,9 @@ const DeploymentConfigsDetailPage = ({deploymentConfig, replicationControllersUi
           replicas={dc.selectors.specReplicas(deploymentConfig)}
           updateReplicas={dc.api.updateReplicas}
         />
-        <Form.Field label='Strategy'>{dc.selectors.specStrategyType(deploymentConfig)}</Form.Field>
+        <Form.Field label='Strategy'>
+          {dc.selectors.specStrategyType(deploymentConfig)}
+        </Form.Field>
       </Form>
     }
   >
@@ -64,17 +69,20 @@ const DeploymentConfigsDetailPage = ({deploymentConfig, replicationControllersUi
       title='Containers'
       titleVariant={Card.titleVariants.medium}
       className='mt-2'
-      containers={dc.selectors.containers(deploymentConfig)} />
+      containers={dc.selectors.containers(deploymentConfig)}
+    />
     <rc.List
       title='Replication Controller'
       titleVariant={Card.titleVariants.medium}
       className='mt-2'
-      ownerUid={metadata.selectors.uid(deploymentConfig)} />
+      ownerUid={metadata.selectors.uid(deploymentConfig)}
+    />
     <pods.List
       title='Pods'
       titleVariant={Card.titleVariants.medium}
       className='mt-2'
-      ownerUids={replicationControllersUids} />
+      ownerUids={replicationControllersUids}
+    />
   </ResourceDetailPage>
 );
 
@@ -89,9 +97,18 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
   ...ownProps,
   deploymentConfig: stateProps.deploymentConfigs[ownProps.params.uid],
   replicationControllersUids: Object.values(stateProps.replicationControllers)
-    .filter(replicationController => metadata.selectors.ownerReferencesUids(replicationController)
-      .includes(metadata.selectors.uid(stateProps.deploymentConfigs[ownProps.params.uid])))
+    .filter(replicationController =>
+      metadata.selectors
+        .ownerReferencesUids(replicationController)
+        .includes(
+          metadata.selectors.uid(
+            stateProps.deploymentConfigs[ownProps.params.uid]
+          )
+        )
+    )
     .map(replicationController => metadata.selectors.uid(replicationController))
 });
 
-export default withParams(connect(mapStateToProps, null, mergeProps)(DeploymentConfigsDetailPage));
+export default withParams(
+  connect(mapStateToProps, null, mergeProps)(DeploymentConfigsDetailPage)
+);

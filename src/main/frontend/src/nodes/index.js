@@ -31,7 +31,7 @@ nodes.selectors = selectors;
 nodes.List = List;
 nodes.NodesCard = NodesCard;
 nodes.NodesDetailPage = NodesDetailPage;
-nodes.NodesEditPage = NodesEditPage
+nodes.NodesEditPage = NodesEditPage;
 nodes.NodesPage = NodesPage;
 
 export default nodes;

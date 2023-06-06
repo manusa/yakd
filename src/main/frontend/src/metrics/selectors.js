@@ -29,28 +29,39 @@ selectors.bytesToHumanReadable = (bytes = 0) => {
 
 selectors.quantityToScalar = (quantity = 0) => {
   const quantityString = quantity.toString();
-  if (quantityString.endsWith("n")) {
-    return quantityString.substring(0, quantityString.length - 1) / 1000_000_000;
+  if (quantityString.endsWith('n')) {
+    return (
+      quantityString.substring(0, quantityString.length - 1) / 1000_000_000
+    );
   }
-  if (quantityString.endsWith("m")) {
+  if (quantityString.endsWith('m')) {
     return quantityString.substring(0, quantityString.length - 1) / 1000;
   }
-  if (quantityString.endsWith("Ki")) {
+  if (quantityString.endsWith('Ki')) {
     return quantityString.substring(0, quantityString.length - 2) * 1024;
   }
-  if (quantityString.endsWith("Mi")) {
-    return quantityString.substring(0, quantityString.length - 2) * Math.pow(1024, 2);
+  if (quantityString.endsWith('Mi')) {
+    return (
+      quantityString.substring(0, quantityString.length - 2) * Math.pow(1024, 2)
+    );
   }
   return parseFloat(quantityString);
 };
 
 selectors.podMetrics = (podMetrics = {containers: []}) => {
   const ret = {};
-  ret.totalCpu = () => podMetrics.containers?.reduce((total, c) =>
-    total + selectors.quantityToScalar(c.usage?.cpu), 0);
-  ret.totalMemory = () => podMetrics.containers?.reduce((total, c) =>
-    total + selectors.quantityToScalar(c.usage?.memory), 0);
-  ret.container = containerName => podMetrics.containers?.find(c => c.name === containerName) ?? {};
+  ret.totalCpu = () =>
+    podMetrics.containers?.reduce(
+      (total, c) => total + selectors.quantityToScalar(c.usage?.cpu),
+      0
+    );
+  ret.totalMemory = () =>
+    podMetrics.containers?.reduce(
+      (total, c) => total + selectors.quantityToScalar(c.usage?.memory),
+      0
+    );
+  ret.container = containerName =>
+    podMetrics.containers?.find(c => c.name === containerName) ?? {};
   ret.containerCpu = containerName =>
     selectors.quantityToScalar(ret.container(containerName)?.usage?.cpu);
   ret.containerMemory = containerName =>

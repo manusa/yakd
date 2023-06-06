@@ -20,9 +20,11 @@ const toDate = timestamp => {
   if (timestamp) {
     return new Date(timestamp);
   }
-}
-selectors.creationTimestamp = object => toDate(object?.metadata?.creationTimestamp);
-selectors.deletionTimestamp = object => toDate(object?.metadata?.deletionTimestamp);
+};
+selectors.creationTimestamp = object =>
+  toDate(object?.metadata?.creationTimestamp);
+selectors.deletionTimestamp = object =>
+  toDate(object?.metadata?.deletionTimestamp);
 
 selectors.annotations = object => object?.metadata?.annotations ?? {};
 
@@ -34,11 +36,11 @@ selectors.namespace = object => object?.metadata?.namespace ?? '';
 
 selectors.uid = object => object?.metadata?.uid ?? '';
 
-selectors.ownerReferencesUids = object => (object?.metadata?.ownerReferences ?? [])
-  .map(or => or.uid);
+selectors.ownerReferencesUids = object =>
+  (object?.metadata?.ownerReferences ?? []).map(or => or.uid);
 
 selectors.sortByCreationTimeStamp = (r1, r2) =>
-  selectors.creationTimestamp(r2) - selectors.creationTimestamp(r1)
+  selectors.creationTimestamp(r2) - selectors.creationTimestamp(r1);
 
 // Selectors for Map<uid, resource> of Metadata Resources
 
@@ -46,8 +48,9 @@ selectors.byUidOrName = (metadataResources, uidOrName) => {
   if (metadataResources[uidOrName]) {
     return metadataResources[uidOrName];
   }
-  return Object.values(metadataResources)
-  .find(resource => selectors.name(resource) === uidOrName);
+  return Object.values(metadataResources).find(
+    resource => selectors.name(resource) === uidOrName
+  );
 };
 
 export default selectors;

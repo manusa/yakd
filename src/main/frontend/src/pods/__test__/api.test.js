@@ -14,7 +14,6 @@
  * limitations under the License.
  *
  */
-import {getApiURL} from "../../env";
 
 describe('API test suite', () => {
   let api;
@@ -37,7 +36,9 @@ describe('API test suite', () => {
         // When
         api.exec('ns', 'name', 'container-name');
         // Then
-        expect(WebSocket).toHaveBeenCalledWith('wss://example.com/api/v1/pods/ns/name/exec/container-name');
+        expect(WebSocket).toHaveBeenCalledWith(
+          'wss://example.com/api/v1/pods/ns/name/exec/container-name'
+        );
         expect(WebSocket).toHaveBeenCalledTimes(1);
       });
       test('and HTTP protocol, should call WebSocket with replaced protocol', () => {
@@ -46,7 +47,9 @@ describe('API test suite', () => {
         // When
         api.exec('ns', 'name', 'container-name');
         // Then
-        expect(WebSocket).toHaveBeenCalledWith('ws://example.com/api/v1/pods/ns/name/exec/container-name');
+        expect(WebSocket).toHaveBeenCalledWith(
+          'ws://example.com/api/v1/pods/ns/name/exec/container-name'
+        );
         expect(WebSocket).toHaveBeenCalledTimes(1);
       });
     });
@@ -57,20 +60,24 @@ describe('API test suite', () => {
       });
       test('and HTTPS protocol, should call WebSocket with replaced protocol', () => {
         // Given
-        window.location.origin = 'https://example.com'
+        window.location.origin = 'https://example.com';
         // When
         api.exec('ns', 'name', 'container-name');
         // Then
-        expect(WebSocket).toHaveBeenCalledWith('wss://example.com/api/v1/pods/ns/name/exec/container-name');
+        expect(WebSocket).toHaveBeenCalledWith(
+          'wss://example.com/api/v1/pods/ns/name/exec/container-name'
+        );
         expect(WebSocket).toHaveBeenCalledTimes(1);
       });
       test('and HTTP protocol, should call WebSocket with replaced protocol', () => {
         // Given
-        window.location.origin = 'http://example.com:1337'
+        window.location.origin = 'http://example.com:1337';
         // When
         api.exec('ns', 'name', 'container-name');
         // Then
-        expect(WebSocket).toHaveBeenCalledWith('ws://example.com:1337/api/v1/pods/ns/name/exec/container-name');
+        expect(WebSocket).toHaveBeenCalledWith(
+          'ws://example.com:1337/api/v1/pods/ns/name/exec/container-name'
+        );
         expect(WebSocket).toHaveBeenCalledTimes(1);
       });
     });

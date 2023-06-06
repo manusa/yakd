@@ -23,36 +23,42 @@ selectors.toObjectReducer = (acc, [key, configMap]) => {
   return acc;
 };
 
-selectors.resourcesBy = (resources = {}, {
-  namespace,
-  nameLike,
-  ownerUid,
-  ownerUids,
-  uids,
-  uidsNotIn,
-} = undefined) => Object.entries(resources)
-.filter(([, resource]) => {
-  if (namespace && md.selectors.namespace(resource) !== namespace) {
-    return false;
-  }
-  if (nameLike && !md.selectors.name(resource).toUpperCase().includes(nameLike.toUpperCase())) {
-    return false;
-  }
-  const ownerRefs = md.selectors.ownerReferencesUids(resource);
-  if (ownerUid && !ownerRefs.includes(ownerUid)) {
-    return false;
-  }
-  if (ownerUids && !ownerRefs.some(ownerUid => ownerUids.includes(ownerUid))) {
-    return false;
-  }
-  if (uids && !uids.includes(md.selectors.uid(resource))) {
-    return false;
-  }
-  if (uidsNotIn && uidsNotIn.includes(md.selectors.uid(resource))) {
-    return false;
-  }
-  return true;
-})
-.reduce(selectors.toObjectReducer, {});
+selectors.resourcesBy = (
+  resources = {},
+  {namespace, nameLike, ownerUid, ownerUids, uids, uidsNotIn} = undefined
+) =>
+  Object.entries(resources)
+    .filter(([, resource]) => {
+      if (namespace && md.selectors.namespace(resource) !== namespace) {
+        return false;
+      }
+      if (
+        nameLike &&
+        !md.selectors
+          .name(resource)
+          .toUpperCase()
+          .includes(nameLike.toUpperCase())
+      ) {
+        return false;
+      }
+      const ownerRefs = md.selectors.ownerReferencesUids(resource);
+      if (ownerUid && !ownerRefs.includes(ownerUid)) {
+        return false;
+      }
+      if (
+        ownerUids &&
+        !ownerRefs.some(ownerUid => ownerUids.includes(ownerUid))
+      ) {
+        return false;
+      }
+      if (uids && !uids.includes(md.selectors.uid(resource))) {
+        return false;
+      }
+      if (uidsNotIn && uidsNotIn.includes(md.selectors.uid(resource))) {
+        return false;
+      }
+      return true;
+    })
+    .reduce(selectors.toObjectReducer, {});
 
 export default selectors;

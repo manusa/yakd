@@ -24,12 +24,12 @@ import cRoles from './clusterroles';
 import cv from './clusterversions';
 import configMaps from './configmaps';
 import cj from './cronjobs';
-import crd from './customresourcedefinitions'
+import crd from './customresourcedefinitions';
 import ds from './daemonsets';
-import dc from './deploymentconfigs'
+import dc from './deploymentconfigs';
 import deployments from './deployments';
 import events from './events';
-import hpa from './horizontalpodautoscalers'
+import hpa from './horizontalpodautoscalers';
 import ing from './ingresses';
 import job from './jobs';
 import ns from './namespaces';
@@ -54,41 +54,47 @@ import './assets/tailwind.css';
 import './assets/scroll.css';
 
 const storeEnhancer = () => {
-  if (process.env.NODE_ENV === 'development' && window.__REDUX_DEVTOOLS_EXTENSION__) {
+  if (
+    process.env.NODE_ENV === 'development' &&
+    window.__REDUX_DEVTOOLS_EXTENSION__
+  ) {
     return window.__REDUX_DEVTOOLS_EXTENSION__();
   }
 };
 
-const store = createStore(combineReducers({
-  apiGroups: apis.apiGroupsReducer,
-  clusterRoleBindings: crb.reducer,
-  clusterRoles: cRoles.reducer,
-  clusterVersions: cv.reducer,
-  configMaps: configMaps.reducer,
-  cronJobs: cj.reducer,
-  customResourceDefinitions: crd.reducer,
-  daemonSets: ds.reducer,
-  deploymentConfigs: dc.reducer,
-  deployments: deployments.reducer,
-  events: events.reducer,
-  horizontalPodAutoscalers: hpa.reducer,
-  ingresses: ing.reducer,
-  jobs: job.reducer,
-  namespaces: ns.reducer,
-  nodes: nodes.reducer,
-  persistentVolumeClaims: pvc.reducer,
-  persistentVolumes: pv.reducer,
-  pods: pods.reducer,
-  replicaSets: replicaSets.reducer,
-  replicationControllers: rc.reducer,
-  roles: roles.reducer,
-  routes: routes.reducer,
-  secrets: secrets.reducer,
-  services: services.reducer,
-  statefulSets: statefulSets.reducer,
-  sidebar: sidebar.reducer,
-  ui: redux.uiReducer
-}), storeEnhancer());
+const store = createStore(
+  combineReducers({
+    apiGroups: apis.apiGroupsReducer,
+    clusterRoleBindings: crb.reducer,
+    clusterRoles: cRoles.reducer,
+    clusterVersions: cv.reducer,
+    configMaps: configMaps.reducer,
+    cronJobs: cj.reducer,
+    customResourceDefinitions: crd.reducer,
+    daemonSets: ds.reducer,
+    deploymentConfigs: dc.reducer,
+    deployments: deployments.reducer,
+    events: events.reducer,
+    horizontalPodAutoscalers: hpa.reducer,
+    ingresses: ing.reducer,
+    jobs: job.reducer,
+    namespaces: ns.reducer,
+    nodes: nodes.reducer,
+    persistentVolumeClaims: pvc.reducer,
+    persistentVolumes: pv.reducer,
+    pods: pods.reducer,
+    replicaSets: replicaSets.reducer,
+    replicationControllers: rc.reducer,
+    roles: roles.reducer,
+    routes: routes.reducer,
+    secrets: secrets.reducer,
+    services: services.reducer,
+    statefulSets: statefulSets.reducer,
+    sidebar: sidebar.reducer,
+    ui: redux.uiReducer
+  }),
+  storeEnhancer()
+);
 
 ReactDOM.render(
   <React.StrictMode>
@@ -98,4 +104,3 @@ ReactDOM.render(
   </React.StrictMode>,
   document.getElementById('root')
 );
-

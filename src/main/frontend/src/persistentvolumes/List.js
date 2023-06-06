@@ -23,7 +23,9 @@ import ResourceList from '../components/ResourceList';
 import Table from '../components/Table';
 
 const headers = [
-  <span><Icon className='fa-id-card' /> Name</span>,
+  <span>
+    <Icon className='fa-id-card' /> Name
+  </span>,
   'Storage Class',
   'Capacity',
   'Status',
@@ -38,33 +40,44 @@ const Rows = ({persistentVolumes, crudDelete}) => {
   return persistentVolumes
     .sort(metadata.selectors.sortByCreationTimeStamp)
     .map(persistentVolume => (
-        <Table.ResourceRow key={metadata.selectors.uid(persistentVolume)} resource={persistentVolume}>
-          <Table.Cell>
-            <Link.PersistentVolume to={`/persistentvolumes/${metadata.selectors.uid(persistentVolume)}`}>
-              {metadata.selectors.name(persistentVolume)}
-            </Link.PersistentVolume>
-          </Table.Cell>
-          <Table.Cell>
-            {pv.selectors.specStorageClassName(persistentVolume)}
-          </Table.Cell>
-          <Table.Cell>
-            {pv.selectors.specCapacityStorage(persistentVolume)}
-          </Table.Cell>
-          <Table.Cell>
-            {pv.selectors.statusPhase(persistentVolume)}
-          </Table.Cell>
-          <Table.Cell>
-            <Table.DeleteButton onClick={deletePersistentVolume(persistentVolume)} />
-          </Table.Cell>
-        </Table.ResourceRow>
+      <Table.ResourceRow
+        key={metadata.selectors.uid(persistentVolume)}
+        resource={persistentVolume}
+      >
+        <Table.Cell>
+          <Link.PersistentVolume
+            to={`/persistentvolumes/${metadata.selectors.uid(
+              persistentVolume
+            )}`}
+          >
+            {metadata.selectors.name(persistentVolume)}
+          </Link.PersistentVolume>
+        </Table.Cell>
+        <Table.Cell>
+          {pv.selectors.specStorageClassName(persistentVolume)}
+        </Table.Cell>
+        <Table.Cell>
+          {pv.selectors.specCapacityStorage(persistentVolume)}
+        </Table.Cell>
+        <Table.Cell>{pv.selectors.statusPhase(persistentVolume)}</Table.Cell>
+        <Table.Cell>
+          <Table.DeleteButton
+            onClick={deletePersistentVolume(persistentVolume)}
+          />
+        </Table.Cell>
+      </Table.ResourceRow>
     ));
 };
 
 const List = ({resources, loadedResources, crudDelete, ...properties}) => (
-  <ResourceList headers={headers} resources={resources} loading={!loadedResources['PersistentVolume']} {...properties}>
+  <ResourceList
+    headers={headers}
+    resources={resources}
+    loading={!loadedResources['PersistentVolume']}
+    {...properties}
+  >
     <Rows persistentVolumes={resources} crudDelete={crudDelete} />
   </ResourceList>
 );
 
 export default ResourceList.resourceListConnect('persistentVolumes')(List);
-

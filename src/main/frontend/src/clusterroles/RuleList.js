@@ -26,15 +26,22 @@ const headers = [
   'API Groups'
 ];
 
-const Rows = ({rules}) => rules.map((rule, idx) => (
-  <Table.Row key={idx}>
-    <Table.Cell>{cRoles.selectors.rules.resources(rule).join(', ')}</Table.Cell>
-    <Table.Cell>{cRoles.selectors.rules.nonResourceURLs(rule).join(', ')}</Table.Cell>
-    <Table.Cell>{cRoles.selectors.rules.resourceNames(rule).join(', ')}</Table.Cell>
-    <Table.Cell>{cRoles.selectors.rules.verbs(rule).join(', ')}</Table.Cell>
-    <Table.Cell>{cRoles.selectors.rules.apiGroups(rule)}</Table.Cell>
-  </Table.Row>
-));
+const Rows = ({rules}) =>
+  rules.map((rule, idx) => (
+    <Table.Row key={idx}>
+      <Table.Cell>
+        {cRoles.selectors.rules.resources(rule).join(', ')}
+      </Table.Cell>
+      <Table.Cell>
+        {cRoles.selectors.rules.nonResourceURLs(rule).join(', ')}
+      </Table.Cell>
+      <Table.Cell>
+        {cRoles.selectors.rules.resourceNames(rule).join(', ')}
+      </Table.Cell>
+      <Table.Cell>{cRoles.selectors.rules.verbs(rule).join(', ')}</Table.Cell>
+      <Table.Cell>{cRoles.selectors.rules.apiGroups(rule)}</Table.Cell>
+    </Table.Row>
+  ));
 
 const RuleList = ({rules, ...properties}) => (
   <Table {...properties}>

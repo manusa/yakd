@@ -15,17 +15,22 @@
  *
  */
 import {getApiURL} from '../env';
-import {deleteNamespacedResource, toJson, updateNamespacedResource} from '../fetch';
-import metadata from "../metadata";
+import {
+  deleteNamespacedResource,
+  toJson,
+  updateNamespacedResource
+} from '../fetch';
+import metadata from '../metadata';
 
-
-const logs = (namespace, name, container) => new EventSource(
-  `${getApiURL()}/pods/${namespace}/${name}/logs/${container}`
-);
+const logs = (namespace, name, container) =>
+  new EventSource(`${getApiURL()}/pods/${namespace}/${name}/logs/${container}`);
 
 const metrics = async pod => {
   const response = await fetch(
-    `${getApiURL()}/pods/${metadata.selectors.namespace(pod)}/${metadata.selectors.name(pod)}/metrics`);
+    `${getApiURL()}/pods/${metadata.selectors.namespace(
+      pod
+    )}/${metadata.selectors.name(pod)}/metrics`
+  );
   return await toJson(response);
 };
 
@@ -37,10 +42,9 @@ const getWsUrl = () => {
   }
   const wsOrigin = window.location.origin.replace(/^http/i, 'ws');
   return `${wsOrigin}/${apiURL.replace(/^\//, '')}`;
-}
-const exec = (namespace, name, container) => new WebSocket(
-  `${getWsUrl()}/pods/${namespace}/${name}/exec/${container}`
-);
+};
+const exec = (namespace, name, container) =>
+  new WebSocket(`${getWsUrl()}/pods/${namespace}/${name}/exec/${container}`);
 
 const api = {
   exec,

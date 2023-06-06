@@ -23,7 +23,9 @@ import ResourceList from '../components/ResourceList';
 import Table from '../components/Table';
 
 const headers = [
-  <span><Icon className='fa-id-card' /> Name</span>,
+  <span>
+    <Icon className='fa-id-card' /> Name
+  </span>,
   'Namespace',
   'Type',
   'Cluster IP',
@@ -35,27 +37,30 @@ const Rows = ({services}) => {
   return services
     .sort(metadata.selectors.sortByCreationTimeStamp)
     .map(service => (
-        <Table.ResourceRow key={metadata.selectors.uid(service)} resource={service}>
-          <Table.Cell>
-            <Link.Service to={`/services/${metadata.selectors.uid(service)}`}>
-              {metadata.selectors.name(service)}
-            </Link.Service>
-          </Table.Cell>
-          <Table.Cell className='whitespace-no-wrap'>
-            <Link.Namespace to={`/namespaces/${metadata.selectors.namespace(service)}`}>
-              {metadata.selectors.namespace(service)}
-            </Link.Namespace>
-          </Table.Cell>
-          <Table.Cell>
-            <svc.Type service={service} />
-          </Table.Cell>
-          <Table.Cell>
-            {svc.selectors.specClusterIP(service)}
-          </Table.Cell>
-          <Table.Cell>
-            <Table.DeleteButton onClick={deleteService(service)} />
-          </Table.Cell>
-        </Table.ResourceRow>
+      <Table.ResourceRow
+        key={metadata.selectors.uid(service)}
+        resource={service}
+      >
+        <Table.Cell>
+          <Link.Service to={`/services/${metadata.selectors.uid(service)}`}>
+            {metadata.selectors.name(service)}
+          </Link.Service>
+        </Table.Cell>
+        <Table.Cell className='whitespace-no-wrap'>
+          <Link.Namespace
+            to={`/namespaces/${metadata.selectors.namespace(service)}`}
+          >
+            {metadata.selectors.namespace(service)}
+          </Link.Namespace>
+        </Table.Cell>
+        <Table.Cell>
+          <svc.Type service={service} />
+        </Table.Cell>
+        <Table.Cell>{svc.selectors.specClusterIP(service)}</Table.Cell>
+        <Table.Cell>
+          <Table.DeleteButton onClick={deleteService(service)} />
+        </Table.Cell>
+      </Table.ResourceRow>
     ));
 };
 
@@ -66,4 +71,3 @@ const List = ({resources, loadedResources, crudDelete, ...properties}) => (
 );
 
 export default ResourceList.resourceListConnect('services')(List);
-

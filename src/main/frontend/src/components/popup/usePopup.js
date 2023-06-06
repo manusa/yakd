@@ -24,7 +24,7 @@ const usePopup = () => {
       if (popupRef.current && !popupRef.current.contains(event.target)) {
         setPanelVisible(false);
       }
-    }
+    };
     document.addEventListener('mousedown', handleOutsideClick);
     return () => document.removeEventListener('mousedown', handleOutsideClick);
   }, [popupRef]);

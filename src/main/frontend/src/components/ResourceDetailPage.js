@@ -28,11 +28,13 @@ const downloadResource = resource => {
   const mimeType = 'text/yaml';
   const blob = new Blob([YAML.stringify(resource)], {type: mimeType});
   const url = URL.createObjectURL(blob);
-  const tempLink  = document.createElement('a');
+  const tempLink = document.createElement('a');
   tempLink.href = url;
   tempLink.download = `${metadata.selectors.name(resource)}.yaml`;
   document.body.appendChild(tempLink);
-  tempLink.dispatchEvent(new MouseEvent('click', {bubbles: true, cancelable: true, view: window}));
+  tempLink.dispatchEvent(
+    new MouseEvent('click', {bubbles: true, cancelable: true, view: window})
+  );
   document.body.removeChild(tempLink);
   URL.revokeObjectURL(url);
 };
@@ -57,8 +59,16 @@ const ResourceDetailPage = ({
   };
   return (
     <DashboardPage
-      title={title ?? <DashboardPage.Title
-        path={path} kind={kind} namespace={namespace} resource={resource} isReadyFunction={isReadyFunction} />
+      title={
+        title ?? (
+          <DashboardPage.Title
+            path={path}
+            kind={kind}
+            namespace={namespace}
+            resource={resource}
+            isReadyFunction={isReadyFunction}
+          />
+        )
       }
     >
       <Card>
@@ -73,16 +83,15 @@ const ResourceDetailPage = ({
             <PopupMenu.Item onClick={() => downloadResource(resource)}>
               <Icon icon='fa-save' className='mr-2' /> Download
             </PopupMenu.Item>
-            {deleteFunction &&
+            {deleteFunction && (
               <PopupMenu.Item onClick={deleteAction}>
-                <Icon stylePrefix='far' icon='fa-trash-alt' className='mr-2' /> Delete
+                <Icon stylePrefix='far' icon='fa-trash-alt' className='mr-2' />{' '}
+                Delete
               </PopupMenu.Item>
-            }
+            )}
           </PopupMenu>
         </Card.Title>
-        <Card.Body>
-          {body}
-        </Card.Body>
+        <Card.Body>{body}</Card.Body>
       </Card>
       {children}
     </DashboardPage>
@@ -90,4 +99,3 @@ const ResourceDetailPage = ({
 };
 
 export default ResourceDetailPage;
-

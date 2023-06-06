@@ -24,19 +24,24 @@ const Textfield = ({
   placeholder,
   icon,
   inputRef,
-  borderColor = 'border-gray-300',
+  borderColor = 'border-gray-300'
 }) => (
-  <div className={`
+  <div
+    className={`
     inline-block px-4 py-2 rounded-md shadow-sm bg-white text-gray-700 text-sm leading-5
     flex items-center
     border ${borderColor}
     ${className ?? ''}
-  `}>
+  `}
+  >
     {icon && <Icon icon={icon} className='mr-2' />}
     <input
-      ref={inputRef} type='text' className='flex-1 outline-none'
+      ref={inputRef}
+      type='text'
+      className='flex-1 outline-none'
       placeholder={placeholder}
-      value={value} onChange={onChange}
+      value={value}
+      onChange={onChange}
     />
   </div>
 );

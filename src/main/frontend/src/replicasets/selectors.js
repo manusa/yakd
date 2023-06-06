@@ -18,18 +18,21 @@ const selectors = {};
 
 selectors.statusReplicas = replicaSet => replicaSet?.status?.replicas ?? 0;
 
-selectors.statusReadyReplicas = replicaSet => replicaSet?.status?.readyReplicas ?? 0;
+selectors.statusReadyReplicas = replicaSet =>
+  replicaSet?.status?.readyReplicas ?? 0;
 
 selectors.isReady = replicaSet =>
-  selectors.statusReplicas(replicaSet) === selectors.statusReadyReplicas(replicaSet);
+  selectors.statusReplicas(replicaSet) ===
+  selectors.statusReadyReplicas(replicaSet);
 
 selectors.specReplicas = replicaSet => replicaSet?.spec?.replicas ?? 0;
 
 // Selectors for array of ReplicaSets
 
-selectors.readyCount = replicaSets => replicaSets.reduce(
-  (count, replicaSet) => selectors.isReady(replicaSet) ? count + 1 : count,
-  0
-);
+selectors.readyCount = replicaSets =>
+  replicaSets.reduce(
+    (count, replicaSet) => (selectors.isReady(replicaSet) ? count + 1 : count),
+    0
+  );
 
 export default selectors;

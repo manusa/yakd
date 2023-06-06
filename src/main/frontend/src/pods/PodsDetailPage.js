@@ -40,15 +40,18 @@ const useMetrics = pod => {
           setMetrics(null);
         }
         setTimeoutHandle(setTimeout(updateMetrics, 15000));
-      }
+      };
       updateMetrics().then(() => {});
     }
   }, [timeoutHandle, setTimeoutHandle, setMetrics, pod]);
-  useEffect(() => () => {
-    clearTimeout(timeoutHandle)
-  }, [timeoutHandle]);
+  useEffect(
+    () => () => {
+      clearTimeout(timeoutHandle);
+    },
+    [timeoutHandle]
+  );
   return metrics;
-}
+};
 
 const ActionLink = ({to, title, stylePrefix, icon}) => (
   <Link.RouterLink
@@ -58,7 +61,8 @@ const ActionLink = ({to, title, stylePrefix, icon}) => (
     to={to}
     title={title}
   >
-    <Icon stylePrefix={stylePrefix} icon={icon} className='mr-2'/>{title}
+    <Icon stylePrefix={stylePrefix} icon={icon} className='mr-2' />
+    {title}
   </Link.RouterLink>
 );
 
@@ -106,10 +110,8 @@ const PodsDetailPage = ({pod}) => {
           <Form.Field label='Restart Policy'>
             {p.selectors.restartPolicy(pod)}
           </Form.Field>
-          <Form.Field label='Pod IP'>
-            {p.selectors.statusPodIP(pod)}
-          </Form.Field>
-          {podMetrics &&
+          <Form.Field label='Pod IP'>{p.selectors.statusPodIP(pod)}</Form.Field>
+          {podMetrics && (
             <>
               <Form.Field label='Used CPU'>
                 <Icon icon='fa-microchip' className='text-gray-600 mr-2' />
@@ -120,7 +122,7 @@ const PodsDetailPage = ({pod}) => {
                 {mts.selectors.bytesToHumanReadable(podMetrics.totalMemory())}
               </Form.Field>
             </>
-          }
+          )}
         </Form>
       }
     >
@@ -146,4 +148,6 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
   pod: stateProps.pods[ownProps.params.uid]
 });
 
-export default withParams(connect(mapStateToProps, null, mergeProps)(PodsDetailPage));
+export default withParams(
+  connect(mapStateToProps, null, mergeProps)(PodsDetailPage)
+);

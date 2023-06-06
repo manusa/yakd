@@ -22,7 +22,7 @@ import PersistentVolumeClaimsDetailPage from './PersistentVolumeClaimsDetailPage
 import PersistentVolumeClaimsEditPage from './PersistentVolumeClaimsEditPage';
 import PersistentVolumeClaimsPage from './PersistentVolumeClaimsPage';
 
-const pvc = {}
+const pvc = {};
 
 pvc.api = api;
 pvc.reducer = reducer;

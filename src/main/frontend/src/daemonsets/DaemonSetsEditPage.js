@@ -25,9 +25,11 @@ const DaemonSetsEditPage = ({params: {uid}}) => (
   <ResourceEditPage
     kind='DaemonSets'
     path='daemonsets'
-    cardTitle={resource =>
-      <Link.RouterLink to={`/daemonsets/${uid}`}>{md.selectors.name(resource)}</Link.RouterLink>
-    }
+    cardTitle={resource => (
+      <Link.RouterLink to={`/daemonsets/${uid}`}>
+        {md.selectors.name(resource)}
+      </Link.RouterLink>
+    )}
     save={async resource => await ds.api.update(resource)}
     resourceFromState={state => state.daemonSets[uid]}
   />

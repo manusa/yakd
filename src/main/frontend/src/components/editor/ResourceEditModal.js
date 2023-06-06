@@ -22,20 +22,20 @@ import Modal from '../Modal';
 import Card from '../Card';
 import Link from '../Link';
 import Icon from '../Icon';
-import Alert from "../Alert";
-import useEditor from "./useEditor";
+import Alert from '../Alert';
+import useEditor from './useEditor';
 
 const ToolbarButton = ({title, onClick, children, ...props}) => (
-    <Link
-      size={Link.sizes.small}
-      variant={Link.variants.outline}
-      title={title}
-      onClick={onClick}
-      {...props}
-    >
-      {children}
-    </Link>
-)
+  <Link
+    size={Link.sizes.small}
+    variant={Link.variants.outline}
+    title={title}
+    onClick={onClick}
+    {...props}
+  >
+    {children}
+  </Link>
+);
 
 const ResourceEditModal = ({
   resource,
@@ -43,7 +43,13 @@ const ResourceEditModal = ({
   close,
   title = metadata.selectors.name(resource)
 }) => {
-  const {resourceYaml, setResourceYaml, error, setError, save: handleSave} = useEditor(save);
+  const {
+    resourceYaml,
+    setResourceYaml,
+    error,
+    setError,
+    save: handleSave
+  } = useEditor(save);
   if (resourceYaml === null && resource) {
     setError(null);
     setResourceYaml(YAML.stringify(resource));
@@ -52,32 +58,41 @@ const ResourceEditModal = ({
     setError(null);
     setResourceYaml(null);
     close();
-  }
+  };
   return (
     <Modal visible={resource !== null}>
       <div className='h-screen max-h-screen flex flex-col'>
         <Card className='flex-1 flex flex-col md:m-4'>
           <Card.Title className='flex items-center'>
-            <div className='flex-1'>
-              {title}
-            </div>
+            <div className='flex-1'>{title}</div>
             <div>
               <ToolbarButton title='Save' onClick={handleSave} className='mr-2'>
-                <Icon stylePrefix='far' icon='fa-save' className='mr-2'/>Save
+                <Icon stylePrefix='far' icon='fa-save' className='mr-2' />
+                Save
               </ToolbarButton>
               <ToolbarButton title='Cancel' onClick={handleClose}>
-                <Icon stylePrefix='far' icon='fa-window-close' className='mr-2'/>Cancel
+                <Icon
+                  stylePrefix='far'
+                  icon='fa-window-close'
+                  className='mr-2'
+                />
+                Cancel
               </ToolbarButton>
             </div>
           </Card.Title>
           <Card.Body className='flex-1 relative' padding='p-0'>
             <Alert
               className='absolute left-0 right-0 z-10'
-              visible={error != null} margin='m-2'
-              clearError={() => setError(null)}>
+              visible={error != null}
+              margin='m-2'
+              clearError={() => setError(null)}
+            >
               {error}
             </Alert>
-            <editor.YamlEditor value={resourceYaml} onChange={value => setResourceYaml(value)} />
+            <editor.YamlEditor
+              value={resourceYaml}
+              onChange={value => setResourceYaml(value)}
+            />
           </Card.Body>
         </Card>
       </div>

@@ -30,8 +30,8 @@ import Tooltip from './Tooltip';
 
 const OfflineIcon = () => (
   <div className='fa-stack text-red-700' title='Watchers stopped (No network)'>
-    <Icon icon='fa-wifi fa-stack-1x'/>
-    <Icon icon='fa-slash fa-stack-1x'/>
+    <Icon icon='fa-wifi fa-stack-1x' />
+    <Icon icon='fa-slash fa-stack-1x' />
   </div>
 );
 
@@ -43,19 +43,33 @@ const Header = ({isMinikube, isOpenShift, offline, setSideBarOpen, title}) => {
           onClick={() => setSideBarOpen(true)}
           className='flex items-center text-gray-500 focus:outline-none lg:hidden'
         >
-          <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M4 6H20M4 12H20M4 18H11" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
-                  strokeLinejoin="round"/>
+          <svg
+            className='h-6 w-6'
+            viewBox='0 0 24 24'
+            fill='none'
+            xmlns='http://www.w3.org/2000/svg'
+          >
+            <path
+              d='M4 6H20M4 12H20M4 18H11'
+              stroke='currentColor'
+              strokeWidth='2'
+              strokeLinecap='round'
+              strokeLinejoin='round'
+            />
           </svg>
           <i.YAKCLogo className='block ml-2 h-6' />
         </button>
         <div className='flex relative items-center mx-4 lg:text-xl lg:mx-0 flex-1 truncate'>
-          {isMinikube && <Tooltip content='Minikube cluster detected'>
-            <i.Minikube className='h-6 mr-2' />
-          </Tooltip>}
-          {isOpenShift && <Tooltip content='OpenShift cluster detected'>
-            <i.OpenShift className='h-6 mr-2' />
-          </Tooltip>}
+          {isMinikube && (
+            <Tooltip content='Minikube cluster detected'>
+              <i.Minikube className='h-6 mr-2' />
+            </Tooltip>
+          )}
+          {isOpenShift && (
+            <Tooltip content='OpenShift cluster detected'>
+              <i.OpenShift className='h-6 mr-2' />
+            </Tooltip>
+          )}
           {title}
         </div>
         {offline && <OfflineIcon />}
@@ -67,34 +81,49 @@ const Header = ({isMinikube, isOpenShift, offline, setSideBarOpen, title}) => {
 const Footer = () => (
   <footer className='flex items-center p-3 text-sm bg-white border-t border-blue-700 border-opacity-75 text-gray-700'>
     <div>
-      Copyright © 2020 - <Link href='https://www.marcnuri.com'>Marc Nuri</Link> -
-      Licensed under the <Link href='https://www.apache.org/licenses/LICENSE-2.0'>
-      Apache License 2.0</Link>
+      Copyright © 2020 - <Link href='https://www.marcnuri.com'>Marc Nuri</Link>{' '}
+      - Licensed under the{' '}
+      <Link href='https://www.apache.org/licenses/LICENSE-2.0'>
+        Apache License 2.0
+      </Link>
     </div>
   </footer>
 );
 
 const DashboardPage = ({
-  className, isMinikube, isOpenShift, offline, error, clearError, title, children
+  className,
+  isMinikube,
+  isOpenShift,
+  offline,
+  error,
+  clearError,
+  title,
+  children
 }) => {
   const [sideBarOpen, setSideBarOpen] = useState(false);
   return (
-    <div className={`dashboard-page flex h-screen bg-gray-200 overflow-hidden ${className ?? ''}`}>
-      <div onClick={() => setSideBarOpen(false)}
+    <div
+      className={`dashboard-page flex h-screen bg-gray-200 overflow-hidden ${
+        className ?? ''
+      }`}
+    >
+      <div
+        onClick={() => setSideBarOpen(false)}
         className={`${sideBarOpen ? 'visible opacity-50' : 'invisible'}
           fixed z-20 inset-0 bg-black opacity-0 transition-all duration-300 lg:hidden`}
       />
       <sidebar.SideBar sideBarOpen={sideBarOpen} />
       <div className='flex-1 flex flex-col overflow-hidden'>
         <Header
-          isMinikube={isMinikube} isOpenShift={isOpenShift} offline={offline} setSideBarOpen={setSideBarOpen}
+          isMinikube={isMinikube}
+          isOpenShift={isOpenShift}
+          offline={offline}
+          setSideBarOpen={setSideBarOpen}
           title={title}
         />
         <main className='flex-1 flex flex-col overflow-x-hidden overflow-y-auto bg-gray-200'>
           <Alert clearError={clearError}>{error}</Alert>
-          <div className='flex-1 w-100 p-4 relative'>
-            {children}
-          </div>
+          <div className='flex-1 w-100 p-4 relative'>{children}</div>
           <Footer />
         </main>
       </div>
@@ -122,14 +151,15 @@ DashboardPage.Title = ({
     {!name && resource && <>&nbsp;- {metadata.selectors.name(resource)}</>}
     {isReadyFunction && (
       <Icon
-        className={`ml-2 ${isReadyFunction(resource) ? readyClassName : notReadyClassName}`}
+        className={`ml-2 ${
+          isReadyFunction(resource) ? readyClassName : notReadyClassName
+        }`}
         icon={isReadyFunction(resource) ? readyIcon : notReadyIcon}
       />
     )}
     {children}
   </div>
 );
-
 
 const mapStateToProps = ({apiGroups, nodes, ui: {offline, error}}) => ({
   isMinikube: nm.selectors.isMinikube(nodes),
@@ -138,8 +168,12 @@ const mapStateToProps = ({apiGroups, nodes, ui: {offline, error}}) => ({
   error
 });
 
-const mapDispatchToProps = dispatch =>  bindActionCreators({
-  clearError: redux.actions.clearError
-}, dispatch);
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(
+    {
+      clearError: redux.actions.clearError
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapDispatchToProps)(DashboardPage);

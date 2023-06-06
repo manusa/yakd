@@ -24,9 +24,13 @@ import Table from '../components/Table';
 
 const headers = [
   '',
-  <span><Icon icon='fa-id-card' /> Name</span>,
+  <span>
+    <Icon icon='fa-id-card' /> Name
+  </span>,
   'Phase',
-  <span><Icon icon='fa-tags' /> Labels</span>,
+  <span>
+    <Icon icon='fa-tags' /> Labels
+  </span>,
   ''
 ];
 
@@ -35,31 +39,44 @@ const Rows = ({namespaces}) => {
   return namespaces
     .sort(metadata.selectors.sortByCreationTimeStamp)
     .map(namespace => (
-        <Table.ResourceRow key={metadata.selectors.uid(namespace)} resource={namespace}>
-          <Table.Cell className='whitespace-no-wrap w-3 text-center'>
-            <Icon
-              className={ns.selectors.isReady(namespace) ? 'text-green-500' : 'text-red-500'}
-              icon={ns.selectors.isReady(namespace) ? 'fa-check' : 'fa-exclamation-circle'}
-            />
-          </Table.Cell>
-          <Table.Cell className='text-nowrap'>
-            <Link.Namespace to={`/namespaces/${metadata.selectors.uid(namespace)}`}>
-              {metadata.selectors.name(namespace)}
-            </Link.Namespace>
-          </Table.Cell>
-          <Table.Cell className='text-nowrap'>
-            {ns.selectors.statusPhase(namespace)}
-          </Table.Cell>
-          <Table.Cell>
-            <metadata.KeyValueList
-              keyValues={metadata.selectors.labels(namespace)}
-              maxEntries={2}
-            />
-          </Table.Cell>
-          <Table.Cell className='whitespace-no-wrap text-center'>
-            <Table.DeleteButton onClick={deleteNamespace(namespace)} />
-          </Table.Cell>
-        </Table.ResourceRow>
+      <Table.ResourceRow
+        key={metadata.selectors.uid(namespace)}
+        resource={namespace}
+      >
+        <Table.Cell className='whitespace-no-wrap w-3 text-center'>
+          <Icon
+            className={
+              ns.selectors.isReady(namespace)
+                ? 'text-green-500'
+                : 'text-red-500'
+            }
+            icon={
+              ns.selectors.isReady(namespace)
+                ? 'fa-check'
+                : 'fa-exclamation-circle'
+            }
+          />
+        </Table.Cell>
+        <Table.Cell className='text-nowrap'>
+          <Link.Namespace
+            to={`/namespaces/${metadata.selectors.uid(namespace)}`}
+          >
+            {metadata.selectors.name(namespace)}
+          </Link.Namespace>
+        </Table.Cell>
+        <Table.Cell className='text-nowrap'>
+          {ns.selectors.statusPhase(namespace)}
+        </Table.Cell>
+        <Table.Cell>
+          <metadata.KeyValueList
+            keyValues={metadata.selectors.labels(namespace)}
+            maxEntries={2}
+          />
+        </Table.Cell>
+        <Table.Cell className='whitespace-no-wrap text-center'>
+          <Table.DeleteButton onClick={deleteNamespace(namespace)} />
+        </Table.Cell>
+      </Table.ResourceRow>
     ));
 };
 
@@ -70,4 +87,3 @@ const List = ({resources, crudDelete, loadedResources, ...properties}) => (
 );
 
 export default ResourceList.resourceListConnect('namespaces')(List);
-

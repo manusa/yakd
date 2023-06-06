@@ -16,26 +16,35 @@
  */
 const selectors = {};
 
-selectors.specReplicas = deploymentConfig => deploymentConfig?.spec?.replicas ?? 0;
+selectors.specReplicas = deploymentConfig =>
+  deploymentConfig?.spec?.replicas ?? 0;
 
-selectors.statusReadyReplicas = deploymentConfig => deploymentConfig?.status?.readyReplicas ?? 0;
+selectors.statusReadyReplicas = deploymentConfig =>
+  deploymentConfig?.status?.readyReplicas ?? 0;
 
 selectors.isReady = deploymentConfig =>
-  selectors.specReplicas(deploymentConfig) === selectors.statusReadyReplicas(deploymentConfig);
+  selectors.specReplicas(deploymentConfig) ===
+  selectors.statusReadyReplicas(deploymentConfig);
 
-selectors.containers = deploymentConfig => deploymentConfig?.spec?.template?.spec?.containers ?? [];
+selectors.containers = deploymentConfig =>
+  deploymentConfig?.spec?.template?.spec?.containers ?? [];
 
-selectors.images = deploymentConfig => selectors.containers(deploymentConfig).map(c => c.image);
+selectors.images = deploymentConfig =>
+  selectors.containers(deploymentConfig).map(c => c.image);
 
-selectors.specReplicas = deploymentConfig => deploymentConfig?.spec?.replicas ?? 0;
+selectors.specReplicas = deploymentConfig =>
+  deploymentConfig?.spec?.replicas ?? 0;
 
-selectors.specStrategyType = deploymentConfig => deploymentConfig?.spec?.strategy?.type ?? '';
+selectors.specStrategyType = deploymentConfig =>
+  deploymentConfig?.spec?.strategy?.type ?? '';
 
 // Selectors for array of deploymentConfigs
 
-selectors.readyCount = deploymentConfigs => deploymentConfigs.reduce(
-  (count, deploymentConfig) => selectors.isReady(deploymentConfig) ? count + 1 : count,
-  0
-);
+selectors.readyCount = deploymentConfigs =>
+  deploymentConfigs.reduce(
+    (count, deploymentConfig) =>
+      selectors.isReady(deploymentConfig) ? count + 1 : count,
+    0
+  );
 
 export default selectors;

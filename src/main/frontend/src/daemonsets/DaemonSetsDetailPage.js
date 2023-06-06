@@ -42,14 +42,16 @@ const DaemonSetsDetailPage = ({daemonSet}) => (
         onClick={() => ds.api.restart(daemonSet)}
         title='Restart'
       >
-        <Icon stylePrefix='fas' icon='fa-redo-alt' className='mr-2'/>
+        <Icon stylePrefix='fas' icon='fa-redo-alt' className='mr-2' />
         Restart
       </Link>
     }
     body={
       <Form>
         <metadata.Details resource={daemonSet} />
-        <Form.Field label='Update Strategy'>{ds.selectors.specUpdateStrategyType(daemonSet)}</Form.Field>
+        <Form.Field label='Update Strategy'>
+          {ds.selectors.specUpdateStrategyType(daemonSet)}
+        </Form.Field>
       </Form>
     }
   >
@@ -57,12 +59,14 @@ const DaemonSetsDetailPage = ({daemonSet}) => (
       title='Containers'
       titleVariant={Card.titleVariants.medium}
       className='mt-2'
-      containers={ds.selectors.containers(daemonSet)} />
+      containers={ds.selectors.containers(daemonSet)}
+    />
     <pods.List
       title='Pods'
       titleVariant={Card.titleVariants.medium}
       className='mt-2'
-      ownerUid={metadata.selectors.uid(daemonSet)} />
+      ownerUid={metadata.selectors.uid(daemonSet)}
+    />
   </ResourceDetailPage>
 );
 
@@ -74,4 +78,6 @@ const mergeProps = ({daemonSets}, dispatchProps, {params: {uid}}) => ({
   daemonSet: daemonSets[uid]
 });
 
-export default withParams(connect(mapStateToProps, null, mergeProps)(DaemonSetsDetailPage));
+export default withParams(
+  connect(mapStateToProps, null, mergeProps)(DaemonSetsDetailPage)
+);

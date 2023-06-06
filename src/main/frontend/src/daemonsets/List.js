@@ -24,9 +24,13 @@ import Table from '../components/Table';
 
 const headers = [
   '',
-  <span><Icon icon='fa-id-card' /> Name</span>,
+  <span>
+    <Icon icon='fa-id-card' /> Name
+  </span>,
   'Namespace',
-  <span><Icon icon='fa-layer-group'/> Images</span>,
+  <span>
+    <Icon icon='fa-layer-group' /> Images
+  </span>,
   ''
 ];
 
@@ -36,36 +40,52 @@ const Rows = ({daemonSets}) => {
   return daemonSets
     .sort(metadata.selectors.sortByCreationTimeStamp)
     .map(daemonSet => (
-      <Table.ResourceRow key={metadata.selectors.uid(daemonSet)} resource={daemonSet}>
+      <Table.ResourceRow
+        key={metadata.selectors.uid(daemonSet)}
+        resource={daemonSet}
+      >
         <Table.Cell className='whitespace-no-wrap w-3 text-center'>
           <Icon
-            className={ds.selectors.isReady(daemonSet) ? 'text-green-500' : 'text-red-500'}
-            icon={ds.selectors.isReady(daemonSet) ? 'fa-check' : 'fa-exclamation-circle'}
+            className={
+              ds.selectors.isReady(daemonSet)
+                ? 'text-green-500'
+                : 'text-red-500'
+            }
+            icon={
+              ds.selectors.isReady(daemonSet)
+                ? 'fa-check'
+                : 'fa-exclamation-circle'
+            }
           />
         </Table.Cell>
         <Table.Cell className='whitespace-no-wrap'>
-          <Link.DaemonSet to={`/daemonsets/${metadata.selectors.uid(daemonSet)}`}>
+          <Link.DaemonSet
+            to={`/daemonsets/${metadata.selectors.uid(daemonSet)}`}
+          >
             {metadata.selectors.name(daemonSet)}
           </Link.DaemonSet>
         </Table.Cell>
         <Table.Cell className='whitespace-no-wrap'>
-          <Link.Namespace to={`/namespaces/${metadata.selectors.namespace(daemonSet)}`}>
+          <Link.Namespace
+            to={`/namespaces/${metadata.selectors.namespace(daemonSet)}`}
+          >
             {metadata.selectors.namespace(daemonSet)}
           </Link.Namespace>
         </Table.Cell>
         <Table.Cell>
-          {ds.selectors.images(daemonSet).map((image, idx) =>
+          {ds.selectors.images(daemonSet).map((image, idx) => (
             <div key={idx}>{image}</div>
-          )}
+          ))}
         </Table.Cell>
         <Table.Cell className='whitespace-no-wrap text-center'>
           <Link
             variant={Link.variants.outline}
             onClick={restart(daemonSet)}
             title='Restart'
-          ><Icon stylePrefix='fas' icon='fa-redo-alt' /></Link>
-          <Table.DeleteButton
-            className='ml-1' onClick={deleteDS(daemonSet)} />
+          >
+            <Icon stylePrefix='fas' icon='fa-redo-alt' />
+          </Link>
+          <Table.DeleteButton className='ml-1' onClick={deleteDS(daemonSet)} />
         </Table.Cell>
       </Table.ResourceRow>
     ));

@@ -22,9 +22,7 @@ selectors.statusCurrentReplicas = hpa => hpa?.status?.currentReplicas ?? 0;
 selectors.isReady = hpa =>
   selectors.statusDesiredReplicas(hpa) === selectors.statusCurrentReplicas(hpa);
 
-
-selectors.scaleTargetRef =  hpa => hpa?.spec?.scaleTargetRef ?? {};
-selectors.scaleTargetRefName =  hpa => selectors.scaleTargetRef(hpa)?.name ?? '';
-
+selectors.scaleTargetRef = hpa => hpa?.spec?.scaleTargetRef ?? {};
+selectors.scaleTargetRefName = hpa => selectors.scaleTargetRef(hpa)?.name ?? '';
 
 export default selectors;

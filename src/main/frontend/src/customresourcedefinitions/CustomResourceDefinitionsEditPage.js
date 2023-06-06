@@ -25,12 +25,16 @@ const CustomResourceDefinitionsEditPage = ({params: {uid}}) => (
   <ResourceEditPage
     kind='CustomResourceDefinitions'
     path='customresourcedefinitions'
-    dashboardPageTitle={resource => <crd.DashboardPageTitle customResourceDefinition={resource}>
-      &nbsp;- Edit
-    </crd.DashboardPageTitle>}
-    cardTitle={resource =>
-      <Link.RouterLink to={`/customresourcedefinitions/${uid}`}>{md.selectors.name(resource)}</Link.RouterLink>
-    }
+    dashboardPageTitle={resource => (
+      <crd.DashboardPageTitle customResourceDefinition={resource}>
+        &nbsp;- Edit
+      </crd.DashboardPageTitle>
+    )}
+    cardTitle={resource => (
+      <Link.RouterLink to={`/customresourcedefinitions/${uid}`}>
+        {md.selectors.name(resource)}
+      </Link.RouterLink>
+    )}
     save={async resource => await crd.api.update(resource)}
     resourceFromState={state => state.customResourceDefinitions[uid]}
   />

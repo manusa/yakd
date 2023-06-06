@@ -33,9 +33,11 @@ const PersistentVolumeClaimsDetailPage = ({persistentVolumeClaim}) => (
         <Form>
           <metadata.Details resource={persistentVolumeClaim} />
           <Form.Field label='Access Modes'>
-            {pvc.selectors.specAccessModes(persistentVolumeClaim).map((am, idx) => (
-              <p key={idx}>{am}</p>
-            ))}
+            {pvc.selectors
+              .specAccessModes(persistentVolumeClaim)
+              .map((am, idx) => (
+                <p key={idx}>{am}</p>
+              ))}
           </Form.Field>
           <Form.Field label='Storage Class'>
             {pvc.selectors.specStorageClassName(persistentVolumeClaim)}
@@ -60,7 +62,9 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
   ...stateProps,
   ...dispatchProps,
   ...ownProps,
-  persistentVolumeClaim: stateProps.persistentVolumeClaims[ownProps.params.uid],
+  persistentVolumeClaim: stateProps.persistentVolumeClaims[ownProps.params.uid]
 });
 
-export default withParams(connect(mapStateToProps, null, mergeProps)(PersistentVolumeClaimsDetailPage));
+export default withParams(
+  connect(mapStateToProps, null, mergeProps)(PersistentVolumeClaimsDetailPage)
+);

@@ -25,9 +25,11 @@ const CronJobsEditPage = ({params: {uid}}) => (
   <ResourceEditPage
     kind='CronJobs'
     path='cronjobs'
-    cardTitle={resource =>
-      <Link.RouterLink to={`/cronjobs/${uid}`}>{md.selectors.name(resource)}</Link.RouterLink>
-    }
+    cardTitle={resource => (
+      <Link.RouterLink to={`/cronjobs/${uid}`}>
+        {md.selectors.name(resource)}
+      </Link.RouterLink>
+    )}
     save={async resource => await cj.api.update(resource)}
     resourceFromState={state => state.cronJobs[uid]}
   />

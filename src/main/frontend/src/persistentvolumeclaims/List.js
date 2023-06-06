@@ -23,7 +23,9 @@ import ResourceList from '../components/ResourceList';
 import Table from '../components/Table';
 
 const headers = [
-  <span><Icon className='fa-id-card' /> Name</span>,
+  <span>
+    <Icon className='fa-id-card' /> Name
+  </span>,
   'Namespace',
   'Storage Class',
   'Capacity',
@@ -39,35 +41,53 @@ const Rows = ({persistentVolumeClaims, crudDelete}) => {
   return persistentVolumeClaims
     .sort(metadata.selectors.sortByCreationTimeStamp)
     .map(persistentVolumeClaim => (
-        <Table.ResourceRow key={metadata.selectors.uid(persistentVolumeClaim)} resource={persistentVolumeClaim}>
-          <Table.Cell>
-            <Link.PersistentVolumeClaim to={`/persistentvolumeclaims/${metadata.selectors.uid(persistentVolumeClaim)}`}>
-              {metadata.selectors.name(persistentVolumeClaim)}
-            </Link.PersistentVolumeClaim>
-          </Table.Cell>
-          <Table.Cell className='whitespace-no-wrap'>
-            <Link.Namespace to={`/namespaces/${metadata.selectors.namespace(persistentVolumeClaim)}`}>
-              {metadata.selectors.namespace(persistentVolumeClaim)}
-            </Link.Namespace>
-          </Table.Cell>
-          <Table.Cell>
-            {pvc.selectors.specStorageClassName(persistentVolumeClaim)}
-          </Table.Cell>
-          <Table.Cell>
-            {pvc.selectors.statusCapacityStorage(persistentVolumeClaim)}
-          </Table.Cell>
-          <Table.Cell>
-            {pvc.selectors.statusPhase(persistentVolumeClaim)}
-          </Table.Cell>
-          <Table.Cell>
-            <Table.DeleteButton onClick={deletePersistentVolumeClaim(persistentVolumeClaim)} />
-          </Table.Cell>
-        </Table.ResourceRow>
+      <Table.ResourceRow
+        key={metadata.selectors.uid(persistentVolumeClaim)}
+        resource={persistentVolumeClaim}
+      >
+        <Table.Cell>
+          <Link.PersistentVolumeClaim
+            to={`/persistentvolumeclaims/${metadata.selectors.uid(
+              persistentVolumeClaim
+            )}`}
+          >
+            {metadata.selectors.name(persistentVolumeClaim)}
+          </Link.PersistentVolumeClaim>
+        </Table.Cell>
+        <Table.Cell className='whitespace-no-wrap'>
+          <Link.Namespace
+            to={`/namespaces/${metadata.selectors.namespace(
+              persistentVolumeClaim
+            )}`}
+          >
+            {metadata.selectors.namespace(persistentVolumeClaim)}
+          </Link.Namespace>
+        </Table.Cell>
+        <Table.Cell>
+          {pvc.selectors.specStorageClassName(persistentVolumeClaim)}
+        </Table.Cell>
+        <Table.Cell>
+          {pvc.selectors.statusCapacityStorage(persistentVolumeClaim)}
+        </Table.Cell>
+        <Table.Cell>
+          {pvc.selectors.statusPhase(persistentVolumeClaim)}
+        </Table.Cell>
+        <Table.Cell>
+          <Table.DeleteButton
+            onClick={deletePersistentVolumeClaim(persistentVolumeClaim)}
+          />
+        </Table.Cell>
+      </Table.ResourceRow>
     ));
 };
 
 const List = ({resources, loadedResources, crudDelete, ...properties}) => (
-  <ResourceList headers={headers} resources={resources} loading={!loadedResources['PersistentVolumeClaim']} {...properties}>
+  <ResourceList
+    headers={headers}
+    resources={resources}
+    loading={!loadedResources['PersistentVolumeClaim']}
+    {...properties}
+  >
     <Rows persistentVolumeClaims={resources} crudDelete={crudDelete} />
   </ResourceList>
 );

@@ -24,42 +24,52 @@ import Table from '../components/Table';
 import Tooltip from '../components/Tooltip';
 
 const headers = [
-  <span><Icon className='fa-id-card' /> Name</span>,
+  <span>
+    <Icon className='fa-id-card' /> Name
+  </span>,
   'Namespace',
-  <span><Icon stylePrefix='far' icon='fa-clock' /> Time</span>,
+  <span>
+    <Icon stylePrefix='far' icon='fa-clock' /> Time
+  </span>,
   ''
 ];
 
 const Rows = ({roles}) => {
   const deleteRole = role => async () => await r.api.delete(role);
-  return roles
-    .sort(metadata.selectors.sortByCreationTimeStamp)
-    .map(role => (
-        <Table.ResourceRow key={metadata.selectors.uid(role)} resource={role}>
-          <Table.Cell>
-            <Link.Role to={`/roles/${metadata.selectors.uid(role)}`}>
-              {metadata.selectors.name(role)}
-            </Link.Role>
-          </Table.Cell>
-          <Table.Cell className='whitespace-no-wrap'>
-            <Link.Namespace to={`/namespaces/${metadata.selectors.namespace(role)}`}>
-              {metadata.selectors.namespace(role)}
-            </Link.Namespace>
-          </Table.Cell>
-          <Table.Cell>
-            <Tooltip
-              content={`${metadata.selectors.creationTimestamp(role).toLocaleDateString()}
-                ${metadata.selectors.creationTimestamp(role).toLocaleTimeString()}`}
-              className='cursor-default'
-            >
-              <span>{metadata.selectors.creationTimestamp(role).toLocaleDateString()}</span>
-            </Tooltip>
-          </Table.Cell>
-          <Table.Cell>
-            <Table.DeleteButton onClick={deleteRole(role)} />
-          </Table.Cell>
-        </Table.ResourceRow>
-    ));
+  return roles.sort(metadata.selectors.sortByCreationTimeStamp).map(role => (
+    <Table.ResourceRow key={metadata.selectors.uid(role)} resource={role}>
+      <Table.Cell>
+        <Link.Role to={`/roles/${metadata.selectors.uid(role)}`}>
+          {metadata.selectors.name(role)}
+        </Link.Role>
+      </Table.Cell>
+      <Table.Cell className='whitespace-no-wrap'>
+        <Link.Namespace
+          to={`/namespaces/${metadata.selectors.namespace(role)}`}
+        >
+          {metadata.selectors.namespace(role)}
+        </Link.Namespace>
+      </Table.Cell>
+      <Table.Cell>
+        <Tooltip
+          content={`${metadata.selectors
+            .creationTimestamp(role)
+            .toLocaleDateString()}
+                ${metadata.selectors
+                  .creationTimestamp(role)
+                  .toLocaleTimeString()}`}
+          className='cursor-default'
+        >
+          <span>
+            {metadata.selectors.creationTimestamp(role).toLocaleDateString()}
+          </span>
+        </Tooltip>
+      </Table.Cell>
+      <Table.Cell>
+        <Table.DeleteButton onClick={deleteRole(role)} />
+      </Table.Cell>
+    </Table.ResourceRow>
+  ));
 };
 
 const List = ({resources, loadedResources, crudDelete, ...properties}) => (
@@ -69,4 +79,3 @@ const List = ({resources, loadedResources, crudDelete, ...properties}) => (
 );
 
 export default ResourceList.resourceListConnect('roles')(List);
-

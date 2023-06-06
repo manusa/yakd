@@ -24,12 +24,16 @@ const CustomResourceDefinitionsPage = () => {
   const queryParams = new URLSearchParams(useLocation().search);
   const group = queryParams.get('group');
   return (
-    <DashboardPage title={
-      <>
-        <Link.ResourceLink to='/customresourcedefinitions'>CustomResourceDefinitions</Link.ResourceLink>
-        {group ? <span>&nbsp;- {group}</span> : ''}
-      </>
-    }>
+    <DashboardPage
+      title={
+        <>
+          <Link.ResourceLink to='/customresourcedefinitions'>
+            CustomResourceDefinitions
+          </Link.ResourceLink>
+          {group ? <span>&nbsp;- {group}</span> : ''}
+        </>
+      }
+    >
       <crd.List className='mt-4' group={group} />
     </DashboardPage>
   );

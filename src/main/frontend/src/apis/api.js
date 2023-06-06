@@ -19,6 +19,7 @@ import {getApiURL} from '../env';
 
 const api = {};
 
-api.listGroups = async () => await toJson(await fetch(`${getApiURL()}/apis/groups`));
+api.listGroups = async () =>
+  await toJson(await fetch(`${getApiURL()}/apis/groups`));
 
 export default api;

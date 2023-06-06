@@ -20,18 +20,26 @@ import Icon from '../components/Icon';
 import Table from '../components/Table';
 
 const containerHeaders = [
-  <span><Icon icon='fa-id-card' /> Name</span>,
-  <span><Icon icon='fa-layer-group'/> Image</span>,
-  <span><Icon icon='fa-ethernet' /> Ports</span>,
-  <span><Icon icon='fa-microchip' /> CPU</span>,
-  <span><Icon icon='fa-memory' /> Memory</span>
+  <span>
+    <Icon icon='fa-id-card' /> Name
+  </span>,
+  <span>
+    <Icon icon='fa-layer-group' /> Image
+  </span>,
+  <span>
+    <Icon icon='fa-ethernet' /> Ports
+  </span>,
+  <span>
+    <Icon icon='fa-microchip' /> CPU
+  </span>,
+  <span>
+    <Icon icon='fa-memory' /> Memory
+  </span>
 ];
 
 const ContainerList = ({containers, podMetrics, ...properties}) => (
   <Table {...properties}>
-    <Table.Head
-      columns={containerHeaders}
-    />
+    <Table.Head columns={containerHeaders} />
     <Table.Body>
       {containers.map(c => (
         <Table.Row key={c.name}>
@@ -39,14 +47,19 @@ const ContainerList = ({containers, podMetrics, ...properties}) => (
           <Table.Cell>{c.image}</Table.Cell>
           <Table.Cell>
             {(c.ports ?? []).map((p, idx) => (
-              <div key={idx}>{p.name} {p.containerPort} {p.protocol}</div>
+              <div key={idx}>
+                {p.name} {p.containerPort} {p.protocol}
+              </div>
             ))}
           </Table.Cell>
           <Table.Cell>
             {podMetrics && podMetrics.containerCpu(c.name).toFixed(3)}
           </Table.Cell>
           <Table.Cell>
-            {podMetrics && metrics.selectors.bytesToHumanReadable(podMetrics.containerMemory(c.name))}
+            {podMetrics &&
+              metrics.selectors.bytesToHumanReadable(
+                podMetrics.containerMemory(c.name)
+              )}
           </Table.Cell>
         </Table.Row>
       ))}

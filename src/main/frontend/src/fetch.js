@@ -19,7 +19,7 @@ import metadata from './metadata';
 
 const processErroredResponse = async response => {
   const responseBody = await response.text();
-  let  error = `${response.status} ${response.statusText}: ${responseBody}`;
+  let error = `${response.status} ${response.statusText}: ${responseBody}`;
   try {
     const responseObject = JSON.parse(responseBody);
     if (responseObject.message) {
@@ -38,43 +38,50 @@ export const processResponse = async response => {
   return response;
 };
 
-export const toJson = async response => (await processResponse(response)).json();
+export const toJson = async response =>
+  (await processResponse(response)).json();
 
 export const fixKind = kind => resources =>
   resources.map(resource => ({kind, ...resource}));
 
 export const listResource = (path, kind) => async () => {
   const response = await fetch(`${getApiURL()}/${path}`);
-  const rawList =  await toJson(response);
+  const rawList = await toJson(response);
   return fixKind(kind)(rawList);
 };
 
-const deleteRequest = async url => await fetch(url,{method: 'DELETE'});
+const deleteRequest = async url => await fetch(url, {method: 'DELETE'});
 
 export const deleteResource = path => async resource => {
-  return deleteRequest(`${getApiURL()}/${path}/${metadata.selectors.name(resource)}`);
+  return deleteRequest(
+    `${getApiURL()}/${path}/${metadata.selectors.name(resource)}`
+  );
 };
 
 export const deleteNamespacedResource = path => async resource => {
-  await deleteRequest(`${getApiURL()}/${path}/${metadata.selectors.namespace(resource)}/${metadata.selectors.name(resource)}`);
+  await deleteRequest(
+    `${getApiURL()}/${path}/${metadata.selectors.namespace(
+      resource
+    )}/${metadata.selectors.name(resource)}`
+  );
 };
 
 const updateRequest = async (url, resource) => {
   const headers = new Headers();
   headers.set('Content-Type', 'application/json');
-  const response = await fetch(url,
-    {
-      method: 'PUT',
-      headers,
-      body: JSON.stringify(resource)
-    }
-  );
+  const response = await fetch(url, {
+    method: 'PUT',
+    headers,
+    body: JSON.stringify(resource)
+  });
   return await toJson(response);
 };
 
 export const updateNamespacedResource = path => async resource =>
   updateRequest(
-    `${getApiURL()}/${path}/${metadata.selectors.namespace(resource)}/${metadata.selectors.name(resource)}`,
+    `${getApiURL()}/${path}/${metadata.selectors.namespace(
+      resource
+    )}/${metadata.selectors.name(resource)}`,
     resource
   );
 
@@ -86,14 +93,19 @@ export const updateResource = path => async resource =>
 
 export const restartNamespacedResource = path => async resource => {
   await fetch(
-    `${getApiURL()}/${path}/${metadata.selectors.namespace(resource)}/${metadata.selectors.name(resource)}/restart`,
+    `${getApiURL()}/${path}/${metadata.selectors.namespace(
+      resource
+    )}/${metadata.selectors.name(resource)}/restart`,
     {method: 'PUT'}
   );
 };
 
-export const updateReplicasInNamespacedResource = path => async (resource, replicas) => {
-  await fetch(
-    `${getApiURL()}/${path}/${metadata.selectors.namespace(resource)}/${metadata.selectors.name(resource)}/spec/replicas/${replicas}`,
-    {method: 'PUT'}
-  );
-};
+export const updateReplicasInNamespacedResource =
+  path => async (resource, replicas) => {
+    await fetch(
+      `${getApiURL()}/${path}/${metadata.selectors.namespace(
+        resource
+      )}/${metadata.selectors.name(resource)}/spec/replicas/${replicas}`,
+      {method: 'PUT'}
+    );
+  };

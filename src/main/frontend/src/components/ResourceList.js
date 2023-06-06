@@ -25,13 +25,16 @@ const Content = ({headers, resources, loading, children}) => {
     return children;
   }
   if (loading) {
-    return <Table.Loading colSpan={headers.length} />
+    return <Table.Loading colSpan={headers.length} />;
   }
-  return <Table.NoResultsRow colSpan={headers.length} />
+  return <Table.NoResultsRow colSpan={headers.length} />;
 };
 
 const ResourceList = ({
-  headers, title, resources, children,
+  headers,
+  title,
+  resources,
+  children,
   nameLike /* don't propagate */,
   loading = false,
   hideWhenNoResults = false,
@@ -52,21 +55,30 @@ const ResourceList = ({
   );
 };
 
-ResourceList.mapStateToProps = resource => ({ui: {loadedResources}, ...state}) => {
-  return {resources: state[resource], loadedResources}
-};
+ResourceList.mapStateToProps =
+  resource =>
+  ({ui: {loadedResources}, ...state}) => {
+    return {resources: state[resource], loadedResources};
+  };
 
-ResourceList.resourceListConnect = resource => connect(
-  ResourceList.mapStateToProps(resource),
-  dispatch =>  bindActionCreators({
-    crudDelete: redux.actions.crudDelete
-  }, dispatch),
-  (stateProps, dispatchProps, ownProps) => ({
-    ...stateProps,
-    ...dispatchProps,
-    ...ownProps,
-    resources: Object.values(redux.selectors.resourcesBy(stateProps.resources, ownProps))
-  })
-);
+ResourceList.resourceListConnect = resource =>
+  connect(
+    ResourceList.mapStateToProps(resource),
+    dispatch =>
+      bindActionCreators(
+        {
+          crudDelete: redux.actions.crudDelete
+        },
+        dispatch
+      ),
+    (stateProps, dispatchProps, ownProps) => ({
+      ...stateProps,
+      ...dispatchProps,
+      ...ownProps,
+      resources: Object.values(
+        redux.selectors.resourcesBy(stateProps.resources, ownProps)
+      )
+    })
+  );
 
 export default ResourceList;

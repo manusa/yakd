@@ -26,45 +26,75 @@ import Table from '../components/Table';
 import Tooltip from '../components/Tooltip';
 
 const headers = [
-  <span><Icon className='fa-id-card' /> Name</span>,
+  <span>
+    <Icon className='fa-id-card' /> Name
+  </span>,
   'Role',
-  <span><Icon stylePrefix='far' icon='fa-clock' /> Time</span>,
+  <span>
+    <Icon stylePrefix='far' icon='fa-clock' /> Time
+  </span>,
   ''
 ];
 
 const Rows = ({clusterRoleBindings}) => {
-  const deleteCRB = clusterRoleBinding => async () => await crb.api.delete(clusterRoleBinding);
+  const deleteCRB = clusterRoleBinding => async () =>
+    await crb.api.delete(clusterRoleBinding);
   return clusterRoleBindings
     .sort(metadata.selectors.sortByCreationTimeStamp)
     .map(clusterRoleBinding => (
-        <Table.ResourceRow key={metadata.selectors.uid(clusterRoleBinding)} resource={clusterRoleBinding}>
-          <Table.Cell>
-            <Link.ClusterRoleBinding to={`/clusterrolebindings/${metadata.selectors.uid(clusterRoleBinding)}`}>
-              {metadata.selectors.name(clusterRoleBinding)}
-            </Link.ClusterRoleBinding>
-          </Table.Cell>
-          <Table.Cell>
-            <Link.ClusterRole to={`/clusterroles/${crb.selectors.roleRefName(clusterRoleBinding)}`}>
-              {crb.selectors.roleRefName(clusterRoleBinding)}
-            </Link.ClusterRole>
-          </Table.Cell>
-          <Table.Cell>
-            <Tooltip
-              content={`${metadata.selectors.creationTimestamp(clusterRoleBinding).toLocaleDateString()}
-                ${metadata.selectors.creationTimestamp(clusterRoleBinding).toLocaleTimeString()}`}
-              className='cursor-default'
-            >
-              <span>{metadata.selectors.creationTimestamp(clusterRoleBinding).toLocaleDateString()}</span>
-            </Tooltip>
-          </Table.Cell>
-          <Table.Cell>
-            <Table.DeleteButton onClick={deleteCRB(clusterRoleBinding)} />
-          </Table.Cell>
-        </Table.ResourceRow>
+      <Table.ResourceRow
+        key={metadata.selectors.uid(clusterRoleBinding)}
+        resource={clusterRoleBinding}
+      >
+        <Table.Cell>
+          <Link.ClusterRoleBinding
+            to={`/clusterrolebindings/${metadata.selectors.uid(
+              clusterRoleBinding
+            )}`}
+          >
+            {metadata.selectors.name(clusterRoleBinding)}
+          </Link.ClusterRoleBinding>
+        </Table.Cell>
+        <Table.Cell>
+          <Link.ClusterRole
+            to={`/clusterroles/${crb.selectors.roleRefName(
+              clusterRoleBinding
+            )}`}
+          >
+            {crb.selectors.roleRefName(clusterRoleBinding)}
+          </Link.ClusterRole>
+        </Table.Cell>
+        <Table.Cell>
+          <Tooltip
+            content={`${metadata.selectors
+              .creationTimestamp(clusterRoleBinding)
+              .toLocaleDateString()}
+                ${metadata.selectors
+                  .creationTimestamp(clusterRoleBinding)
+                  .toLocaleTimeString()}`}
+            className='cursor-default'
+          >
+            <span>
+              {metadata.selectors
+                .creationTimestamp(clusterRoleBinding)
+                .toLocaleDateString()}
+            </span>
+          </Tooltip>
+        </Table.Cell>
+        <Table.Cell>
+          <Table.DeleteButton onClick={deleteCRB(clusterRoleBinding)} />
+        </Table.Cell>
+      </Table.ResourceRow>
     ));
 };
 
-const List = ({resources, roleRefName, loadedResources, crudDelete, ...properties}) => (
+const List = ({
+  resources,
+  roleRefName,
+  loadedResources,
+  crudDelete,
+  ...properties
+}) => (
   <ResourceList headers={headers} resources={resources} {...properties}>
     <Rows clusterRoleBindings={resources} />
   </ResourceList>
@@ -83,5 +113,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
   resources: Object.values(crb.selectors.crbsBy(stateProps.resources, ownProps))
 });
 
-export default connect(ResourceList.mapStateToProps('clusterRoleBindings'), null, mergeProps)(List);
-
+export default connect(
+  ResourceList.mapStateToProps('clusterRoleBindings'),
+  null,
+  mergeProps
+)(List);

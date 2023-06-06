@@ -19,8 +19,9 @@ import metadata from '../metadata';
 const s = {};
 
 s.isReady = node => {
-  const ready = (node?.status?.conditions ?? [])
-    .find(condition => condition.type === 'Ready');
+  const ready = (node?.status?.conditions ?? []).find(
+    condition => condition.type === 'Ready'
+  );
   return ready && ready.status;
 };
 
@@ -30,36 +31,51 @@ s.statusAllocatableCpu = node => s.statusAllocatable(node).cpu ?? 0;
 s.statusAllocatableMemory = node => s.statusAllocatable(node).memory ?? 0;
 
 s.statusNodeInfo = node => node?.status?.nodeInfo ?? {};
-s.statusNodeInfoArchitecture = node => s.statusNodeInfo(node).architecture ?? '';
-s.statusNodeInfoContainerRuntimeVersion = node => s.statusNodeInfo(node).containerRuntimeVersion ?? '';
-s.statusNodeInfoKernelVersion = node => s.statusNodeInfo(node).kernelVersion ?? '';
-s.statusNodeInfoKubeletVersion = node => s.statusNodeInfo(node).kubeletVersion ?? '';
+s.statusNodeInfoArchitecture = node =>
+  s.statusNodeInfo(node).architecture ?? '';
+s.statusNodeInfoContainerRuntimeVersion = node =>
+  s.statusNodeInfo(node).containerRuntimeVersion ?? '';
+s.statusNodeInfoKernelVersion = node =>
+  s.statusNodeInfo(node).kernelVersion ?? '';
+s.statusNodeInfoKubeletVersion = node =>
+  s.statusNodeInfo(node).kubeletVersion ?? '';
 s.statusNodeInfoOS = node => s.statusNodeInfo(node).operatingSystem ?? '';
 
 s.statusAddresses = node => node?.status?.addresses ?? [];
 
 s.statusAddressExternalIPOrFirst = node =>
-  s.statusAddresses(node).filter(a => a.type === 'ExternalIP')
-    .map(a => a.address).find(a => a) ?? s.statusAddressesFirstAddress(node);
+  s
+    .statusAddresses(node)
+    .filter(a => a.type === 'ExternalIP')
+    .map(a => a.address)
+    .find(a => a) ?? s.statusAddressesFirstAddress(node);
 
 s.statusAddressesFirstAddress = node =>
-  s.statusAddresses(node).map(a => a.address ?? '').find(a => a) ?? '';
+  s
+    .statusAddresses(node)
+    .map(a => a.address ?? '')
+    .find(a => a) ?? '';
 
-s.roles = node => Object.keys(metadata.selectors.labels(node))
-  .filter(key => key.indexOf('node-role.kubernetes.io/') === 0)
-  .map(key => key.split('/')[1]);
+s.roles = node =>
+  Object.keys(metadata.selectors.labels(node))
+    .filter(key => key.indexOf('node-role.kubernetes.io/') === 0)
+    .map(key => key.split('/')[1]);
 
 // Selectors for array of Nodes
 
-s.readyCount = nodes => nodes.reduce(
-  (count, node) => s.isReady(node) ? count + 1 : count,
-  0
-);
+s.readyCount = nodes =>
+  nodes.reduce((count, node) => (s.isReady(node) ? count + 1 : count), 0);
 
-s.isMinikube = nodes => Object.values(nodes).length === 1 && Object.values(nodes)
-  .filter(node => metadata.selectors.name(node) === 'minikube')
-  .filter(node => metadata.selectors.labels(node)['minikube.k8s.io/name'] === 'minikube')
-  .filter(node => metadata.selectors.labels(node).hasOwnProperty('minikube.k8s.io/version'))
-  .length === 1;
+s.isMinikube = nodes =>
+  Object.values(nodes).length === 1 &&
+  Object.values(nodes)
+    .filter(node => metadata.selectors.name(node) === 'minikube')
+    .filter(
+      node =>
+        metadata.selectors.labels(node)['minikube.k8s.io/name'] === 'minikube'
+    )
+    .filter(node =>
+      metadata.selectors.labels(node).hasOwnProperty('minikube.k8s.io/version')
+    ).length === 1;
 
 export default s;

@@ -25,9 +25,11 @@ const ReplicationControllersEditPage = ({params: {uid}}) => (
   <ResourceEditPage
     kind='ReplicationControllers'
     path='replicationcontrollers'
-    cardTitle={resource =>
-      <Link.RouterLink to={`/replicationcontrollers/${uid}`}>{md.selectors.name(resource)}</Link.RouterLink>
-    }
+    cardTitle={resource => (
+      <Link.RouterLink to={`/replicationcontrollers/${uid}`}>
+        {md.selectors.name(resource)}
+      </Link.RouterLink>
+    )}
     save={async resource => await rc.api.update(resource)}
     resourceFromState={state => state.replicationControllers[uid]}
   />

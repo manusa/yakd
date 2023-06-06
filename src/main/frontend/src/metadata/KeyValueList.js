@@ -19,34 +19,53 @@ import Link from '../components/Link';
 import Tag from '../components/Tag';
 
 const KeyValueList = ({
-  leftBg, leftTextColor, rightBg, rightTextColor,
-  keyValues = {}, maxEntries = 10
+  leftBg,
+  leftTextColor,
+  rightBg,
+  rightTextColor,
+  keyValues = {},
+  maxEntries = 10
 }) => {
   const keyValueEntries = Object.entries(keyValues);
   const [collapsed, setCollapsed] = useState(true);
   const toggle = () => setCollapsed(!collapsed);
   const truncate = keyValueEntries.length > maxEntries;
-  const displayedAnnotations = truncate && collapsed ? keyValueEntries.slice(0, maxEntries) : keyValueEntries;
+  const displayedAnnotations =
+    truncate && collapsed
+      ? keyValueEntries.slice(0, maxEntries)
+      : keyValueEntries;
   return (
     <div className='flex flex-wrap items-center'>
       {displayedAnnotations.map(([key, value], idx) => {
-        return <Tag.Double
-          key={idx} className='mr-1 mb-px' paddingY=''
-          leftContent={key}
-          leftBg={leftBg} leftTextColor={leftTextColor} rightBg={rightBg}
-          rightContent={value.trim() ? value : '\u200B'}
-        />;
+        return (
+          <Tag.Double
+            key={idx}
+            className='mr-1 mb-px'
+            paddingY=''
+            leftContent={key}
+            leftBg={leftBg}
+            leftTextColor={leftTextColor}
+            rightBg={rightBg}
+            rightContent={value.trim() ? value : '\u200B'}
+          />
+        );
       })}
-      {truncate && <Link className='text-xs' onClick={toggle}>{collapsed ? '...' : 'Show less'}</Link>}
+      {truncate && (
+        <Link className='text-xs' onClick={toggle}>
+          {collapsed ? '...' : 'Show less'}
+        </Link>
+      )}
     </div>
   );
 };
 
 KeyValueList.Annotations = props => (
   <KeyValueList
-    leftBg='bg-gray-300' leftTextColor='text-black' rightBg='bg-gray-700'
+    leftBg='bg-gray-300'
+    leftTextColor='text-black'
+    rightBg='bg-gray-700'
     {...props}
   />
-)
+);
 
 export default KeyValueList;

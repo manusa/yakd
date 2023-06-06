@@ -25,9 +25,11 @@ const ClusterRoleBindingsEditPage = ({params: {uid}}) => (
   <ResourceEditPage
     kind='ClusterRoleBindings'
     path='clusterrolebindings'
-    cardTitle={resource =>
-      <Link.RouterLink to={`/clusterrolebindings/${uid}`}>{md.selectors.name(resource)}</Link.RouterLink>
-    }
+    cardTitle={resource => (
+      <Link.RouterLink to={`/clusterrolebindings/${uid}`}>
+        {md.selectors.name(resource)}
+      </Link.RouterLink>
+    )}
     save={async resource => await crb.api.update(resource)}
     resourceFromState={state => state.clusterRoleBindings[uid]}
   />

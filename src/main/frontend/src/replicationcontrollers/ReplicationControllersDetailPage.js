@@ -42,12 +42,14 @@ const ReplicationControllersDetailPage = ({replicationController}) => (
       title='Containers'
       titleVariant={Card.titleVariants.medium}
       className='mt-2'
-      containers={rc.selectors.containers(replicationController)} />
+      containers={rc.selectors.containers(replicationController)}
+    />
     <pods.List
       title='Pods'
       titleVariant={Card.titleVariants.medium}
       className='mt-2'
-      ownerUid={metadata.selectors.uid(replicationController)} />
+      ownerUid={metadata.selectors.uid(replicationController)}
+    />
   </ResourceDetailPage>
 );
 
@@ -55,8 +57,14 @@ const mapStateToProps = ({replicationControllers}) => ({
   replicationControllers
 });
 
-const mergeProps = ({replicationControllers}, dispatchProps, {params: {uid}}) => ({
+const mergeProps = (
+  {replicationControllers},
+  dispatchProps,
+  {params: {uid}}
+) => ({
   replicationController: replicationControllers[uid]
 });
 
-export default withParams(connect(mapStateToProps, null, mergeProps)(ReplicationControllersDetailPage));
+export default withParams(
+  connect(mapStateToProps, null, mergeProps)(ReplicationControllersDetailPage)
+);

@@ -37,7 +37,8 @@ const NamespacesDetailPage = ({namespace}) => (
           {ns.selectors.statusPhase(namespace)}
         </Form.Field>
       </Form>
-    } />
+    }
+  />
 );
 
 const mapStateToProps = ({namespaces}) => ({
@@ -48,7 +49,12 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
   ...stateProps,
   ...dispatchProps,
   ...ownProps,
-  namespace: metadata.selectors.byUidOrName(stateProps.namespaces, ownProps.params.uidOrName)
+  namespace: metadata.selectors.byUidOrName(
+    stateProps.namespaces,
+    ownProps.params.uidOrName
+  )
 });
 
-export default withParams(connect(mapStateToProps, null, mergeProps)(NamespacesDetailPage));
+export default withParams(
+  connect(mapStateToProps, null, mergeProps)(NamespacesDetailPage)
+);

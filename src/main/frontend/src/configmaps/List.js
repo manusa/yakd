@@ -23,31 +23,41 @@ import ResourceList from '../components/ResourceList';
 import Table from '../components/Table';
 
 const headers = [
-  <span><Icon className='fa-id-card' /> Name</span>,
+  <span>
+    <Icon className='fa-id-card' /> Name
+  </span>,
   'Namespace',
   ''
 ];
 
 const Rows = ({configMaps}) => {
-  const deleteConfigMap = configMap => async () => await cm.api.delete(configMap);
+  const deleteConfigMap = configMap => async () =>
+    await cm.api.delete(configMap);
   return configMaps
     .sort(metadata.selectors.sortByCreationTimeStamp)
     .map(configMap => (
-        <Table.ResourceRow key={metadata.selectors.uid(configMap)} resource={configMap}>
-          <Table.Cell>
-            <Link.ConfigMap to={`/configmaps/${metadata.selectors.uid(configMap)}`}>
-              {metadata.selectors.name(configMap)}
-            </Link.ConfigMap>
-          </Table.Cell>
-          <Table.Cell className='whitespace-no-wrap'>
-            <Link.Namespace to={`/namespaces/${metadata.selectors.namespace(configMap)}`}>
-              {metadata.selectors.namespace(configMap)}
-            </Link.Namespace>
-          </Table.Cell>
-          <Table.Cell>
-            <Table.DeleteButton onClick={deleteConfigMap(configMap)} />
-          </Table.Cell>
-        </Table.ResourceRow>
+      <Table.ResourceRow
+        key={metadata.selectors.uid(configMap)}
+        resource={configMap}
+      >
+        <Table.Cell>
+          <Link.ConfigMap
+            to={`/configmaps/${metadata.selectors.uid(configMap)}`}
+          >
+            {metadata.selectors.name(configMap)}
+          </Link.ConfigMap>
+        </Table.Cell>
+        <Table.Cell className='whitespace-no-wrap'>
+          <Link.Namespace
+            to={`/namespaces/${metadata.selectors.namespace(configMap)}`}
+          >
+            {metadata.selectors.namespace(configMap)}
+          </Link.Namespace>
+        </Table.Cell>
+        <Table.Cell>
+          <Table.DeleteButton onClick={deleteConfigMap(configMap)} />
+        </Table.Cell>
+      </Table.ResourceRow>
     ));
 };
 
@@ -58,4 +68,3 @@ const List = ({resources, loadedResources, crudDelete, ...properties}) => (
 );
 
 export default ResourceList.resourceListConnect('configMaps')(List);
-

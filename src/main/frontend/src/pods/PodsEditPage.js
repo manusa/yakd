@@ -25,9 +25,11 @@ const PodsEditPage = ({params: {uid}}) => (
   <ResourceEditPage
     kind='Pods'
     path='pods'
-    cardTitle={resource =>
-      <Link.RouterLink to={`/pods/${uid}`}>{md.selectors.name(resource)}</Link.RouterLink>
-    }
+    cardTitle={resource => (
+      <Link.RouterLink to={`/pods/${uid}`}>
+        {md.selectors.name(resource)}
+      </Link.RouterLink>
+    )}
     save={async resource => await p.api.update(resource)}
     resourceFromState={state => state.pods[uid]}
   />

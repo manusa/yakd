@@ -18,21 +18,28 @@ const selectors = {};
 
 selectors.statusReplicas = statefulSet => statefulSet?.status?.replicas ?? 0;
 
-selectors.statusReadyReplicas = statefulSet => statefulSet?.status?.readyReplicas ?? 0;
+selectors.statusReadyReplicas = statefulSet =>
+  statefulSet?.status?.readyReplicas ?? 0;
 
-selectors.isReady = statefulSet => selectors.statusReplicas(statefulSet) === selectors.statusReadyReplicas(statefulSet);
+selectors.isReady = statefulSet =>
+  selectors.statusReplicas(statefulSet) ===
+  selectors.statusReadyReplicas(statefulSet);
 
-selectors.containers = statefulSet => statefulSet?.spec?.template?.spec?.containers ?? [];
+selectors.containers = statefulSet =>
+  statefulSet?.spec?.template?.spec?.containers ?? [];
 
-selectors.images = statefulSet => selectors.containers(statefulSet).map(c => c.image);
+selectors.images = statefulSet =>
+  selectors.containers(statefulSet).map(c => c.image);
 
 selectors.specReplicas = statefulSet => statefulSet?.spec?.replicas ?? 0;
 
 // Selectors for array of StatefulSets
 
-selectors.readyCount = statefulSets => statefulSets.reduce(
-  (count, statefulSet) => selectors.isReady(statefulSet) ? count + 1 : count,
-  0
-);
+selectors.readyCount = statefulSets =>
+  statefulSets.reduce(
+    (count, statefulSet) =>
+      selectors.isReady(statefulSet) ? count + 1 : count,
+    0
+  );
 
 export default selectors;

@@ -26,14 +26,16 @@ const defaultState = {
 };
 
 const uiReducer = (state = defaultState, action = {}) => {
-  const {actions: {Types}} = redux;
+  const {
+    actions: {Types}
+  } = redux;
   switch (action.type) {
     case Types.UI_SET_OFFLINE: {
-      return {...state, offline: action.payload}
+      return {...state, offline: action.payload};
     }
     case Types.UI_SET_ERROR: {
       const newState = {...state};
-      newState.error = action.payload
+      newState.error = action.payload;
       return newState;
     }
     case Types.UI_CLEAR_ERROR: {

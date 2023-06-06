@@ -24,7 +24,7 @@ const PodsCard = ({pods, ...properties}) => {
   const podObjects = Object.values(pods);
   const ready = podsModule.selectors.readyCount(podObjects);
   const succeeded = podsModule.selectors.succeededCount(podObjects);
-  const total = podObjects.length
+  const total = podObjects.length;
   return (
     <StatusCard
       header='Pods'
@@ -33,8 +33,8 @@ const PodsCard = ({pods, ...properties}) => {
       ready={ready}
       succeeded={succeeded}
       total={total}
-      readyProgress={Math.round(ready/total*100)}
-      succeededProgress={Math.round(succeeded/total*100)}
+      readyProgress={Math.round((ready / total) * 100)}
+      succeededProgress={Math.round((succeeded / total) * 100)}
       {...properties}
     />
   );

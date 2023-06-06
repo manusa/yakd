@@ -20,12 +20,17 @@ import p from './index';
 
 const LOADING_MESSAGE = 'Loading logs...';
 
-const initEventSource = (namespace, name, selectedContainer, throttledSetLog) => {
+const initEventSource = (
+  namespace,
+  name,
+  selectedContainer,
+  throttledSetLog
+) => {
   const es = p.api.logs(namespace, name, selectedContainer.name);
   es.onopen = () => {
     es.currentLog = [];
-    throttledSetLog(['Waiting for container to log messages...'])
-  }
+    throttledSetLog(['Waiting for container to log messages...']);
+  };
   es.onmessage = ({data}) => {
     es.currentLog.push(data);
     throttledSetLog([...es.currentLog]);
@@ -46,22 +51,35 @@ const useLogs = (namespace, name, containers) => {
   const [eventSource, setEventSource] = useState();
   useEffect(() => {
     if (!eventSource && namespace && name && selectedContainer) {
-      setEventSource(initEventSource(namespace, name, selectedContainer, throttledSetLog));
-    } else if (eventSource && eventSource.selectedContainer !== selectedContainer) {
+      setEventSource(
+        initEventSource(namespace, name, selectedContainer, throttledSetLog)
+      );
+    } else if (
+      eventSource &&
+      eventSource.selectedContainer !== selectedContainer
+    ) {
       eventSource.close();
       throttledSetLog([LOADING_MESSAGE]);
-      setEventSource(initEventSource(namespace, name, selectedContainer, throttledSetLog));
+      setEventSource(
+        initEventSource(namespace, name, selectedContainer, throttledSetLog)
+      );
     }
   }, [eventSource, namespace, name, throttledSetLog, selectedContainer]);
   useEffect(() => {
-      if (follow) {
-        const {current} = listRef;
-        current.scrollToRow(current.props.rowCount);
-      }
-    },
-    [log, follow]);
-  useEffect(() => () =>  eventSource && eventSource.close(), [eventSource]);
-  return {listRef, log, follow, setFollow, selectedContainer, setSelectedContainer};
+    if (follow) {
+      const {current} = listRef;
+      current.scrollToRow(current.props.rowCount);
+    }
+  }, [log, follow]);
+  useEffect(() => () => eventSource && eventSource.close(), [eventSource]);
+  return {
+    listRef,
+    log,
+    follow,
+    setFollow,
+    selectedContainer,
+    setSelectedContainer
+  };
 };
 
 export default useLogs;

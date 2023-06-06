@@ -25,9 +25,11 @@ const PersistentVolumesEditPage = ({params: {uid}}) => (
   <ResourceEditPage
     kind='PersistentVolumes'
     path='persistentvolumes'
-    cardTitle={resource =>
-      <Link.RouterLink to={`/persistentvolumes/${uid}`}>{md.selectors.name(resource)}</Link.RouterLink>
-    }
+    cardTitle={resource => (
+      <Link.RouterLink to={`/persistentvolumes/${uid}`}>
+        {md.selectors.name(resource)}
+      </Link.RouterLink>
+    )}
     save={async resource => await pv.api.update(resource)}
     resourceFromState={state => state.persistentVolumes[uid]}
   />

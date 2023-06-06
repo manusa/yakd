@@ -23,7 +23,9 @@ import ResourceList from '../components/ResourceList';
 import Table from '../components/Table';
 
 const headers = [
-  <span><Icon className='fa-id-card' /> Name</span>,
+  <span>
+    <Icon className='fa-id-card' /> Name
+  </span>,
   'Namespace',
   'Type',
   ''
@@ -34,30 +36,36 @@ const Rows = ({secrets}) => {
   return secrets
     .sort(metadata.selectors.sortByCreationTimeStamp)
     .map(secret => (
-        <Table.ResourceRow key={metadata.selectors.uid(secret)} resource={secret}>
-          <Table.Cell>
-            <Link.Secret to={`/secrets/${metadata.selectors.uid(secret)}`}>
-              {metadata.selectors.name(secret)}
-            </Link.Secret>
-          </Table.Cell>
-          <Table.Cell className='whitespace-no-wrap'>
-            <Link.Namespace to={`/namespaces/${metadata.selectors.namespace(secret)}`}>
-              {metadata.selectors.namespace(secret)}
-            </Link.Namespace>
-          </Table.Cell>
-          <Table.Cell>{s.selectors.type(secret)}</Table.Cell>
-          <Table.Cell>
-            <Table.DeleteButton onClick={deleteSecret(secret)} />
-          </Table.Cell>
-        </Table.ResourceRow>
+      <Table.ResourceRow key={metadata.selectors.uid(secret)} resource={secret}>
+        <Table.Cell>
+          <Link.Secret to={`/secrets/${metadata.selectors.uid(secret)}`}>
+            {metadata.selectors.name(secret)}
+          </Link.Secret>
+        </Table.Cell>
+        <Table.Cell className='whitespace-no-wrap'>
+          <Link.Namespace
+            to={`/namespaces/${metadata.selectors.namespace(secret)}`}
+          >
+            {metadata.selectors.namespace(secret)}
+          </Link.Namespace>
+        </Table.Cell>
+        <Table.Cell>{s.selectors.type(secret)}</Table.Cell>
+        <Table.Cell>
+          <Table.DeleteButton onClick={deleteSecret(secret)} />
+        </Table.Cell>
+      </Table.ResourceRow>
     ));
 };
 
 const List = ({resources, loadedResources, crudDelete, ...properties}) => (
-  <ResourceList headers={headers} resources={resources} loading={!loadedResources['Secret']} {...properties}>
+  <ResourceList
+    headers={headers}
+    resources={resources}
+    loading={!loadedResources['Secret']}
+    {...properties}
+  >
     <Rows secrets={resources} />
   </ResourceList>
 );
 
 export default ResourceList.resourceListConnect('secrets')(List);
-

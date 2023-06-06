@@ -25,9 +25,11 @@ const JobsEditPage = ({params: {uid}}) => (
   <ResourceEditPage
     kind='Jobs'
     path='jobs'
-    cardTitle={resource =>
-      <Link.RouterLink to={`/jobs/${uid}`}>{md.selectors.name(resource)}</Link.RouterLink>
-    }
+    cardTitle={resource => (
+      <Link.RouterLink to={`/jobs/${uid}`}>
+        {md.selectors.name(resource)}
+      </Link.RouterLink>
+    )}
     save={async resource => await j.api.update(resource)}
     resourceFromState={state => state.jobs[uid]}
   />

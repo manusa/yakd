@@ -17,14 +17,12 @@
 import React from 'react';
 
 const variants = {
-  default: 'text-white text-xs font-medium bg-blue-600 py-1 px-2 rounded-full align-middle'
+  default:
+    'text-white text-xs font-medium bg-blue-600 py-1 px-2 rounded-full align-middle'
 };
 
 const Tag = ({className, children, variant = variants.default, ...props}) => (
-  <span
-    className={`${variant} ${className ?? ''}`}
-    {...props}
-  >
+  <span className={`${variant} ${className ?? ''}`} {...props}>
     {children}
   </span>
 );
@@ -32,7 +30,9 @@ const Tag = ({className, children, variant = variants.default, ...props}) => (
 Tag.variants = variants;
 
 Tag.Double = ({
-  className, leftContent, rightContent,
+  className,
+  leftContent,
+  rightContent,
   leftTextColor = 'text-blue-800',
   leftBg = 'bg-blue-200',
   rightTextColor = 'text-white',

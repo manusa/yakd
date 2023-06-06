@@ -17,16 +17,18 @@
 import React from 'react';
 import Dropdown from '../components/Dropdown';
 
-const ContainerDropdown = ({containers, selectedContainer, onContainerSelect}) => (
-  <Dropdown
-    text={selectedContainer?.name ?? ''}
-    closeOnPanelClick={true}
-  >
-    {containers.map(c =>
-      <Dropdown.Item key={c.name} onClick={() => onContainerSelect(c)}>{c.name}</Dropdown.Item>
-    )}
+const ContainerDropdown = ({
+  containers,
+  selectedContainer,
+  onContainerSelect
+}) => (
+  <Dropdown text={selectedContainer?.name ?? ''} closeOnPanelClick={true}>
+    {containers.map(c => (
+      <Dropdown.Item key={c.name} onClick={() => onContainerSelect(c)}>
+        {c.name}
+      </Dropdown.Item>
+    ))}
   </Dropdown>
 );
 
 export default ContainerDropdown;
-

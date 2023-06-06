@@ -31,7 +31,7 @@ const DataField = ({label, value}) => (
       <pre>{value}</pre>
     </div>
   </Form.Field>
-)
+);
 const ConfigMapsDetailPage = ({configMap}) => (
   <ResourceDetailPage
     kind='ConfigMaps'
@@ -41,10 +41,12 @@ const ConfigMapsDetailPage = ({configMap}) => (
     body={
       <Form>
         <metadata.Details resource={configMap} />
-        {Object.entries(cm.selectors.data(configMap)).map(([key, value]) =>
-          <DataField key={key} label={key} value={value} />)}
+        {Object.entries(cm.selectors.data(configMap)).map(([key, value]) => (
+          <DataField key={key} label={key} value={value} />
+        ))}
       </Form>
-    } />
+    }
+  />
 );
 
 const mapStateToProps = ({configMaps}) => ({
@@ -55,7 +57,9 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
   ...stateProps,
   ...dispatchProps,
   ...ownProps,
-  configMap: stateProps.configMaps[ownProps.params.uid],
+  configMap: stateProps.configMaps[ownProps.params.uid]
 });
 
-export default withParams(connect(mapStateToProps, null, mergeProps)(ConfigMapsDetailPage));
+export default withParams(
+  connect(mapStateToProps, null, mergeProps)(ConfigMapsDetailPage)
+);

@@ -26,9 +26,9 @@ selectors.nodeName = pod => pod?.spec?.nodeName ?? '';
 
 selectors.restartPolicy = pod => pod?.spec?.restartPolicy ?? '';
 
-selectors.containers = pod => (pod?.spec?.containers ?? []);
+selectors.containers = pod => pod?.spec?.containers ?? [];
 
-selectors.containerStatuses = pod => (pod?.status?.containerStatuses ?? []);
+selectors.containerStatuses = pod => pod?.status?.containerStatuses ?? [];
 
 selectors.containersReady = pod => {
   const css = selectors.containerStatuses(pod);
@@ -40,34 +40,33 @@ selectors.isSucceded = pod => selectors.statusPhase(pod) === 'Succeeded';
 selectors.succeededOrContainersReady = pod =>
   selectors.isSucceded(pod) || selectors.containersReady(pod);
 
-selectors.restartCount = pod => selectors.containerStatuses(pod).reduce(
-  (acc, containerStatus) => acc + containerStatus.restartCount,
-  0
-);
+selectors.restartCount = pod =>
+  selectors
+    .containerStatuses(pod)
+    .reduce((acc, containerStatus) => acc + containerStatus.restartCount, 0);
 
 // Selectors for array of Pods
 
-selectors.succeededCount = pods => pods.reduce(
-  (count, pod) => selectors.isSucceded(pod) ? count + 1 : count,
-  0
-);
+selectors.succeededCount = pods =>
+  pods.reduce(
+    (count, pod) => (selectors.isSucceded(pod) ? count + 1 : count),
+    0
+  );
 
-selectors.readyCount = pods => pods.reduce(
-  (count, pod) => selectors.containersReady(pod) ? count + 1 : count,
-  0
-);
+selectors.readyCount = pods =>
+  pods.reduce(
+    (count, pod) => (selectors.containersReady(pod) ? count + 1 : count),
+    0
+  );
 
-selectors.podsBy = (pods = {}, {
-  nodeName,
-  ...filters
-} = undefined) =>
+selectors.podsBy = (pods = {}, {nodeName, ...filters} = undefined) =>
   Object.entries(redux.selectors.resourcesBy(pods, filters))
-  .filter(([, pod]) => {
-    if (nodeName) {
-      return selectors.nodeName(pod) === nodeName;
-    }
-    return true;
-  })
-  .reduce(redux.selectors.toObjectReducer, {});
+    .filter(([, pod]) => {
+      if (nodeName) {
+        return selectors.nodeName(pod) === nodeName;
+      }
+      return true;
+    })
+    .reduce(redux.selectors.toObjectReducer, {});
 
 export default selectors;

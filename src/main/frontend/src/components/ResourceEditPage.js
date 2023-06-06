@@ -25,7 +25,7 @@ import Card from '../components/Card';
 import Link from './Link';
 import Icon from './Icon';
 import Alert from './Alert';
-import useEditor from "./editor/useEditor";
+import useEditor from './editor/useEditor';
 
 const ResourceEditPage = ({
   kind,
@@ -38,7 +38,13 @@ const ResourceEditPage = ({
   const [currentAttempt, setForceReload] = useState(1);
   const store = useStore();
   const [resource, setResource] = useState();
-  const {resourceYaml, setResourceYaml, error, setError, save: handleSave} = useEditor(save);
+  const {
+    resourceYaml,
+    setResourceYaml,
+    error,
+    setError,
+    save: handleSave
+  } = useEditor(save);
   if (resource === undefined) {
     const stateResource = cloneDeep(resourceFromState(store.getState()));
     if (stateResource !== undefined) {
@@ -52,10 +58,19 @@ const ResourceEditPage = ({
   const name = md.selectors.name(resource);
   return (
     <DashboardPage
-      title={dashboardPageTitle ? dashboardPageTitle(resource) :
-        <DashboardPage.Title path={path} kind={kind} namespace={namespace} name={name}>
-          &nbsp;- Edit
-        </DashboardPage.Title>
+      title={
+        dashboardPageTitle ? (
+          dashboardPageTitle(resource)
+        ) : (
+          <DashboardPage.Title
+            path={path}
+            kind={kind}
+            namespace={namespace}
+            name={name}
+          >
+            &nbsp;- Edit
+          </DashboardPage.Title>
+        )
       }
     >
       <div className='absolute inset-0 md:p-4 flex flex-col'>
@@ -69,7 +84,8 @@ const ResourceEditPage = ({
                 title='Save'
                 onClick={handleSave}
               >
-                <Icon stylePrefix='far' icon='fa-save' className='mr-2'/>Save
+                <Icon stylePrefix='far' icon='fa-save' className='mr-2' />
+                Save
               </Link>
             </div>
           </Card.Title>
@@ -78,12 +94,17 @@ const ResourceEditPage = ({
             padding='p-0'
           >
             <div className='flex-1'>
-              <editor.YamlEditor value={resourceYaml} onChange={value => setResourceYaml(value)} />
+              <editor.YamlEditor
+                value={resourceYaml}
+                onChange={value => setResourceYaml(value)}
+              />
             </div>
             <Alert
               className='absolute left-0 right-0 z-10'
-              visible={error != null} margin='m-2'
-              clearError={() => setError(null)}>
+              visible={error != null}
+              margin='m-2'
+              clearError={() => setError(null)}
+            >
               {error}
             </Alert>
           </Card.Body>

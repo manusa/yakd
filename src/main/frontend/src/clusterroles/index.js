@@ -23,7 +23,7 @@ import ClusterRolesEditPage from './ClusterRolesEditPage';
 import ClusterRolesPage from './ClusterRolesPage';
 import RuleList from './RuleList';
 
-const cRoles = {}
+const cRoles = {};
 
 cRoles.api = api;
 cRoles.reducer = reducer;

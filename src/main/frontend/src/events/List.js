@@ -17,7 +17,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import metadata from '../metadata';
-import ev from './'
+import ev from './';
 import Link from '../components/Link';
 import Table from '../components/Table';
 import Tooltip from '../components/Tooltip';
@@ -27,8 +27,12 @@ import ResourceList from '../components/ResourceList';
 const headers = [
   '',
   'Type',
-  <span><Icon icon='fa-id-card' /> Name</span>,
-  <span><Icon stylePrefix='far' icon='fa-clock' /> Time</span>,
+  <span>
+    <Icon icon='fa-id-card' /> Name
+  </span>,
+  <span>
+    <Icon stylePrefix='far' icon='fa-clock' /> Time
+  </span>,
   'Reason',
   'Event'
 ];
@@ -90,7 +94,7 @@ const EventName = ({event}) => {
     return <Component to={url}>{name}</Component>;
   }
   return name;
-}
+};
 
 const sort = (ev1, ev2) =>
   new Date(ev2.lastTimestamp) - new Date(ev1.lastTimestamp);
@@ -105,15 +109,23 @@ const Rows = ({events}) => {
         <Table.ResourceRow key={metadata.selectors.uid(event)} resource={event}>
           <Table.Cell className='whitespace-no-wrap w-3 text-center'>
             <Icon
-              className={ev.selectors.typeIsNormal(event) ? 'text-green-500' : 'text-red-500'}
-              icon={ev.selectors.typeIsNormal(event) ? 'fa-check' : 'fa-exclamation-circle'}
+              className={
+                ev.selectors.typeIsNormal(event)
+                  ? 'text-green-500'
+                  : 'text-red-500'
+              }
+              icon={
+                ev.selectors.typeIsNormal(event)
+                  ? 'fa-check'
+                  : 'fa-exclamation-circle'
+              }
             />
           </Table.Cell>
           <Table.Cell className='whitespace-no-wrap'>
             {ev.selectors.involvedObjectKind(event)}
           </Table.Cell>
           <Table.Cell>
-            <EventName event={event}/>
+            <EventName event={event} />
           </Table.Cell>
           <Table.Cell>
             <Tooltip
@@ -124,36 +136,36 @@ const Rows = ({events}) => {
               <span>{lastTimestamp.toLocaleDateString()}</span>
             </Tooltip>
           </Table.Cell>
-          <Table.Cell>
-            {event.reason}
-          </Table.Cell>
-          <Table.Cell>
-            {event.message}
-          </Table.Cell>
+          <Table.Cell>{event.reason}</Table.Cell>
+          <Table.Cell>{event.message}</Table.Cell>
         </Table.ResourceRow>
       );
     });
-}
+};
 
 const List = ({events, ...properties}) => (
-  <ResourceList title='Latest Events' headers={headers} resources={events} {...properties}>
+  <ResourceList
+    title='Latest Events'
+    headers={headers}
+    resources={events}
+    {...properties}
+  >
     <Rows events={events} />
   </ResourceList>
 );
 
-const filterEvents = (events = [], {
-  namespace
-} = undefined) => Object.entries(events)
-.filter(([, event]) => {
-  if (namespace) {
-    return ev.selectors.involvedObjectNamespace(event) === namespace;
-  }
-  return true;
-})
-.reduce((acc, [key, event]) => {
-  acc[key] = event;
-  return acc;
-}, {});
+const filterEvents = (events = [], {namespace} = undefined) =>
+  Object.entries(events)
+    .filter(([, event]) => {
+      if (namespace) {
+        return ev.selectors.involvedObjectNamespace(event) === namespace;
+      }
+      return true;
+    })
+    .reduce((acc, [key, event]) => {
+      acc[key] = event;
+      return acc;
+    }, {});
 
 const mapStateToProps = ({events}) => ({
   events
@@ -167,4 +179,3 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
 });
 
 export default connect(mapStateToProps, null, mergeProps)(List);
-

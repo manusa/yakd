@@ -21,30 +21,48 @@ import rc from './';
 import Icon from '../components/Icon';
 import ResourceList from '../components/ResourceList';
 import Table from '../components/Table';
-import Link from "../components/Link";
+import Link from '../components/Link';
 
 const headers = [
   '',
-  <span><Icon icon='fa-id-card' /> Name</span>,
+  <span>
+    <Icon icon='fa-id-card' /> Name
+  </span>,
   'Namespace',
   'Replicas',
   ''
 ];
 
 const Rows = ({replicationControllers}) => {
-  const deleteReplicationController = replicationController => async () => await rc.api.delete(replicationController);
+  const deleteReplicationController = replicationController => async () =>
+    await rc.api.delete(replicationController);
   return replicationControllers
     .sort(metadata.selectors.sortByCreationTimeStamp)
     .map(replicationController => (
-      <Table.ResourceRow key={metadata.selectors.uid(replicationController)} resource={replicationController}>
+      <Table.ResourceRow
+        key={metadata.selectors.uid(replicationController)}
+        resource={replicationController}
+      >
         <Table.Cell className='whitespace-no-wrap w-3 text-center'>
           <Icon
-            className={rc.selectors.isReady(replicationController) ? 'text-green-500' : 'text-red-500'}
-            icon={rc.selectors.isReady(replicationController) ? 'fa-check' : 'fa-exclamation-circle'}
+            className={
+              rc.selectors.isReady(replicationController)
+                ? 'text-green-500'
+                : 'text-red-500'
+            }
+            icon={
+              rc.selectors.isReady(replicationController)
+                ? 'fa-check'
+                : 'fa-exclamation-circle'
+            }
           />
         </Table.Cell>
         <Table.Cell className='whitespace-no-wrap'>
-          <Link.ReplicationController to={`/replicationcontrollers/${metadata.selectors.uid(replicationController)}`}>
+          <Link.ReplicationController
+            to={`/replicationcontrollers/${metadata.selectors.uid(
+              replicationController
+            )}`}
+          >
             {metadata.selectors.name(replicationController)}
           </Link.ReplicationController>
         </Table.Cell>
@@ -55,13 +73,21 @@ const Rows = ({replicationControllers}) => {
           {rc.selectors.specReplicas(replicationController)}
         </Table.Cell>
         <Table.Cell className='whitespace-no-wrap text-center'>
-          <Table.DeleteButton onClick={deleteReplicationController(replicationController)} />
+          <Table.DeleteButton
+            onClick={deleteReplicationController(replicationController)}
+          />
         </Table.Cell>
       </Table.ResourceRow>
     ));
-}
+};
 
-const List = ({resources, ownerUid, crudDelete, loadedResources, ...properties}) => (
+const List = ({
+  resources,
+  ownerUid,
+  crudDelete,
+  loadedResources,
+  ...properties
+}) => (
   <ResourceList headers={headers} resources={resources} {...properties}>
     <Rows replicationControllers={resources} />
   </ResourceList>
@@ -72,4 +98,3 @@ List.propTypes = {
 };
 
 export default ResourceList.resourceListConnect('replicationControllers')(List);
-

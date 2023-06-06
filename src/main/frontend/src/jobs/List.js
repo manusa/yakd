@@ -24,7 +24,9 @@ import Table from '../components/Table';
 
 const headers = [
   '',
-  <span><Icon icon='fa-id-card' /> Name</span>,
+  <span>
+    <Icon icon='fa-id-card' /> Name
+  </span>,
   'Namespace',
   'Completions',
   ''
@@ -32,37 +34,45 @@ const headers = [
 
 const Rows = ({jobs}) => {
   const deleteJob = job => () => j.api.delete(job);
-  return jobs
-    .sort(metadata.selectors.sortByCreationTimeStamp)
-    .map(job => (
-      <Table.ResourceRow key={metadata.selectors.uid(job)} resource={job}>
-        <Table.Cell className='whitespace-no-wrap w-3 text-center'>
-          <Icon
-            className={j.selectors.isComplete(job) ? 'text-green-500' : 'text-gray-500'}
-            icon={j.selectors.isComplete(job) ? 'fa-check' : 'fa-hourglass-half'}
-          />
-        </Table.Cell>
-        <Table.Cell className='whitespace-no-wrap'>
-          <Link.Job to={`/jobs/${metadata.selectors.uid(job)}`}>
-            {metadata.selectors.name(job)}
-          </Link.Job>
-        </Table.Cell>
-        <Table.Cell className='whitespace-no-wrap'>
-          <Link.Namespace to={`/namespaces/${metadata.selectors.namespace(job)}`}>
-            {metadata.selectors.namespace(job)}
-          </Link.Namespace>
-        </Table.Cell>
-        <Table.Cell className=''>
-          {j.selectors.statusSucceeded(job)}/{j.selectors.specCompletions(job)}
-        </Table.Cell>
-        <Table.Cell className='whitespace-no-wrap text-center'>
-          <Table.DeleteButton onClick={deleteJob(job)} />
-        </Table.Cell>
-      </Table.ResourceRow>
-    ));
+  return jobs.sort(metadata.selectors.sortByCreationTimeStamp).map(job => (
+    <Table.ResourceRow key={metadata.selectors.uid(job)} resource={job}>
+      <Table.Cell className='whitespace-no-wrap w-3 text-center'>
+        <Icon
+          className={
+            j.selectors.isComplete(job) ? 'text-green-500' : 'text-gray-500'
+          }
+          icon={j.selectors.isComplete(job) ? 'fa-check' : 'fa-hourglass-half'}
+        />
+      </Table.Cell>
+      <Table.Cell className='whitespace-no-wrap'>
+        <Link.Job to={`/jobs/${metadata.selectors.uid(job)}`}>
+          {metadata.selectors.name(job)}
+        </Link.Job>
+      </Table.Cell>
+      <Table.Cell className='whitespace-no-wrap'>
+        <Link.Namespace to={`/namespaces/${metadata.selectors.namespace(job)}`}>
+          {metadata.selectors.namespace(job)}
+        </Link.Namespace>
+      </Table.Cell>
+      <Table.Cell className=''>
+        {j.selectors.statusSucceeded(job)}/{j.selectors.specCompletions(job)}
+      </Table.Cell>
+      <Table.Cell className='whitespace-no-wrap text-center'>
+        <Table.DeleteButton onClick={deleteJob(job)} />
+      </Table.Cell>
+    </Table.ResourceRow>
+  ));
 };
 
-const List = ({resources, ownerUid, uids, uidsNotIn, crudDelete, loadedResources, ...properties}) => (
+const List = ({
+  resources,
+  ownerUid,
+  uids,
+  uidsNotIn,
+  crudDelete,
+  loadedResources,
+  ...properties
+}) => (
   <ResourceList headers={headers} resources={resources} {...properties}>
     <Rows jobs={resources} loadedResources={loadedResources} />
   </ResourceList>

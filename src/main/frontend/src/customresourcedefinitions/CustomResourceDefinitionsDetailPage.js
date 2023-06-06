@@ -19,7 +19,7 @@ import {connect} from 'react-redux';
 import {withParams} from '../router';
 import metadata from '../metadata';
 import crd from './';
-import cr from '../customresources'
+import cr from '../customresources';
 import Card from '../components/Card';
 import Form from '../components/Form';
 import Link from '../components/Link';
@@ -27,30 +27,42 @@ import ResourceDetailPage from '../components/ResourceDetailPage';
 
 const useCustomResourceList = customResourceDefinition => {
   const [customResourceList, setCustomResourceList] = useState([]);
-  const [version, setVersion] = useState(undefined)
+  const [version, setVersion] = useState(undefined);
   const [timeoutHandle, setTimeoutHandle] = useState(null);
   const changeVersion = newVersion => {
     clearTimeout(timeoutHandle);
     setTimeoutHandle(null);
     setVersion(newVersion);
-  }
+  };
   useEffect(() => {
     if (!timeoutHandle && customResourceDefinition) {
       const updateCustomResources = async () => {
         try {
-          const customResources = await cr.api.list(customResourceDefinition, version)();
+          const customResources = await cr.api.list(
+            customResourceDefinition,
+            version
+          )();
           setCustomResourceList(customResources);
         } catch (e) {
           setCustomResourceList(null);
         }
         setTimeoutHandle(setTimeout(updateCustomResources, 5000));
-      }
+      };
       updateCustomResources().then(() => {});
     }
-  }, [timeoutHandle, setTimeoutHandle, setCustomResourceList, customResourceDefinition, version]);
-  useEffect(() => () => {
-    clearTimeout(timeoutHandle)
-  }, [timeoutHandle, version]);
+  }, [
+    timeoutHandle,
+    setTimeoutHandle,
+    setCustomResourceList,
+    customResourceDefinition,
+    version
+  ]);
+  useEffect(
+    () => () => {
+      clearTimeout(timeoutHandle);
+    },
+    [timeoutHandle, version]
+  );
   return [customResourceList, setCustomResourceList, version, changeVersion];
 };
 
@@ -58,41 +70,59 @@ const CustomResourceDefinitionsDetailPage = ({customResourceDefinition}) => {
   const [customResourceList, setCustomResourceList, version, changeVersion] =
     useCustomResourceList(customResourceDefinition);
   const kind = 'CustomResourceDefinitions';
-  const path ='customresourcedefinitions';
-  const applicableVersion = version ? version : crd.selectors.specVersionsLatest(customResourceDefinition);
+  const path = 'customresourcedefinitions';
+  const applicableVersion = version
+    ? version
+    : crd.selectors.specVersionsLatest(customResourceDefinition);
   return (
     <ResourceDetailPage
       kind={kind}
       path={path}
-      title={<crd.DashboardPageTitle customResourceDefinition={customResourceDefinition}/>}
+      title={
+        <crd.DashboardPageTitle
+          customResourceDefinition={customResourceDefinition}
+        />
+      }
       resource={customResourceDefinition}
       deleteFunction={crd.api.delete}
       body={
         <Form>
           <metadata.Details resource={customResourceDefinition} />
           <Form.Field label='Group'>
-            <crd.GroupLink customResourceDefinition={customResourceDefinition} />
+            <crd.GroupLink
+              customResourceDefinition={customResourceDefinition}
+            />
           </Form.Field>
           <Form.Field label='Versions'>
             {crd.selectors.specVersions(customResourceDefinition).map(v => (
               <div key={v}>
-                {v === applicableVersion ?
-                  <span>{v}</span> :
-                  <Link disabled onClick={() => changeVersion(v)}>{v}</Link>
-                }
+                {v === applicableVersion ? (
+                  <span>{v}</span>
+                ) : (
+                  <Link disabled onClick={() => changeVersion(v)}>
+                    {v}
+                  </Link>
+                )}
               </div>
             ))}
           </Form.Field>
-          <Form.Field label='Scope'>{crd.selectors.specScope(customResourceDefinition)}</Form.Field>
-          <Form.Field label='Kind'>{crd.selectors.specNamesKind(customResourceDefinition)}</Form.Field>
+          <Form.Field label='Scope'>
+            {crd.selectors.specScope(customResourceDefinition)}
+          </Form.Field>
+          <Form.Field label='Kind'>
+            {crd.selectors.specNamesKind(customResourceDefinition)}
+          </Form.Field>
         </Form>
-      }>
+      }
+    >
       <cr.List
         customResourceDefinition={customResourceDefinition}
         version={applicableVersion}
         customResources={customResourceList}
         deleteResourceCallback={customResource => {
-          setCustomResourceList(customResourceList.filter(c => c !== customResource));
+          setCustomResourceList(
+            customResourceList.filter(c => c !== customResource)
+          );
         }}
         title={applicableVersion}
         titleVariant={Card.titleVariants.small}
@@ -100,7 +130,7 @@ const CustomResourceDefinitionsDetailPage = ({customResourceDefinition}) => {
       />
     </ResourceDetailPage>
   );
-}
+};
 
 const mapStateToProps = ({customResourceDefinitions}) => ({
   customResourceDefinitions
@@ -110,7 +140,14 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
   ...stateProps,
   ...dispatchProps,
   ...ownProps,
-  customResourceDefinition: stateProps.customResourceDefinitions[ownProps.params.uid],
+  customResourceDefinition:
+    stateProps.customResourceDefinitions[ownProps.params.uid]
 });
 
-export default withParams(connect(mapStateToProps, null, mergeProps)(CustomResourceDefinitionsDetailPage));
+export default withParams(
+  connect(
+    mapStateToProps,
+    null,
+    mergeProps
+  )(CustomResourceDefinitionsDetailPage)
+);

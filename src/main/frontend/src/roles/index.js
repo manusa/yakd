@@ -22,7 +22,7 @@ import RolesDetailPage from './RolesDetailPage';
 import RolesEditPage from './RolesEditPage';
 import RolesPage from './RolesPage';
 
-const roles = {}
+const roles = {};
 
 roles.api = api;
 roles.reducer = reducer;

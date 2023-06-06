@@ -18,11 +18,12 @@ const selectors = {};
 
 selectors.specRules = ingress => ingress?.spec?.rules ?? [];
 
-selectors.allHosts = ingress => selectors.specRules(ingress)
-  .map(r => r.host);
+selectors.allHosts = ingress => selectors.specRules(ingress).map(r => r.host);
 
-selectors.allPaths = ingress => selectors.specRules(ingress)
-  .flatMap(r => r.http.paths)
-  .map(p => p.path);
+selectors.allPaths = ingress =>
+  selectors
+    .specRules(ingress)
+    .flatMap(r => r.http.paths)
+    .map(p => p.path);
 
 export default selectors;

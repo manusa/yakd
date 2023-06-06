@@ -23,11 +23,14 @@ import Link from '../components/Link';
 
 const HorizontalPodAutoscalersEditPage = ({params: {uid}}) => (
   <ResourceEditPage
-    kind='HorizontalPodAutoscalers'h
+    kind='HorizontalPodAutoscalers'
+    h
     path='horizontalpodautoscalers'
-    cardTitle={resource =>
-      <Link.RouterLink to={`/horizontalpodautoscalers/${uid}`}>{md.selectors.name(resource)}</Link.RouterLink>
-    }
+    cardTitle={resource => (
+      <Link.RouterLink to={`/horizontalpodautoscalers/${uid}`}>
+        {md.selectors.name(resource)}
+      </Link.RouterLink>
+    )}
     save={async resource => await hpa.api.update(resource)}
     resourceFromState={state => state.horizontalPodAutoscalers[uid]}
   />

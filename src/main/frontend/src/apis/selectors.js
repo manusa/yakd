@@ -16,6 +16,7 @@
  */
 const selectors = {};
 
-selectors.isOpenShift = apiGroups => apiGroups.some(g => g.endsWith('.openshift.io'));
+selectors.isOpenShift = apiGroups =>
+  apiGroups.some(g => g.endsWith('.openshift.io'));
 
 export default selectors;

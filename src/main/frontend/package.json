@@ -25,20 +25,26 @@
   "devDependencies": {
     "@fortawesome/fontawesome-free": "5.14.0",
     "autoprefixer": "9.8.6",
+    "eslint-config-prettier": "8.8.0",
     "postcss-cli": "8.0.0",
+    "prettier": "2.8.8",
     "tailwindcss": "1.9.6",
     "typeface-open-sans": "0.0.75"
   },
   "scripts": {
+    "eslint": "eslint src/.",
+    "prettier": "prettier 'src/**/*.{js,jsx,ts,tsx,json,css,scss,md}' --ignore-path ../../../.gitignore --write",
+    "prestart": "npm run prettier && npm run eslint",
     "start": "npm run watch:css && react-scripts start",
-    "build": "npm run build:css && react-scripts build",
+    "prebuild": "npm run prettier && npm run eslint && npm run build:css",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "build:css": "postcss src/assets/tailwind-src.css -o src/assets/tailwind.css",
     "watch:css": "postcss src/assets/tailwind-src.css -o src/assets/tailwind.css"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": ["react-app", "prettier"]
   },
   "browserslist": {
     "production": [
@@ -51,5 +57,13 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "prettier": {
+    "singleQuote": true,
+    "jsxSingleQuote": true,
+    "arrowParens": "avoid",
+    "bracketSpacing": false,
+    "trailingComma": "none",
+    "singleAttributePerLine": false
   }
 }

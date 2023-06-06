@@ -37,27 +37,45 @@ const downloadLogs = (log, name, selectedContainer) => {
   const mimeType = 'text/plain';
   const blob = new Blob([log.join('\n')], {type: mimeType});
   const url = URL.createObjectURL(blob);
-  const tempLink  = document.createElement('a');
+  const tempLink = document.createElement('a');
   tempLink.href = url;
   tempLink.download = `${name}-${selectedContainer.name}.log`;
   document.body.appendChild(tempLink);
-  tempLink.dispatchEvent(new MouseEvent('click', {bubbles: true, cancelable: true, view: window}));
+  tempLink.dispatchEvent(
+    new MouseEvent('click', {bubbles: true, cancelable: true, view: window})
+  );
   document.body.removeChild(tempLink);
   URL.revokeObjectURL(url);
 };
 
 const PodsLogsPage = ({uid, namespace, name, containers}) => {
   const {
-    listRef, log, follow, setFollow, selectedContainer, setSelectedContainer
+    listRef,
+    log,
+    follow,
+    setFollow,
+    selectedContainer,
+    setSelectedContainer
   } = p.useLogs(namespace, name, containers);
   const rowRenderer = ({key, index, style}) => (
-    <div key={key} className='whitespace-no-wrap' style={{...style, width: 'auto'}}
-         dangerouslySetInnerHTML={{__html: dompurify.sanitize(ansi.toHtml(log[index]))}} />
+    <div
+      key={key}
+      className='whitespace-no-wrap'
+      style={{...style, width: 'auto'}}
+      dangerouslySetInnerHTML={{
+        __html: dompurify.sanitize(ansi.toHtml(log[index]))
+      }}
+    />
   );
   return (
     <DashboardPage
       title={
-        <DashboardPage.Title path='pods' kind='Pods' namespace={namespace} name={name}>
+        <DashboardPage.Title
+          path='pods'
+          kind='Pods'
+          namespace={namespace}
+          name={name}
+        >
           &nbsp;- Logs
         </DashboardPage.Title>
       }
@@ -69,17 +87,27 @@ const PodsLogsPage = ({uid, namespace, name, containers}) => {
             <div className='flex-1 flex items-center flex-wrap'>
               <span className='mr-2'>
                 Logs
-                <Link.RouterLink className='ml-2' to={`/pods/${uid}`}>{name}</Link.RouterLink>
+                <Link.RouterLink className='ml-2' to={`/pods/${uid}`}>
+                  {name}
+                </Link.RouterLink>
               </span>
               <cnt.ContainerDropdown
-                containers={containers} onContainerSelect={setSelectedContainer} selectedContainer={selectedContainer}
+                containers={containers}
+                onContainerSelect={setSelectedContainer}
+                selectedContainer={selectedContainer}
               />
             </div>
             <div className='justify-self-end text-sm font-normal flex items-center'>
-              <Switch label='Follow' checked={follow} onChange={() => setFollow(!follow)} />
+              <Switch
+                label='Follow'
+                checked={follow}
+                onChange={() => setFollow(!follow)}
+              />
               <Link
                 onClick={() => downloadLogs(log, name, selectedContainer)}
-                className='ml-2' variant={Link.variants.outline} title='Download logs'
+                className='ml-2'
+                variant={Link.variants.outline}
+                title='Download logs'
               >
                 <Icon icon='fa-save' />
                 <span className='hidden xl:inline'> Download</span>
@@ -88,7 +116,7 @@ const PodsLogsPage = ({uid, namespace, name, containers}) => {
           </Card.Title>
           <Card.Body className='flex-1 bg-black text-white font-mono text-sm'>
             <AutoSizer>
-              {({ height, width }) => (
+              {({height, width}) => (
                 <List
                   ref={listRef}
                   height={height}
@@ -117,4 +145,6 @@ const mergeProps = ({pods}, dispatchProps, {params: {uid}}) => ({
   containers: p.selectors.containers(pods[uid])
 });
 
-export default withParams(connect(mapStateToProps, null, mergeProps)(PodsLogsPage));
+export default withParams(
+  connect(mapStateToProps, null, mergeProps)(PodsLogsPage)
+);

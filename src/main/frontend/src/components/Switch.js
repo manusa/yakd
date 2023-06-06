@@ -17,7 +17,10 @@
 import React from 'react';
 
 const Switch = ({
-  checked, onChange, label, labelClassName,
+  checked,
+  onChange,
+  label,
+  labelClassName,
   width = 'w-10',
   height = 'h-6',
   checkedBg = 'bg-blue-600',
@@ -28,24 +31,31 @@ const Switch = ({
 }) => (
   <div className='inline-flex items-center cursor-pointer' onClick={onChange}>
     <div className='relative'>
-      <span className={`
+      <span
+        className={`
         ${checked ? checkedBg : uncheckedBg}
         block ${width} ${height} ${border} rounded-full shadow-inner
         transition-background ${duration} ease-in-out
         `}
       />
-      <div className={`
-        ${checked? 'translate-x-full' : ''}
+      <div
+        className={`
+        ${checked ? 'translate-x-full' : ''}
         absolute block w-4 h-4 mt-1 ml-1 ${nobColor} rounded-full shadow inset-y-0 left-0 focus-within:shadow-outline
         transform transition-transform ${duration} ease-in-out
         `}
       >
-        <input type='checkbox' className='absolute opacity-0 w-0 h-0' checked={checked} onChange={onChange} />
+        <input
+          type='checkbox'
+          className='absolute opacity-0 w-0 h-0'
+          checked={checked}
+          onChange={onChange}
+        />
       </div>
     </div>
-    {label && <span className={`ml-2 text-sm ${labelClassName ?? ''}`}>
-      {label}
-    </span>}
+    {label && (
+      <span className={`ml-2 text-sm ${labelClassName ?? ''}`}>{label}</span>
+    )}
   </div>
 );
 

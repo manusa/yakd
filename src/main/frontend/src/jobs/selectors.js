@@ -23,10 +23,10 @@ selectors.containers = job => job?.spec?.template?.spec?.containers ?? [];
 
 selectors.statusSucceeded = job => job?.status?.succeeded ?? 0;
 
-selectors.isComplete = job => job?.status?.conditions ?? []
-  .filter(condition => condition.type === 'Complete')
-  .filter(condition => condition.status.equalsIgnoreCase('true'))
-  .length > 0;
-
+selectors.isComplete = job =>
+  job?.status?.conditions ??
+  []
+    .filter(condition => condition.type === 'Complete')
+    .filter(condition => condition.status.equalsIgnoreCase('true')).length > 0;
 
 export default selectors;

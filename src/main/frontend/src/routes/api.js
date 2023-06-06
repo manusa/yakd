@@ -14,13 +14,10 @@
  * limitations under the License.
  *
  */
-import {
-  deleteNamespacedResource,
-  updateNamespacedResource
-} from '../fetch';
+import {deleteNamespacedResource, updateNamespacedResource} from '../fetch';
 
 const api = {
-  delete:  deleteNamespacedResource('routes'),
+  delete: deleteNamespacedResource('routes'),
   update: updateNamespacedResource('routes')
 };
 

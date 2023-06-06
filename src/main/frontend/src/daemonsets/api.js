@@ -17,7 +17,7 @@
 import {
   deleteNamespacedResource,
   restartNamespacedResource,
-  updateNamespacedResource,
+  updateNamespacedResource
 } from '../fetch';
 
 const api = {

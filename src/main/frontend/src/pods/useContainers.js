@@ -23,7 +23,7 @@ const useContainers = containers => {
       setSelectedContainer(containers[0]);
     }
   }, [containers, selectedContainer, setSelectedContainer]);
-  return ({selectedContainer, setSelectedContainer});
+  return {selectedContainer, setSelectedContainer};
 };
 
 export default useContainers;

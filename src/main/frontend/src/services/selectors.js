@@ -24,8 +24,11 @@ selectors.specSelector = service => service?.spec?.selector ?? {};
 
 selectors.specPorts = service => service?.spec?.ports ?? [];
 
-selectors.specPortsFirstNodePort = service => selectors.specPorts(service)
-  .map(p => p.nodePort).find(np => np) ?? 0;
+selectors.specPortsFirstNodePort = service =>
+  selectors
+    .specPorts(service)
+    .map(p => p.nodePort)
+    .find(np => np) ?? 0;
 
 selectors.specType = service => service?.spec?.type ?? '';
 

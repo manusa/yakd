@@ -31,9 +31,13 @@ const ClusterRoleBindingsDetailPage = ({clusterRoleBinding}) => (
     deleteFunction={crb.api.delete}
     body={
       <Form>
-        <metadata.Details resource={clusterRoleBinding}/>
+        <metadata.Details resource={clusterRoleBinding} />
         <Form.Field label='Role'>
-          <Link.ClusterRole to={`/clusterroles/${crb.selectors.roleRefName(clusterRoleBinding)}`}>
+          <Link.ClusterRole
+            to={`/clusterroles/${crb.selectors.roleRefName(
+              clusterRoleBinding
+            )}`}
+          >
             {crb.selectors.roleRefName(clusterRoleBinding)}
           </Link.ClusterRole>
         </Form.Field>
@@ -50,7 +54,12 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
   ...stateProps,
   ...dispatchProps,
   ...ownProps,
-  clusterRoleBinding: metadata.selectors.byUidOrName(stateProps.clusterRoleBindings, ownProps.params.uidOrName)
+  clusterRoleBinding: metadata.selectors.byUidOrName(
+    stateProps.clusterRoleBindings,
+    ownProps.params.uidOrName
+  )
 });
 
-export default withParams(connect(mapStateToProps, null, mergeProps)(ClusterRoleBindingsDetailPage));
+export default withParams(
+  connect(mapStateToProps, null, mergeProps)(ClusterRoleBindingsDetailPage)
+);

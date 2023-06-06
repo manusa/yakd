@@ -31,8 +31,13 @@ const JobsDetailPage = ({job}) => (
     path='jobs'
     title={
       <DashboardPage.Title
-        path='jobs' kind='Jobs' namespace={metadata.selectors.namespace(job)} resource={job}
-        isReadyFunction={j.selectors.isComplete} notReadyClassName='text-gray-500' notReadyIcon='fa-hourglass-half'
+        path='jobs'
+        kind='Jobs'
+        namespace={metadata.selectors.namespace(job)}
+        resource={job}
+        isReadyFunction={j.selectors.isComplete}
+        notReadyClassName='text-gray-500'
+        notReadyIcon='fa-hourglass-half'
       />
     }
     resource={job}
@@ -56,12 +61,14 @@ const JobsDetailPage = ({job}) => (
       title='Containers'
       titleVariant={Card.titleVariants.medium}
       className='mt-2'
-      containers={j.selectors.containers(job)} />
+      containers={j.selectors.containers(job)}
+    />
     <pods.List
       title='Pods'
       titleVariant={Card.titleVariants.medium}
       className='mt-2'
-      ownerUid={metadata.selectors.uid(job)} />
+      ownerUid={metadata.selectors.uid(job)}
+    />
   </ResourceDetailPage>
 );
 
@@ -73,4 +80,6 @@ const mergeProps = ({jobs}, dispatchProps, {params: {uid}}) => ({
   job: jobs[uid]
 });
 
-export default withParams(connect(mapStateToProps, null, mergeProps)(JobsDetailPage));
+export default withParams(
+  connect(mapStateToProps, null, mergeProps)(JobsDetailPage)
+);

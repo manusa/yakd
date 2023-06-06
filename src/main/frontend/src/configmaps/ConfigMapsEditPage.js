@@ -25,9 +25,11 @@ const ConfigMapsEditPage = ({params: {uid}}) => (
   <ResourceEditPage
     kind='ConfigMaps'
     path='configmaps'
-    cardTitle={resource =>
-      <Link.RouterLink to={`/configmaps/${uid}`}>{md.selectors.name(resource)}</Link.RouterLink>
-    }
+    cardTitle={resource => (
+      <Link.RouterLink to={`/configmaps/${uid}`}>
+        {md.selectors.name(resource)}
+      </Link.RouterLink>
+    )}
     save={async resource => await cm.api.update(resource)}
     resourceFromState={state => state.configMaps[uid]}
   />

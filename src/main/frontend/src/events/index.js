@@ -16,7 +16,7 @@
  */
 import reducer from './reducer';
 import selectors from './selectors';
-import List from './List'
+import List from './List';
 
 const events = {};
 

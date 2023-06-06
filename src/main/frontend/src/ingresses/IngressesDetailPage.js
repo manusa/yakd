@@ -32,7 +32,8 @@ const IngressesDetailPage = ({ingress}) => (
       <Form>
         <metadata.Details resource={ingress} />
       </Form>
-    } />
+    }
+  />
 );
 
 const mapStateToProps = ({ingresses}) => ({
@@ -43,7 +44,9 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
   ...stateProps,
   ...dispatchProps,
   ...ownProps,
-  ingress: stateProps.ingresses[ownProps.params.uid],
+  ingress: stateProps.ingresses[ownProps.params.uid]
 });
 
-export default withParams(connect(mapStateToProps, null, mergeProps)(IngressesDetailPage));
+export default withParams(
+  connect(mapStateToProps, null, mergeProps)(IngressesDetailPage)
+);

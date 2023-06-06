@@ -25,9 +25,11 @@ const StatefulSetsEditPage = ({params: {uid}}) => (
   <ResourceEditPage
     kind='StatefulSets'
     path='statefulsets'
-    cardTitle={resource =>
-      <Link.RouterLink to={`/statefulsets/${uid}`}>{md.selectors.name(resource)}</Link.RouterLink>
-    }
+    cardTitle={resource => (
+      <Link.RouterLink to={`/statefulsets/${uid}`}>
+        {md.selectors.name(resource)}
+      </Link.RouterLink>
+    )}
     save={async resource => await sts.api.update(resource)}
     resourceFromState={state => state.statefulSets[uid]}
   />

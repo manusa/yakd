@@ -31,7 +31,7 @@ actions.Types = {
   UI_SET_RESOURCE_LOADED: 'UI_SET_RESOURCE_LOADED',
   UI_SELECT_NAMESPACE: 'SELECT_NAMESPACE',
   UI_SET_QUERY: 'UI_SET_QUERY'
-}
+};
 
 actions.clear = () => ({
   type: actions.Types.CLEAR
@@ -39,7 +39,7 @@ actions.clear = () => ({
 
 actions.crudClear = kind => ({
   type: actions.Types.CRUD_CLEAR,
-  payload: kind,
+  payload: kind
 });
 
 actions.crudAddOrReplace = object => ({

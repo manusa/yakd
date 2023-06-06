@@ -19,7 +19,7 @@ import reducer from './reducer';
 import selectors from './selectors';
 import List from './List';
 import NamespacesDetailPage from './NamespacesDetailPage';
-import NamespacesPage from './NamespacesPage'
+import NamespacesPage from './NamespacesPage';
 
 const namespaces = {};
 

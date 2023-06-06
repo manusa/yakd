@@ -18,20 +18,22 @@ const selectors = {};
 
 selectors.specSchedule = cronJob => cronJob?.spec?.schedule ?? '';
 selectors.specSuspend = cronJob => cronJob?.spec?.suspend === true;
-selectors.specConcurrencyPolicy = cronJob => cronJob?.spec?.concurrencyPolicy ?? '';
+selectors.specConcurrencyPolicy = cronJob =>
+  cronJob?.spec?.concurrencyPolicy ?? '';
 
 selectors.statusLastScheduleTime = cronJob => {
   const lst = cronJob?.status?.lastScheduleTime;
   if (lst) {
     return new Date(lst);
   }
-}
+};
 selectors.statusActive = cronJob => cronJob?.status?.active ?? [];
-selectors.statusActiveUids = cronJob => selectors.statusActive(cronJob).map(aj => aj.uid);
+selectors.statusActiveUids = cronJob =>
+  selectors.statusActive(cronJob).map(aj => aj.uid);
 
-selectors.containers = cronJob => cronJob?.spec?.jobTemplate?.spec?.template?.spec?.containers ?? [];
+selectors.containers = cronJob =>
+  cronJob?.spec?.jobTemplate?.spec?.template?.spec?.containers ?? [];
 
 selectors.isReady = cronJob => selectors.specSuspend(cronJob) === false;
-
 
 export default selectors;

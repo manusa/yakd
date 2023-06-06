@@ -24,7 +24,9 @@ import ResourceList from '../components/ResourceList';
 import Table from '../components/Table';
 
 const headers = [
-  <span><Icon className='fa-id-card' /> Name</span>,
+  <span>
+    <Icon className='fa-id-card' /> Name
+  </span>,
   'Group',
   'Version(s)',
   'Scope',
@@ -33,39 +35,51 @@ const headers = [
 ];
 
 const Rows = ({customResourceDefinitions}) => {
-  const deleteCrd = customResourceDefinition => async () => await crd.api.delete(customResourceDefinition);
+  const deleteCrd = customResourceDefinition => async () =>
+    await crd.api.delete(customResourceDefinition);
   return customResourceDefinitions
     .sort(metadata.selectors.sortByCreationTimeStamp)
     .map(customResourceDefinition => (
-        <Table.ResourceRow key={metadata.selectors.uid(customResourceDefinition)} resource={customResourceDefinition}>
-          <Table.Cell>
-            <Link.CustomResourceDefinition to={`/customresourcedefinitions/${metadata.selectors.uid(customResourceDefinition)}`}>
-              {metadata.selectors.name(customResourceDefinition)}
-            </Link.CustomResourceDefinition>
-          </Table.Cell>
-          <Table.Cell>
-            <crd.GroupLink customResourceDefinition={customResourceDefinition} />
-          </Table.Cell>
-          <Table.Cell>
-            {crd.selectors.specVersions(customResourceDefinition).map(v => (
-              <div key={v}>{v}</div>
-            ))}
-          </Table.Cell>
-          <Table.Cell>
-            {crd.selectors.specScope(customResourceDefinition)}
-          </Table.Cell>
-          <Table.Cell>
-            {crd.selectors.specNamesKind(customResourceDefinition)}
-          </Table.Cell>
-          <Table.Cell>
-            <Table.DeleteButton onClick={deleteCrd(customResourceDefinition)} />
-          </Table.Cell>
-        </Table.ResourceRow>
+      <Table.ResourceRow
+        key={metadata.selectors.uid(customResourceDefinition)}
+        resource={customResourceDefinition}
+      >
+        <Table.Cell>
+          <Link.CustomResourceDefinition
+            to={`/customresourcedefinitions/${metadata.selectors.uid(
+              customResourceDefinition
+            )}`}
+          >
+            {metadata.selectors.name(customResourceDefinition)}
+          </Link.CustomResourceDefinition>
+        </Table.Cell>
+        <Table.Cell>
+          <crd.GroupLink customResourceDefinition={customResourceDefinition} />
+        </Table.Cell>
+        <Table.Cell>
+          {crd.selectors.specVersions(customResourceDefinition).map(v => (
+            <div key={v}>{v}</div>
+          ))}
+        </Table.Cell>
+        <Table.Cell>
+          {crd.selectors.specScope(customResourceDefinition)}
+        </Table.Cell>
+        <Table.Cell>
+          {crd.selectors.specNamesKind(customResourceDefinition)}
+        </Table.Cell>
+        <Table.Cell>
+          <Table.DeleteButton onClick={deleteCrd(customResourceDefinition)} />
+        </Table.Cell>
+      </Table.ResourceRow>
     ));
 };
 
 const List = ({customResourceDefinitions, group, ...properties}) => (
-  <ResourceList headers={headers} resources={customResourceDefinitions} {...properties}>
+  <ResourceList
+    headers={headers}
+    resources={customResourceDefinitions}
+    {...properties}
+  >
     <Rows customResourceDefinitions={customResourceDefinitions} />
   </ResourceList>
 );
@@ -77,8 +91,9 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
   ...stateProps,
   ...dispatchProps,
   ...ownProps,
-  customResourceDefinitions: Object.values(crd.selectors.crdsBy(stateProps.customResourceDefinitions, ownProps))
+  customResourceDefinitions: Object.values(
+    crd.selectors.crdsBy(stateProps.customResourceDefinitions, ownProps)
+  )
 });
 
 export default connect(mapStateToProps, null, mergeProps)(List);
-

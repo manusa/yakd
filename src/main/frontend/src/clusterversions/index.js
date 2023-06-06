@@ -17,7 +17,7 @@
 import reducer from './reducer';
 
 const index = {
-  reducer,
+  reducer
 };
 
 export default index;

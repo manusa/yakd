@@ -23,7 +23,7 @@ import deploymentsModule from './';
 const DeploymentsCard = ({deployments, ...properties}) => {
   const objects = Object.values(deployments);
   const ready = deploymentsModule.selectors.readyCount(objects);
-  const total = objects.length
+  const total = objects.length;
   return (
     <StatusCard
       header='Deployments'
@@ -31,7 +31,7 @@ const DeploymentsCard = ({deployments, ...properties}) => {
       Icon={icons.Deployment}
       ready={ready}
       total={total}
-      readyProgress={Math.round(ready/total*100)}
+      readyProgress={Math.round((ready / total) * 100)}
       {...properties}
     />
   );

@@ -25,9 +25,11 @@ const ClusterRolesEditPage = ({params: {uid}}) => (
   <ResourceEditPage
     kind='ClusterRoles'
     path='clusterroles'
-    cardTitle={resource =>
-      <Link.RouterLink to={`/clusterroles/${uid}`}>{md.selectors.name(resource)}</Link.RouterLink>
-    }
+    cardTitle={resource => (
+      <Link.RouterLink to={`/clusterroles/${uid}`}>
+        {md.selectors.name(resource)}
+      </Link.RouterLink>
+    )}
     save={async resource => await cRoles.api.update(resource)}
     resourceFromState={state => state.clusterRoles[uid]}
   />

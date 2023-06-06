@@ -26,13 +26,12 @@ const Tooltip = ({
   ...props
 }) => {
   const [visible, setVisible] = useState(false);
-  const [{x, y}, setCoords] = useState({x: 0 , y: 0})
+  const [{x, y}, setCoords] = useState({x: 0, y: 0});
   return (
     <div
       className={`relative ${className}`}
       onMouseEnter={() => setVisible(true)}
-      onMouseMove={({clientX, clientY}) =>
-        setCoords({x: clientX, y: clientY})}
+      onMouseMove={({clientX, clientY}) => setCoords({x: clientX, y: clientY})}
       onMouseLeave={() => setVisible(false)}
       {...props}
     >
@@ -42,13 +41,11 @@ const Tooltip = ({
           fixed block
           ${bg} ${color} py-1 px-2 border-0  z-20 font-normal leading-normal text-sm max-w-xs break-words rounded-lg
         `}
-        style={{left: `${x + gutter}px` , top: `${y + gutter}px`}}
+        style={{left: `${x + gutter}px`, top: `${y + gutter}px`}}
       >
         {content}
       </div>
-      <div className='z-10'>
-        {children}
-      </div>
+      <div className='z-10'>{children}</div>
     </div>
   );
 };

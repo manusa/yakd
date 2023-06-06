@@ -16,10 +16,12 @@
  */
 import redux from '../redux';
 
-const {actions: {Types}} = redux;
+const {
+  actions: {Types}
+} = redux;
 const defaultState = [];
 
-const apiGroupsReducer =  (state = defaultState, action = {}) => {
+const apiGroupsReducer = (state = defaultState, action = {}) => {
   if (action.type === Types.API_GROUPS_SET) {
     return [...action.payload];
   }

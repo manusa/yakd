@@ -19,47 +19,51 @@ import redux from './';
 const belongsToThisReducer = (kind, action) =>
   (action.payload.kind ?? undefined) === kind;
 
-const reducer = kind => (state = {}, action = {}) => {
-  const {actions: {Types}} = redux;
-  switch (action.type) {
-    case Types.CRUD_ADD_OR_REPLACE: {
-      if (!belongsToThisReducer(kind, action)) {
-        break;
+const reducer =
+  kind =>
+  (state = {}, action = {}) => {
+    const {
+      actions: {Types}
+    } = redux;
+    switch (action.type) {
+      case Types.CRUD_ADD_OR_REPLACE: {
+        if (!belongsToThisReducer(kind, action)) {
+          break;
+        }
+        const newState = {...state};
+        newState[action.payload.metadata.uid] = action.payload;
+        return newState;
       }
-      const newState = {...state};
-      newState[action.payload.metadata.uid] = action.payload;
-      return newState;
-    }
-    case Types.CRUD_DELETE: {
-      if (!belongsToThisReducer(kind, action)) {
-        break;
+      case Types.CRUD_DELETE: {
+        if (!belongsToThisReducer(kind, action)) {
+          break;
+        }
+        const newState = {...state};
+        delete newState[action.payload.metadata.uid];
+        return newState;
       }
-      const newState = {...state};
-      delete newState[action.payload.metadata.uid];
-      return newState;
-    }
-    case Types.CRUD_SET_ALL: {
-      if (!belongsToThisReducer(kind, action)) {
-        break;
+      case Types.CRUD_SET_ALL: {
+        if (!belongsToThisReducer(kind, action)) {
+          break;
+        }
+        return action.payload.resources.reduce((acc, resource) => {
+          acc[resource.metadata.uid] = resource;
+          return acc;
+        }, {});
       }
-      return action.payload.resources.reduce((acc, resource) =>{
-        acc[resource.metadata.uid] = resource;
-        return acc;
-      }, {});
-    }
-    case Types.CRUD_CLEAR: {
-      if (kind === action.payload) {
+      case Types.CRUD_CLEAR: {
+        if (kind === action.payload) {
+          return {};
+        }
+        return {...state};
+      }
+      case Types.CLEAR: {
         return {};
       }
-      return {...state};
+      default:
+        return {...state};
     }
-    case Types.CLEAR: {
-      return {};
-    }
-    default:
-      return {...state};
-  }
-  return state;
-};
+    return state;
+  };
 
 export default reducer;

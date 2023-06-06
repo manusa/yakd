@@ -18,7 +18,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import StatusCard from '../components/StatusCard';
 import icons from '../components/icons';
-import nodesModule from './'
+import nodesModule from './';
 
 const NodesCard = ({nodes, ...properties}) => {
   const nodeObjects = Object.values(nodes);
@@ -31,7 +31,7 @@ const NodesCard = ({nodes, ...properties}) => {
       Icon={icons.Node}
       ready={ready}
       total={total}
-      readyProgress={Math.round(ready/total*100)}
+      readyProgress={Math.round((ready / total) * 100)}
       {...properties}
     />
   );

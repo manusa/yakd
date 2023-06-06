@@ -22,12 +22,17 @@ const DropdownPanel = ({visible, items, onClick}) => (
   <div
     onClick={onClick}
     className={`${visible ? '' : 'hidden'}
-      z-20 origin-top-right absolute right-0 mt-2 w-full rounded-md shadow-lg`}>
-    <div className='rounded-md bg-white shadow-xs overflow-y-auto'
-         style={{maxHeight: '15rem'}}
+      z-20 origin-top-right absolute right-0 mt-2 w-full rounded-md shadow-lg`}
+  >
+    <div
+      className='rounded-md bg-white shadow-xs overflow-y-auto'
+      style={{maxHeight: '15rem'}}
     >
-      <div className='py-1' role='menu'
-           aria-orientation='vertical' aria-labelledby='options-menu'
+      <div
+        className='py-1'
+        role='menu'
+        aria-orientation='vertical'
+        aria-labelledby='options-menu'
       >
         {items}
       </div>
@@ -36,24 +41,40 @@ const DropdownPanel = ({visible, items, onClick}) => (
 );
 
 const DropdownMain = ({
-  text, textColor, textColorActive, borderColor, onClick, showInput, filter, setFilter, panelVisible
+  text,
+  textColor,
+  textColorActive,
+  borderColor,
+  onClick,
+  showInput,
+  filter,
+  setFilter,
+  panelVisible
 }) => (
   <div className='z-10'>
     <span className='rounded-md shadow-sm'>
       <button
-        type='button' aria-haspopup='true' aria-expanded={panelVisible} onClick={onClick}
+        type='button'
+        aria-haspopup='true'
+        aria-expanded={panelVisible}
+        onClick={onClick}
         className={`inline-flex justify-center items-center w-full rounded-md
           border ${borderColor} px-4 py-2 bg-white text-sm leading-5 font-medium ${textColor} hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:${textColorActive} transition ease-in-out duration-150`}
       >
-        {showInput ?
+        {showInput ? (
           <input
-            className='outline-none p-0 m-0' autoFocus value={filter}
+            className='outline-none p-0 m-0'
+            autoFocus
+            value={filter}
             onChange={({target: {value}}) => setFilter(value)}
-            onClick={event => {event.stopPropagation()}}
-          /> :
+            onClick={event => {
+              event.stopPropagation();
+            }}
+          />
+        ) : (
           <span className='flex-1 text-left'>{text}</span>
-        }
-        <Icon icon='fa-chevron-down' className='ml-3'/>
+        )}
+        <Icon icon='fa-chevron-down' className='ml-3' />
       </button>
     </span>
   </div>
@@ -69,32 +90,47 @@ const Dropdown = ({
   minWidth = '14rem',
   maxWidth = '30rem',
   closeOnPanelClick = false,
-  ...props}) => {
+  ...props
+}) => {
   const {popupRef, panelVisible, setPanelVisible} = usePopup();
   const [filter, setFilter] = useState('');
   const togglePanel = () => {
     children.length > 0 && setPanelVisible(!panelVisible);
     setFilter('');
-  }
+  };
   const visibleItems = React.Children.toArray(children).filter(item => {
-    if (typeof item.props?.children === 'string' ){
+    if (typeof item.props?.children === 'string') {
       return item.props.children.toLowerCase().includes(filter.toLowerCase());
     }
     return true;
   });
   return (
     <div
-      ref={popupRef} className={`relative inline-block text-left ${className}`}
+      ref={popupRef}
+      className={`relative inline-block text-left ${className}`}
       style={{minWidth, maxWidth}}
       {...props}
     >
       <DropdownMain
-        borderColor={borderColor} text={text} textColor={textColor} textColorActive={textColorActive}
-        onClick={togglePanel} showInput={panelVisible} filter={filter} setFilter={setFilter} panelVisible={panelVisible}
+        borderColor={borderColor}
+        text={text}
+        textColor={textColor}
+        textColorActive={textColorActive}
+        onClick={togglePanel}
+        showInput={panelVisible}
+        filter={filter}
+        setFilter={setFilter}
+        panelVisible={panelVisible}
       />
       <DropdownPanel
         visible={panelVisible}
-        items={visibleItems.length > 0 ? visibleItems : <Dropdown.Item>No options</Dropdown.Item>}
+        items={
+          visibleItems.length > 0 ? (
+            visibleItems
+          ) : (
+            <Dropdown.Item>No options</Dropdown.Item>
+          )
+        }
         filter={filter}
         onClick={() => closeOnPanelClick && togglePanel()}
       />

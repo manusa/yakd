@@ -50,21 +50,28 @@ const PersistentVolumesDetailPage = ({persistentVolume}) => (
             {pv.selectors.specVolumeMode(persistentVolume)}
           </Form.Field>
         </Form>
-        <Card.Title
-          className='-mx-3'
-          titleVariant={Card.titleVariants.medium}
-        >Claim</Card.Title>
+        <Card.Title className='-mx-3' titleVariant={Card.titleVariants.medium}>
+          Claim
+        </Card.Title>
         <Form>
           <Form.Field label='Kind'>
             {pv.selectors.specClaimKind(persistentVolume)}
           </Form.Field>
           <Form.Field label='Name'>
-            <Link.PersistentVolume to={`/persistentvolumeclaims/${pv.selectors.specClaimUid(persistentVolume)}`}>
+            <Link.PersistentVolume
+              to={`/persistentvolumeclaims/${pv.selectors.specClaimUid(
+                persistentVolume
+              )}`}
+            >
               {pv.selectors.specClaimName(persistentVolume)}
             </Link.PersistentVolume>
           </Form.Field>
           <Form.Field label='Namespace'>
-            <Link.Namespace to={`/namespaces/${pv.selectors.specClaimNamespace(persistentVolume)}`}>
+            <Link.Namespace
+              to={`/namespaces/${pv.selectors.specClaimNamespace(
+                persistentVolume
+              )}`}
+            >
               {pv.selectors.specClaimNamespace(persistentVolume)}
             </Link.Namespace>
           </Form.Field>
@@ -82,7 +89,9 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
   ...stateProps,
   ...dispatchProps,
   ...ownProps,
-  persistentVolume: stateProps.persistentVolumes[ownProps.params.uid],
+  persistentVolume: stateProps.persistentVolumes[ownProps.params.uid]
 });
 
-export default withParams(connect(mapStateToProps, null, mergeProps)(PersistentVolumesDetailPage));
+export default withParams(
+  connect(mapStateToProps, null, mergeProps)(PersistentVolumesDetailPage)
+);

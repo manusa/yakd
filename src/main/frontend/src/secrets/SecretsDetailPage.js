@@ -31,19 +31,20 @@ const DataField = ({label, value}) => {
   if (hidden) {
     style.overflow = 'hidden';
     style.userSelect = 'none';
-    style.color = 'transparent'
-    style.textShadow = '0 0 8px white'
+    style.color = 'transparent';
+    style.textShadow = '0 0 8px white';
   }
   return (
     <Form.Field
       width={Form.widths.full}
       label={
         <>
-          <a  href='#ignore'
+          <a
+            href='#ignore'
             className='inline-block mr-2 focus:outline-none'
             onClick={() => setHidden(!hidden)}
           >
-            <Icon icon={hidden ? 'fa-lock' : 'fa-lock-open'}/>
+            <Icon icon={hidden ? 'fa-lock' : 'fa-lock-open'} />
           </a>
           {label}
         </>
@@ -69,10 +70,12 @@ const SecretsDetailPage = ({secret}) => (
       <Form>
         <metadata.Details resource={secret} />
         <Form.Field label='Type'>x{s.selectors.type(secret)}</Form.Field>
-        {Object.entries(s.selectors.data(secret)).map(([key, value]) =>
-          <DataField key={key} label={key} value={value} />)}
+        {Object.entries(s.selectors.data(secret)).map(([key, value]) => (
+          <DataField key={key} label={key} value={value} />
+        ))}
       </Form>
-    } />
+    }
+  />
 );
 
 const mapStateToProps = ({secrets}) => ({
@@ -83,7 +86,9 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
   ...stateProps,
   ...dispatchProps,
   ...ownProps,
-  secret: stateProps.secrets[ownProps.params.uid],
+  secret: stateProps.secrets[ownProps.params.uid]
 });
 
-export default withParams(connect(mapStateToProps, null, mergeProps)(SecretsDetailPage));
+export default withParams(
+  connect(mapStateToProps, null, mergeProps)(SecretsDetailPage)
+);

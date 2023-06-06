@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-import redux from "../redux";
+import redux from '../redux';
 
 const selectors = {};
 
@@ -22,10 +22,7 @@ selectors.roleRefName = crb => crb?.roleRef?.name ?? '';
 
 // Selectors for array of ClusterRoleBindings
 
-selectors.crbsBy = (crbs = {}, {
-  roleRefName,
-  ...filters
-} = undefined) =>
+selectors.crbsBy = (crbs = {}, {roleRefName, ...filters} = undefined) =>
   Object.entries(redux.selectors.resourcesBy(crbs, filters))
     .filter(([, crb]) => {
       if (roleRefName) {

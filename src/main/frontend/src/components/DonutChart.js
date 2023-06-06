@@ -28,23 +28,32 @@ const DonutChart = ({
   children,
   ...props
 }) => (
-  <div className={`relative flex items-center justify-center ${className}`} {...props}>
-    <svg
-      className={`absolute`}
-      viewBox={`0 0 ${c*2} ${c*2}`}
-    >
-      <circle stroke={background} strokeWidth={width} fill='none'
-              cx={c} cy={c} r={r}
+  <div
+    className={`relative flex items-center justify-center ${className}`}
+    {...props}
+  >
+    <svg className={`absolute`} viewBox={`0 0 ${c * 2} ${c * 2}`}>
+      <circle
+        stroke={background}
+        strokeWidth={width}
+        fill='none'
+        cx={c}
+        cy={c}
+        r={r}
       />
-      <circle stroke={color} strokeWidth={width}
-              strokeDasharray={`${percent},${100-percent}`}
-              strokeLinecap={percent > 0 ? 'round' : ''}
-              transform={`rotate(270, ${c}, ${c})`} fill='none'
-              cx={c} cy={c} r={r} />
+      <circle
+        stroke={color}
+        strokeWidth={width}
+        strokeDasharray={`${percent},${100 - percent}`}
+        strokeLinecap={percent > 0 ? 'round' : ''}
+        transform={`rotate(270, ${c}, ${c})`}
+        fill='none'
+        cx={c}
+        cy={c}
+        r={r}
+      />
     </svg>
-    <div>
-      {children}
-    </div>
+    <div>{children}</div>
   </div>
 );
 

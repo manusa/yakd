@@ -16,24 +16,31 @@
  */
 const selectors = {};
 
-selectors.statusDesiredNumberScheduled = daemonSet => daemonSet?.status?.desiredNumberScheduled ?? 0;
+selectors.statusDesiredNumberScheduled = daemonSet =>
+  daemonSet?.status?.desiredNumberScheduled ?? 0;
 
-selectors.statusCurrentNumberScheduled = daemonSet => daemonSet?.status?.currentNumberScheduled ?? 0;
+selectors.statusCurrentNumberScheduled = daemonSet =>
+  daemonSet?.status?.currentNumberScheduled ?? 0;
 
 selectors.isReady = daemonSet =>
-  selectors.statusDesiredNumberScheduled(daemonSet) === selectors.statusCurrentNumberScheduled(daemonSet);
+  selectors.statusDesiredNumberScheduled(daemonSet) ===
+  selectors.statusCurrentNumberScheduled(daemonSet);
 
-selectors.containers = daemonSet => daemonSet?.spec?.template?.spec?.containers ?? [];
+selectors.containers = daemonSet =>
+  daemonSet?.spec?.template?.spec?.containers ?? [];
 
-selectors.images = daemonSet => selectors.containers(daemonSet).map(c => c.image);
+selectors.images = daemonSet =>
+  selectors.containers(daemonSet).map(c => c.image);
 
-selectors.specUpdateStrategyType = daemonSet => daemonSet?.spec?.updateStrategy?.type ?? '';
+selectors.specUpdateStrategyType = daemonSet =>
+  daemonSet?.spec?.updateStrategy?.type ?? '';
 
 // Selectors for array of daemonSets
 
-selectors.readyCount = daemonSets => daemonSets.reduce(
-  (count, daemonSet) => selectors.isReady(daemonSet) ? count + 1 : count,
-  0
-);
+selectors.readyCount = daemonSets =>
+  daemonSets.reduce(
+    (count, daemonSet) => (selectors.isReady(daemonSet) ? count + 1 : count),
+    0
+  );
 
 export default selectors;

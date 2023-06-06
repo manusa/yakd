@@ -16,15 +16,21 @@
  */
 import React from 'react';
 import r from './';
-import Link from "../components/Link";
-import Icon from "../components/Icon";
+import Link from '../components/Link';
+import Icon from '../components/Icon';
 
 const Host = ({route}) => {
-  const url = `http${r.selectors.specTls(route) ? 's' : ''}://${r.selectors.specHost(route)}${r.selectors.specPath(route)}`;
+  const url = `http${
+    r.selectors.specTls(route) ? 's' : ''
+  }://${r.selectors.specHost(route)}${r.selectors.specPath(route)}`;
   return (
     <Link href={url} target='_blank'>
       {r.selectors.specHost(route)}
-      <Icon className='ml-1 text-xs' icon='fa-external-link-alt' stylePrefix='fas' />
+      <Icon
+        className='ml-1 text-xs'
+        icon='fa-external-link-alt'
+        stylePrefix='fas'
+      />
     </Link>
   );
 };

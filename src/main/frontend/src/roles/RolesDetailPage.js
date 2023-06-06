@@ -31,11 +31,11 @@ const RolesDetailPage = ({role}) => (
     deleteFunction={r.api.delete}
     body={
       <Form>
-        <metadata.Details resource={role}/>
+        <metadata.Details resource={role} />
       </Form>
     }
   >
-    <cRoles.RuleList className='mt-2' rules={r.selectors.rules(role)}/>
+    <cRoles.RuleList className='mt-2' rules={r.selectors.rules(role)} />
   </ResourceDetailPage>
 );
 
@@ -47,7 +47,9 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
   ...stateProps,
   ...dispatchProps,
   ...ownProps,
-  role: stateProps.roles[ownProps.params.uid],
+  role: stateProps.roles[ownProps.params.uid]
 });
 
-export default withParams(connect(mapStateToProps, null, mergeProps)(RolesDetailPage));
+export default withParams(
+  connect(mapStateToProps, null, mergeProps)(RolesDetailPage)
+);

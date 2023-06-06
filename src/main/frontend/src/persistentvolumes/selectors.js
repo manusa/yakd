@@ -16,20 +16,30 @@
  */
 const selectors = {};
 
-selectors.specStorageClassName = persistentVolume => persistentVolume?.spec?.storageClassName ?? '';
+selectors.specStorageClassName = persistentVolume =>
+  persistentVolume?.spec?.storageClassName ?? '';
 
-selectors.specCapacityStorage = persistentVolume => persistentVolume?.spec?.capacity?.storage ?? '';
+selectors.specCapacityStorage = persistentVolume =>
+  persistentVolume?.spec?.capacity?.storage ?? '';
 
-selectors.specClaim = persistentVolume => persistentVolume?.spec?.claimRef ?? {};
-selectors.specClaimKind = persistentVolume => selectors.specClaim(persistentVolume).kind ?? '';
-selectors.specClaimUid = persistentVolume => selectors.specClaim(persistentVolume).uid ?? '';
-selectors.specClaimName = persistentVolume => selectors.specClaim(persistentVolume).name ?? '';
-selectors.specClaimNamespace = persistentVolume => selectors.specClaim(persistentVolume).namespace ?? '';
+selectors.specClaim = persistentVolume =>
+  persistentVolume?.spec?.claimRef ?? {};
+selectors.specClaimKind = persistentVolume =>
+  selectors.specClaim(persistentVolume).kind ?? '';
+selectors.specClaimUid = persistentVolume =>
+  selectors.specClaim(persistentVolume).uid ?? '';
+selectors.specClaimName = persistentVolume =>
+  selectors.specClaim(persistentVolume).name ?? '';
+selectors.specClaimNamespace = persistentVolume =>
+  selectors.specClaim(persistentVolume).namespace ?? '';
 
-selectors.specReclaimPolicy = persistentVolume => persistentVolume?.spec?.persistentVolumeReclaimPolicy ?? '';
+selectors.specReclaimPolicy = persistentVolume =>
+  persistentVolume?.spec?.persistentVolumeReclaimPolicy ?? '';
 
-selectors.specVolumeMode = persistentVolume => persistentVolume?.spec?.volumeMode ?? '';
+selectors.specVolumeMode = persistentVolume =>
+  persistentVolume?.spec?.volumeMode ?? '';
 
-selectors.statusPhase = persistentVolume => persistentVolume?.status?.phase ?? '';
+selectors.statusPhase = persistentVolume =>
+  persistentVolume?.status?.phase ?? '';
 
 export default selectors;

@@ -25,9 +25,11 @@ const DeploymentsEditPage = ({params: {uid}}) => (
   <ResourceEditPage
     kind='Deployments'
     path='deployments'
-    cardTitle={resource =>
-      <Link.RouterLink to={`/deployments/${uid}`}>{md.selectors.name(resource)}</Link.RouterLink>
-    }
+    cardTitle={resource => (
+      <Link.RouterLink to={`/deployments/${uid}`}>
+        {md.selectors.name(resource)}
+      </Link.RouterLink>
+    )}
     save={async resource => await d.api.update(resource)}
     resourceFromState={state => state.deployments[uid]}
   />

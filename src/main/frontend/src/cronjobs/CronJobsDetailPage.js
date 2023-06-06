@@ -44,14 +44,17 @@ const SuspendField = ({cronJob}) => {
       </div>
     </Form.Field>
   );
-}
+};
 
 const CronJobsDetailPage = ({cronJob}) => (
   <ResourceDetailPage
     path='cronjobs'
     title={
       <DashboardPage.Title
-        path='cronjobs' kind='CronJobs' namespace={metadata.selectors.namespace(cronJob)} resource={cronJob}
+        path='cronjobs'
+        kind='CronJobs'
+        namespace={metadata.selectors.namespace(cronJob)}
+        resource={cronJob}
         isReadyFunction={cj.selectors.isReady}
       />
     }
@@ -65,7 +68,7 @@ const CronJobsDetailPage = ({cronJob}) => (
         onClick={() => cj.api.trigger(cronJob)}
         title='Manual Trigger'
       >
-        <Icon icon='fa-play' className='mr-2'/>
+        <Icon icon='fa-play' className='mr-2' />
         Trigger
       </Link>
     }
@@ -83,8 +86,16 @@ const CronJobsDetailPage = ({cronJob}) => (
           {cj.selectors.specConcurrencyPolicy(cronJob)}
         </Form.Field>
         <Form.Field label='Last Schedule'>
-          {`${cj.selectors.statusLastScheduleTime(cronJob)?.toLocaleDateString() ?? ''}
-          ${cj.selectors.statusLastScheduleTime(cronJob)?.toLocaleTimeString() ?? ''}`}
+          {`${
+            cj.selectors
+              .statusLastScheduleTime(cronJob)
+              ?.toLocaleDateString() ?? ''
+          }
+          ${
+            cj.selectors
+              .statusLastScheduleTime(cronJob)
+              ?.toLocaleTimeString() ?? ''
+          }`}
         </Form.Field>
       </Form>
     }
@@ -93,13 +104,15 @@ const CronJobsDetailPage = ({cronJob}) => (
       title='Active Jobs'
       titleVariant={Card.titleVariants.medium}
       className='mt-2'
-      uids={cj.selectors.statusActiveUids(cronJob)} />
+      uids={cj.selectors.statusActiveUids(cronJob)}
+    />
     <jobs.List
       title='Inactive Jobs'
       titleVariant={Card.titleVariants.medium}
       className='mt-2'
       ownerUid={metadata.selectors.uid(cronJob)}
-      uidsNotIn={cj.selectors.statusActiveUids(cronJob)} />
+      uidsNotIn={cj.selectors.statusActiveUids(cronJob)}
+    />
   </ResourceDetailPage>
 );
 
@@ -111,4 +124,6 @@ const mergeProps = ({cronJobs}, dispatchProps, {params: {uid}}) => ({
   cronJob: cronJobs[uid]
 });
 
-export default withParams(connect(mapStateToProps, null, mergeProps)(CronJobsDetailPage));
+export default withParams(
+  connect(mapStateToProps, null, mergeProps)(CronJobsDetailPage)
+);

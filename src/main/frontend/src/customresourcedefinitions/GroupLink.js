@@ -19,7 +19,11 @@ import Link from '../components/Link';
 import crd from './index';
 
 const GroupLink = ({customResourceDefinition}) => (
-  <Link.ResourceLink to={`/customresourcedefinitions?group=${crd.selectors.specGroup(customResourceDefinition)}`}>
+  <Link.ResourceLink
+    to={`/customresourcedefinitions?group=${crd.selectors.specGroup(
+      customResourceDefinition
+    )}`}
+  >
     {crd.selectors.specGroup(customResourceDefinition)}
   </Link.ResourceLink>
 );

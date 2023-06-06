@@ -32,7 +32,9 @@ const HorizontalPodAutoscalersDetailPage = ({horizontalPodAutoscaler}) => (
     body={
       <Form>
         <metadata.Details resource={horizontalPodAutoscaler} />
-        <Form.Field label='Scale Target'>{hpa.selectors.scaleTargetRefName(horizontalPodAutoscaler)}</Form.Field>
+        <Form.Field label='Scale Target'>
+          {hpa.selectors.scaleTargetRefName(horizontalPodAutoscaler)}
+        </Form.Field>
       </Form>
     }
   />
@@ -42,8 +44,14 @@ const mapStateToProps = ({horizontalPodAutoscalers}) => ({
   horizontalPodAutoscalers
 });
 
-const mergeProps = ({horizontalPodAutoscalers}, dispatchProps, {params: {uid}}) => ({
+const mergeProps = (
+  {horizontalPodAutoscalers},
+  dispatchProps,
+  {params: {uid}}
+) => ({
   horizontalPodAutoscaler: horizontalPodAutoscalers[uid]
 });
 
-export default withParams(connect(mapStateToProps, null, mergeProps)(HorizontalPodAutoscalersDetailPage));
+export default withParams(
+  connect(mapStateToProps, null, mergeProps)(HorizontalPodAutoscalersDetailPage)
+);
