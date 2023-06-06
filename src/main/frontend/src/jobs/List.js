@@ -36,7 +36,7 @@ const Rows = ({jobs}) => {
   const deleteJob = job => () => j.api.delete(job);
   return jobs.sort(metadata.selectors.sortByCreationTimeStamp).map(job => (
     <Table.ResourceRow key={metadata.selectors.uid(job)} resource={job}>
-      <Table.Cell className='whitespace-no-wrap w-3 text-center'>
+      <Table.Cell className='whitespace-nowrap w-3 text-center'>
         <Icon
           className={
             j.selectors.isComplete(job) ? 'text-green-500' : 'text-gray-500'
@@ -44,12 +44,12 @@ const Rows = ({jobs}) => {
           icon={j.selectors.isComplete(job) ? 'fa-check' : 'fa-hourglass-half'}
         />
       </Table.Cell>
-      <Table.Cell className='whitespace-no-wrap'>
+      <Table.Cell className='whitespace-nowrap'>
         <Link.Job to={`/jobs/${metadata.selectors.uid(job)}`}>
           {metadata.selectors.name(job)}
         </Link.Job>
       </Table.Cell>
-      <Table.Cell className='whitespace-no-wrap'>
+      <Table.Cell className='whitespace-nowrap'>
         <Link.Namespace to={`/namespaces/${metadata.selectors.namespace(job)}`}>
           {metadata.selectors.namespace(job)}
         </Link.Namespace>
@@ -57,7 +57,7 @@ const Rows = ({jobs}) => {
       <Table.Cell className=''>
         {j.selectors.statusSucceeded(job)}/{j.selectors.specCompletions(job)}
       </Table.Cell>
-      <Table.Cell className='whitespace-no-wrap text-center'>
+      <Table.Cell className='whitespace-nowrap text-center'>
         <Table.DeleteButton onClick={deleteJob(job)} />
       </Table.Cell>
     </Table.ResourceRow>

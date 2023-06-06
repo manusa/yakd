@@ -41,7 +41,7 @@ const Switch = ({
       <div
         className={`
         ${checked ? 'translate-x-full' : ''}
-        absolute block w-4 h-4 mt-1 ml-1 ${nobColor} rounded-full shadow inset-y-0 left-0 focus-within:shadow-outline
+        absolute block w-4 h-4 mt-1 ml-1 ${nobColor} rounded-full shadow inset-y-0 left-0 focus-within:ring
         transform transition-transform ${duration} ease-in-out
         `}
       >

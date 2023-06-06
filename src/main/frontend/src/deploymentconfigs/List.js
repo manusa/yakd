@@ -46,7 +46,7 @@ const Rows = ({deploymentConfigs}) => {
         key={metadata.selectors.uid(deploymentConfig)}
         resource={deploymentConfig}
       >
-        <Table.Cell className='whitespace-no-wrap w-3 text-center'>
+        <Table.Cell className='whitespace-nowrap w-3 text-center'>
           <Icon
             className={
               dc.selectors.isReady(deploymentConfig)
@@ -60,7 +60,7 @@ const Rows = ({deploymentConfigs}) => {
             }
           />
         </Table.Cell>
-        <Table.Cell className='whitespace-no-wrap'>
+        <Table.Cell className='whitespace-nowrap'>
           <Link.DeploymentConfig
             to={`/deploymentconfigs/${metadata.selectors.uid(
               deploymentConfig
@@ -69,7 +69,7 @@ const Rows = ({deploymentConfigs}) => {
             {metadata.selectors.name(deploymentConfig)}
           </Link.DeploymentConfig>
         </Table.Cell>
-        <Table.Cell className='whitespace-no-wrap'>
+        <Table.Cell className='whitespace-nowrap'>
           <Link.Namespace
             to={`/namespaces/${metadata.selectors.namespace(deploymentConfig)}`}
           >
@@ -81,7 +81,7 @@ const Rows = ({deploymentConfigs}) => {
             <div key={idx}>{image}</div>
           ))}
         </Table.Cell>
-        <Table.Cell className='whitespace-no-wrap text-center'>
+        <Table.Cell className='whitespace-nowrap text-center'>
           <Link
             variant={Link.variants.outline}
             onClick={restartDC(deploymentConfig)}

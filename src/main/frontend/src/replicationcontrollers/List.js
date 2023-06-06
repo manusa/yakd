@@ -43,7 +43,7 @@ const Rows = ({replicationControllers}) => {
         key={metadata.selectors.uid(replicationController)}
         resource={replicationController}
       >
-        <Table.Cell className='whitespace-no-wrap w-3 text-center'>
+        <Table.Cell className='whitespace-nowrap w-3 text-center'>
           <Icon
             className={
               rc.selectors.isReady(replicationController)
@@ -57,7 +57,7 @@ const Rows = ({replicationControllers}) => {
             }
           />
         </Table.Cell>
-        <Table.Cell className='whitespace-no-wrap'>
+        <Table.Cell className='whitespace-nowrap'>
           <Link.ReplicationController
             to={`/replicationcontrollers/${metadata.selectors.uid(
               replicationController
@@ -66,13 +66,13 @@ const Rows = ({replicationControllers}) => {
             {metadata.selectors.name(replicationController)}
           </Link.ReplicationController>
         </Table.Cell>
-        <Table.Cell className='whitespace-no-wrap'>
+        <Table.Cell className='whitespace-nowrap'>
           {metadata.selectors.namespace(replicationController)}
         </Table.Cell>
-        <Table.Cell className='whitespace-no-wrap'>
+        <Table.Cell className='whitespace-nowrap'>
           {rc.selectors.specReplicas(replicationController)}
         </Table.Cell>
-        <Table.Cell className='whitespace-no-wrap text-center'>
+        <Table.Cell className='whitespace-nowrap text-center'>
           <Table.DeleteButton
             onClick={deleteReplicationController(replicationController)}
           />

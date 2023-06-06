@@ -107,7 +107,7 @@ const Rows = ({events}) => {
       const lastTimestamp = new Date(event.lastTimestamp);
       return (
         <Table.ResourceRow key={metadata.selectors.uid(event)} resource={event}>
-          <Table.Cell className='whitespace-no-wrap w-3 text-center'>
+          <Table.Cell className='whitespace-nowrap w-3 text-center'>
             <Icon
               className={
                 ev.selectors.typeIsNormal(event)
@@ -121,7 +121,7 @@ const Rows = ({events}) => {
               }
             />
           </Table.Cell>
-          <Table.Cell className='whitespace-no-wrap'>
+          <Table.Cell className='whitespace-nowrap'>
             {ev.selectors.involvedObjectKind(event)}
           </Table.Cell>
           <Table.Cell>

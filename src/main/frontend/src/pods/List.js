@@ -39,7 +39,7 @@ const Rows = ({pods}) => {
   const deletePod = pod => async () => await p.api.delete(pod);
   return pods.sort(metadata.selectors.sortByCreationTimeStamp).map(pod => (
     <Table.ResourceRow key={metadata.selectors.uid(pod)} resource={pod}>
-      <Table.Cell className='whitespace-no-wrap w-3 text-center'>
+      <Table.Cell className='whitespace-nowrap w-3 text-center'>
         <Icon
           className={
             p.selectors.succeededOrContainersReady(pod)
@@ -58,12 +58,12 @@ const Rows = ({pods}) => {
           {metadata.selectors.name(pod)}
         </Link.Pod>
       </Table.Cell>
-      <Table.Cell className='whitespace-no-wrap'>
+      <Table.Cell className='whitespace-nowrap'>
         <Link.Namespace to={`/namespaces/${metadata.selectors.namespace(pod)}`}>
           {metadata.selectors.namespace(pod)}
         </Link.Namespace>
       </Table.Cell>
-      <Table.Cell className='whitespace-no-wrap'>
+      <Table.Cell className='whitespace-nowrap'>
         <p.StatusIcon
           className='mr-1'
           statusPhase={p.selectors.statusPhase(pod)}
@@ -71,7 +71,7 @@ const Rows = ({pods}) => {
         {p.selectors.statusPhase(pod)}
       </Table.Cell>
       <Table.Cell>{p.selectors.restartCount(pod)}</Table.Cell>
-      <Table.Cell className='whitespace-no-wrap text-center'>
+      <Table.Cell className='whitespace-nowrap text-center'>
         <Link.RouterLink
           variant={Link.variants.outline}
           to={`/pods/${metadata.selectors.uid(pod)}/logs`}

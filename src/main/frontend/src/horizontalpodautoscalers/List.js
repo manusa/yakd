@@ -42,7 +42,7 @@ const Rows = ({horizontalPodAutoscalers}) => {
         key={metadata.selectors.uid(horizontalPodAutoscaler)}
         resource={horizontalPodAutoscaler}
       >
-        <Table.Cell className='whitespace-no-wrap w-3 text-center'>
+        <Table.Cell className='whitespace-nowrap w-3 text-center'>
           <Icon
             className={
               hpa.selectors.isReady(horizontalPodAutoscaler)
@@ -56,7 +56,7 @@ const Rows = ({horizontalPodAutoscalers}) => {
             }
           />
         </Table.Cell>
-        <Table.Cell className='whitespace-no-wrap'>
+        <Table.Cell className='whitespace-nowrap'>
           <Link.HorizontalPodAutoscaler
             to={`/horizontalpodautoscalers/${metadata.selectors.uid(
               horizontalPodAutoscaler
@@ -65,7 +65,7 @@ const Rows = ({horizontalPodAutoscalers}) => {
             {metadata.selectors.name(horizontalPodAutoscaler)}
           </Link.HorizontalPodAutoscaler>
         </Table.Cell>
-        <Table.Cell className='whitespace-no-wrap'>
+        <Table.Cell className='whitespace-nowrap'>
           <Link.Namespace
             to={`/namespaces/${metadata.selectors.namespace(
               horizontalPodAutoscaler
@@ -77,7 +77,7 @@ const Rows = ({horizontalPodAutoscalers}) => {
         <Table.Cell>
           {hpa.selectors.scaleTargetRefName(horizontalPodAutoscaler)}
         </Table.Cell>
-        <Table.Cell className='whitespace-no-wrap text-center'>
+        <Table.Cell className='whitespace-nowrap text-center'>
           <Table.DeleteButton onClick={deleteAction(horizontalPodAutoscaler)} />
         </Table.Cell>
       </Table.ResourceRow>

@@ -60,7 +60,7 @@ const PodsLogsPage = ({uid, namespace, name, containers}) => {
   const rowRenderer = ({key, index, style}) => (
     <div
       key={key}
-      className='whitespace-no-wrap'
+      className='whitespace-nowrap'
       style={{...style, width: 'auto'}}
       dangerouslySetInnerHTML={{
         __html: dompurify.sanitize(ansi.toHtml(log[index]))

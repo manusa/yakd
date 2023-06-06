@@ -47,7 +47,7 @@ const Rows = ({configMaps}) => {
             {metadata.selectors.name(configMap)}
           </Link.ConfigMap>
         </Table.Cell>
-        <Table.Cell className='whitespace-no-wrap'>
+        <Table.Cell className='whitespace-nowrap'>
           <Link.Namespace
             to={`/namespaces/${metadata.selectors.namespace(configMap)}`}
           >

@@ -42,7 +42,7 @@ const Rows = ({secrets}) => {
             {metadata.selectors.name(secret)}
           </Link.Secret>
         </Table.Cell>
-        <Table.Cell className='whitespace-no-wrap'>
+        <Table.Cell className='whitespace-nowrap'>
           <Link.Namespace
             to={`/namespaces/${metadata.selectors.namespace(secret)}`}
           >

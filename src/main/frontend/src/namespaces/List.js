@@ -43,7 +43,7 @@ const Rows = ({namespaces}) => {
         key={metadata.selectors.uid(namespace)}
         resource={namespace}
       >
-        <Table.Cell className='whitespace-no-wrap w-3 text-center'>
+        <Table.Cell className='whitespace-nowrap w-3 text-center'>
           <Icon
             className={
               ns.selectors.isReady(namespace)
@@ -73,7 +73,7 @@ const Rows = ({namespaces}) => {
             maxEntries={2}
           />
         </Table.Cell>
-        <Table.Cell className='whitespace-no-wrap text-center'>
+        <Table.Cell className='whitespace-nowrap text-center'>
           <Table.DeleteButton onClick={deleteNamespace(namespace)} />
         </Table.Cell>
       </Table.ResourceRow>

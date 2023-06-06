@@ -49,7 +49,7 @@ const Rows = ({ingresses, crudDelete}) => {
             {metadata.selectors.name(ingress)}
           </Link.Ingress>
         </Table.Cell>
-        <Table.Cell className='whitespace-no-wrap'>
+        <Table.Cell className='whitespace-nowrap'>
           <Link.Namespace
             to={`/namespaces/${metadata.selectors.namespace(ingress)}`}
           >

@@ -25,10 +25,10 @@ import Table from '../components/Table';
 
 const headers = [
   '',
-  <span className='whitespace-no-wrap'>
+  <span className='whitespace-nowrap'>
     <Icon icon='fa-id-card' /> Name
   </span>,
-  <span className='whitespace-no-wrap'>
+  <span className='whitespace-nowrap'>
     <Icon icon='fa-server' /> Roles
   </span>,
   <span>
@@ -39,7 +39,7 @@ const headers = [
 const Rows = ({nodes}) => {
   return nodes.sort(metadata.selectors.sortByCreationTimeStamp).map(node => (
     <Table.ResourceRow key={metadata.selectors.uid(node)} resource={node}>
-      <Table.Cell className='whitespace-no-wrap w-3 text-center'>
+      <Table.Cell className='whitespace-nowrap w-3 text-center'>
         <Icon
           className={
             n.selectors.isReady(node) ? 'text-green-500' : 'text-red-500'

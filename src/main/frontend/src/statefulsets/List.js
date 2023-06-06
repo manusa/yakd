@@ -46,7 +46,7 @@ const Rows = ({statefulSets}) => {
         key={metadata.selectors.uid(statefulSet)}
         resource={statefulSet}
       >
-        <Table.Cell className='whitespace-no-wrap w-3 text-center'>
+        <Table.Cell className='whitespace-nowrap w-3 text-center'>
           <Icon
             className={
               sts.selectors.isReady(statefulSet)
@@ -60,14 +60,14 @@ const Rows = ({statefulSets}) => {
             }
           />
         </Table.Cell>
-        <Table.Cell className='whitespace-no-wrap'>
+        <Table.Cell className='whitespace-nowrap'>
           <Link.StatefulSet
             to={`/statefulsets/${metadata.selectors.uid(statefulSet)}`}
           >
             {metadata.selectors.name(statefulSet)}
           </Link.StatefulSet>
         </Table.Cell>
-        <Table.Cell className='whitespace-no-wrap'>
+        <Table.Cell className='whitespace-nowrap'>
           <Link.Namespace
             to={`/namespaces/${metadata.selectors.namespace(statefulSet)}`}
           >
@@ -79,7 +79,7 @@ const Rows = ({statefulSets}) => {
             <div key={idx}>{image}</div>
           ))}
         </Table.Cell>
-        <Table.Cell className='whitespace-no-wrap text-center'>
+        <Table.Cell className='whitespace-nowrap text-center'>
           <Link
             variant={Link.variants.outline}
             onClick={restartStatefulSet(statefulSet)}

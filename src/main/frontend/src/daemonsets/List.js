@@ -44,7 +44,7 @@ const Rows = ({daemonSets}) => {
         key={metadata.selectors.uid(daemonSet)}
         resource={daemonSet}
       >
-        <Table.Cell className='whitespace-no-wrap w-3 text-center'>
+        <Table.Cell className='whitespace-nowrap w-3 text-center'>
           <Icon
             className={
               ds.selectors.isReady(daemonSet)
@@ -58,14 +58,14 @@ const Rows = ({daemonSets}) => {
             }
           />
         </Table.Cell>
-        <Table.Cell className='whitespace-no-wrap'>
+        <Table.Cell className='whitespace-nowrap'>
           <Link.DaemonSet
             to={`/daemonsets/${metadata.selectors.uid(daemonSet)}`}
           >
             {metadata.selectors.name(daemonSet)}
           </Link.DaemonSet>
         </Table.Cell>
-        <Table.Cell className='whitespace-no-wrap'>
+        <Table.Cell className='whitespace-nowrap'>
           <Link.Namespace
             to={`/namespaces/${metadata.selectors.namespace(daemonSet)}`}
           >
@@ -77,7 +77,7 @@ const Rows = ({daemonSets}) => {
             <div key={idx}>{image}</div>
           ))}
         </Table.Cell>
-        <Table.Cell className='whitespace-no-wrap text-center'>
+        <Table.Cell className='whitespace-nowrap text-center'>
           <Link
             variant={Link.variants.outline}
             onClick={restart(daemonSet)}

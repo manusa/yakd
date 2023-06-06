@@ -43,7 +43,7 @@ const Rows = ({cronJobs}) => {
         key={metadata.selectors.uid(cronJob)}
         resource={cronJob}
       >
-        <Table.Cell className='whitespace-no-wrap w-3 text-center'>
+        <Table.Cell className='whitespace-nowrap w-3 text-center'>
           <Icon
             className={
               cj.selectors.isReady(cronJob) ? 'text-green-500' : 'text-red-500'
@@ -55,12 +55,12 @@ const Rows = ({cronJobs}) => {
             }
           />
         </Table.Cell>
-        <Table.Cell className='whitespace-no-wrap'>
+        <Table.Cell className='whitespace-nowrap'>
           <Link.CronJob to={`/cronjobs/${metadata.selectors.uid(cronJob)}`}>
             {metadata.selectors.name(cronJob)}
           </Link.CronJob>
         </Table.Cell>
-        <Table.Cell className='whitespace-no-wrap'>
+        <Table.Cell className='whitespace-nowrap'>
           <Link.Namespace
             to={`/namespaces/${metadata.selectors.namespace(cronJob)}`}
           >
@@ -70,7 +70,7 @@ const Rows = ({cronJobs}) => {
         <Table.Cell>{cj.selectors.specSchedule(cronJob)}</Table.Cell>
         <Table.Cell>{cj.selectors.specSuspend(cronJob).toString()}</Table.Cell>
         <Table.Cell>{cj.selectors.statusActive(cronJob).length}</Table.Cell>
-        <Table.Cell className='whitespace-no-wrap text-center'>
+        <Table.Cell className='whitespace-nowrap text-center'>
           <Table.DeleteButton onClick={deleteJob(cronJob)} />
         </Table.Cell>
       </Table.ResourceRow>

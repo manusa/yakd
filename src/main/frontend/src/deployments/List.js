@@ -48,7 +48,7 @@ const Rows = ({deployments}) => {
         key={metadata.selectors.uid(deployment)}
         resource={deployment}
       >
-        <Table.Cell className='whitespace-no-wrap w-3 text-center'>
+        <Table.Cell className='whitespace-nowrap w-3 text-center'>
           <Icon
             className={
               deploymentsModule.selectors.isReady(deployment)
@@ -62,14 +62,14 @@ const Rows = ({deployments}) => {
             }
           />
         </Table.Cell>
-        <Table.Cell className='whitespace-no-wrap'>
+        <Table.Cell className='whitespace-nowrap'>
           <Link.Deployment
             to={`/deployments/${metadata.selectors.uid(deployment)}`}
           >
             {metadata.selectors.name(deployment)}
           </Link.Deployment>
         </Table.Cell>
-        <Table.Cell className='whitespace-no-wrap'>
+        <Table.Cell className='whitespace-nowrap'>
           <Link.Namespace
             to={`/namespaces/${metadata.selectors.namespace(deployment)}`}
           >
@@ -81,7 +81,7 @@ const Rows = ({deployments}) => {
             <div key={idx}>{image}</div>
           ))}
         </Table.Cell>
-        <Table.Cell className='whitespace-no-wrap text-center'>
+        <Table.Cell className='whitespace-nowrap text-center'>
           <Link
             variant={Link.variants.outline}
             onClick={restartDeployment(deployment)}

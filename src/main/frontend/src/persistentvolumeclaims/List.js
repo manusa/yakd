@@ -54,7 +54,7 @@ const Rows = ({persistentVolumeClaims, crudDelete}) => {
             {metadata.selectors.name(persistentVolumeClaim)}
           </Link.PersistentVolumeClaim>
         </Table.Cell>
-        <Table.Cell className='whitespace-no-wrap'>
+        <Table.Cell className='whitespace-nowrap'>
           <Link.Namespace
             to={`/namespaces/${metadata.selectors.namespace(
               persistentVolumeClaim

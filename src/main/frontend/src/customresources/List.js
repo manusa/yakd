@@ -67,7 +67,7 @@ const Rows = ({
           </Link>
         </Table.Cell>
         {crd.selectors.isNamespaced(customResourceDefinition) && (
-          <Table.Cell className='whitespace-no-wrap'>
+          <Table.Cell className='whitespace-nowrap'>
             <Link.Namespace
               to={`/namespaces/${metadata.selectors.namespace(customResource)}`}
             >

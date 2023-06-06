@@ -59,7 +59,7 @@ const DropdownMain = ({
         aria-expanded={panelVisible}
         onClick={onClick}
         className={`inline-flex justify-center items-center w-full rounded-md
-          border ${borderColor} px-4 py-2 bg-white text-sm leading-5 font-medium ${textColor} hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:${textColorActive} transition ease-in-out duration-150`}
+          border ${borderColor} px-4 py-2 bg-white text-sm leading-5 font-medium ${textColor} hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:ring-blue active:bg-gray-50 active:${textColorActive} transition ease-in-out duration-150`}
       >
         {showInput ? (
           <input

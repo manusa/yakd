@@ -46,7 +46,7 @@ const Rows = ({services}) => {
             {metadata.selectors.name(service)}
           </Link.Service>
         </Table.Cell>
-        <Table.Cell className='whitespace-no-wrap'>
+        <Table.Cell className='whitespace-nowrap'>
           <Link.Namespace
             to={`/namespaces/${metadata.selectors.namespace(service)}`}
           >

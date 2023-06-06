@@ -42,7 +42,7 @@ const Rows = ({replicaSets}) => {
         key={metadata.selectors.uid(replicaSet)}
         resource={replicaSet}
       >
-        <Table.Cell className='whitespace-no-wrap w-3 text-center'>
+        <Table.Cell className='whitespace-nowrap w-3 text-center'>
           <Icon
             className={
               rs.selectors.isReady(replicaSet)
@@ -56,16 +56,16 @@ const Rows = ({replicaSets}) => {
             }
           />
         </Table.Cell>
-        <Table.Cell className='whitespace-no-wrap'>
+        <Table.Cell className='whitespace-nowrap'>
           {metadata.selectors.name(replicaSet)}
         </Table.Cell>
-        <Table.Cell className='whitespace-no-wrap'>
+        <Table.Cell className='whitespace-nowrap'>
           {metadata.selectors.namespace(replicaSet)}
         </Table.Cell>
-        <Table.Cell className='whitespace-no-wrap'>
+        <Table.Cell className='whitespace-nowrap'>
           {rs.selectors.specReplicas(replicaSet)}
         </Table.Cell>
-        <Table.Cell className='whitespace-no-wrap text-center'>
+        <Table.Cell className='whitespace-nowrap text-center'>
           <Table.DeleteButton onClick={deleteReplicaSet(replicaSet)} />
         </Table.Cell>
       </Table.ResourceRow>
