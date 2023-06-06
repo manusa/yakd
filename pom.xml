@@ -2,15 +2,16 @@
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.marcnuri.yakc.quickstarts</groupId>
-  <artifactId>quarkus-kubernetes-dashboard</artifactId>
-  <version>0.0.26</version>
-  <name>YAKC :: Quickstarts :: Quarkus Kubernetes Dashboard</name>
+  <groupId>com.marcnuri.yakd</groupId>
+  <artifactId>app</artifactId>
+  <version>0.0.0</version>
+  <name>YAKD :: Application</name>
 
   <properties>
-    <maven.compiler.source>11</maven.compiler.source>
-    <maven.compiler.target>11</maven.compiler.target>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
     <container.image.tag>latest</container.image.tag>
+    <version.yakc>0.0.26</version.yakc>
     <version.yakc-quarkus-extension>0.0.13</version.yakc-quarkus-extension>
     <version.quarkus>2.5.2.Final</version.quarkus>
     <version.smallrye.reactive>0.16.0</version.smallrye.reactive>
@@ -57,12 +58,12 @@
     <dependency>
       <groupId>com.marcnuri.yakc.apis</groupId>
       <artifactId>metrics-server</artifactId>
-      <version>${project.version}</version>
+      <version>${version.yakc}</version>
     </dependency>
     <dependency>
       <groupId>com.marcnuri.yakc.apis</groupId>
       <artifactId>openshift</artifactId>
-      <version>${project.version}</version>
+      <version>${version.yakc}</version>
     </dependency>
     <dependency>
       <groupId>com.marcnuri.yakc</groupId>
