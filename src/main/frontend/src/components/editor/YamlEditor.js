@@ -37,6 +37,7 @@ const YamlEditor = ({
     height='100%'
     tabSize={2}
     showPrintMargin={false}
+    setOptions={{useWorker: false}}
   />
 );
 
