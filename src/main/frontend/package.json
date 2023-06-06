@@ -29,7 +29,7 @@
     "postcss-cli": "8.0.0",
     "prettier": "2.8.8",
     "tailwindcss": "1.9.6",
-    "typeface-open-sans": "0.0.75"
+    "typeface-open-sans": "1.1.13"
   },
   "scripts": {
     "eslint": "eslint src/.",
