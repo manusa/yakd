@@ -15,7 +15,7 @@
     "react-router-dom": "6.1.1",
     "react-scripts": "5.0.1",
     "react-virtualized": "9.22.5",
-    "redux": "4.1.2",
+    "redux": "4.2.1",
     "xterm": "5.1.0",
     "xterm-addon-attach": "0.8.0",
     "xterm-addon-fit": "0.7.0",
