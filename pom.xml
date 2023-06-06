@@ -13,7 +13,7 @@
     <container.image.tag>latest</container.image.tag>
     <version.yakc>0.0.26</version.yakc>
     <version.yakc-quarkus-extension>0.0.13</version.yakc-quarkus-extension>
-    <version.quarkus>2.5.2.Final</version.quarkus>
+    <version.quarkus>2.7.7.Final</version.quarkus>
     <version.smallrye.reactive>0.16.0</version.smallrye.reactive>
     <version.jkube>1.5.1</version.jkube>
     <version.exec-maven-plugin>3.0.0</version.exec-maven-plugin>
