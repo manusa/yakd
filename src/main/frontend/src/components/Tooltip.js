@@ -21,7 +21,7 @@ const Tooltip = ({
   children,
   className = '',
   gutter = 6,
-  bg = 'bg-black bg-opacity-75',
+  bg = 'bg-black/75',
   color = 'text-white',
   ...props
 }) => {

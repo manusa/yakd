@@ -37,7 +37,7 @@ const OfflineIcon = () => (
 
 const Header = ({isMinikube, isOpenShift, offline, setSideBarOpen, title}) => {
   return (
-    <header className='flex justify-between items-center py-4 px-6 bg-white border-b-2 border-blue-700 border-opacity-75'>
+    <header className='flex justify-between items-center py-4 px-6 bg-white border-b-2 border-blue-700/75'>
       <div className='flex w-full items-center'>
         <button
           onClick={() => setSideBarOpen(true)}
@@ -79,7 +79,7 @@ const Header = ({isMinikube, isOpenShift, offline, setSideBarOpen, title}) => {
 };
 
 const Footer = () => (
-  <footer className='flex items-center p-3 text-sm bg-white border-t border-blue-700 border-opacity-75 text-gray-700'>
+  <footer className='flex items-center p-3 text-sm bg-white border-t border-blue-700/75 text-gray-700'>
     <div>
       Copyright © 2020 - <Link href='https://www.marcnuri.com'>Marc Nuri</Link>{' '}
       - Licensed under the{' '}

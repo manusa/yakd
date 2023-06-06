@@ -30,7 +30,7 @@ const Table = ({title, titleVariant, className, children, ...props}) => (
 
 Table.Head = ({columns}) => (
   <thead>
-    <tr className='border-b border-blue-700 border-opacity-25'>
+    <tr className='border-b border-blue-700/25'>
       {columns.map((col, idx) => (
         <th
           key={idx}
@@ -49,9 +49,7 @@ Table.Body = ({children}) => (
 
 // For stripes to work need to add 'even' variant to specific property in tailwind.config.js
 Table.Row = ({children, className = ''}) => (
-  <tr className={`even:bg-opacity-50 even:bg-gray-200 ${className}`}>
-    {children}
-  </tr>
+  <tr className={`even:bg-gray-200/50 ${className}`}>{children}</tr>
 );
 Table.ResourceRow = ({resource, children, ...properties}) => (
   <Table.Row

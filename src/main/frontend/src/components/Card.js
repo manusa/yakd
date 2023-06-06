@@ -41,7 +41,7 @@ Card.Title = ({
   <div
     className={`
       ${titleVariant}
-      border-b border-blue-700 border-opacity-25
+      border-b border-blue-700/25
       ${className ?? ''}`}
   >
     {children}

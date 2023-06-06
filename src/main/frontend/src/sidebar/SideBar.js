@@ -37,8 +37,8 @@ const RoutedLink = ({to, staticContext, className = '', ...props}) => {
       flex items-center border-l-4 px-4 py-2 lg:py-3
       ${
         match
-          ? 'bg-gray-600 bg-opacity-25 text-gray-100 border-gray-100'
-          : 'border-transparent text-gray-500 hover:bg-gray-600 hover:bg-opacity-25 hover:text-gray-100'
+          ? 'bg-gray-600/25 text-gray-100 border-gray-100'
+          : 'border-transparent text-gray-500 hover:bg-gray-600/25 hover:text-gray-100'
       }`}
       {...props}
     />
@@ -51,7 +51,7 @@ const NavGroup = ({expandedItems, toggleItem, label, icon, children}) => {
   return (
     <div className={`border-t last:border-b border-black`}>
       <div
-        className='flex items-center border-l-4 border-transparent px-4 py-2 lg:py-3 text-gray-300 hover:bg-gray-600 hover:bg-opacity-25 cursor-pointer'
+        className='flex items-center border-l-4 border-transparent px-4 py-2 lg:py-3 text-gray-300 hover:bg-gray-600/25 cursor-pointer'
         onClick={onClick}
       >
         <Icon className='side-bar__nav-group-icon' icon={icon} />
@@ -92,7 +92,7 @@ const ExtNavItem = ({href, children}) => (
     variant={Link.variants.none}
     href={href}
     className={`flex items-center border-l-4 px-4 py-2 lg:py-3
-      border-transparent text-gray-500 hover:bg-gray-600 hover:bg-opacity-25 hover:text-gray-100`}
+      border-transparent text-gray-500 hover:bg-gray-600/25 hover:text-gray-100`}
   >
     {children}
   </Link>
