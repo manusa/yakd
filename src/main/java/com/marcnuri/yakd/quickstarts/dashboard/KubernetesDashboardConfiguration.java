@@ -38,7 +38,7 @@ public class KubernetesDashboardConfiguration {
 
   private static final Logger LOG = LoggerFactory.getLogger(KubernetesDashboardConfiguration.class);
 
-  @ConfigProperty(name = "yakc.dashboard.insecureSkipTlsVerify", defaultValue = "false")
+  @ConfigProperty(name = "yakd.dashboard.insecureSkipTlsVerify", defaultValue = "false")
   boolean insecureSkipTlsVerify;
 
   void onStart(@Observes StartupEvent event) {
