@@ -17,8 +17,8 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.daemonsets;
 
-import java.io.IOException;
-
+import io.fabric8.kubernetes.api.model.apps.DaemonSet;
+import io.quarkus.runtime.annotations.RegisterForReflection;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -29,10 +29,6 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-
-import com.marcnuri.yakc.model.io.k8s.api.apps.v1.DaemonSet;
-
-import io.quarkus.runtime.annotations.RegisterForReflection;
 
 @Singleton
 @RegisterForReflection // Quarkus doesn't generate constructors for JAX-RS Subresources
@@ -47,9 +43,7 @@ public class DaemonSetResource {
 
   @DELETE
   @Path("/{namespace}/{name}")
-  public Response delete(@PathParam("namespace") String namespace, @PathParam("name") String name)
-    throws IOException {
-
+  public Response delete(@PathParam("namespace") String namespace, @PathParam("name") String name) {
     daemonSetService.delete(name, namespace);
     return Response.noContent().build();
   }
@@ -59,17 +53,13 @@ public class DaemonSetResource {
   @Produces(MediaType.APPLICATION_JSON)
   @Path("/{namespace}/{name}")
   public DaemonSet update(
-    @PathParam("namespace") String namespace, @PathParam("name") String name, DaemonSet daemonSet)
-    throws IOException {
-
+    @PathParam("namespace") String namespace, @PathParam("name") String name, DaemonSet daemonSet) {
     return daemonSetService.update(name, namespace, daemonSet);
   }
 
   @PUT
   @Path("/{namespace}/{name}/restart")
-  public Response restart(
-    @PathParam("namespace") String namespace, @PathParam("name") String name) throws IOException {
-
+  public Response restart(@PathParam("namespace") String namespace, @PathParam("name") String name) {
     daemonSetService.restart(name, namespace);
     return Response.noContent().build();
   }
