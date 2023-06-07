@@ -52,7 +52,7 @@ import java.util.function.Consumer;
 @Singleton
 public class WatchService {
 
-  private final List<Watchable<? extends Model>> watchables;
+  private final List<Watchable<?>> watchables;
 
   @SuppressWarnings("java:S107")
   @Inject
@@ -108,7 +108,7 @@ public class WatchService {
 
   @SuppressWarnings({"unchecked", "rawtypes", "java:S1452"})
   public Multi<WatchEvent<? extends Model>> newWatch() {
-    final SelfHealingWatchableConsumer consumer = new SelfHealingWatchableConsumer( watchables);
+    final SelfHealingWatchableConsumer consumer = new SelfHealingWatchableConsumer(watchables);
     return Multi.createFrom().emitter((Consumer)consumer, BackPressureStrategy.BUFFER)
       .onCompletion().call(consumer::dispose)
       .onCancellation().call(consumer::dispose)

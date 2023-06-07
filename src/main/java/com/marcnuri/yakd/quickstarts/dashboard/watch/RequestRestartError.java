@@ -17,13 +17,11 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.watch;
 
-import com.marcnuri.yakc.model.Model;
-
 public class RequestRestartError extends DashboardError {
 
   private final String type;
 
-  public RequestRestartError(Watchable<? extends Model> watchable, Throwable throwable) {
+  public RequestRestartError(Watchable<?> watchable, Throwable throwable) {
     super(throwable);
     this.type = watchable.getType();
   }

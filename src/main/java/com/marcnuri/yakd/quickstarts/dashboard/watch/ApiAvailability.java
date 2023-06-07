@@ -17,8 +17,6 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.watch;
 
-import com.marcnuri.yakc.model.Model;
-
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -34,7 +32,7 @@ public class ApiAvailability {
     this.availability = new ConcurrentHashMap<>();
   }
 
-  private void check(Watchable<? extends Model> watchable) {
+  private void check(Watchable<?> watchable) {
       final var wAvailability = availability.get(watchable.getClass());
       if (wAvailability == null ||
         Duration.between(wAvailability.lastCheck, LocalDateTime.now()).toSeconds() > CHECK_INTERVAL_SECONDS) {
@@ -47,7 +45,7 @@ public class ApiAvailability {
       }
   }
 
-  boolean isAvailable(Watchable<? extends Model> watchable) {
+  boolean isAvailable(Watchable<?> watchable) {
     if (watchable.getAvailabilityCheckFunction().isEmpty()) {
       return true;
     }

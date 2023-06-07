@@ -17,7 +17,7 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.configmaps;
 
-import com.marcnuri.yakc.model.io.k8s.api.core.v1.ConfigMap;
+import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 
 import jakarta.inject.Inject;
@@ -54,9 +54,7 @@ public class ConfigMapResource {
 
   @DELETE
   @Path("/{namespace}/{name}")
-  public Response delete(@PathParam("namespace") String namespace, @PathParam("name") String name)
-    throws IOException {
-
+  public Response delete(@PathParam("namespace") String namespace, @PathParam("name") String name) {
     configMapService.deleteConfigMap(name, namespace);
     return Response.noContent().build();
   }
@@ -66,9 +64,7 @@ public class ConfigMapResource {
   @Produces(MediaType.APPLICATION_JSON)
   @Path("/{namespace}/{name}")
   public ConfigMap update(
-    @PathParam("namespace") String namespace, @PathParam("name") String name, ConfigMap configMap)
-    throws IOException {
-
+    @PathParam("namespace") String namespace, @PathParam("name") String name, ConfigMap configMap) {
     return configMapService.updateConfigMap(name, namespace, configMap);
   }
 }

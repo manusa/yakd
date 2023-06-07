@@ -18,7 +18,6 @@
 package com.marcnuri.yakd.quickstarts.dashboard.watch;
 
 import com.marcnuri.yakc.api.WatchEvent;
-import com.marcnuri.yakc.model.Model;
 import com.marcnuri.yakd.quickstarts.dashboard.ClientUtil.ClientFunction;
 import io.reactivex.Observable;
 
@@ -28,7 +27,7 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.Optional;
 
-public interface Watchable<T extends Model> {
+public interface Watchable<T> {
 
   Observable<WatchEvent<T>> watch() throws IOException;
 

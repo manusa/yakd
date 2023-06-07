@@ -20,6 +20,9 @@ package com.marcnuri.yakd.quickstarts.dashboard;
 import com.marcnuri.yakc.KubernetesClient;
 import com.marcnuri.yakc.config.ConfigurationResolver;
 
+import io.fabric8.kubernetes.client.Config;
+import io.fabric8.kubernetes.client.ConfigBuilder;
+import jakarta.annotation.Priority;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Produces;
@@ -45,6 +48,17 @@ public class KubernetesDashboardConfiguration {
     // Keep logs clean
     Infrastructure.setDroppedExceptionHandler(ex ->
       LOG.error("Mutiny subscription closed with dropped exception {}", ex.getMessage()));
+  }
+
+  @Produces
+  @Singleton
+  @Priority(Integer.MAX_VALUE)
+  public Config fabric8Config() {
+    return new ConfigBuilder(Config.autoConfigure(null))
+      .withTrustCerts(insecureSkipTlsVerify)
+      .withConnectionTimeout(0)
+      .withRequestTimeout(0)
+      .build();
   }
 
   @Produces

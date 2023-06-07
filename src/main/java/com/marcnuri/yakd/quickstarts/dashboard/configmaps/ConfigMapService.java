@@ -17,14 +17,14 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.configmaps;
 
-import com.marcnuri.yakc.KubernetesClient;
-import com.marcnuri.yakc.api.ClientErrorException;
 import com.marcnuri.yakc.api.WatchEvent;
-import com.marcnuri.yakc.api.core.v1.CoreV1Api;
-import com.marcnuri.yakc.api.core.v1.CoreV1Api.ListConfigMapForAllNamespaces;
-import com.marcnuri.yakc.model.io.k8s.api.core.v1.ConfigMap;
-import com.marcnuri.yakc.model.io.k8s.apimachinery.pkg.apis.meta.v1.Status;
+import com.marcnuri.yakd.quickstarts.dashboard.fabric8.InformerOnSubscribe;
 import com.marcnuri.yakd.quickstarts.dashboard.watch.Watchable;
+import io.fabric8.kubernetes.api.model.ConfigMap;
+import io.fabric8.kubernetes.api.model.ConfigMapBuilder;
+import io.fabric8.kubernetes.api.model.ListOptionsBuilder;
+import io.fabric8.kubernetes.client.KubernetesClient;
+import io.fabric8.kubernetes.client.KubernetesClientException;
 import io.reactivex.Observable;
 
 import jakarta.inject.Inject;
@@ -46,28 +46,28 @@ public class ConfigMapService implements Watchable<ConfigMap> {
 
   public List<ConfigMap> get() throws IOException {
     return tryWithFallback(
-      () -> kubernetesClient.create(CoreV1Api.class).listConfigMapForAllNamespaces().get().getItems(),
-      () -> kubernetesClient.create(CoreV1Api.class)
-        .listNamespacedConfigMap(kubernetesClient.getConfiguration().getNamespace()).get().getItems()
+      () -> kubernetesClient.configMaps().inAnyNamespace().list().getItems(),
+      () -> kubernetesClient.configMaps().inNamespace(kubernetesClient.getConfiguration().getNamespace()).list().getItems()
     );
   }
 
   @Override
-  public Observable<WatchEvent<ConfigMap>> watch() throws IOException {
-    final CoreV1Api core = kubernetesClient.create(CoreV1Api.class);
+  public Observable<WatchEvent<ConfigMap>> watch() {
     try {
-      core.listConfigMapForAllNamespaces(new ListConfigMapForAllNamespaces().limit(1)).get();
-      return core.listConfigMapForAllNamespaces().watch();
-    } catch (ClientErrorException ex) {
-      return core.listNamespacedConfigMap(kubernetesClient.getConfiguration().getNamespace()).watch();
+      kubernetesClient.configMaps().inAnyNamespace()
+        .list(new ListOptionsBuilder().withLimit(1L).build());
+      return InformerOnSubscribe.observable(kubernetesClient.configMaps().inAnyNamespace()::inform);
+    } catch (KubernetesClientException ex) {
+      return InformerOnSubscribe.observable(kubernetesClient.configMaps().inNamespace(kubernetesClient.getConfiguration().getNamespace())::inform);
     }
   }
 
-  public Status deleteConfigMap(String name, String namespace) throws IOException {
-    return kubernetesClient.create(CoreV1Api.class).deleteNamespacedConfigMap(name, namespace).get();
+  public void deleteConfigMap(String name, String namespace) {
+    kubernetesClient.configMaps().inNamespace(namespace).withName(name).delete();
   }
 
-  public ConfigMap updateConfigMap(String name, String namespace, ConfigMap configMap) throws IOException {
-    return kubernetesClient.create(CoreV1Api.class).replaceNamespacedConfigMap(name, namespace, configMap).get();
+  public ConfigMap updateConfigMap(String name, String namespace, ConfigMap configMap) {
+    return kubernetesClient.configMaps().inNamespace(namespace)
+      .resource(new ConfigMapBuilder(configMap).editMetadata().withName(name).endMetadata().build()).update();
   }
 }

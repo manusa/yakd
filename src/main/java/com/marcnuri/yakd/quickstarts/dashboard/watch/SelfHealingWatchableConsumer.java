@@ -57,7 +57,7 @@ public class SelfHealingWatchableConsumer implements java.util.function.Consumer
 
   private static final Logger LOG = LoggerFactory.getLogger(SelfHealingWatchableConsumer.class);
 
-  private final List<Watchable<? extends Model>> watchables;
+  private final List<Watchable<?>> watchables;
   private final ExecutorService subscribeExecutor;
   private final ExecutorService observableExecutor;
   private final Map<Class<?>, Disposable> deferredWatchables;
@@ -65,7 +65,7 @@ public class SelfHealingWatchableConsumer implements java.util.function.Consumer
   private final ApiAvailability apiAvailability;
   private volatile boolean disposed;
 
-  public SelfHealingWatchableConsumer(List<Watchable<? extends Model>> watchables) {
+  public SelfHealingWatchableConsumer(List<Watchable<?>> watchables) {
     this.watchables = watchables;
     subscribeExecutor = Executors.newCachedThreadPool();
     observableExecutor = Executors.newCachedThreadPool();
@@ -76,7 +76,7 @@ public class SelfHealingWatchableConsumer implements java.util.function.Consumer
 
   @Override
   public void accept(MultiEmitter<Object> multiEmitter) {
-    for (Watchable<? extends Model> watchable : watchables) {
+    for (var watchable : watchables) {
       deferredWatchables.put(watchable.getClass(),
         deferredWatchObservable(watchable).subscribeOn(Schedulers.from(subscribeExecutor)).subscribe(
           multiEmitter::emit,
@@ -96,7 +96,7 @@ public class SelfHealingWatchableConsumer implements java.util.function.Consumer
    * threads in a non-blocking way.
    */
   private Observable<Object> deferredWatchObservable(
-    Watchable<? extends Model> watchable
+    Watchable<?> watchable
   ) {
     return Observable.create(emitter -> {
       boolean subscribed;
@@ -144,7 +144,7 @@ public class SelfHealingWatchableConsumer implements java.util.function.Consumer
   }
 
   private boolean subscribe(
-    ObservableEmitter<Object> emitter, Watchable<? extends Model> watchable
+    ObservableEmitter<Object> emitter, Watchable<?> watchable
   ) {
     Optional.ofNullable(selfHealingSubscriptions.get(watchable.getClass())).ifPresent(Disposable::dispose);
     if (shouldStopAndDispose(emitter)) {
@@ -184,7 +184,7 @@ public class SelfHealingWatchableConsumer implements java.util.function.Consumer
   }
 
   private Consumer<Throwable> selfHealingErrorConsumer(
-    ObservableEmitter<Object> emitter, Watchable<? extends Model> watchable
+    ObservableEmitter<Object> emitter, Watchable<?> watchable
   ) {
     return error -> {
       LOG.debug("Subscription error for watchable {}: {}, reconnecting...",
@@ -198,7 +198,7 @@ public class SelfHealingWatchableConsumer implements java.util.function.Consumer
   }
 
   private io.reactivex.functions.Action selfHealingOnCompleteAction(
-    ObservableEmitter<Object> emitter, Watchable<? extends Model> watchable
+    ObservableEmitter<Object> emitter, Watchable<?> watchable
   ) {
     return () -> {
       LOG.debug("Subscription complete for watchable {}, reconnecting...", watchable.getClass());
