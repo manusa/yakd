@@ -17,22 +17,24 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.cronjobs;
 
-import com.marcnuri.yakc.KubernetesClient;
-import com.marcnuri.yakc.api.ClientErrorException;
 import com.marcnuri.yakc.api.WatchEvent;
-import com.marcnuri.yakc.api.batch.v1.BatchV1Api;
-import com.marcnuri.yakc.api.batch.v1beta1.BatchV1beta1Api;
-import com.marcnuri.yakc.model.io.k8s.api.batch.v1.Job;
-import com.marcnuri.yakc.model.io.k8s.api.batch.v1beta1.CronJob;
-import com.marcnuri.yakc.model.io.k8s.api.batch.v1beta1.CronJobSpec;
-import com.marcnuri.yakc.model.io.k8s.api.batch.v1beta1.JobTemplateSpec;
-import com.marcnuri.yakc.model.io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta;
-import com.marcnuri.yakc.model.io.k8s.apimachinery.pkg.apis.meta.v1.OwnerReference;
+import com.marcnuri.yakd.quickstarts.dashboard.fabric8.InformerOnSubscribe;
 import com.marcnuri.yakd.quickstarts.dashboard.watch.Watchable;
+import io.fabric8.kubernetes.api.model.ListOptionsBuilder;
+import io.fabric8.kubernetes.api.model.ObjectMetaBuilder;
+import io.fabric8.kubernetes.api.model.OwnerReferenceBuilder;
+import io.fabric8.kubernetes.api.model.batch.v1.Job;
+import io.fabric8.kubernetes.api.model.batch.v1.JobBuilder;
+import io.fabric8.kubernetes.api.model.batch.v1beta1.CronJob;
+import io.fabric8.kubernetes.api.model.batch.v1beta1.CronJobBuilder;
+import io.fabric8.kubernetes.client.KubernetesClient;
+import io.fabric8.kubernetes.client.KubernetesClientException;
+import io.fabric8.kubernetes.client.dsl.base.PatchContext;
+import io.fabric8.kubernetes.client.dsl.base.PatchType;
 import io.reactivex.Observable;
-
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -50,57 +52,53 @@ public class CronJobService implements Watchable<CronJob> {
   }
 
   @Override
-  public Observable<WatchEvent<CronJob>> watch() throws IOException {
-    final BatchV1beta1Api batch = kubernetesClient.create(BatchV1beta1Api.class);
+  public Observable<WatchEvent<CronJob>> watch() {
+    final var limit1 = new ListOptionsBuilder().withLimit(1L).build();
     try {
-      batch.listCronJobForAllNamespaces(new BatchV1beta1Api.ListCronJobForAllNamespaces().limit(1)).get();
-      return batch.listCronJobForAllNamespaces().watch();
-    } catch (ClientErrorException ex) {
-      return batch.listNamespacedCronJob(kubernetesClient.getConfiguration().getNamespace()).watch();
+      kubernetesClient.batch().v1beta1().cronjobs().inAnyNamespace().list(limit1);
+      return InformerOnSubscribe.observable(kubernetesClient.batch().v1beta1().cronjobs().inAnyNamespace()::inform);
+    } catch (KubernetesClientException ex) {
+      return InformerOnSubscribe.observable(kubernetesClient.batch().v1beta1().cronjobs()
+        .inNamespace(kubernetesClient.getConfiguration().getNamespace())::inform);
     }
   }
 
-  public CronJob delete(String name, String namespace) throws IOException {
-    return kubernetesClient.create(BatchV1beta1Api.class).deleteNamespacedCronJob(name, namespace).get(CronJob.class);
+  public void delete(String name, String namespace) {
+    kubernetesClient.batch().v1beta1().cronjobs().inNamespace(namespace).withName(name).delete();
   }
 
-  public CronJob update(String name, String namespace, CronJob cronJob) throws IOException {
-    return kubernetesClient.create(BatchV1beta1Api.class).replaceNamespacedCronJob(name, namespace, cronJob).get();
+  public CronJob update(String name, String namespace, CronJob cronJob) {
+    return kubernetesClient.batch().v1beta1().cronjobs().inNamespace(namespace)
+      .resource(new CronJobBuilder(cronJob).editMetadata().withName(name).endMetadata().build()).update();
   }
 
-  public CronJob updateSuspend(String name, String namespace, boolean suspend) throws IOException {
-    final CronJob toPatch = emptyCronJob();
-    toPatch.getSpec().setSuspend(suspend);
-    return kubernetesClient.create(BatchV1beta1Api.class).patchNamespacedCronJob(name, namespace, toPatch).get();
+  public CronJob updateSuspend(String name, String namespace, boolean suspend) {
+    final CronJob toPatch = new CronJobBuilder().editOrNewSpec().withSuspend(suspend).endSpec().build();
+    return kubernetesClient.batch().v1beta1().cronjobs().inNamespace(namespace).withName(name)
+      .patch(PatchContext.of(PatchType.JSON_MERGE), toPatch);
   }
 
   public Job trigger(String name, String namespace) throws IOException {
-    final CronJob cronJob = kubernetesClient.create(BatchV1beta1Api.class).readNamespacedCronJob(name, namespace).get();
-    final JobTemplateSpec jts = cronJob.getSpec().getJobTemplate();
+    final var cronJob = kubernetesClient.batch().v1beta1().cronjobs().inNamespace(namespace).withName(name).get();
     final String jobName = String.format("%s-manual-%s",
       name.length() > 38 ? name.substring(0, 38) : name,
       new Random().nextInt(999999)
     );
-    return kubernetesClient.create(BatchV1Api.class).createNamespacedJob(namespace, Job.builder()
-      .metadata(ObjectMeta.builder()
-        .name(jobName).namespace(namespace)
-        .labels(new HashMap<>(Optional.ofNullable(cronJob.getMetadata().getLabels()).orElse(Collections.emptyMap())))
-        .putInAnnotations("cronjob.kubernetes.io/instantiate", "manual")
-        .addToOwnerReferences(OwnerReference.builder()
-          .kind(cronJob.getKind())
-          .apiVersion(cronJob.getApiVersion())
-          .controller(false)
-          .name(cronJob.getMetadata().getName())
-          .uid(cronJob.getMetadata().getUid())
+    final Job job = new JobBuilder()
+      .withMetadata(new ObjectMetaBuilder()
+        .withName(jobName)
+        .withLabels(new HashMap<>(Optional.ofNullable(cronJob.getMetadata().getLabels()).orElse(Collections.emptyMap())))
+        .addToAnnotations("cronjob.kubernetes.io/instantiate", "manual")
+        .addToOwnerReferences(new OwnerReferenceBuilder()
+          .withKind(cronJob.getKind())
+          .withApiVersion(cronJob.getApiVersion())
+          .withController(false)
+          .withName(cronJob.getMetadata().getName())
+          .withUid(cronJob.getMetadata().getUid())
           .build())
         .build())
-      .spec(jts.getSpec())
-      .build()).get();
-  }
-
-  private static CronJob emptyCronJob() {
-    final CronJob ret = new CronJob();
-    ret.setSpec(new CronJobSpec());
-    return ret;
+      .withSpec(cronJob.getSpec().getJobTemplate().getSpec())
+      .build();
+    return kubernetesClient.batch().v1().jobs().inNamespace(namespace).resource(job).create();
   }
 }

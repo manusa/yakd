@@ -17,7 +17,7 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.cronjobs;
 
-import com.marcnuri.yakc.model.io.k8s.api.batch.v1beta1.CronJob;
+import io.fabric8.kubernetes.api.model.batch.v1beta1.CronJob;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 
 import jakarta.inject.Inject;
@@ -45,9 +45,7 @@ public class CronJobResource {
 
   @DELETE
   @Path("/{namespace}/{name}")
-  public Response delete(@PathParam("namespace") String namespace, @PathParam("name") String name)
-    throws IOException {
-
+  public Response delete(@PathParam("namespace") String namespace, @PathParam("name") String name) {
     cronJobService.delete(name, namespace);
     return Response.noContent().build();
   }
@@ -58,7 +56,7 @@ public class CronJobResource {
   @Path("/{namespace}/{name}")
   public CronJob update(
     @PathParam("namespace") String namespace, @PathParam("name") String name, CronJob cronJob
-  ) throws IOException {
+  ) {
     return cronJobService.update(name, namespace, cronJob);
   }
 
@@ -66,7 +64,7 @@ public class CronJobResource {
   @Path("/{namespace}/{name}/spec/suspend/{suspend}")
   public Response updateSuspend(
     @PathParam("namespace") String namespace, @PathParam("name") String name, @PathParam("suspend") boolean suspend
-  ) throws IOException {
+  ) {
     cronJobService.updateSuspend(name, namespace, suspend);
     return Response.noContent().build();
   }
