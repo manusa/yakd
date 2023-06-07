@@ -17,55 +17,39 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.clusterrolebindings;
 
-import com.marcnuri.yakc.KubernetesClient;
 import com.marcnuri.yakc.api.WatchEvent;
-import com.marcnuri.yakc.api.rbacauthorization.v1.RbacAuthorizationV1Api;
-import com.marcnuri.yakc.api.rbacauthorization.v1.RbacAuthorizationV1Api.ListClusterRoleBinding;
-import com.marcnuri.yakc.api.rbacauthorization.v1beta1.RbacAuthorizationV1beta1Api;
-import com.marcnuri.yakc.model.io.k8s.api.rbac.v1.ClusterRoleBinding;
-import com.marcnuri.yakc.model.io.k8s.api.rbac.v1.RoleRef;
-import com.marcnuri.yakc.model.io.k8s.api.rbac.v1.Subject;
-import com.marcnuri.yakc.model.io.k8s.apimachinery.pkg.apis.meta.v1.Status;
 import com.marcnuri.yakd.quickstarts.dashboard.ClientUtil.ClientFunction;
+import com.marcnuri.yakd.quickstarts.dashboard.fabric8.InformerOnSubscribe;
 import com.marcnuri.yakd.quickstarts.dashboard.watch.Watchable;
+import io.fabric8.kubernetes.api.model.ListOptionsBuilder;
+import io.fabric8.kubernetes.api.model.rbac.ClusterRoleBinding;
+import io.fabric8.kubernetes.api.model.rbac.ClusterRoleBindingBuilder;
+import io.fabric8.kubernetes.client.KubernetesClient;
 import io.reactivex.Observable;
-
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import java.io.IOException;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
-import static com.marcnuri.yakd.quickstarts.dashboard.ClientUtil.executeRaw;
-import static com.marcnuri.yakd.quickstarts.dashboard.ClientUtil.tryWithFallback;
+import java.util.Optional;
 
 @Singleton
 public class ClusterRoleBindingService implements Watchable<ClusterRoleBinding> {
 
-  private final RbacAuthorizationV1Api rbacAuthV1;
-  private final RbacAuthorizationV1beta1Api rbacAuthV1beta1;
+  private final KubernetesClient kubernetesClient;
 
   @Inject
   public ClusterRoleBindingService(KubernetesClient kubernetesClient) {
-    rbacAuthV1 = kubernetesClient.create(RbacAuthorizationV1Api.class);
-    rbacAuthV1beta1 = kubernetesClient.create(RbacAuthorizationV1beta1Api.class);
+    this.kubernetesClient = kubernetesClient;
   }
 
   @Override
   public Optional<ClientFunction<?>> getAvailabilityCheckFunction() {
-    return Optional.of(() -> tryWithFallback(
-        executeRaw(rbacAuthV1.listClusterRoleBinding(new ListClusterRoleBinding().limit(1))),
-        executeRaw(rbacAuthV1beta1
-          .listClusterRoleBinding(new RbacAuthorizationV1beta1Api.ListClusterRoleBinding().limit(1)))
-      ));
+    return Optional.of(() ->
+      kubernetesClient.rbac().clusterRoleBindings().list(new ListOptionsBuilder().withLimit(1L).build()));
   }
 
   @Override
-  public Observable<WatchEvent<ClusterRoleBinding>> watch() throws IOException {
-    return tryWithFallback(
-      () -> rbacAuthV1.listClusterRoleBinding().watch(),
-      () -> rbacAuthV1beta1.listClusterRoleBinding().watch().map(ClusterRoleBindingService::to)
-    );
+  public Observable<WatchEvent<ClusterRoleBinding>> watch() {
+    return InformerOnSubscribe.observable(kubernetesClient.rbac().clusterRoleBindings()::inform);
   }
 
   @Override
@@ -73,38 +57,14 @@ public class ClusterRoleBindingService implements Watchable<ClusterRoleBinding> 
     return false;
   }
 
-  public Status delete(String name) throws IOException {
-    return rbacAuthV1.deleteClusterRoleBinding(name).get();
+  public void delete(String name) {
+    kubernetesClient.rbac().clusterRoleBindings().withName(name).delete();
   }
 
-  public ClusterRoleBinding update(String name, ClusterRoleBinding clusterRoleBinding) throws IOException {
-    return rbacAuthV1.replaceClusterRoleBinding(name, clusterRoleBinding).get();
+  public ClusterRoleBinding update(String name, ClusterRoleBinding clusterRoleBinding) {
+    return kubernetesClient.rbac().clusterRoleBindings()
+      .resource(new ClusterRoleBindingBuilder(clusterRoleBinding).editMetadata().withName(name).endMetadata().build())
+      .update();
   }
 
-  static WatchEvent<ClusterRoleBinding> to(WatchEvent<com.marcnuri.yakc.model.io.k8s.api.rbac.v1beta1.ClusterRoleBinding> from) {
-    return new WatchEvent<>(from.getType(), to(from.getObject()));
-  }
-
-  static ClusterRoleBinding to(com.marcnuri.yakc.model.io.k8s.api.rbac.v1beta1.ClusterRoleBinding from) {
-    return ClusterRoleBinding.builder()
-      .apiVersion(from.getApiVersion())
-      .kind(from.getKind())
-      .metadata(from.getMetadata())
-      .roleRef(to(from.getRoleRef()))
-      .subjects(from.getSubjects().stream().map(ClusterRoleBindingService::to).collect(Collectors.toList()))
-      .build();
-  }
-
-  static RoleRef to(com.marcnuri.yakc.model.io.k8s.api.rbac.v1beta1.RoleRef from) {
-    return RoleRef.builder()
-      .name(from.getName())
-      .build();
-  }
-
-  public static Subject to(com.marcnuri.yakc.model.io.k8s.api.rbac.v1beta1.Subject from) {
-    return Subject.builder()
-      .name(from.getName())
-      .namespace(from.getNamespace())
-      .build();
-  }
 }

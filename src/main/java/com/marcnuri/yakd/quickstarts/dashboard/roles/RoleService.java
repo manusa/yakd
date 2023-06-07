@@ -17,24 +17,18 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.roles;
 
-import com.marcnuri.yakc.KubernetesClient;
 import com.marcnuri.yakc.api.WatchEvent;
-import com.marcnuri.yakc.api.rbacauthorization.v1.RbacAuthorizationV1Api;
-import com.marcnuri.yakc.api.rbacauthorization.v1.RbacAuthorizationV1Api.ListNamespacedRole;
-import com.marcnuri.yakc.api.rbacauthorization.v1.RbacAuthorizationV1Api.ListRoleForAllNamespaces;
-import com.marcnuri.yakc.api.rbacauthorization.v1beta1.RbacAuthorizationV1beta1Api;
-import com.marcnuri.yakc.model.io.k8s.api.rbac.v1.Role;
-import com.marcnuri.yakc.model.io.k8s.apimachinery.pkg.apis.meta.v1.Status;
-import com.marcnuri.yakd.quickstarts.dashboard.clusterroles.ClusterRoleService;
+import com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil;
 import com.marcnuri.yakd.quickstarts.dashboard.watch.Watchable;
+import io.fabric8.kubernetes.api.model.rbac.Role;
+import io.fabric8.kubernetes.api.model.rbac.RoleBuilder;
+import io.fabric8.kubernetes.client.KubernetesClient;
 import io.reactivex.Observable;
-
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import java.io.IOException;
-import java.util.stream.Collectors;
 
-import static com.marcnuri.yakd.quickstarts.dashboard.ClientUtil.tryWithFallback;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.LIMIT_1;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.observable;
 
 @Singleton
 public class RoleService implements Watchable<Role> {
@@ -47,54 +41,23 @@ public class RoleService implements Watchable<Role> {
   }
 
   @Override
-  public Observable<WatchEvent<Role>> watch() throws IOException {
-    final String ns = kubernetesClient.getConfiguration().getNamespace();
-    return tryWithFallback(
+  public Observable<WatchEvent<Role>> watch() {
+    return ClientUtil.tryInOrder(
       () -> {
-        kubernetesClient.create(RbacAuthorizationV1Api.class)
-          .listRoleForAllNamespaces(new ListRoleForAllNamespaces().limit(1)).get();
-        return kubernetesClient.create(RbacAuthorizationV1Api.class).listRoleForAllNamespaces().watch();
+        kubernetesClient.rbac().roles().inAnyNamespace().list(LIMIT_1);
+        return observable(kubernetesClient.rbac().roles().inAnyNamespace());
       },
-      () -> {
-        kubernetesClient.create(RbacAuthorizationV1beta1Api.class)
-          .listRoleForAllNamespaces(new RbacAuthorizationV1beta1Api.ListRoleForAllNamespaces().limit(1)).get();
-        return kubernetesClient.create(RbacAuthorizationV1beta1Api.class).listRoleForAllNamespaces().watch()
-          .map(RoleService::to);
-      },
-      () -> {
-        kubernetesClient.create(RbacAuthorizationV1Api.class)
-          .listNamespacedRole(ns, new ListNamespacedRole().limit(1)).get();
-        return kubernetesClient.create(RbacAuthorizationV1Api.class).listNamespacedRole(ns).watch();
-      },
-      () -> {
-        kubernetesClient.create(RbacAuthorizationV1beta1Api.class)
-          .listNamespacedRole(ns, new RbacAuthorizationV1beta1Api.ListNamespacedRole().limit(1)).get();
-        return kubernetesClient.create(RbacAuthorizationV1beta1Api.class).listNamespacedRole(ns).watch()
-          .map(RoleService::to);
-      }
+      () -> observable(kubernetesClient.rbac().roles().inNamespace(kubernetesClient.getConfiguration().getNamespace()))
     );
   }
 
-  public Status delete(String name, String namespace) throws IOException {
-    return kubernetesClient.create(RbacAuthorizationV1Api.class).deleteNamespacedRole(name, namespace).get();
+  public void delete(String name, String namespace) {
+    kubernetesClient.rbac().roles().inNamespace(namespace).withName(name).delete();
   }
 
-  public Role update(String name, String namespace, Role role) throws IOException {
-    return kubernetesClient.create(RbacAuthorizationV1Api.class)
-      .replaceNamespacedRole(name, namespace, role).get();
-  }
-
-  static WatchEvent<Role> to(WatchEvent<com.marcnuri.yakc.model.io.k8s.api.rbac.v1beta1.Role> from) {
-    return new WatchEvent<>(from.getType(), to(from.getObject()));
-  }
-
-  static Role to(com.marcnuri.yakc.model.io.k8s.api.rbac.v1beta1.Role from) {
-    return Role.builder()
-      .apiVersion(from.getApiVersion())
-      .kind(from.getKind())
-      .metadata(from.getMetadata())
-      .rules(from.getRules().stream().map(ClusterRoleService::to).collect(Collectors.toList()))
-      .build();
+  public Role update(String name, String namespace, Role role) {
+    return kubernetesClient.rbac().roles().inNamespace(namespace)
+      .resource(new RoleBuilder(role).editMetadata().withName(name).endMetadata().build()).update();
   }
 
 }

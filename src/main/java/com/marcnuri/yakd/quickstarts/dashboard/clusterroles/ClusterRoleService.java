@@ -17,24 +17,20 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.clusterroles;
 
-import com.marcnuri.yakc.KubernetesClient;
 import com.marcnuri.yakc.api.WatchEvent;
-import com.marcnuri.yakc.api.rbacauthorization.v1.RbacAuthorizationV1Api;
-import com.marcnuri.yakc.api.rbacauthorization.v1.RbacAuthorizationV1Api.ListClusterRole;
-import com.marcnuri.yakc.api.rbacauthorization.v1beta1.RbacAuthorizationV1beta1Api;
-import com.marcnuri.yakc.model.io.k8s.api.rbac.v1.AggregationRule;
-import com.marcnuri.yakc.model.io.k8s.api.rbac.v1.ClusterRole;
-import com.marcnuri.yakc.model.io.k8s.api.rbac.v1.PolicyRule;
-import com.marcnuri.yakc.model.io.k8s.apimachinery.pkg.apis.meta.v1.Status;
-import com.marcnuri.yakd.quickstarts.dashboard.watch.Watchable;
 import com.marcnuri.yakd.quickstarts.dashboard.ClientUtil;
+import com.marcnuri.yakd.quickstarts.dashboard.fabric8.InformerOnSubscribe;
+import com.marcnuri.yakd.quickstarts.dashboard.watch.Watchable;
+import io.fabric8.kubernetes.api.model.ListOptionsBuilder;
+import io.fabric8.kubernetes.api.model.rbac.ClusterRole;
+import io.fabric8.kubernetes.api.model.rbac.ClusterRoleBuilder;
+import io.fabric8.kubernetes.client.KubernetesClient;
 import io.reactivex.Observable;
-
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import java.io.IOException;
+
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Singleton
 public class ClusterRoleService implements Watchable<ClusterRole> {
@@ -47,64 +43,27 @@ public class ClusterRoleService implements Watchable<ClusterRole> {
   }
 
   @Override
-  public Observable<WatchEvent<ClusterRole>> watch() throws IOException {
-    return ClientUtil.tryWithFallback(
-      () -> {
-        kubernetesClient.create(RbacAuthorizationV1Api.class).listClusterRole(new ListClusterRole().limit(1)).get();
-        return kubernetesClient.create(RbacAuthorizationV1Api.class).listClusterRole().watch();
-      },
-      () -> {
-        kubernetesClient.create(RbacAuthorizationV1beta1Api.class)
-          .listClusterRole(new RbacAuthorizationV1beta1Api.ListClusterRole().limit(1)).get();
-        return kubernetesClient.create(RbacAuthorizationV1beta1Api.class).listClusterRole().watch()
-          .map(ClusterRoleService::to);
-      }
-    );
+  public Optional<ClientUtil.ClientFunction<?>> getAvailabilityCheckFunction() {
+    return Optional.of(() ->
+      kubernetesClient.rbac().clusterRoles().list(new ListOptionsBuilder().withLimit(1L).build()));
   }
 
-  public List<ClusterRole> get() throws IOException {
-    return ClientUtil.tryWithFallback(
-      () -> kubernetesClient.create(RbacAuthorizationV1Api.class).listClusterRole().get().getItems(),
-      () -> kubernetesClient.create(RbacAuthorizationV1beta1Api.class).listClusterRole().stream()
-        .map(ClusterRoleService::to).collect(Collectors.toList())
-    );
+  @Override
+  public Observable<WatchEvent<ClusterRole>> watch() {
+    return InformerOnSubscribe.observable(kubernetesClient.rbac().clusterRoles()::inform);
   }
 
-  public Status delete(String name) throws IOException {
-    return kubernetesClient.create(RbacAuthorizationV1Api.class).deleteClusterRole(name).get();
+  public List<ClusterRole> get() {
+    return kubernetesClient.rbac().clusterRoles().list().getItems();
   }
 
-  public ClusterRole update(String name, ClusterRole clusterRole) throws IOException {
-    return kubernetesClient.create(RbacAuthorizationV1Api.class).replaceClusterRole(name, clusterRole).get();
+  public void delete(String name) {
+    kubernetesClient.rbac().clusterRoles().withName(name).delete();
   }
 
-  static WatchEvent<ClusterRole> to(WatchEvent<com.marcnuri.yakc.model.io.k8s.api.rbac.v1beta1.ClusterRole> from) {
-    return new WatchEvent<>(from.getType(), to(from.getObject()));
-  }
-
-  static ClusterRole to(com.marcnuri.yakc.model.io.k8s.api.rbac.v1beta1.ClusterRole from) {
-    return ClusterRole.builder()
-      .apiVersion(from.getApiVersion())
-      .kind(from.getKind())
-      .metadata(from.getMetadata())
-      .aggregationRule(to(from.getAggregationRule()))
-      .rules(from.getRules().stream().map(ClusterRoleService::to).collect(Collectors.toList()))
-      .build();
-  }
-
-  static AggregationRule to(com.marcnuri.yakc.model.io.k8s.api.rbac.v1beta1.AggregationRule from) {
-    return AggregationRule.builder()
-      .clusterRoleSelectors(from.getClusterRoleSelectors())
-      .build();
-  }
-
-  public static PolicyRule to(com.marcnuri.yakc.model.io.k8s.api.rbac.v1beta1.PolicyRule from) {
-    return PolicyRule.builder()
-      .apiGroups(from.getApiGroups())
-      .nonResourceURLs(from.getNonResourceURLs())
-      .resourceNames(from.getResourceNames())
-      .resources(from.getResources())
-      .verbs(from.getVerbs())
-    .build();
+  public ClusterRole update(String name, ClusterRole clusterRole) {
+    return kubernetesClient.rbac().clusterRoles()
+      .resource(new ClusterRoleBuilder(clusterRole).editMetadata().withName(name).endMetadata().build())
+      .update();
   }
 }

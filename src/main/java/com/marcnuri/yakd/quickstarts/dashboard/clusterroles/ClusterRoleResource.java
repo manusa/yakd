@@ -17,7 +17,7 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.clusterroles;
 
-import com.marcnuri.yakc.model.io.k8s.api.rbac.v1.ClusterRole;
+import io.fabric8.kubernetes.api.model.rbac.ClusterRole;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 
 import jakarta.inject.Inject;
@@ -32,7 +32,6 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-import java.io.IOException;
 import java.util.List;
 
 @Singleton
@@ -48,13 +47,13 @@ public class ClusterRoleResource {
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  public List<ClusterRole> get() throws IOException {
+  public List<ClusterRole> get() {
     return clusterRoleService.get();
   }
 
   @DELETE
   @Path("/{name}")
-  public Response delete( @PathParam("name") String name) throws IOException {
+  public Response delete( @PathParam("name") String name) {
     clusterRoleService.delete(name);
     return Response.noContent().build();
   }
@@ -63,9 +62,7 @@ public class ClusterRoleResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @Path("/{name}")
-  public ClusterRole update(@PathParam("name") String name, ClusterRole clusterRole)
-    throws IOException {
-
+  public ClusterRole update(@PathParam("name") String name, ClusterRole clusterRole) {
     return clusterRoleService.update(name, clusterRole);
   }
 }

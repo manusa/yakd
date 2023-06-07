@@ -17,7 +17,7 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.clusterrolebindings;
 
-import com.marcnuri.yakc.model.io.k8s.api.rbac.v1.ClusterRoleBinding;
+import io.fabric8.kubernetes.api.model.rbac.ClusterRoleBinding;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 
 import jakarta.inject.Inject;
@@ -30,7 +30,6 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import java.io.IOException;
 
 @Singleton
 @RegisterForReflection // Quarkus doesn't generate constructors for JAX-RS Subresources
@@ -45,7 +44,7 @@ public class ClusterRoleBindingResource {
 
   @DELETE
   @Path("/{name}")
-  public Response delete(@PathParam("name") String name) throws IOException {
+  public Response delete(@PathParam("name") String name) {
     clusterRoleBindingService.delete(name);
     return Response.noContent().build();
   }
@@ -54,9 +53,7 @@ public class ClusterRoleBindingResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @Path("/{name}")
-  public ClusterRoleBinding update(@PathParam("name") String name, ClusterRoleBinding clusterRoleBinding)
-    throws IOException {
-
+  public ClusterRoleBinding update(@PathParam("name") String name, ClusterRoleBinding clusterRoleBinding) {
     return clusterRoleBindingService.update(name, clusterRoleBinding);
   }
 }
