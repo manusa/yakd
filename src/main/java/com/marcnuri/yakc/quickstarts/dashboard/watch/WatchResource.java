@@ -62,14 +62,22 @@ public class WatchResource {
   @Produces(MediaType.SERVER_SENT_EVENTS)
   @RestStreamElementType(MediaType.APPLICATION_JSON)
   public void get(@Context HttpServerResponse response, @Context Sse sse, @Context SseEventSink sseEventSink) {
-    watchService.newWatch(response).runSubscriptionOn(subscribeExecutor).subscribe().with(we -> {
-      try {
-        if (!sseEventSink.isClosed()) {
-          sseEventSink.send(sse.newEvent(objectMapper.writeValueAsString(we)));
-        }
-      } catch (Exception e) {
-        LOG.error("Error serializing object", e);
-      }
-    });
+    watchService.newWatch().runSubscriptionOn(subscribeExecutor).subscribe()
+      .with(
+        subscription -> {
+          response.closeHandler(v -> subscription.cancel());
+          subscription.request(Long.MAX_VALUE); // unbounded -> request with no backpressure
+        },
+        we -> {
+          try {
+            if (!sseEventSink.isClosed()) {
+              sseEventSink.send(sse.newEvent(objectMapper.writeValueAsString(we)));
+            }
+          } catch (Exception e) {
+            LOG.error("Error serializing object", e);
+          }
+        },
+        throwable ->  LOG.warn("Watch subscription closed: {}", throwable.getMessage()),
+        () ->  LOG.debug("Watch subscription closed gracefully"));
   }
 }

@@ -25,7 +25,6 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import io.smallrye.mutiny.subscription.MultiEmitter;
-import io.vertx.core.http.HttpServerResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,11 +63,9 @@ public class SelfHealingWatchableConsumer implements java.util.function.Consumer
   private final Map<Class<?>, Disposable> deferredWatchables;
   private final Map<Class<?>, Disposable> selfHealingSubscriptions;
   private final ApiAvailability apiAvailability;
-  private final HttpServerResponse response;
   private volatile boolean disposed;
 
-  public SelfHealingWatchableConsumer(HttpServerResponse response, List<Watchable<? extends Model>> watchables) {
-    this.response = response;
+  public SelfHealingWatchableConsumer(List<Watchable<? extends Model>> watchables) {
     this.watchables = watchables;
     subscribeExecutor = Executors.newCachedThreadPool();
     observableExecutor = Executors.newCachedThreadPool();
@@ -140,17 +137,16 @@ public class SelfHealingWatchableConsumer implements java.util.function.Consumer
    * @return if the current Observable should stop self-healing
    */
   private boolean shouldStopAndDispose(ObservableEmitter<?> emitter) {
-    if (!disposed && response.closed()) {
+    if (!disposed && emitter.isDisposed()) {
       dispose();
     }
-    return disposed || emitter.isDisposed() || response.closed();
+    return disposed || emitter.isDisposed();
   }
 
   private boolean subscribe(
     ObservableEmitter<Object> emitter, Watchable<? extends Model> watchable
   ) {
     Optional.ofNullable(selfHealingSubscriptions.get(watchable.getClass())).ifPresent(Disposable::dispose);
-    response.closeHandler(v -> dispose());
     if (shouldStopAndDispose(emitter)) {
       return false;
     }

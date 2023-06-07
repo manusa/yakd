@@ -108,9 +108,8 @@ public class WatchService {
   }
 
   @SuppressWarnings({"unchecked", "rawtypes", "java:S1452"})
-  public Multi<WatchEvent<? extends Model>> newWatch(HttpServerResponse response) {
-    // TODO: Move response.close handler to WatchResource
-    final SelfHealingWatchableConsumer consumer = new SelfHealingWatchableConsumer(response, watchables);
+  public Multi<WatchEvent<? extends Model>> newWatch() {
+    final SelfHealingWatchableConsumer consumer = new SelfHealingWatchableConsumer( watchables);
     return Multi.createFrom().emitter((Consumer)consumer, BackPressureStrategy.BUFFER)
       .onCompletion().call(consumer::dispose)
       .onCancellation().call(consumer::dispose)
