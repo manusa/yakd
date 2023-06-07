@@ -17,23 +17,19 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.deployment;
 
-import com.marcnuri.yakc.KubernetesClient;
-import com.marcnuri.yakc.api.ClientErrorException;
 import com.marcnuri.yakc.api.WatchEvent;
-import com.marcnuri.yakc.api.apps.v1.AppsV1Api;
-import com.marcnuri.yakc.api.apps.v1.AppsV1Api.ListDeploymentForAllNamespaces;
-import com.marcnuri.yakc.model.io.k8s.api.apps.v1.Deployment;
-import com.marcnuri.yakc.model.io.k8s.api.apps.v1.DeploymentSpec;
-import com.marcnuri.yakc.model.io.k8s.api.core.v1.PodTemplateSpec;
-import com.marcnuri.yakc.model.io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta;
-import com.marcnuri.yakc.model.io.k8s.apimachinery.pkg.apis.meta.v1.Status;
+import com.marcnuri.yakd.quickstarts.dashboard.fabric8.InformerOnSubscribe;
 import com.marcnuri.yakd.quickstarts.dashboard.watch.Watchable;
+import io.fabric8.kubernetes.api.model.ListOptionsBuilder;
+import io.fabric8.kubernetes.api.model.apps.Deployment;
+import io.fabric8.kubernetes.api.model.apps.DeploymentBuilder;
+import io.fabric8.kubernetes.client.KubernetesClient;
+import io.fabric8.kubernetes.client.KubernetesClientException;
+import io.fabric8.kubernetes.client.dsl.base.PatchContext;
+import io.fabric8.kubernetes.client.dsl.base.PatchType;
 import io.reactivex.Observable;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-
-import java.io.IOException;
-import java.time.Instant;
 
 @Singleton
 public class DeploymentService implements Watchable<Deployment> {
@@ -46,46 +42,33 @@ public class DeploymentService implements Watchable<Deployment> {
   }
 
   @Override
-  public Observable<WatchEvent<Deployment>> watch() throws IOException {
-    final AppsV1Api apps = kubernetesClient.create(AppsV1Api.class);
+  public Observable<WatchEvent<Deployment>> watch() {
+    final var limit1 = new ListOptionsBuilder().withLimit(1L).build();
     try {
-      apps.listDeploymentForAllNamespaces(new ListDeploymentForAllNamespaces().limit(1)).get();
-      return apps.listDeploymentForAllNamespaces().watch();
-    } catch (ClientErrorException ex) {
-      return apps.listNamespacedDeployment(kubernetesClient.getConfiguration().getNamespace()).watch();
+      kubernetesClient.apps().deployments().inAnyNamespace().list(limit1);
+      return InformerOnSubscribe.observable(kubernetesClient.apps().deployments().inAnyNamespace()::inform);
+    } catch (KubernetesClientException ex) {
+      return InformerOnSubscribe.observable(kubernetesClient.apps().deployments()
+        .inNamespace(kubernetesClient.getConfiguration().getNamespace())::inform);
     }
   }
 
-  public Status deleteDeployment(String name, String namespace) throws IOException {
-    return kubernetesClient.create(AppsV1Api.class).deleteNamespacedDeployment(name, namespace).get();
+  public void deleteDeployment(String name, String namespace) {
+    kubernetesClient.apps().deployments().inNamespace(namespace).withName(name).delete();
   }
 
-  public Deployment updateDeployment(String name, String namespace, Deployment deployment) throws IOException {
-    return kubernetesClient.create(AppsV1Api.class).replaceNamespacedDeployment(name, namespace, deployment).get();
+  public Deployment updateDeployment(String name, String namespace, Deployment deployment) {
+    return kubernetesClient.apps().deployments().inNamespace(namespace)
+      .resource(new DeploymentBuilder(deployment).editMetadata().withName(name).endMetadata().build()).update();
   }
 
-  public Deployment restart(String name, String namespace) throws IOException {
-    final Deployment toPatch = emptyDeployment();
-    toPatch.getSpec().setTemplate(PodTemplateSpec.builder()
-      .metadata(ObjectMeta.builder()
-        .putInAnnotations("yakc.marcnuri.com/restartedAt", Instant.now().toString())
-        .build())
-      .build());
-    return kubernetesClient.create(AppsV1Api.class)
-      .patchNamespacedDeployment(name, namespace, toPatch)
-      .get();
+  public Deployment restart(String name, String namespace) {
+    return kubernetesClient.apps().deployments().inNamespace(namespace).withName(name).rolling().restart();
   }
 
-  public Deployment updateReplicas(String name, String namespace, Integer replicas) throws IOException {
-    final Deployment toPatch = emptyDeployment();
-    toPatch.getSpec().setReplicas(replicas);
-    return kubernetesClient.create(AppsV1Api.class).patchNamespacedDeployment(name, namespace,
-      toPatch).get();
-  }
-
-  private static Deployment emptyDeployment() {
-    final Deployment ret = new Deployment();
-    ret.setSpec(new DeploymentSpec());
-    return ret;
+  public Deployment updateReplicas(String name, String namespace, Integer replicas) {
+    final Deployment toPatch = new DeploymentBuilder().withNewSpec().withReplicas(replicas).endSpec().build();
+    return kubernetesClient.apps().deployments().inNamespace(namespace).withName(name)
+      .patch(PatchContext.of(PatchType.JSON_MERGE), toPatch);
   }
 }
