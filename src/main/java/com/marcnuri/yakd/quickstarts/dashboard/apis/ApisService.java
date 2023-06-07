@@ -17,13 +17,10 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.apis;
 
-import com.marcnuri.yakc.KubernetesClient;
-import com.marcnuri.yakc.api.apis.ApisApi;
-import com.marcnuri.yakc.model.io.k8s.apimachinery.pkg.apis.meta.v1.APIGroup;
-
+import io.fabric8.kubernetes.api.model.APIGroup;
+import io.fabric8.kubernetes.client.KubernetesClient;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,8 +34,8 @@ public class ApisService {
     this.kubernetesClient = kubernetesClient;
   }
 
-  public List<String> getApiGroups() throws IOException {
-    return kubernetesClient.create(ApisApi.class).getAPIVersions().get().getGroups().stream()
+  public List<String> getApiGroups() {
+    return kubernetesClient.getApiGroups().getGroups().stream()
       .map(APIGroup::getName).collect(Collectors.toList());
   }
 }

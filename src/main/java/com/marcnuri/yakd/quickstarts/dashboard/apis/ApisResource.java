@@ -43,7 +43,7 @@ public class ApisResource {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   @Path("/groups")
-  public List<String> getApiGroups() throws IOException {
+  public List<String> getApiGroups() {
     return apisService.getApiGroups();
   }
 }
