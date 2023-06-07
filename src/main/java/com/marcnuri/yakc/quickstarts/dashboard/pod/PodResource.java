@@ -23,7 +23,7 @@ import io.quarkus.runtime.annotations.RegisterForReflection;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.converters.multi.MultiRxConverters;
 import io.vertx.core.http.HttpServerResponse;
-import org.jboss.resteasy.reactive.RestSseElementType;
+import org.jboss.resteasy.reactive.RestStreamElementType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -94,7 +94,7 @@ public class PodResource {
 
   @GET
   @Produces(MediaType.SERVER_SENT_EVENTS)
-  @RestSseElementType(MediaType.APPLICATION_JSON) // TODO Replaced by RestStreamElementType in next Quarkus version bump
+  @RestStreamElementType(MediaType.APPLICATION_JSON)
   @Path("/{namespace}/{name}/logs/{container}")
   public void getLogs(
     @Context HttpServerResponse response, @Context Sse sse, @Context SseEventSink sseEventSink,
