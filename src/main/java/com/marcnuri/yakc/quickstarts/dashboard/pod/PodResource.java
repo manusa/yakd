@@ -22,6 +22,11 @@ import com.marcnuri.yakc.model.io.k8s.metrics.pkg.apis.metrics.v1beta1.PodMetric
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.converters.multi.MultiRxConverters;
+import io.vertx.core.http.HttpServerResponse;
+import org.jboss.resteasy.reactive.RestSseElementType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.ws.rs.Consumes;
@@ -37,13 +42,13 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.sse.Sse;
 import javax.ws.rs.sse.SseEventSink;
 
-import org.jboss.resteasy.annotations.SseElementType;
-
 import java.io.IOException;
 
 @Singleton
 @RegisterForReflection // Quarkus doesn't generate constructors for JAX-RS Subresources
 public class PodResource {
+
+  private static final Logger LOG = LoggerFactory.getLogger(PodResource.class);
 
   private final PodService podService;
 
@@ -89,17 +94,22 @@ public class PodResource {
 
   @GET
   @Produces(MediaType.SERVER_SENT_EVENTS)
-  @SseElementType(MediaType.APPLICATION_JSON)
+  @RestSseElementType(MediaType.APPLICATION_JSON) // TODO Replaced by RestStreamElementType in next Quarkus version bump
   @Path("/{namespace}/{name}/logs/{container}")
   public void getLogs(
-    @Context Sse sse, @Context SseEventSink sseEventSink,
+    @Context HttpServerResponse response, @Context Sse sse, @Context SseEventSink sseEventSink,
     @PathParam("namespace") String namespace, @PathParam("name") String name, @PathParam("container") String container) {
 
     Multi.createFrom().converter(MultiRxConverters.fromObservable(),
       podService.getPodContainerLog(container, name, namespace))
       .subscribe()
       .with(
+        subscription -> {
+          response.closeHandler(v -> subscription.cancel());
+          subscription.request(Long.MAX_VALUE);
+        },
         logEntry -> sseEventSink.send(sse.newEvent(logEntry)),
+        throwable -> LOG.warn("Pod log subscription closed: {}", throwable.getMessage()),
         () -> sseEventSink.send(sse.newEvent("log-complete", ""))
       );
   }

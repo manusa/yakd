@@ -25,8 +25,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import io.smallrye.mutiny.subscription.MultiEmitter;
-import io.undertow.server.HttpServerExchange;
-import io.undertow.servlet.handlers.ServletRequestContext;
+import io.vertx.core.http.HttpServerResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,17 +64,17 @@ public class SelfHealingWatchableConsumer implements java.util.function.Consumer
   private final Map<Class<?>, Disposable> deferredWatchables;
   private final Map<Class<?>, Disposable> selfHealingSubscriptions;
   private final ApiAvailability apiAvailability;
-  private final HttpServerExchange exchange;
+  private final HttpServerResponse response;
   private volatile boolean disposed;
 
-  public SelfHealingWatchableConsumer(List<Watchable<? extends Model>> watchables) {
+  public SelfHealingWatchableConsumer(HttpServerResponse response, List<Watchable<? extends Model>> watchables) {
+    this.response = response;
     this.watchables = watchables;
     subscribeExecutor = Executors.newCachedThreadPool();
     observableExecutor = Executors.newCachedThreadPool();
     deferredWatchables = new ConcurrentHashMap<>();
     selfHealingSubscriptions = new ConcurrentHashMap<>();
     apiAvailability = new ApiAvailability();
-    exchange = ServletRequestContext.requireCurrent().getOriginalRequest().getExchange();
   }
 
   @Override
@@ -141,16 +140,17 @@ public class SelfHealingWatchableConsumer implements java.util.function.Consumer
    * @return if the current Observable should stop self-healing
    */
   private boolean shouldStopAndDispose(ObservableEmitter<?> emitter) {
-    if (!disposed && exchange.isResponseComplete()) {
+    if (!disposed && response.closed()) {
       dispose();
     }
-    return disposed || emitter.isDisposed() || exchange.isResponseComplete();
+    return disposed || emitter.isDisposed() || response.closed();
   }
 
   private boolean subscribe(
     ObservableEmitter<Object> emitter, Watchable<? extends Model> watchable
   ) {
     Optional.ofNullable(selfHealingSubscriptions.get(watchable.getClass())).ifPresent(Disposable::dispose);
+    response.closeHandler(v -> dispose());
     if (shouldStopAndDispose(emitter)) {
       return false;
     }

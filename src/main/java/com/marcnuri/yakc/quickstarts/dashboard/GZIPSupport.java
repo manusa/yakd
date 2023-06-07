@@ -36,8 +36,9 @@ import java.util.Optional;
  * NB: must be deleted when quarkus will have proper gzip support.
  *
  */
-@Provider
-@Priority(Priorities.HEADER_DECORATOR)
+// TODO: Remove in next Quarkus version bump
+//@Provider
+//@Priority(Priorities.HEADER_DECORATOR)
 public class GZIPSupport implements ContainerResponseFilter {
 
   private boolean isGZIPSupported(ContainerRequestContext containerRequestContext) {

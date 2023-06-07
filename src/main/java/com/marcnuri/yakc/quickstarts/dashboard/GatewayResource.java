@@ -18,15 +18,13 @@
 package com.marcnuri.yakc.quickstarts.dashboard;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
+import org.jboss.resteasy.reactive.RestResponse;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.CacheControl;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.StreamingOutput;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLConnection;
@@ -53,13 +51,13 @@ public class GatewayResource {
 
   @GET
   @Path("/")
-  public Response getFrontendRoot() throws IOException {
+  public RestResponse<InputStream> getFrontendRoot() throws IOException {
     return getFrontendStaticFile("index.html");
   }
 
   @GET
   @Path("/{fileName:.+}")
-  public Response getFrontendStaticFile(@PathParam("fileName") String fileName) throws IOException {
+  public RestResponse<InputStream> getFrontendStaticFile(@PathParam("fileName") String fileName) throws IOException {
     final InputStream requestedFileStream = GatewayResource.class.getResourceAsStream("/frontend/" + fileName);
     final InputStream inputStream;
     final String fileToServe;
@@ -70,9 +68,8 @@ public class GatewayResource {
       fileToServe = FALLBACK_RESOURCE;
       inputStream = GatewayResource.class.getResourceAsStream(FALLBACK_RESOURCE);
     }
-    final StreamingOutput streamingOutput = outputStream -> IOUtils.copy(inputStream, outputStream);
-    return Response
-      .ok(streamingOutput)
+    return RestResponse.ResponseBuilder
+      .ok(inputStream)
       .cacheControl(CacheControl.valueOf("max-age=900"))
       .type(contentType(inputStream, fileToServe))
       .build();

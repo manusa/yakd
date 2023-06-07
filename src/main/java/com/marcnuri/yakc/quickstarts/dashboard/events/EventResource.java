@@ -27,7 +27,7 @@ import javax.inject.Singleton;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import org.jboss.resteasy.annotations.SseElementType;
+import org.jboss.resteasy.reactive.RestSseElementType;
 
 import java.io.IOException;
 
@@ -44,7 +44,7 @@ public class EventResource {
 
   @GET
   @Produces(MediaType.SERVER_SENT_EVENTS)
-  @SseElementType(MediaType.APPLICATION_JSON)
+  @RestSseElementType(MediaType.APPLICATION_JSON)
   public Multi<WatchEvent<Event>> watch() throws IOException {
     return Multi.createFrom().converter(MultiRxConverters.fromObservable(),
       eventService.watch());

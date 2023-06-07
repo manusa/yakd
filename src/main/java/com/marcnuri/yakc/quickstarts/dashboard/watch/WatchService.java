@@ -42,6 +42,7 @@ import com.marcnuri.yakc.quickstarts.dashboard.service.ServiceService;
 import com.marcnuri.yakc.quickstarts.dashboard.statefulsets.StatefulSetService;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.subscription.BackPressureStrategy;
+import io.vertx.core.http.HttpServerResponse;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -107,8 +108,9 @@ public class WatchService {
   }
 
   @SuppressWarnings({"unchecked", "rawtypes", "java:S1452"})
-  public Multi<WatchEvent<? extends Model>> newWatch() {
-    final SelfHealingWatchableConsumer consumer = new SelfHealingWatchableConsumer(watchables);
+  public Multi<WatchEvent<? extends Model>> newWatch(HttpServerResponse response) {
+    // TODO: Move response.close handler to WatchResource
+    final SelfHealingWatchableConsumer consumer = new SelfHealingWatchableConsumer(response, watchables);
     return Multi.createFrom().emitter((Consumer)consumer, BackPressureStrategy.BUFFER)
       .onCompletion().call(consumer::dispose)
       .onCancellation().call(consumer::dispose)
