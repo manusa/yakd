@@ -17,8 +17,7 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.customresourcedefinitions;
 
-import java.io.IOException;
-
+import io.fabric8.kubernetes.api.model.apiextensions.v1.CustomResourceDefinition;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -29,8 +28,6 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-
-import com.marcnuri.yakc.model.io.k8s.apiextensionsapiserver.pkg.apis.apiextensions.v1.CustomResourceDefinition;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
 
@@ -47,7 +44,7 @@ public class CustomResourceDefinitionResource {
 
   @DELETE
   @Path("/{name}")
-  public Response delete(@PathParam("name") String name) throws IOException {
+  public Response delete(@PathParam("name") String name) {
     customResourceDefinitionService.delete(name);
     return Response.noContent().build();
   }
@@ -56,9 +53,7 @@ public class CustomResourceDefinitionResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @Path("/{name}")
-  public CustomResourceDefinition update(@PathParam("name") String name, CustomResourceDefinition customResourceDefinition)
-    throws IOException {
-
+  public CustomResourceDefinition update(@PathParam("name") String name, CustomResourceDefinition customResourceDefinition) {
     return customResourceDefinitionService.update(name, customResourceDefinition);
   }
 }

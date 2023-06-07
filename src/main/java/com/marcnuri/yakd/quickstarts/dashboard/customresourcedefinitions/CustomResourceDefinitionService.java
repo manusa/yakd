@@ -17,16 +17,15 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.customresourcedefinitions;
 
-import com.marcnuri.yakc.KubernetesClient;
 import com.marcnuri.yakc.api.WatchEvent;
-import com.marcnuri.yakc.api.apiextensions.v1.ApiextensionsV1Api;
-import com.marcnuri.yakc.model.io.k8s.apiextensionsapiserver.pkg.apis.apiextensions.v1.CustomResourceDefinition;
+import com.marcnuri.yakd.quickstarts.dashboard.fabric8.InformerOnSubscribe;
 import com.marcnuri.yakd.quickstarts.dashboard.watch.Watchable;
+import io.fabric8.kubernetes.api.model.apiextensions.v1.CustomResourceDefinition;
+import io.fabric8.kubernetes.api.model.apiextensions.v1.CustomResourceDefinitionBuilder;
+import io.fabric8.kubernetes.client.KubernetesClient;
 import io.reactivex.Observable;
-
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import java.io.IOException;
 
 @Singleton
 public class CustomResourceDefinitionService implements Watchable<CustomResourceDefinition> {
@@ -39,16 +38,17 @@ public class CustomResourceDefinitionService implements Watchable<CustomResource
   }
 
   @Override
-  public Observable<WatchEvent<CustomResourceDefinition>> watch() throws IOException {
-    return kubernetesClient.create(ApiextensionsV1Api.class).listCustomResourceDefinition().watch();
+  public Observable<WatchEvent<CustomResourceDefinition>> watch() {
+    return InformerOnSubscribe.observable(kubernetesClient.apiextensions().v1().customResourceDefinitions()::inform);
   }
 
-  public CustomResourceDefinition delete(String name) throws IOException {
-    return kubernetesClient.create(ApiextensionsV1Api.class).deleteCustomResourceDefinition(name).get(CustomResourceDefinition.class);
+  public void delete(String name) {
+    kubernetesClient.apiextensions().v1().customResourceDefinitions().withName(name).delete();
   }
 
-  public CustomResourceDefinition update(String name, CustomResourceDefinition customResourceDefinition) throws IOException {
-    return kubernetesClient.create(ApiextensionsV1Api.class)
-      .replaceCustomResourceDefinition(name, customResourceDefinition).get();
+  public CustomResourceDefinition update(String name, CustomResourceDefinition customResourceDefinition) {
+    return kubernetesClient.apiextensions().v1().customResourceDefinitions().resource(
+        new CustomResourceDefinitionBuilder(customResourceDefinition).editMetadata().withName(name).endMetadata().build())
+      .update();
   }
 }
