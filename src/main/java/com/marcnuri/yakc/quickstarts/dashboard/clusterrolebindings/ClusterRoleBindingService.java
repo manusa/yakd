@@ -31,8 +31,8 @@ import com.marcnuri.yakc.quickstarts.dashboard.ClientUtil.ClientFunction;
 import com.marcnuri.yakc.quickstarts.dashboard.watch.Watchable;
 import io.reactivex.Observable;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.stream.Collectors;

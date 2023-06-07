@@ -20,27 +20,28 @@ package com.marcnuri.yakc.quickstarts.dashboard.pod;
 import com.marcnuri.yakc.model.io.k8s.api.core.v1.Pod;
 import com.marcnuri.yakc.model.io.k8s.metrics.pkg.apis.metrics.v1beta1.PodMetrics;
 import io.quarkus.runtime.annotations.RegisterForReflection;
+import io.reactivex.BackpressureStrategy;
 import io.smallrye.mutiny.Multi;
-import io.smallrye.mutiny.converters.multi.MultiRxConverters;
 import io.vertx.core.http.HttpServerResponse;
+import mutiny.zero.flow.adapters.AdaptersToFlow;
 import org.jboss.resteasy.reactive.RestStreamElementType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.sse.Sse;
-import javax.ws.rs.sse.SseEventSink;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.sse.Sse;
+import jakarta.ws.rs.sse.SseEventSink;
 
 import java.io.IOException;
 
@@ -100,8 +101,8 @@ public class PodResource {
     @Context HttpServerResponse response, @Context Sse sse, @Context SseEventSink sseEventSink,
     @PathParam("namespace") String namespace, @PathParam("name") String name, @PathParam("container") String container) {
 
-    Multi.createFrom().converter(MultiRxConverters.fromObservable(),
-      podService.getPodContainerLog(container, name, namespace))
+    Multi.createFrom()
+      .publisher(AdaptersToFlow.publisher(podService.getPodContainerLog(container, name, namespace).toFlowable(BackpressureStrategy.BUFFER)))
       .subscribe()
       .with(
         subscription -> {

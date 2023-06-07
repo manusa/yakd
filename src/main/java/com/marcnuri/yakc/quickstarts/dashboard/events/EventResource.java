@@ -20,14 +20,15 @@ package com.marcnuri.yakc.quickstarts.dashboard.events;
 import com.marcnuri.yakc.api.WatchEvent;
 import com.marcnuri.yakc.model.io.k8s.api.core.v1.Event;
 import io.quarkus.runtime.annotations.RegisterForReflection;
+import io.reactivex.BackpressureStrategy;
 import io.smallrye.mutiny.Multi;
-import io.smallrye.mutiny.converters.multi.MultiRxConverters;
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.ws.rs.GET;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import org.jboss.resteasy.reactive.RestSseElementType;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import mutiny.zero.flow.adapters.AdaptersToFlow;
+import org.jboss.resteasy.reactive.RestStreamElementType;
 
 import java.io.IOException;
 
@@ -44,9 +45,9 @@ public class EventResource {
 
   @GET
   @Produces(MediaType.SERVER_SENT_EVENTS)
-  @RestSseElementType(MediaType.APPLICATION_JSON)
+  @RestStreamElementType(MediaType.APPLICATION_JSON)
   public Multi<WatchEvent<Event>> watch() throws IOException {
-    return Multi.createFrom().converter(MultiRxConverters.fromObservable(),
-      eventService.watch());
+    return Multi.createFrom()
+      .publisher(AdaptersToFlow.publisher(eventService.watch().toFlowable(BackpressureStrategy.BUFFER)));
   }
 }

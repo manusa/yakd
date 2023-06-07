@@ -21,8 +21,8 @@ import com.marcnuri.yakc.KubernetesClient;
 import com.marcnuri.yakc.api.apis.ApisApi;
 import com.marcnuri.yakc.model.io.k8s.apimachinery.pkg.apis.meta.v1.APIGroup;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;

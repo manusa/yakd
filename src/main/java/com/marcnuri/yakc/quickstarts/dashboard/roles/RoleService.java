@@ -29,8 +29,8 @@ import com.marcnuri.yakc.quickstarts.dashboard.clusterroles.ClusterRoleService;
 import com.marcnuri.yakc.quickstarts.dashboard.watch.Watchable;
 import io.reactivex.Observable;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.io.IOException;
 import java.util.stream.Collectors;
 

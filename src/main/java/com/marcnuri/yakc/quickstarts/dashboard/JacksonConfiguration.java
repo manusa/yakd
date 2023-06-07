@@ -25,7 +25,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.marcnuri.yakc.serialization.GoCompatibleTimeModule;
 import io.quarkus.jackson.ObjectMapperCustomizer;
 
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 
 @Singleton
 public class JacksonConfiguration  implements ObjectMapperCustomizer {

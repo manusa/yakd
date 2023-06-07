@@ -25,8 +25,8 @@ import com.marcnuri.yakc.model.io.k8s.api.batch.v1.Job;
 import com.marcnuri.yakc.quickstarts.dashboard.watch.Watchable;
 import io.reactivex.Observable;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.io.IOException;
 
 @Singleton

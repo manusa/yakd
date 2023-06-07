@@ -46,9 +46,9 @@ import com.marcnuri.yakc.quickstarts.dashboard.statefulsets.StatefulSetResource;
 import com.marcnuri.yakc.quickstarts.dashboard.watch.WatchResource;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.ws.rs.Path;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+import jakarta.ws.rs.Path;
 
 @Singleton
 @RegisterForReflection // Quarkus doesn't generate constructors for JAX-RS Subresources

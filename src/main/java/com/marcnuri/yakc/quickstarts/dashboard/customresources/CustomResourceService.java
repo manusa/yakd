@@ -22,8 +22,8 @@ import static com.marcnuri.yakc.quickstarts.dashboard.ClientUtil.tryWithFallback
 import java.io.IOException;
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 
 import com.marcnuri.yakc.KubernetesClient;
 import com.marcnuri.yakc.model.io.k8s.apimachinery.pkg.apis.meta.v1.Status;

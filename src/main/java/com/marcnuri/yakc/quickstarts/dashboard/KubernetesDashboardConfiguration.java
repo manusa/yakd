@@ -20,9 +20,9 @@ package com.marcnuri.yakc.quickstarts.dashboard;
 import com.marcnuri.yakc.KubernetesClient;
 import com.marcnuri.yakc.config.ConfigurationResolver;
 
-import javax.enterprise.event.Observes;
-import javax.inject.Singleton;
-import javax.ws.rs.Produces;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Singleton;
+import jakarta.ws.rs.Produces;
 
 import io.quarkus.runtime.StartupEvent;
 import io.smallrye.mutiny.infrastructure.Infrastructure;

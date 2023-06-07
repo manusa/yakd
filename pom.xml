@@ -13,8 +13,8 @@
     <container.image.tag>latest</container.image.tag>
     <version.yakc>0.0.26</version.yakc>
     <version.yakc-quarkus-extension>0.0.13</version.yakc-quarkus-extension>
-    <version.quarkus>2.16.6.Final</version.quarkus>
-    <version.smallrye.reactive>0.16.0</version.smallrye.reactive>
+    <version.quarkus>3.1.0.Final</version.quarkus>
+<!--    <version.smallrye.reactive>1.9.0</version.smallrye.reactive>-->
     <version.jkube>1.5.1</version.jkube>
     <version.exec-maven-plugin>3.0.0</version.exec-maven-plugin>
     <k8s.namespace>default</k8s.namespace>
@@ -36,11 +36,6 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy-reactive</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.smallrye.reactive</groupId>
-      <artifactId>mutiny-rxjava</artifactId>
-      <version>${version.smallrye.reactive}</version>
     </dependency>
     <dependency>
       <!-- Take advantage of YAKC Jackson Serializers and Deserializers -->
