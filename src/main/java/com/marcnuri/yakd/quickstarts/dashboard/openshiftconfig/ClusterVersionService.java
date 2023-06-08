@@ -17,34 +17,34 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.openshiftconfig;
 
-import com.marcnuri.yakc.KubernetesClient;
 import com.marcnuri.yakc.api.WatchEvent;
-import com.marcnuri.yakc.api.configopenshiftio.v1.ConfigOpenshiftIoV1Api;
-import com.marcnuri.yakc.model.io.openshift.config.v1.ClusterVersion;
-import com.marcnuri.yakd.quickstarts.dashboard.ClientUtil.ClientFunction;
 import com.marcnuri.yakd.quickstarts.dashboard.watch.Watchable;
+import io.fabric8.kubernetes.client.KubernetesClient;
+import io.fabric8.openshift.api.model.config.v1.ClusterVersion;
+import io.fabric8.openshift.client.OpenShiftClient;
 import io.reactivex.Observable;
-
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+
 import java.io.IOException;
 import java.util.Optional;
+import java.util.function.Supplier;
 
-import static com.marcnuri.yakd.quickstarts.dashboard.ClientUtil.executeRaw;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.observable;
 
 @Singleton
 public class ClusterVersionService implements Watchable<ClusterVersion> {
 
-  private final ConfigOpenshiftIoV1Api config;
+  private final OpenShiftClient openShiftClient;
 
   @Inject
   public ClusterVersionService(KubernetesClient kubernetesClient) {
-    config = kubernetesClient.create(ConfigOpenshiftIoV1Api.class);
+    this.openShiftClient = kubernetesClient.adapt(OpenShiftClient.class);
   }
 
   @Override
-  public Optional<ClientFunction<?>> getAvailabilityCheckFunction() {
-    return Optional.of(executeRaw(config.listClusterVersion(new ConfigOpenshiftIoV1Api.ListClusterVersion().limit(1))));
+  public Optional<Supplier<Boolean>> getAvailabilityCheckFunction() {
+    return Optional.of(() -> openShiftClient.supports(ClusterVersion.class));
   }
 
   @Override
@@ -54,6 +54,6 @@ public class ClusterVersionService implements Watchable<ClusterVersion> {
 
   @Override
   public Observable<WatchEvent<ClusterVersion>> watch() throws IOException {
-    return config.listClusterVersion().watch();
+    return observable(openShiftClient.config().clusterVersions());
   }
 }

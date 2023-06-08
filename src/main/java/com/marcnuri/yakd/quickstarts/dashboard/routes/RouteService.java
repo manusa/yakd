@@ -27,6 +27,9 @@ import io.reactivex.Observable;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
+import java.util.Optional;
+import java.util.function.Supplier;
+
 import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.LIMIT_1;
 import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.observable;
 import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.tryInOrder;
@@ -41,11 +44,10 @@ public class RouteService implements Watchable<Route> {
     this.openShiftClient = kubernetesClient.adapt(OpenShiftClient.class);
   }
 
-  // TODO: reenable when ClusterVersion is supported through Fabric8
-//  @Override
-//  public Optional<ClientFunction<?>> getAvailabilityCheckFunction() {
-//    return Optional.of(executeRaw(routes.getAPIResources()));
-//  }
+  @Override
+  public Optional<Supplier<Boolean>> getAvailabilityCheckFunction() {
+    return Optional.of(() -> openShiftClient.supports(Route.class));
+  }
 
   @Override
   public Observable<WatchEvent<Route>> watch() {

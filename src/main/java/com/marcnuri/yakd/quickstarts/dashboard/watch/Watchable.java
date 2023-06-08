@@ -18,7 +18,6 @@
 package com.marcnuri.yakd.quickstarts.dashboard.watch;
 
 import com.marcnuri.yakc.api.WatchEvent;
-import com.marcnuri.yakd.quickstarts.dashboard.ClientUtil.ClientFunction;
 import io.reactivex.Observable;
 
 import java.io.IOException;
@@ -26,6 +25,7 @@ import java.lang.reflect.ParameterizedType;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public interface Watchable<T> {
 
@@ -48,13 +48,14 @@ public interface Watchable<T> {
    * <p> The function will be executed periodically to make sure that the current Resource
    * is watchable.
    *
-   * <p> If the function is executed without Exceptions, the Watchable is considered available.
+   * <p> If the function is executed without Exceptions and returns true, the Watchable is
+   * considered available.
    *
    * <p> In case we want to skip the check, an empty Optional can be returned.
    *
-   * @return an Optional containing a Callable to check availability or an empty Optional to skip the check.
+   * @return an Optional containing a Supplier to check availability or an empty Optional to skip the check.
    */
-  default Optional<ClientFunction<?>> getAvailabilityCheckFunction() {
+  default Optional<Supplier<Boolean>> getAvailabilityCheckFunction() {
     return Optional.empty();
   }
 

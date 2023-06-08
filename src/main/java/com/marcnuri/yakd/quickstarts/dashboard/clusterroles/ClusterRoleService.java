@@ -18,10 +18,8 @@
 package com.marcnuri.yakd.quickstarts.dashboard.clusterroles;
 
 import com.marcnuri.yakc.api.WatchEvent;
-import com.marcnuri.yakd.quickstarts.dashboard.ClientUtil;
 import com.marcnuri.yakd.quickstarts.dashboard.fabric8.InformerOnSubscribe;
 import com.marcnuri.yakd.quickstarts.dashboard.watch.Watchable;
-import io.fabric8.kubernetes.api.model.ListOptionsBuilder;
 import io.fabric8.kubernetes.api.model.rbac.ClusterRole;
 import io.fabric8.kubernetes.api.model.rbac.ClusterRoleBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
@@ -31,6 +29,7 @@ import jakarta.inject.Singleton;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 @Singleton
 public class ClusterRoleService implements Watchable<ClusterRole> {
@@ -43,9 +42,8 @@ public class ClusterRoleService implements Watchable<ClusterRole> {
   }
 
   @Override
-  public Optional<ClientUtil.ClientFunction<?>> getAvailabilityCheckFunction() {
-    return Optional.of(() ->
-      kubernetesClient.rbac().clusterRoles().list(new ListOptionsBuilder().withLimit(1L).build()));
+  public Optional<Supplier<Boolean>> getAvailabilityCheckFunction() {
+    return Optional.of(() -> kubernetesClient.supports(ClusterRole.class));
   }
 
   @Override

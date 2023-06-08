@@ -36,12 +36,12 @@ public class ApiAvailability {
       final var wAvailability = availability.get(watchable.getClass());
       if (wAvailability == null ||
         Duration.between(wAvailability.lastCheck, LocalDateTime.now()).toSeconds() > CHECK_INTERVAL_SECONDS) {
+        boolean available = false;
         try {
-          watchable.getAvailabilityCheckFunction().orElseThrow().call();
-          availability.put(watchable.getClass(), new Availability(LocalDateTime.now(), true));
-        } catch(Exception e) {
-          availability.put(watchable.getClass(), new Availability(LocalDateTime.now(), false));
+          available = watchable.getAvailabilityCheckFunction().orElseThrow().get();
+        } catch(Exception ignore) {
         }
+        availability.put(watchable.getClass(), new Availability(LocalDateTime.now(), available));
       }
   }
 

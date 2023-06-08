@@ -31,6 +31,8 @@ import jakarta.inject.Singleton;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.util.Optional;
+import java.util.function.Supplier;
 
 import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.LIMIT_1;
 import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.observable;
@@ -46,11 +48,10 @@ public class DeploymentConfigService implements Watchable<DeploymentConfig> {
     this.openShiftClient = kubernetesClient.adapt(OpenShiftClient.class);
   }
 
-  // TODO: reenable when Routes are supported through Fabric8
-//  @Override
-//  public Optional<ClientUtil.ClientFunction<?>> getAvailabilityCheckFunction() {
-//    return Optional.of(() -> openShiftClient.supports(DeploymentConfig.class));
-//  }
+  @Override
+  public Optional<Supplier<Boolean>> getAvailabilityCheckFunction() {
+    return Optional.of(() -> openShiftClient.supports(DeploymentConfig.class));
+  }
 
   @Override
   public Observable<WatchEvent<DeploymentConfig>> watch() throws IOException {
