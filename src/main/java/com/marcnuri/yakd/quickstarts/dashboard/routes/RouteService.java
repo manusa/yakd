@@ -17,57 +17,53 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.routes;
 
-import com.marcnuri.yakc.KubernetesClient;
 import com.marcnuri.yakc.api.WatchEvent;
-import com.marcnuri.yakc.api.routeopenshiftio.v1.RouteOpenshiftIoV1Api;
-import com.marcnuri.yakc.model.com.github.openshift.api.route.v1.Route;
-import com.marcnuri.yakc.model.io.k8s.apimachinery.pkg.apis.meta.v1.Status;
-import com.marcnuri.yakd.quickstarts.dashboard.ClientUtil.ClientFunction;
 import com.marcnuri.yakd.quickstarts.dashboard.watch.Watchable;
+import io.fabric8.kubernetes.client.KubernetesClient;
+import io.fabric8.openshift.api.model.Route;
+import io.fabric8.openshift.api.model.RouteBuilder;
+import io.fabric8.openshift.client.OpenShiftClient;
 import io.reactivex.Observable;
-
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import java.io.IOException;
-import java.util.Optional;
 
-import static com.marcnuri.yakd.quickstarts.dashboard.ClientUtil.executeRaw;
-import static com.marcnuri.yakd.quickstarts.dashboard.ClientUtil.tryWithFallback;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.LIMIT_1;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.observable;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.tryInOrder;
 
 @Singleton
 public class RouteService implements Watchable<Route> {
 
-  private final RouteOpenshiftIoV1Api routes;
-  private final String namespace;
+  private final OpenShiftClient openShiftClient;
 
   @Inject
   public RouteService(KubernetesClient kubernetesClient) {
-    routes = kubernetesClient.create(RouteOpenshiftIoV1Api.class);
-    namespace = kubernetesClient.getConfiguration().getNamespace();
+    this.openShiftClient = kubernetesClient.adapt(OpenShiftClient.class);
   }
 
-  @Override
-  public Optional<ClientFunction<?>> getAvailabilityCheckFunction() {
-    return Optional.of(executeRaw(routes.getAPIResources()));
-  }
+  // TODO: reenable when ClusterVersion is supported through Fabric8
+//  @Override
+//  public Optional<ClientFunction<?>> getAvailabilityCheckFunction() {
+//    return Optional.of(executeRaw(routes.getAPIResources()));
+//  }
 
   @Override
-  public Observable<WatchEvent<Route>> watch() throws IOException {
-    return tryWithFallback(
+  public Observable<WatchEvent<Route>> watch() {
+    return tryInOrder(
       () -> {
-        routes.listRouteForAllNamespaces(new RouteOpenshiftIoV1Api.ListRouteForAllNamespaces().limit(1))
-          .get();
-        return routes.listRouteForAllNamespaces().watch();
+        openShiftClient.routes().inAnyNamespace().list(LIMIT_1);
+        return observable(openShiftClient.routes().inAnyNamespace());
       },
-      () -> routes.listNamespacedRoute(namespace).watch()
+      () -> observable(openShiftClient.routes().inNamespace(openShiftClient.getConfiguration().getNamespace()))
     );
   }
 
-  public Status delete(String name, String namespace) throws IOException {
-    return routes.deleteNamespacedRoute(name, namespace).get();
+  public void delete(String name, String namespace) {
+    openShiftClient.routes().inNamespace(namespace).withName(name).delete();
   }
 
-  public Route update(String name, String namespace, Route route) throws IOException {
-    return routes.replaceNamespacedRoute(name, namespace, route).get();
+  public Route update(String name, String namespace, Route route) {
+    return openShiftClient.routes().inNamespace(namespace)
+      .resource(new RouteBuilder(route).editMetadata().withName(name).endMetadata().build()).update();
   }
 }
