@@ -17,82 +17,81 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.deploymentconfigs;
 
-import com.marcnuri.yakc.KubernetesClient;
 import com.marcnuri.yakc.api.WatchEvent;
-import com.marcnuri.yakc.api.appsopenshiftio.v1.AppsOpenshiftIoV1Api;
-import com.marcnuri.yakc.model.com.github.openshift.api.apps.v1.DeploymentConfig;
-import com.marcnuri.yakc.model.com.github.openshift.api.apps.v1.DeploymentConfigSpec;
-import com.marcnuri.yakc.model.io.k8s.api.core.v1.PodTemplateSpec;
-import com.marcnuri.yakc.model.io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta;
-import com.marcnuri.yakc.model.io.k8s.apimachinery.pkg.apis.meta.v1.Status;
 import com.marcnuri.yakd.quickstarts.dashboard.watch.Watchable;
-import com.marcnuri.yakd.quickstarts.dashboard.ClientUtil;
+import io.fabric8.kubernetes.client.KubernetesClient;
+import io.fabric8.kubernetes.client.dsl.base.PatchContext;
+import io.fabric8.kubernetes.client.dsl.base.PatchType;
+import io.fabric8.openshift.api.model.DeploymentConfig;
+import io.fabric8.openshift.api.model.DeploymentConfigBuilder;
+import io.fabric8.openshift.client.OpenShiftClient;
 import io.reactivex.Observable;
-
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+
 import java.io.IOException;
 import java.time.Instant;
-import java.util.Optional;
+
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.LIMIT_1;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.observable;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.tryInOrder;
 
 @Singleton
 public class DeploymentConfigService implements Watchable<DeploymentConfig> {
 
-  private final AppsOpenshiftIoV1Api apps;
-  private final String namespace;
+  private final OpenShiftClient openShiftClient;
 
   @Inject
   public DeploymentConfigService(KubernetesClient kubernetesClient) {
-    apps = kubernetesClient.create(AppsOpenshiftIoV1Api.class);
-    namespace = kubernetesClient.getConfiguration().getNamespace();
+    this.openShiftClient = kubernetesClient.adapt(OpenShiftClient.class);
   }
 
-  private static DeploymentConfig emptyDeploymentConfig() {
-    final DeploymentConfig ret = new DeploymentConfig();
-    ret.setSpec(new DeploymentConfigSpec());
-    return ret;
-  }
-
-  @Override
-  public Optional<ClientUtil.ClientFunction<?>> getAvailabilityCheckFunction() {
-    return Optional.of(ClientUtil.executeRaw(apps.getAPIResources()));
-  }
+  // TODO: reenable when Routes are supported through Fabric8
+//  @Override
+//  public Optional<ClientUtil.ClientFunction<?>> getAvailabilityCheckFunction() {
+//    return Optional.of(() -> openShiftClient.supports(DeploymentConfig.class));
+//  }
 
   @Override
   public Observable<WatchEvent<DeploymentConfig>> watch() throws IOException {
-    return ClientUtil.tryWithFallback(
+    return tryInOrder(
       () -> {
-        apps.listDeploymentConfigForAllNamespaces(new AppsOpenshiftIoV1Api.ListDeploymentConfigForAllNamespaces().limit(1))
-          .get();
-        return apps.listDeploymentConfigForAllNamespaces().watch();
+        openShiftClient.deploymentConfigs().inAnyNamespace().list(LIMIT_1);
+        return observable(openShiftClient.deploymentConfigs().inAnyNamespace());
       },
-      () -> apps.listNamespacedDeploymentConfig(namespace).watch()
+      () -> observable(openShiftClient.deploymentConfigs().inNamespace(openShiftClient.getConfiguration().getNamespace()))
     );
   }
 
-  public Status delete(String name, String namespace) throws IOException {
-    return apps.deleteNamespacedDeploymentConfig(name, namespace).get();
+  public void delete(String name, String namespace) {
+    openShiftClient.deploymentConfigs().inNamespace(namespace).withName(name).delete();
   }
 
-  public DeploymentConfig restart(String name, String namespace) throws IOException {
-    final DeploymentConfig toPatch = emptyDeploymentConfig();
-    toPatch.getSpec().setTemplate(PodTemplateSpec.builder()
-      .metadata(ObjectMeta.builder()
-        .putInAnnotations("yakc.marcnuri.com/restartedAt", Instant.now().toString())
-        .build())
-      .build());
-    return apps.patchNamespacedDeploymentConfig(name, namespace, toPatch)
-      .get();
+  public DeploymentConfig restart(String name, String namespace) {
+    final var toPatch = new DeploymentConfigBuilder()
+      .withNewSpec().withNewTemplate()
+      .withNewMetadata().addToAnnotations("yakd.marcnuri.com/restartedAt", Instant.now().toString()).endMetadata()
+      .endTemplate()
+      .endSpec()
+      .build();
+    // TODO might be removable after Kubernetes Client 6.7.0
+    // n.b. ensure triggers are not removed (empty list)
+    toPatch.getSpec().setTriggers(openShiftClient.deploymentConfigs().inNamespace(namespace).withName(name).get().getSpec().getTriggers());
+    return openShiftClient.deploymentConfigs().inNamespace(namespace).withName(name)
+      .patch(PatchContext.of(PatchType.JSON_MERGE), toPatch);
   }
 
-  public DeploymentConfig update(String name, String namespace, DeploymentConfig deploymentConfig) throws IOException {
-    return apps.replaceNamespacedDeploymentConfig(name, namespace, deploymentConfig).get();
+  public DeploymentConfig update(String name, String namespace, DeploymentConfig deploymentConfig) {
+    return openShiftClient.deploymentConfigs().inNamespace(namespace)
+      .resource(new DeploymentConfigBuilder(deploymentConfig).editMetadata().withName(name).endMetadata().build()).update();
   }
 
-  public DeploymentConfig updateReplicas(String name, String namespace, Integer replicas) throws IOException {
-    final DeploymentConfig toPatch = emptyDeploymentConfig();
-    toPatch.getSpec().setReplicas(replicas);
-    return apps.patchNamespacedDeploymentConfig(name, namespace,
-      toPatch).get();
+  public DeploymentConfig updateReplicas(String name, String namespace, Integer replicas) {
+    final DeploymentConfig toPatch = new DeploymentConfigBuilder().withNewSpec().withReplicas(replicas).endSpec().build();
+    // TODO might be removable after Kubernetes Client 6.7.0
+    // n.b. ensure triggers are not removed (empty list)
+    toPatch.getSpec().setTriggers(openShiftClient.deploymentConfigs().inNamespace(namespace).withName(name).get().getSpec().getTriggers());
+    return openShiftClient.deploymentConfigs().inNamespace(namespace).withName(name)
+      .patch(PatchContext.of(PatchType.JSON_MERGE), toPatch);
   }
 }
