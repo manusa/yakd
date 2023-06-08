@@ -18,7 +18,7 @@
 package com.marcnuri.yakd.quickstarts.dashboard.events;
 
 import com.marcnuri.yakc.api.WatchEvent;
-import com.marcnuri.yakc.model.io.k8s.api.core.v1.Event;
+import io.fabric8.kubernetes.api.model.Event;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import io.reactivex.BackpressureStrategy;
 import io.smallrye.mutiny.Multi;
@@ -29,8 +29,6 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import mutiny.zero.flow.adapters.AdaptersToFlow;
 import org.jboss.resteasy.reactive.RestStreamElementType;
-
-import java.io.IOException;
 
 @Singleton
 @RegisterForReflection // Quarkus doesn't generate constructors for JAX-RS Subresources
@@ -46,7 +44,7 @@ public class EventResource {
   @GET
   @Produces(MediaType.SERVER_SENT_EVENTS)
   @RestStreamElementType(MediaType.APPLICATION_JSON)
-  public Multi<WatchEvent<Event>> watch() throws IOException {
+  public Multi<WatchEvent<Event>> watch() {
     return Multi.createFrom()
       .publisher(AdaptersToFlow.publisher(eventService.watch().toFlowable(BackpressureStrategy.BUFFER)));
   }

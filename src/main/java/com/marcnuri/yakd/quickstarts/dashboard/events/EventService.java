@@ -17,18 +17,15 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.events;
 
-import com.marcnuri.yakc.KubernetesClient;
-import com.marcnuri.yakc.api.ClientErrorException;
 import com.marcnuri.yakc.api.WatchEvent;
-import com.marcnuri.yakc.api.core.v1.CoreV1Api;
-import com.marcnuri.yakc.api.core.v1.CoreV1Api.ListEventForAllNamespaces;
-import com.marcnuri.yakc.model.io.k8s.api.core.v1.Event;
 import com.marcnuri.yakd.quickstarts.dashboard.watch.Watchable;
+import io.fabric8.kubernetes.api.model.Event;
+import io.fabric8.kubernetes.client.KubernetesClient;
 import io.reactivex.Observable;
-
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import java.io.IOException;
+
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.observable;
 
 @Singleton
 public class EventService implements Watchable<Event> {
@@ -41,14 +38,8 @@ public class EventService implements Watchable<Event> {
   }
 
   @Override
-  public Observable<WatchEvent<Event>> watch() throws IOException {
-    final CoreV1Api core = kubernetesClient.create(CoreV1Api.class);
-    try {
-      core.listEventForAllNamespaces(new ListEventForAllNamespaces().limit(1)).get();
-      return core.listEventForAllNamespaces().watch();
-    } catch (ClientErrorException ex) {
-      return core.listNamespacedEvent(kubernetesClient.getConfiguration().getNamespace()).watch();
-    }
+  public Observable<WatchEvent<Event>> watch() {
+    return observable(kubernetesClient.v1().events());
   }
 
 }
