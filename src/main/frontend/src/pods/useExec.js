@@ -28,8 +28,8 @@ const startTerminal = (ref, namespace, name, selectedContainer) => {
   xterm.loadAddon(new WebLinksAddon());
   xterm.open(ref.current);
   fitAddon.fit();
-  const ws = p.api.exec(namespace, name, selectedContainer?.name);
-  const attachAddon = new AttachAddon(ws);
+  xterm.webSocket = p.api.exec(namespace, name, selectedContainer?.name);
+  const attachAddon = new AttachAddon(xterm.webSocket);
   xterm.loadAddon(attachAddon);
   xterm.focus();
   xterm.resizeEventListener = () => {
@@ -50,6 +50,7 @@ const useExec = (namespace, name, containers) => {
     } else if (terminal && terminal.selectedContainer !== selectedContainer) {
       window.removeEventListener('resize', terminal.resizeEventListener);
       terminal.dispose();
+      terminal.webSocket.close(); // https://github.com/xtermjs/xterm.js/issues/663
       setTerminal(startTerminal(ref, namespace, name, selectedContainer));
     }
   }, [terminal, setTerminal, namespace, name, selectedContainer]);
@@ -60,6 +61,7 @@ const useExec = (namespace, name, containers) => {
           window.removeEventListener('resize', terminal.resizeEventListener);
         }
         terminal.dispose();
+        terminal.webSocket.close(); // https://github.com/xtermjs/xterm.js/issues/663
       }
     },
     [terminal]
