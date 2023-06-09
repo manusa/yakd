@@ -17,16 +17,15 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.persistentvolumeclaims;
 
-import com.marcnuri.yakc.KubernetesClient;
-import com.marcnuri.yakc.api.core.v1.CoreV1Api;
-import com.marcnuri.yakc.model.io.k8s.api.core.v1.PersistentVolumeClaim;
+import io.fabric8.kubernetes.api.model.PersistentVolumeClaim;
+import io.fabric8.kubernetes.api.model.PersistentVolumeClaimBuilder;
+import io.fabric8.kubernetes.client.KubernetesClient;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
-import java.io.IOException;
 import java.util.List;
 
-import static com.marcnuri.yakd.quickstarts.dashboard.ClientUtil.tryWithFallback;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.tryInOrder;
 
 @Singleton
 public class PersistentVolumeClaimService {
@@ -38,19 +37,21 @@ public class PersistentVolumeClaimService {
     this.kubernetesClient = kubernetesClient;
   }
 
-  public List<PersistentVolumeClaim> get() throws IOException {
-    return tryWithFallback(
-      () -> kubernetesClient.create(CoreV1Api.class).listPersistentVolumeClaimForAllNamespaces().get().getItems(),
-      () -> kubernetesClient.create(CoreV1Api.class)
-        .listNamespacedPersistentVolumeClaim(kubernetesClient.getConfiguration().getNamespace()).get().getItems()
+  public List<PersistentVolumeClaim> get() {
+    return tryInOrder(
+      () -> kubernetesClient.persistentVolumeClaims().inAnyNamespace().list().getItems(),
+      () -> kubernetesClient.persistentVolumeClaims()
+        .inNamespace(kubernetesClient.getConfiguration().getNamespace()).list().getItems()
     );
   }
 
-  public PersistentVolumeClaim delete(String name, String namespace) throws IOException {
-    return kubernetesClient.create(CoreV1Api.class).deleteNamespacedPersistentVolumeClaim(name, namespace).get();
+  public void delete(String name, String namespace) {
+    kubernetesClient.persistentVolumeClaims().inNamespace(namespace).withName(name).delete();
   }
 
-  public PersistentVolumeClaim update(String name, String namespace, PersistentVolumeClaim persistentVolumeClaim) throws IOException {
-    return kubernetesClient.create(CoreV1Api.class).replaceNamespacedPersistentVolumeClaim(name, namespace, persistentVolumeClaim).get();
+  public PersistentVolumeClaim update(String name, String namespace, PersistentVolumeClaim persistentVolumeClaim) {
+    return kubernetesClient.persistentVolumeClaims().inNamespace(namespace)
+      .resource(new PersistentVolumeClaimBuilder(persistentVolumeClaim).editMetadata().withName(name).endMetadata().build())
+      .update();
   }
 }

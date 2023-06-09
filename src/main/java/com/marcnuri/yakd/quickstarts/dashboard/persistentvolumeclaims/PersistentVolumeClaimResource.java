@@ -17,9 +17,8 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.persistentvolumeclaims;
 
-import com.marcnuri.yakc.model.io.k8s.api.core.v1.PersistentVolumeClaim;
+import io.fabric8.kubernetes.api.model.PersistentVolumeClaim;
 import io.quarkus.runtime.annotations.RegisterForReflection;
-
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -32,7 +31,6 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-import java.io.IOException;
 import java.util.List;
 
 @Singleton
@@ -50,15 +48,13 @@ public class PersistentVolumeClaimResource {
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  public List<PersistentVolumeClaim> get() throws IOException {
+  public List<PersistentVolumeClaim> get() {
     return persistentVolumeClaimService.get();
   }
 
   @DELETE
   @Path("/{namespace}/{name}")
-  public Response delete(@PathParam("namespace") String namespace, @PathParam("name") String name)
-    throws IOException {
-
+  public Response delete(@PathParam("namespace") String namespace, @PathParam("name") String name) {
     persistentVolumeClaimService.delete(name, namespace);
     return Response.noContent().build();
   }
@@ -67,9 +63,7 @@ public class PersistentVolumeClaimResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @Path("/{namespace}/{name}")
-  public PersistentVolumeClaim update(@PathParam("namespace") String namespace, @PathParam("name") String name, PersistentVolumeClaim persistentVolumeClaim)
-    throws IOException {
-
+  public PersistentVolumeClaim update(@PathParam("namespace") String namespace, @PathParam("name") String name, PersistentVolumeClaim persistentVolumeClaim) {
     return persistentVolumeClaimService.update(name, namespace, persistentVolumeClaim);
   }
 }
