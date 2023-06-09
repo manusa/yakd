@@ -17,17 +17,18 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.jobs;
 
-import com.marcnuri.yakc.KubernetesClient;
-import com.marcnuri.yakc.api.ClientErrorException;
 import com.marcnuri.yakc.api.WatchEvent;
-import com.marcnuri.yakc.api.batch.v1.BatchV1Api;
-import com.marcnuri.yakc.model.io.k8s.api.batch.v1.Job;
 import com.marcnuri.yakd.quickstarts.dashboard.watch.Watchable;
+import io.fabric8.kubernetes.api.model.batch.v1.Job;
+import io.fabric8.kubernetes.api.model.batch.v1.JobBuilder;
+import io.fabric8.kubernetes.client.KubernetesClient;
 import io.reactivex.Observable;
-
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import java.io.IOException;
+
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.LIMIT_1;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.observable;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.tryInOrder;
 
 @Singleton
 public class JobService implements Watchable<Job> {
@@ -40,22 +41,25 @@ public class JobService implements Watchable<Job> {
   }
 
   @Override
-  public Observable<WatchEvent<Job>> watch() throws IOException {
-    final BatchV1Api batch = kubernetesClient.create(BatchV1Api.class);
-    try {
-      batch.listJobForAllNamespaces(new BatchV1Api.ListJobForAllNamespaces().limit(1)).get();
-      return batch.listJobForAllNamespaces().watch();
-    } catch (ClientErrorException ex) {
-      return batch.listNamespacedJob(kubernetesClient.getConfiguration().getNamespace()).watch();
-    }
+  public Observable<WatchEvent<Job>> watch() {
+    return tryInOrder(
+      () -> {
+        kubernetesClient.batch().v1().jobs().inAnyNamespace().list(LIMIT_1);
+        return observable(kubernetesClient.batch().v1().jobs().inAnyNamespace());
+      },
+      () -> observable(kubernetesClient.batch().v1().jobs()
+        .inNamespace(kubernetesClient.getConfiguration().getNamespace()))
+    );
   }
 
-  public Job delete(String name, String namespace) throws IOException {
-    return kubernetesClient.create(BatchV1Api.class).deleteNamespacedJob(name, namespace).get(Job.class);
+  public void delete(String name, String namespace) {
+    kubernetesClient.batch().v1().jobs().inNamespace(namespace).withName(name).delete();
   }
 
-  public Job update(String name, String namespace, Job job) throws IOException {
-    return kubernetesClient.create(BatchV1Api.class).replaceNamespacedJob(name, namespace, job).get();
+  public Job update(String name, String namespace, Job job) {
+    return kubernetesClient.batch().v1().jobs().inNamespace(namespace)
+      .resource(new JobBuilder(job).editMetadata().withName(name).endMetadata().build())
+      .update();
   }
 
 }
