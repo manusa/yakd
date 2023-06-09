@@ -17,17 +17,10 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.pod;
 
-import com.marcnuri.yakc.model.io.k8s.api.core.v1.Pod;
-import com.marcnuri.yakc.model.io.k8s.metrics.pkg.apis.metrics.v1beta1.PodMetrics;
+import io.fabric8.kubernetes.api.model.Pod;
+import io.fabric8.kubernetes.api.model.metrics.v1beta1.PodMetrics;
 import io.quarkus.runtime.annotations.RegisterForReflection;
-import io.reactivex.BackpressureStrategy;
-import io.smallrye.mutiny.Multi;
 import io.vertx.core.http.HttpServerResponse;
-import mutiny.zero.flow.adapters.AdaptersToFlow;
-import org.jboss.resteasy.reactive.RestStreamElementType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -42,8 +35,9 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.sse.Sse;
 import jakarta.ws.rs.sse.SseEventSink;
-
-import java.io.IOException;
+import org.jboss.resteasy.reactive.RestStreamElementType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 @RegisterForReflection // Quarkus doesn't generate constructors for JAX-RS Subresources
@@ -61,24 +55,20 @@ public class PodResource {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   @Path("/{namespace}/{name}")
-  public Pod get(@PathParam("namespace") String namespace, @PathParam("name") String name)
-    throws IOException {
+  public Pod get(@PathParam("namespace") String namespace, @PathParam("name") String name) {
     return podService.getPod(name, namespace);
   }
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   @Path("/{namespace}/{name}/metrics")
-  public PodMetrics getPodMetrics(@PathParam("namespace") String namespace, @PathParam("name") String name)
-    throws IOException {
+  public PodMetrics getPodMetrics(@PathParam("namespace") String namespace, @PathParam("name") String name) {
     return podService.getPodMetrics(name, namespace);
   }
 
   @DELETE
   @Path("/{namespace}/{name}")
-  public Response delete(@PathParam("namespace") String namespace, @PathParam("name") String name)
-    throws IOException {
-
+  public Response delete(@PathParam("namespace") String namespace, @PathParam("name") String name) {
     podService.deletePod(name, namespace);
     return Response.noContent().build();
   }
@@ -87,9 +77,7 @@ public class PodResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @Path("/{namespace}/{name}")
-  public Pod update(@PathParam("namespace") String namespace, @PathParam("name") String name, Pod pod)
-    throws IOException {
-
+  public Pod update(@PathParam("namespace") String namespace, @PathParam("name") String name, Pod pod) {
     return podService.updatePod(name, namespace, pod);
   }
 
@@ -101,8 +89,7 @@ public class PodResource {
     @Context HttpServerResponse response, @Context Sse sse, @Context SseEventSink sseEventSink,
     @PathParam("namespace") String namespace, @PathParam("name") String name, @PathParam("container") String container) {
 
-    Multi.createFrom()
-      .publisher(AdaptersToFlow.publisher(podService.getPodContainerLog(container, name, namespace).toFlowable(BackpressureStrategy.BUFFER)))
+    podService.getPodContainerLog(container, name, namespace)
       .subscribe()
       .with(
         subscription -> {
@@ -110,8 +97,30 @@ public class PodResource {
           subscription.request(Long.MAX_VALUE);
         },
         logEntry -> sseEventSink.send(sse.newEvent(logEntry)),
-        throwable -> LOG.warn("Pod log subscription closed: {}", throwable.getMessage()),
+        throwable -> LOG.warn("Pod ({} - {}) log subscription closed: {}", namespace, name, throwable.getMessage()),
         () -> sseEventSink.send(sse.newEvent("log-complete", ""))
       );
   }
+
+//  @GET
+//  @Produces(MediaType.SERVER_SENT_EVENTS)
+//  @RestStreamElementType(MediaType.APPLICATION_JSON)
+//  @Path("/{namespace}/{name}/logs/{container}")
+//  public void getLogs(
+//    @Context HttpServerResponse response, @Context Sse sse, @Context SseEventSink sseEventSink,
+//    @PathParam("namespace") String namespace, @PathParam("name") String name, @PathParam("container") String container) {
+//
+//    Multi.createFrom()
+//      .publisher(AdaptersToFlow.publisher(podService.getPodContainerLog(container, name, namespace).toFlowable(BackpressureStrategy.BUFFER)))
+//      .subscribe()
+//      .with(
+//        subscription -> {
+//          response.closeHandler(v -> subscription.cancel());
+//          subscription.request(Long.MAX_VALUE);
+//        },
+//        logEntry -> sseEventSink.send(sse.newEvent(logEntry)),
+//        throwable -> LOG.warn("Pod log subscription closed: {}", throwable.getMessage()),
+//        () -> sseEventSink.send(sse.newEvent("log-complete", ""))
+//      );
+//  }
 }
