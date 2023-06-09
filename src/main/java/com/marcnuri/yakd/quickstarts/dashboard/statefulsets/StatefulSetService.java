@@ -17,23 +17,20 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.statefulsets;
 
-import com.marcnuri.yakc.KubernetesClient;
-import com.marcnuri.yakc.api.ClientErrorException;
 import com.marcnuri.yakc.api.WatchEvent;
-import com.marcnuri.yakc.api.apps.v1.AppsV1Api;
-import com.marcnuri.yakc.api.apps.v1.AppsV1Api.ListStatefulSetForAllNamespaces;
-import com.marcnuri.yakc.model.io.k8s.api.apps.v1.StatefulSet;
-import com.marcnuri.yakc.model.io.k8s.api.apps.v1.StatefulSetSpec;
-import com.marcnuri.yakc.model.io.k8s.api.core.v1.PodTemplateSpec;
-import com.marcnuri.yakc.model.io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta;
-import com.marcnuri.yakc.model.io.k8s.apimachinery.pkg.apis.meta.v1.Status;
 import com.marcnuri.yakd.quickstarts.dashboard.watch.Watchable;
+import io.fabric8.kubernetes.api.model.apps.StatefulSet;
+import io.fabric8.kubernetes.api.model.apps.StatefulSetBuilder;
+import io.fabric8.kubernetes.client.KubernetesClient;
+import io.fabric8.kubernetes.client.dsl.base.PatchContext;
+import io.fabric8.kubernetes.client.dsl.base.PatchType;
 import io.reactivex.Observable;
-
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import java.io.IOException;
-import java.time.Instant;
+
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.LIMIT_1;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.observable;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.tryInOrder;
 
 @Singleton
 public class StatefulSetService implements Watchable<StatefulSet> {
@@ -46,46 +43,33 @@ public class StatefulSetService implements Watchable<StatefulSet> {
   }
 
   @Override
-  public Observable<WatchEvent<StatefulSet>> watch() throws IOException {
-    final AppsV1Api apps = kubernetesClient.create(AppsV1Api.class);
-    try {
-      apps.listStatefulSetForAllNamespaces(new ListStatefulSetForAllNamespaces().limit(1)).get();
-      return apps.listStatefulSetForAllNamespaces().watch();
-    } catch (ClientErrorException ex) {
-      return apps.listNamespacedStatefulSet(kubernetesClient.getConfiguration().getNamespace()).watch();
-    }
+  public Observable<WatchEvent<StatefulSet>> watch() {
+    return tryInOrder(
+      () -> {
+        kubernetesClient.apps().statefulSets().inAnyNamespace().list(LIMIT_1);
+        return observable(kubernetesClient.apps().statefulSets().inAnyNamespace());
+      },
+      () -> observable(kubernetesClient.apps().statefulSets().inNamespace(kubernetesClient.getConfiguration().getNamespace()))
+    );
   }
 
-  public Status deleteStatefulSet(String name, String namespace) throws IOException {
-    return kubernetesClient.create(AppsV1Api.class).deleteNamespacedStatefulSet(name, namespace).get();
+  public void deleteStatefulSet(String name, String namespace) {
+    kubernetesClient.apps().statefulSets().inNamespace(namespace).withName(name).delete();
   }
 
-  public StatefulSet updateStatefulSet(String name, String namespace, StatefulSet statefulset) throws IOException {
-    return kubernetesClient.create(AppsV1Api.class).replaceNamespacedStatefulSet(name, namespace, statefulset).get();
+  public StatefulSet updateStatefulSet(String name, String namespace, StatefulSet statefulset) {
+    return kubernetesClient.apps().statefulSets().inNamespace(namespace)
+      .resource(new StatefulSetBuilder(statefulset).editMetadata().withName(name).endMetadata().build())
+      .update();
   }
 
-  public StatefulSet restart(String name, String namespace) throws IOException {
-    final StatefulSet toPatch = emptyStatefulSet();
-    toPatch.getSpec().setTemplate(PodTemplateSpec.builder()
-      .metadata(ObjectMeta.builder()
-        .putInAnnotations("yakc.marcnuri.com/restartedAt", Instant.now().toString())
-        .build())
-      .build());
-    return kubernetesClient.create(AppsV1Api.class)
-      .patchNamespacedStatefulSet(name, namespace, toPatch)
-      .get();
+  public StatefulSet restart(String name, String namespace) {
+    return kubernetesClient.apps().statefulSets().inNamespace(namespace).withName(name).rolling().restart();
   }
 
-  public StatefulSet updateReplicas(String name, String namespace, Integer replicas) throws IOException {
-    final StatefulSet toPatch = emptyStatefulSet();
-    toPatch.getSpec().setReplicas(replicas);
-    return kubernetesClient.create(AppsV1Api.class)
-      .patchNamespacedStatefulSet(name, namespace, toPatch).get();
-  }
-
-  private static StatefulSet emptyStatefulSet() {
-    final StatefulSet ret = new StatefulSet();
-    ret.setSpec(new StatefulSetSpec());
-    return ret;
+  public StatefulSet updateReplicas(String name, String namespace, Integer replicas) {
+    final StatefulSet toPatch = new StatefulSetBuilder().withNewSpec().withReplicas(replicas).endSpec().build();
+    return kubernetesClient.apps().statefulSets().inNamespace(namespace).withName(name)
+      .patch(PatchContext.of(PatchType.JSON_MERGE), toPatch);
   }
 }
