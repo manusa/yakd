@@ -17,9 +17,8 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.service;
 
-import com.marcnuri.yakc.model.io.k8s.api.core.v1.Service;
+import io.fabric8.kubernetes.api.model.Service;
 import io.quarkus.runtime.annotations.RegisterForReflection;
-
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -32,7 +31,6 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-import java.io.IOException;
 import java.util.List;
 
 @Singleton
@@ -49,15 +47,13 @@ public class ServiceResource {
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  public List<Service> get() throws IOException {
+  public List<Service> get() {
     return serviceService.get();
   }
 
   @DELETE
   @Path("/{namespace}/{name}")
-  public Response delete(@PathParam("namespace") String namespace, @PathParam("name") String name)
-    throws IOException {
-
+  public Response delete(@PathParam("namespace") String namespace, @PathParam("name") String name) {
     serviceService.deleteService(name, namespace);
     return Response.noContent().build();
   }
@@ -66,9 +62,7 @@ public class ServiceResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @Path("/{namespace}/{name}")
-  public Service update(@PathParam("namespace") String namespace, @PathParam("name") String name, Service service)
-    throws IOException {
-
+  public Service update(@PathParam("namespace") String namespace, @PathParam("name") String name, Service service) {
     return serviceService.updateService(name, namespace, service);
   }
 }

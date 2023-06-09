@@ -17,22 +17,20 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.service;
 
-import com.marcnuri.yakc.KubernetesClient;
 import com.marcnuri.yakc.api.WatchEvent;
-import com.marcnuri.yakc.api.core.v1.CoreV1Api;
-import com.marcnuri.yakc.api.core.v1.CoreV1Api.ListNamespacedService;
-import com.marcnuri.yakc.api.core.v1.CoreV1Api.ListServiceForAllNamespaces;
-import com.marcnuri.yakc.model.io.k8s.api.core.v1.Service;
 import com.marcnuri.yakd.quickstarts.dashboard.watch.Watchable;
+import io.fabric8.kubernetes.api.model.Service;
+import io.fabric8.kubernetes.api.model.ServiceBuilder;
+import io.fabric8.kubernetes.client.KubernetesClient;
 import io.reactivex.Observable;
-
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import java.io.IOException;
+
 import java.util.List;
 
-import static com.marcnuri.yakd.quickstarts.dashboard.ClientUtil.executeRaw;
-import static com.marcnuri.yakd.quickstarts.dashboard.ClientUtil.tryWithFallback;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.LIMIT_1;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.observable;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.tryInOrder;
 
 @Singleton
 public class ServiceService implements Watchable<Service> {
@@ -45,34 +43,31 @@ public class ServiceService implements Watchable<Service> {
   }
 
   @Override
-  public Observable<WatchEvent<Service>> watch() throws IOException {
-    final CoreV1Api api = kubernetesClient.create(CoreV1Api.class);
-    return tryWithFallback(
+  public Observable<WatchEvent<Service>> watch() {
+    return tryInOrder(
       () -> {
-        api.listServiceForAllNamespaces(new ListServiceForAllNamespaces().limit(1)).get();
-        return api.listServiceForAllNamespaces().watch();
+        kubernetesClient.services().inAnyNamespace().list(LIMIT_1);
+        return observable(kubernetesClient.services().inAnyNamespace());
       },
-      () -> {
-        final String ns = kubernetesClient.getConfiguration().getNamespace();
-        api.listNamespacedService(ns, new ListNamespacedService().limit(1)).get();
-        return api.listNamespacedService(ns).watch();
-      }
+      () -> observable(kubernetesClient.services().inNamespace(kubernetesClient.getConfiguration().getNamespace()))
     );
   }
 
-  public List<Service> get() throws IOException {
-    return tryWithFallback(
-      () -> kubernetesClient.create(CoreV1Api.class).listServiceForAllNamespaces().get().getItems(),
-      () -> kubernetesClient.create(CoreV1Api.class)
-        .listNamespacedService(kubernetesClient.getConfiguration().getNamespace()).get().getItems()
+  public List<Service> get() {
+    return tryInOrder(
+      () -> kubernetesClient.services().inAnyNamespace().list().getItems(),
+      () -> kubernetesClient.services().inNamespace(kubernetesClient.getConfiguration().getNamespace())
+        .list().getItems()
     );
   }
 
-  public void deleteService(String name, String namespace) throws IOException {
-    executeRaw(kubernetesClient.create(CoreV1Api.class).deleteNamespacedService(name, namespace)).call();
+  public void deleteService(String name, String namespace) {
+    kubernetesClient.services().inNamespace(namespace).withName(name).delete();
   }
 
-  public Service updateService(String name, String namespace, Service service) throws IOException {
-    return kubernetesClient.create(CoreV1Api.class).replaceNamespacedService(name, namespace, service).get();
+  public Service updateService(String name, String namespace, Service service) {
+    return kubernetesClient.services().inNamespace(namespace)
+      .resource(new ServiceBuilder(service).editMetadata().withName(name).endMetadata().build())
+      .update();
   }
 }
