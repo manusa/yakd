@@ -18,15 +18,12 @@
 package com.marcnuri.yakd.quickstarts.dashboard.replicaset;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
-
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.Response;
-
-import java.io.IOException;
 
 @Singleton
 @RegisterForReflection // Quarkus doesn't generate constructors for JAX-RS Subresources
@@ -41,9 +38,7 @@ public class ReplicaSetResource {
 
   @DELETE
   @Path("/{namespace}/{name}")
-  public Response delete(@PathParam("namespace") String namespace, @PathParam("name") String name)
-    throws IOException {
-
+  public Response delete(@PathParam("namespace") String namespace, @PathParam("name") String name) {
     replicaSetService.deleteReplicaSet(name, namespace);
     return Response.noContent().build();
   }
