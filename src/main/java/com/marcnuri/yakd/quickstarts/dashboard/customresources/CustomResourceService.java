@@ -17,15 +17,17 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.customresources;
 
-import java.io.IOException;
-import java.util.List;
-
-import com.marcnuri.yakd.quickstarts.dashboard.ClientUtil;
+import io.fabric8.kubernetes.api.model.GenericKubernetesResource;
+import io.fabric8.kubernetes.api.model.GenericKubernetesResourceBuilder;
+import io.fabric8.kubernetes.client.KubernetesClient;
+import io.fabric8.kubernetes.client.dsl.base.ResourceDefinitionContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
-import com.marcnuri.yakc.KubernetesClient;
-import com.marcnuri.yakc.model.io.k8s.apimachinery.pkg.apis.meta.v1.Status;
+import java.util.List;
+
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.tryInOrder;
+
 
 @Singleton
 public class CustomResourceService {
@@ -37,37 +39,46 @@ public class CustomResourceService {
     this.kubernetesClient = kubernetesClient;
   }
 
-  public List<UntypedResource> get(String group, String version, String plural) throws IOException {
-    final CustomResourceApi api = kubernetesClient.create(CustomResourceApi.class);
-    return ClientUtil.tryWithFallback(
-      () -> api.listCustomResourceForAllNamespaces(group, version, plural).get(),
-      () -> api.listNamespacedCustomResource(group, version, kubernetesClient.getConfiguration().getNamespace(), plural).get()
-    ).getItems();
+  public List<GenericKubernetesResource> get(String group, String version, String plural) {
+    return tryInOrder(
+      () -> kubernetesClient.genericKubernetesResources(clusterContext(group, version, plural)).list().getItems(),
+      () -> kubernetesClient.genericKubernetesResources(namespacedContext(group, version, plural))
+        .inAnyNamespace().list().getItems()
+    );
   }
 
-  public Status deleteCustomResource(String group, String version, String plural, String name) throws IOException {
-    return kubernetesClient.create(CustomResourceApi.class).deleteCustomResource(group, version, plural, name).get();
+  public void deleteCustomResource(String group, String version, String plural, String name) {
+    kubernetesClient.genericKubernetesResources(clusterContext(group, version, plural)).withName(name).delete();
   }
 
-  public Status deleteNamespacedCustomResource(
-    String group, String version, String namespace, String plural, String name) throws IOException {
-
-    return kubernetesClient.create(CustomResourceApi.class)
-      .deleteNamespacedCustomResource(group, version, namespace, plural, name).get();
+  public void deleteNamespacedCustomResource(String group, String version, String namespace, String plural, String name) {
+    kubernetesClient.genericKubernetesResources(namespacedContext(group, version, plural))
+      .inNamespace(namespace).withName(name).delete();
   }
 
-  public UntypedResource replaceCustomResource(
-    String group, String version, String plural, String name, UntypedResource customResource) throws IOException {
+  public GenericKubernetesResource replaceCustomResource(
+    String group, String version, String plural, String name, GenericKubernetesResource resource) {
 
-    return kubernetesClient.create(CustomResourceApi.class)
-      .replaceCustomResource(group, version, plural, name, customResource).get();
+    return kubernetesClient.genericKubernetesResources(clusterContext(group, version, plural))
+      .resource(new GenericKubernetesResourceBuilder(resource).editOrNewMetadata().withName(name).endMetadata().build())
+      .update();
   }
 
-  public UntypedResource replaceNamespacedCustomResource(
-    String group, String version, String namespace, String plural, String name, UntypedResource customResource)
-    throws IOException {
+  public GenericKubernetesResource replaceNamespacedCustomResource(
+    String group, String version, String namespace, String plural, String name, GenericKubernetesResource resource) {
 
-    return kubernetesClient.create(CustomResourceApi.class)
-      .replaceNamespacedCustomResource(group, version, namespace, plural, name, customResource).get();
+    return kubernetesClient.genericKubernetesResources(namespacedContext(group, version, plural)).inNamespace(namespace)
+      .resource(new GenericKubernetesResourceBuilder(resource).editOrNewMetadata().withName(name).endMetadata().build())
+      .update();
+  }
+
+  private static ResourceDefinitionContext clusterContext(String group, String version, String plural) {
+    return new ResourceDefinitionContext.Builder()
+      .withNamespaced(false).withGroup(group).withVersion(version).withPlural(plural).build();
+  }
+
+  private static ResourceDefinitionContext namespacedContext(String group, String version, String plural) {
+    return new ResourceDefinitionContext.Builder()
+      .withNamespaced(true).withGroup(group).withVersion(version).withPlural(plural).build();
   }
 }

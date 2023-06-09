@@ -17,9 +17,8 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.customresources;
 
-import java.io.IOException;
-import java.util.List;
-
+import io.fabric8.kubernetes.api.model.GenericKubernetesResource;
+import io.quarkus.runtime.annotations.RegisterForReflection;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -32,7 +31,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-import io.quarkus.runtime.annotations.RegisterForReflection;
+import java.util.List;
 
 @Singleton
 @RegisterForReflection // Quarkus doesn't generate constructors for JAX-RS Subresources
@@ -48,11 +47,11 @@ public class CustomResourceResource {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   @Path("/{group}/{version}/{plural}")
-  public List<UntypedResource> get(
+  public List<GenericKubernetesResource> get(
     @PathParam("group") String group,
     @PathParam("version") String version,
     @PathParam("plural") String plural
-  ) throws IOException {
+  ) {
     return customResourceService.get(group, version, plural);
   }
 
@@ -63,7 +62,7 @@ public class CustomResourceResource {
     @PathParam("version") String version,
     @PathParam("plural") String plural,
     @PathParam("name") String name
-  ) throws IOException {
+  ) {
     customResourceService.deleteCustomResource(group, version, plural, name);
     return Response.noContent().build();
   }
@@ -76,7 +75,7 @@ public class CustomResourceResource {
     @PathParam("namespace") String namespace,
     @PathParam("plural") String plural,
     @PathParam("name") String name
-  ) throws IOException {
+  ) {
     customResourceService.deleteNamespacedCustomResource(group, version, namespace, plural, name);
     return Response.noContent().build();
   }
@@ -85,28 +84,28 @@ public class CustomResourceResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @Path("/{group}/{version}/{plural}/{name}")
-  public UntypedResource update(
+  public GenericKubernetesResource update(
     @PathParam("group") String group,
     @PathParam("version") String version,
     @PathParam("plural") String plural,
     @PathParam("name") String name,
-    UntypedResource customResource
-  ) throws IOException {
-    return customResourceService.replaceCustomResource(group, version, plural, name, customResource);
+    GenericKubernetesResource resource
+  ) {
+    return customResourceService.replaceCustomResource(group, version, plural, name, resource);
   }
 
   @PUT
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @Path("/{group}/{version}/{plural}/namespaces/{namespace}/{name}")
-  public UntypedResource updateNamespaced(
+  public GenericKubernetesResource updateNamespaced(
     @PathParam("group") String group,
     @PathParam("version") String version,
     @PathParam("namespace") String namespace,
     @PathParam("plural") String plural,
     @PathParam("name") String name,
-    UntypedResource customResource
-  ) throws IOException {
-    return customResourceService.replaceNamespacedCustomResource(group, version, namespace, plural, name, customResource);
+    GenericKubernetesResource resource
+  ) {
+    return customResourceService.replaceNamespacedCustomResource(group, version, namespace, plural, name, resource);
   }
 }
