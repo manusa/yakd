@@ -17,28 +17,27 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.ingresses;
 
-import static com.marcnuri.yakd.quickstarts.dashboard.ClientUtil.tryWithFallback;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
-
+import io.fabric8.kubernetes.api.model.networking.v1.HTTPIngressPath;
+import io.fabric8.kubernetes.api.model.networking.v1.HTTPIngressPathBuilder;
+import io.fabric8.kubernetes.api.model.networking.v1.HTTPIngressRuleValue;
+import io.fabric8.kubernetes.api.model.networking.v1.HTTPIngressRuleValueBuilder;
+import io.fabric8.kubernetes.api.model.networking.v1.Ingress;
+import io.fabric8.kubernetes.api.model.networking.v1.IngressBackend;
+import io.fabric8.kubernetes.api.model.networking.v1.IngressBackendBuilder;
+import io.fabric8.kubernetes.api.model.networking.v1.IngressBuilder;
+import io.fabric8.kubernetes.api.model.networking.v1.IngressRule;
+import io.fabric8.kubernetes.api.model.networking.v1.IngressRuleBuilder;
+import io.fabric8.kubernetes.api.model.networking.v1.IngressServiceBackendBuilder;
+import io.fabric8.kubernetes.api.model.networking.v1.IngressSpec;
+import io.fabric8.kubernetes.api.model.networking.v1.IngressSpecBuilder;
+import io.fabric8.kubernetes.api.model.networking.v1.ServiceBackendPortBuilder;
+import io.fabric8.kubernetes.client.KubernetesClient;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
-import com.marcnuri.yakc.KubernetesClient;
-import com.marcnuri.yakc.api.extensions.v1beta1.ExtensionsV1beta1Api;
-import com.marcnuri.yakc.api.networking.v1.NetworkingV1Api;
-import com.marcnuri.yakc.api.networking.v1beta1.NetworkingV1beta1Api;
-import com.marcnuri.yakc.model.io.k8s.api.networking.v1.HTTPIngressPath;
-import com.marcnuri.yakc.model.io.k8s.api.networking.v1.HTTPIngressRuleValue;
-import com.marcnuri.yakc.model.io.k8s.api.networking.v1.Ingress;
-import com.marcnuri.yakc.model.io.k8s.api.networking.v1.IngressBackend;
-import com.marcnuri.yakc.model.io.k8s.api.networking.v1.IngressRule;
-import com.marcnuri.yakc.model.io.k8s.api.networking.v1.IngressServiceBackend;
-import com.marcnuri.yakc.model.io.k8s.api.networking.v1.IngressSpec;
-import com.marcnuri.yakc.model.io.k8s.api.networking.v1.ServiceBackendPort;
-import com.marcnuri.yakc.model.io.k8s.apimachinery.pkg.apis.meta.v1.Status;
+import java.util.List;
+
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.tryInOrder;
 
 @Singleton
 public class IngressService {
@@ -50,81 +49,74 @@ public class IngressService {
     this.kubernetesClient = kubernetesClient;
   }
 
-  static Ingress to(com.marcnuri.yakc.model.io.k8s.api.extensions.v1beta1.Ingress from) {
-    return Ingress.builder()
-      .apiVersion(from.getApiVersion())
-      .kind(from.getKind())
-      .metadata(from.getMetadata())
-      .spec(to(from.getSpec()))
+  static Ingress to(io.fabric8.kubernetes.api.model.extensions.Ingress from) {
+    return new IngressBuilder()
+      .withMetadata(from.getMetadata())
+      .withSpec(to(from.getSpec()))
       .build();
   }
 
-  static IngressSpec to(com.marcnuri.yakc.model.io.k8s.api.extensions.v1beta1.IngressSpec from) {
-    return IngressSpec.builder()
-      .ingressClassName(from.getIngressClassName())
-      .rules(from.getRules().stream().map(IngressService::to).collect(Collectors.toList()))
+  static IngressSpec to(io.fabric8.kubernetes.api.model.extensions.IngressSpec from) {
+    return new IngressSpecBuilder()
+      .withIngressClassName(from.getIngressClassName())
+      .withRules(from.getRules().stream().map(IngressService::to).toList())
       .build();
   }
 
-  static IngressRule to(com.marcnuri.yakc.model.io.k8s.api.extensions.v1beta1.IngressRule from) {
-    return IngressRule.builder()
-      .host(from.getHost())
-      .http(to(from.getHttp()))
+  static IngressRule to(io.fabric8.kubernetes.api.model.extensions.IngressRule from) {
+    return new IngressRuleBuilder()
+      .withHost(from.getHost())
+      .withHttp(to(from.getHttp()))
       .build();
   }
 
-  static HTTPIngressRuleValue to(com.marcnuri.yakc.model.io.k8s.api.extensions.v1beta1.HTTPIngressRuleValue from) {
-    return HTTPIngressRuleValue.builder()
-      .paths(from.getPaths().stream().map(IngressService::to).collect(Collectors.toList()))
+  static HTTPIngressRuleValue to(io.fabric8.kubernetes.api.model.extensions.HTTPIngressRuleValue from) {
+    return new HTTPIngressRuleValueBuilder()
+      .withPaths(from.getPaths().stream().map(IngressService::to).toList())
       .build();
   }
 
-  static HTTPIngressPath to(com.marcnuri.yakc.model.io.k8s.api.extensions.v1beta1.HTTPIngressPath from) {
-    return HTTPIngressPath.builder()
-      .path(from.getPath())
-      .pathType(from.getPathType())
-      .backend(to(from.getBackend()))
+  static HTTPIngressPath to(io.fabric8.kubernetes.api.model.extensions.HTTPIngressPath from) {
+    return new HTTPIngressPathBuilder()
+      .withPath(from.getPath())
+      .withPathType(from.getPathType())
+      .withBackend(to(from.getBackend()))
       .build();
   }
 
-  static IngressBackend to(com.marcnuri.yakc.model.io.k8s.api.extensions.v1beta1.IngressBackend from) {
-    final ServiceBackendPort.Builder sbp = ServiceBackendPort.builder();
-    try {
-      sbp.number(Integer.parseInt(from.getServicePort()));
-    } catch (NumberFormatException ex) {
-      sbp.name(from.getServicePort());
-    }
-    return IngressBackend.builder()
-      .service(IngressServiceBackend.builder()
-        .name(from.getServiceName())
-        .port(sbp.build())
+  static IngressBackend to(io.fabric8.kubernetes.api.model.extensions.IngressBackend from) {
+    final var portBuilder = new ServiceBackendPortBuilder();
+    portBuilder.withName(from.getServicePort().getStrVal());
+    portBuilder.withNumber(from.getServicePort().getIntVal());
+    return new IngressBackendBuilder()
+      .withService(new IngressServiceBackendBuilder()
+        .withName(from.getServiceName())
+        .withPort(portBuilder.build())
         .build())
       .build();
   }
 
-  public List<Ingress> get() throws IOException {
-    final NetworkingV1Api net = kubernetesClient.create(NetworkingV1Api.class);
-    final ExtensionsV1beta1Api ext = kubernetesClient.create(ExtensionsV1beta1Api.class);
-
-    return tryWithFallback(
-      () -> net.listIngressForAllNamespaces().get().getItems(),
-      () -> net.listNamespacedIngress(kubernetesClient.getConfiguration().getNamespace())
-        .get().getItems(),
-      () -> ext.listIngressForAllNamespaces().stream().map(IngressService::to).collect(Collectors.toList()),
-      () -> ext.listNamespacedIngress(kubernetesClient.getConfiguration().getNamespace())
-        .stream().map(IngressService::to).collect(Collectors.toList())
+  public List<Ingress> get() {
+    final String namespace = kubernetesClient.getConfiguration().getNamespace();
+    return tryInOrder(
+      () -> kubernetesClient.network().v1().ingresses().inAnyNamespace().list().getItems(),
+      () -> kubernetesClient.network().v1().ingresses().inNamespace(namespace).list().getItems(),
+      () -> kubernetesClient.extensions().ingresses().inAnyNamespace().list().getItems().stream().map(IngressService::to).toList(),
+      () -> kubernetesClient.extensions().ingresses().inNamespace(namespace).list().getItems().stream().map(IngressService::to).toList()
     );
   }
 
-  public Status delete(String name, String namespace) throws IOException {
-    return tryWithFallback(
-      () -> kubernetesClient.create(NetworkingV1Api.class).deleteNamespacedIngress(name, namespace).get(),
-      () -> kubernetesClient.create(NetworkingV1beta1Api.class).deleteNamespacedIngress(name, namespace).get(),
-      () -> kubernetesClient.create(ExtensionsV1beta1Api.class).deleteNamespacedIngress(name, namespace).get()
+  public void delete(String name, String namespace) {
+    tryInOrder(
+      () -> kubernetesClient.network().v1().ingresses().inNamespace(namespace).withName(name).delete(),
+      () -> kubernetesClient.network().v1beta1().ingresses().inNamespace(namespace).withName(name).delete(),
+      () -> kubernetesClient.extensions().ingresses().inNamespace(namespace).withName(name).delete()
     );
   }
 
-  public Ingress updateIngress(String name, String namespace, Ingress ingress) throws IOException {
-    return kubernetesClient.create(NetworkingV1Api.class).replaceNamespacedIngress(name, namespace, ingress).get();
+  public Ingress updateIngress(String name, String namespace, Ingress ingress) {
+    return kubernetesClient.network().v1().ingresses().inNamespace(namespace)
+      .resource(new IngressBuilder(ingress).editMetadata().withName(name).endMetadata().build())
+      .update();
   }
 }
