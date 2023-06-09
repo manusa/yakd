@@ -17,19 +17,18 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.horizontalpodautoscalers;
 
-import com.marcnuri.yakc.KubernetesClient;
 import com.marcnuri.yakc.api.WatchEvent;
-import com.marcnuri.yakc.api.autoscaling.v1.AutoscalingV1Api;
-import com.marcnuri.yakc.model.io.k8s.api.autoscaling.v1.HorizontalPodAutoscaler;
-import com.marcnuri.yakc.model.io.k8s.apimachinery.pkg.apis.meta.v1.Status;
 import com.marcnuri.yakd.quickstarts.dashboard.watch.Watchable;
+import io.fabric8.kubernetes.api.model.autoscaling.v1.HorizontalPodAutoscaler;
+import io.fabric8.kubernetes.api.model.autoscaling.v1.HorizontalPodAutoscalerBuilder;
+import io.fabric8.kubernetes.client.KubernetesClient;
 import io.reactivex.Observable;
-
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import java.io.IOException;
 
-import static com.marcnuri.yakd.quickstarts.dashboard.ClientUtil.tryWithFallback;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.LIMIT_1;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.observable;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.tryInOrder;
 
 @Singleton
 public class HorizontalPodAutoscalerService implements Watchable<HorizontalPodAutoscaler> {
@@ -47,24 +46,23 @@ public class HorizontalPodAutoscalerService implements Watchable<HorizontalPodAu
   }
 
   @Override
-  public Observable<WatchEvent<HorizontalPodAutoscaler>> watch() throws IOException {
-    final AutoscalingV1Api autoscaling = kubernetesClient.create(AutoscalingV1Api.class);
-    return tryWithFallback(
+  public Observable<WatchEvent<HorizontalPodAutoscaler>> watch() {
+    return tryInOrder(
       () -> {
-        autoscaling.listHorizontalPodAutoscalerForAllNamespaces(new AutoscalingV1Api.ListHorizontalPodAutoscalerForAllNamespaces().limit(1))
-          .get();
-        return autoscaling.listHorizontalPodAutoscalerForAllNamespaces().watch();
+        kubernetesClient.autoscaling().v1().horizontalPodAutoscalers().inAnyNamespace().list(LIMIT_1);
+        return observable(kubernetesClient.autoscaling().v1().horizontalPodAutoscalers().inAnyNamespace());
       },
-      () -> autoscaling.listNamespacedHorizontalPodAutoscaler(kubernetesClient.getConfiguration().getNamespace()).watch()
+      () -> observable(kubernetesClient.autoscaling().v1().horizontalPodAutoscalers()
+        .inNamespace(kubernetesClient.getConfiguration().getNamespace()))
     );
   }
 
-  public Status delete(String name, String namespace) throws IOException {
-    return kubernetesClient.create(AutoscalingV1Api.class).deleteNamespacedHorizontalPodAutoscaler(name, namespace).get();
+  public void delete(String name, String namespace) {
+    kubernetesClient.autoscaling().v1().horizontalPodAutoscalers().inNamespace(namespace).withName(name).delete();
   }
 
-  public HorizontalPodAutoscaler update(String name, String namespace, HorizontalPodAutoscaler horizontalPodAutoscaler) throws IOException {
-    return kubernetesClient.create(AutoscalingV1Api.class)
-      .replaceNamespacedHorizontalPodAutoscaler(name, namespace, horizontalPodAutoscaler).get();
+  public HorizontalPodAutoscaler update(String name, String namespace, HorizontalPodAutoscaler horizontalPodAutoscaler) {
+    return kubernetesClient.autoscaling().v1().horizontalPodAutoscalers().inNamespace(namespace)
+      .resource(new HorizontalPodAutoscalerBuilder(horizontalPodAutoscaler).editMetadata().withName(name).endMetadata().build()).update();
   }
 }

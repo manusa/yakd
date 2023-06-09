@@ -17,9 +17,8 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.horizontalpodautoscalers;
 
-import com.marcnuri.yakc.model.io.k8s.api.autoscaling.v1.HorizontalPodAutoscaler;
+import io.fabric8.kubernetes.api.model.autoscaling.v1.HorizontalPodAutoscaler;
 import io.quarkus.runtime.annotations.RegisterForReflection;
-
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -30,7 +29,6 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import java.io.IOException;
 
 @Singleton
 @RegisterForReflection // Quarkus doesn't generate constructors for JAX-RS Subresources
@@ -45,7 +43,7 @@ public class HorizontalPodAutoscalerResource {
 
   @DELETE
   @Path("/{namespace}/{name}")
-  public Response delete(@PathParam("namespace") String namespace, @PathParam("name") String name) throws IOException {
+  public Response delete(@PathParam("namespace") String namespace, @PathParam("name") String name) {
     horizontalPodAutoscalerService.delete(name, namespace);
     return Response.noContent().build();
   }
@@ -56,7 +54,7 @@ public class HorizontalPodAutoscalerResource {
   @Path("/{namespace}/{name}")
   public HorizontalPodAutoscaler update(
     @PathParam("namespace") String namespace, @PathParam("name") String name, HorizontalPodAutoscaler horizontalPodAutoscaler
-  ) throws IOException {
+  ) {
     return horizontalPodAutoscalerService.update(name, namespace, horizontalPodAutoscaler);
   }
 }
