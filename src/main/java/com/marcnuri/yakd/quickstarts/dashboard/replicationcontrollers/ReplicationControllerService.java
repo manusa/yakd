@@ -17,19 +17,18 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.replicationcontrollers;
 
-import com.marcnuri.yakc.KubernetesClient;
-import com.marcnuri.yakc.api.ClientErrorException;
 import com.marcnuri.yakc.api.WatchEvent;
-import com.marcnuri.yakc.api.core.v1.CoreV1Api;
-import com.marcnuri.yakc.model.io.k8s.api.core.v1.ReplicationController;
 import com.marcnuri.yakd.quickstarts.dashboard.watch.Watchable;
+import io.fabric8.kubernetes.api.model.ReplicationController;
+import io.fabric8.kubernetes.api.model.ReplicationControllerBuilder;
+import io.fabric8.kubernetes.client.KubernetesClient;
 import io.reactivex.Observable;
-
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import java.io.IOException;
 
-import static com.marcnuri.yakd.quickstarts.dashboard.ClientUtil.executeRaw;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.LIMIT_1;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.observable;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.tryInOrder;
 
 @Singleton
 public class ReplicationControllerService implements Watchable<ReplicationController> {
@@ -42,21 +41,24 @@ public class ReplicationControllerService implements Watchable<ReplicationContro
   }
 
   @Override
-  public Observable<WatchEvent<ReplicationController>> watch() throws IOException {
-    final CoreV1Api core = kubernetesClient.create(CoreV1Api.class);
-    try {
-      core.listReplicationControllerForAllNamespaces(new CoreV1Api.ListReplicationControllerForAllNamespaces().limit(1)).get();
-      return core.listReplicationControllerForAllNamespaces().watch();
-    } catch (ClientErrorException ex) {
-      return core.listNamespacedReplicationController(kubernetesClient.getConfiguration().getNamespace()).watch();
-    }
+  public Observable<WatchEvent<ReplicationController>> watch() {
+    return tryInOrder(
+      () -> {
+        kubernetesClient.replicationControllers().inAnyNamespace().list(LIMIT_1);
+        return observable(kubernetesClient.replicationControllers().inAnyNamespace());
+      },
+      () -> observable(kubernetesClient.replicationControllers()
+        .inNamespace(kubernetesClient.getConfiguration().getNamespace()))
+    );
   }
 
-  public void delete(String name, String namespace) throws IOException {
-    executeRaw(kubernetesClient.create(CoreV1Api.class).deleteNamespacedReplicationController(name, namespace)).call();
+  public void delete(String name, String namespace) {
+    kubernetesClient.replicationControllers().inNamespace(namespace).withName(name).delete();
   }
 
-  public ReplicationController update(String name, String namespace, ReplicationController replicationController) throws IOException {
-    return kubernetesClient.create(CoreV1Api.class).replaceNamespacedReplicationController(name, namespace, replicationController).get();
+  public ReplicationController update(String name, String namespace, ReplicationController replicationController) {
+    return kubernetesClient.replicationControllers().inNamespace(namespace)
+      .resource(new ReplicationControllerBuilder(replicationController).editMetadata().withName(name).endMetadata().build())
+      .update();
   }
 }

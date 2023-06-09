@@ -17,9 +17,8 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.replicationcontrollers;
 
-import com.marcnuri.yakc.model.io.k8s.api.core.v1.ReplicationController;
+import io.fabric8.kubernetes.api.model.ReplicationController;
 import io.quarkus.runtime.annotations.RegisterForReflection;
-
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -30,7 +29,6 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import java.io.IOException;
 
 @Singleton
 @RegisterForReflection // Quarkus doesn't generate constructors for JAX-RS Subresources
@@ -45,9 +43,7 @@ public class ReplicationControllerResource {
 
   @DELETE
   @Path("/{namespace}/{name}")
-  public Response delete(@PathParam("namespace") String namespace, @PathParam("name") String name)
-    throws IOException {
-
+  public Response delete(@PathParam("namespace") String namespace, @PathParam("name") String name) {
     replicationControllerService.delete(name, namespace);
     return Response.noContent().build();
   }
@@ -58,7 +54,7 @@ public class ReplicationControllerResource {
   @Path("/{namespace}/{name}")
   public ReplicationController update(
     @PathParam("namespace") String namespace, @PathParam("name") String name, ReplicationController replicationController
-  ) throws IOException {
+  ) {
     return replicationControllerService.update(name, namespace, replicationController);
   }
 }
