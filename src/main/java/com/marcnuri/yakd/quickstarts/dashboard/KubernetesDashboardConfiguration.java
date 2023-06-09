@@ -17,24 +17,17 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard;
 
-import com.marcnuri.yakc.KubernetesClient;
-import com.marcnuri.yakc.config.ConfigurationResolver;
-
 import io.fabric8.kubernetes.client.Config;
 import io.fabric8.kubernetes.client.ConfigBuilder;
+import io.quarkus.runtime.StartupEvent;
+import io.smallrye.mutiny.infrastructure.Infrastructure;
 import jakarta.annotation.Priority;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Produces;
-
-import io.quarkus.runtime.StartupEvent;
-import io.smallrye.mutiny.infrastructure.Infrastructure;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.time.Duration;
 
 @Singleton
 public class KubernetesDashboardConfiguration {
@@ -54,22 +47,12 @@ public class KubernetesDashboardConfiguration {
   @Singleton
   @Priority(Integer.MAX_VALUE)
   public Config fabric8Config() {
+    LOG.info("Initializing Kubernetes Client Configuration...");
+    LOG.info(" - Skip TLS verification: {}", insecureSkipTlsVerify);
     return new ConfigBuilder(Config.autoConfigure(null))
       .withTrustCerts(insecureSkipTlsVerify)
       .withConnectionTimeout(0)
       .withRequestTimeout(0)
       .build();
-  }
-
-  @Produces
-  @Singleton
-  public KubernetesClient kubernetesClient() throws IOException {
-    LOG.info("Initializing KubernetesClient...");
-    LOG.info(" - Skip TLS verification: {}", insecureSkipTlsVerify);
-    return new KubernetesClient(
-      ConfigurationResolver.resolveConfig().toBuilder()
-        .insecureSkipTlsVerify(insecureSkipTlsVerify)
-        .readTimeout(Duration.ZERO)
-        .build());
   }
 }
