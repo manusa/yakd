@@ -17,16 +17,16 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.node;
 
-import com.marcnuri.yakc.KubernetesClient;
 import com.marcnuri.yakc.api.WatchEvent;
-import com.marcnuri.yakc.api.core.v1.CoreV1Api;
-import com.marcnuri.yakc.model.io.k8s.api.core.v1.Node;
 import com.marcnuri.yakd.quickstarts.dashboard.watch.Watchable;
+import io.fabric8.kubernetes.api.model.Node;
+import io.fabric8.kubernetes.api.model.NodeBuilder;
+import io.fabric8.kubernetes.client.KubernetesClient;
 import io.reactivex.Observable;
-
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import java.io.IOException;
+
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.observable;
 
 @Singleton
 public class NodeService implements Watchable<Node> {
@@ -44,12 +44,13 @@ public class NodeService implements Watchable<Node> {
   }
 
   @Override
-  public Observable<WatchEvent<Node>> watch() throws IOException {
-    final CoreV1Api core = kubernetesClient.create(CoreV1Api.class);
-    return core.listNode().watch();
+  public Observable<WatchEvent<Node>> watch() {
+    return observable(kubernetesClient.nodes());
   }
 
-  public Node update(String name, Node node) throws IOException {
-    return kubernetesClient.create(CoreV1Api.class).replaceNode(name, node).get();
+  public Node update(String name, Node node) {
+    return kubernetesClient.nodes()
+      .resource(new NodeBuilder(node).editMetadata().withName(name).endMetadata().build())
+      .update();
   }
 }

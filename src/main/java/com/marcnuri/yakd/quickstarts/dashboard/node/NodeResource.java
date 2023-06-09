@@ -17,8 +17,8 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.node;
 
-import java.io.IOException;
-
+import io.fabric8.kubernetes.api.model.Node;
+import io.quarkus.runtime.annotations.RegisterForReflection;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -27,10 +27,6 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
-
-import com.marcnuri.yakc.model.io.k8s.api.core.v1.Node;
-
-import io.quarkus.runtime.annotations.RegisterForReflection;
 
 @Singleton
 @RegisterForReflection // Quarkus doesn't generate constructors for JAX-RS Subresources
@@ -47,7 +43,7 @@ public class NodeResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @Path("/{name}")
-  public Node update(@PathParam("name") String name, Node node) throws IOException {
+  public Node update(@PathParam("name") String name, Node node) {
     return nodeService.update(name, node);
   }
 }
