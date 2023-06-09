@@ -17,7 +17,7 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.node;
 
-import com.marcnuri.yakc.api.WatchEvent;
+import com.marcnuri.yakd.quickstarts.dashboard.watch.WatchEvent;
 import com.marcnuri.yakd.quickstarts.dashboard.watch.Watchable;
 import io.fabric8.kubernetes.api.model.Node;
 import io.fabric8.kubernetes.api.model.NodeBuilder;

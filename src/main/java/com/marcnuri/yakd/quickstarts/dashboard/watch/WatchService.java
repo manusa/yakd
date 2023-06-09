@@ -16,8 +16,6 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.watch;
 
-import com.marcnuri.yakc.api.WatchEvent;
-import com.marcnuri.yakc.model.Model;
 import com.marcnuri.yakd.quickstarts.dashboard.clusterrolebindings.ClusterRoleBindingService;
 import com.marcnuri.yakd.quickstarts.dashboard.clusterroles.ClusterRoleService;
 import com.marcnuri.yakd.quickstarts.dashboard.configmaps.ConfigMapService;
@@ -107,7 +105,7 @@ public class WatchService {
   }
 
   @SuppressWarnings({"unchecked", "rawtypes", "java:S1452"})
-  public Multi<WatchEvent<? extends Model>> newWatch() {
+  public Multi<WatchEvent<?>> newWatch() {
     final SelfHealingWatchableConsumer consumer = new SelfHealingWatchableConsumer(watchables);
     return Multi.createFrom().emitter((Consumer)consumer, BackPressureStrategy.BUFFER)
       .onCompletion().call(consumer::dispose)

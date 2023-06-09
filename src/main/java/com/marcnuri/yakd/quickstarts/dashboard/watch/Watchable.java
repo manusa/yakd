@@ -17,7 +17,6 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.watch;
 
-import com.marcnuri.yakc.api.WatchEvent;
 import io.reactivex.Observable;
 
 import java.io.IOException;

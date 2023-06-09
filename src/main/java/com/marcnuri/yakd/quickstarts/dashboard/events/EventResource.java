@@ -17,7 +17,7 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.events;
 
-import com.marcnuri.yakc.api.WatchEvent;
+import com.marcnuri.yakd.quickstarts.dashboard.watch.WatchEvent;
 import io.fabric8.kubernetes.api.model.Event;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import io.reactivex.BackpressureStrategy;

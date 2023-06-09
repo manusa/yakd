@@ -17,7 +17,7 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.customresourcedefinitions;
 
-import com.marcnuri.yakc.api.WatchEvent;
+import com.marcnuri.yakd.quickstarts.dashboard.watch.WatchEvent;
 import com.marcnuri.yakd.quickstarts.dashboard.watch.Watchable;
 import io.fabric8.kubernetes.api.model.apiextensions.v1.CustomResourceDefinition;
 import io.fabric8.kubernetes.api.model.apiextensions.v1.CustomResourceDefinitionBuilder;

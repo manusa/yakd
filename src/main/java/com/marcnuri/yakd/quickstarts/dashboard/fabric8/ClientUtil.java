@@ -1,6 +1,6 @@
 package com.marcnuri.yakd.quickstarts.dashboard.fabric8;
 
-import com.marcnuri.yakc.api.WatchEvent;
+import com.marcnuri.yakd.quickstarts.dashboard.watch.WatchEvent;
 import io.fabric8.kubernetes.api.model.ListOptions;
 import io.fabric8.kubernetes.api.model.ListOptionsBuilder;
 import io.fabric8.kubernetes.client.KubernetesClientException;

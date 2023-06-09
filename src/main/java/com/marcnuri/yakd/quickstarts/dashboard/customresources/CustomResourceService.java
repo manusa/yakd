@@ -28,7 +28,6 @@ import java.util.List;
 
 import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.tryInOrder;
 
-
 @Singleton
 public class CustomResourceService {
 

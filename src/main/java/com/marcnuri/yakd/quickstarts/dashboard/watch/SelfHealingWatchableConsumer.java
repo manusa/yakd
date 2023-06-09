@@ -17,8 +17,6 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.watch;
 
-import com.marcnuri.yakc.api.WatchEvent;
-import com.marcnuri.yakc.model.Model;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.disposables.Disposable;
@@ -155,7 +153,7 @@ public class SelfHealingWatchableConsumer implements java.util.function.Consumer
       if (apiAvailability.isAvailable(watchable)) {
         observable = watchable.watch();
       } else {
-        observable = Observable.<WatchEvent<? extends Model>>empty()
+        observable = Observable.<WatchEvent<?>>empty()
           .delay(watchable.getRetrySubscriptionDelay().getSeconds(), TimeUnit.SECONDS);
       }
       selfHealingSubscriptions.put(watchable.getClass(),
@@ -189,7 +187,7 @@ public class SelfHealingWatchableConsumer implements java.util.function.Consumer
     return error -> {
       LOG.debug("Subscription error for watchable {}: {}, reconnecting...",
         watchable.getClass(), error.getMessage());
-      if (!disposed ) {
+      if (!disposed) {
         emitter.onNext(new WatchEvent<>(WatchEvent.Type.ERROR, new RequestRestartError(watchable, error)));
         TimeUnit.SECONDS.sleep(watchable.getSelfHealingDelay().toSeconds());
         subscribe(emitter, watchable);

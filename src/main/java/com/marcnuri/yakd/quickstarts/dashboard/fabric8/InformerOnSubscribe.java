@@ -1,6 +1,6 @@
 package com.marcnuri.yakd.quickstarts.dashboard.fabric8;
 
-import com.marcnuri.yakc.api.WatchEvent;
+import com.marcnuri.yakd.quickstarts.dashboard.watch.WatchEvent;
 import io.fabric8.kubernetes.client.informers.ResourceEventHandler;
 import io.fabric8.kubernetes.client.informers.SharedIndexInformer;
 import io.reactivex.Observable;
@@ -13,7 +13,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
-// TODO: change from WatchEvent to whatever class we use on Fabric8
 public class InformerOnSubscribe<T> implements ObservableOnSubscribe<WatchEvent<T>>, Disposable {
 
   private final Function<ResourceEventHandler<T>, SharedIndexInformer<T>> informerFactory;
@@ -43,6 +42,7 @@ public class InformerOnSubscribe<T> implements ObservableOnSubscribe<WatchEvent<
   public static <T> Observable<WatchEvent<T>> observable(Function<ResourceEventHandler<T>, SharedIndexInformer<T>> informerFactory) {
     return Observable.create(new InformerOnSubscribe<>(informerFactory));
   }
+
   private record WatchEventEmitter<T>(ObservableEmitter<WatchEvent<T>> emitter) implements ResourceEventHandler<T> {
 
     @Override

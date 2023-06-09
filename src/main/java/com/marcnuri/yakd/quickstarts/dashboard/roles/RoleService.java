@@ -17,8 +17,8 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.roles;
 
-import com.marcnuri.yakc.api.WatchEvent;
 import com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil;
+import com.marcnuri.yakd.quickstarts.dashboard.watch.WatchEvent;
 import com.marcnuri.yakd.quickstarts.dashboard.watch.Watchable;
 import io.fabric8.kubernetes.api.model.rbac.Role;
 import io.fabric8.kubernetes.api.model.rbac.RoleBuilder;
