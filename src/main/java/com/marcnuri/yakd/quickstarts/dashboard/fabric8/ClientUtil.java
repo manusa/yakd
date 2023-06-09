@@ -14,7 +14,7 @@ public class ClientUtil {
   private ClientUtil() {
   }
 
-  public static ListOptions LIMIT_1 = new ListOptionsBuilder().withLimit(1L).build();
+  public static final ListOptions LIMIT_1 = new ListOptionsBuilder().withLimit(1L).build();
 
   @SafeVarargs
   public static <T> T tryInOrder(Supplier<T>... functions) {

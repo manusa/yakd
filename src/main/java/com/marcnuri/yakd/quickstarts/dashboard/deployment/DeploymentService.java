@@ -18,18 +18,19 @@
 package com.marcnuri.yakd.quickstarts.dashboard.deployment;
 
 import com.marcnuri.yakc.api.WatchEvent;
-import com.marcnuri.yakd.quickstarts.dashboard.fabric8.InformerOnSubscribe;
 import com.marcnuri.yakd.quickstarts.dashboard.watch.Watchable;
-import io.fabric8.kubernetes.api.model.ListOptionsBuilder;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.api.model.apps.DeploymentBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
-import io.fabric8.kubernetes.client.KubernetesClientException;
 import io.fabric8.kubernetes.client.dsl.base.PatchContext;
 import io.fabric8.kubernetes.client.dsl.base.PatchType;
 import io.reactivex.Observable;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.LIMIT_1;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.observable;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.tryInOrder;
 
 @Singleton
 public class DeploymentService implements Watchable<Deployment> {
@@ -43,14 +44,14 @@ public class DeploymentService implements Watchable<Deployment> {
 
   @Override
   public Observable<WatchEvent<Deployment>> watch() {
-    final var limit1 = new ListOptionsBuilder().withLimit(1L).build();
-    try {
-      kubernetesClient.apps().deployments().inAnyNamespace().list(limit1);
-      return InformerOnSubscribe.observable(kubernetesClient.apps().deployments().inAnyNamespace()::inform);
-    } catch (KubernetesClientException ex) {
-      return InformerOnSubscribe.observable(kubernetesClient.apps().deployments()
-        .inNamespace(kubernetesClient.getConfiguration().getNamespace())::inform);
-    }
+    return tryInOrder(
+      () -> {
+        kubernetesClient.apps().deployments().inAnyNamespace().list(LIMIT_1);
+        return observable(kubernetesClient.apps().deployments().inAnyNamespace());
+      },
+      () -> observable(kubernetesClient.apps().deployments()
+        .inNamespace(kubernetesClient.getConfiguration().getNamespace()))
+    );
   }
 
   public void deleteDeployment(String name, String namespace) {

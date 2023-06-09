@@ -18,13 +18,10 @@
 package com.marcnuri.yakd.quickstarts.dashboard.daemonsets;
 
 import com.marcnuri.yakc.api.WatchEvent;
-import com.marcnuri.yakd.quickstarts.dashboard.fabric8.InformerOnSubscribe;
 import com.marcnuri.yakd.quickstarts.dashboard.watch.Watchable;
-import io.fabric8.kubernetes.api.model.ListOptionsBuilder;
 import io.fabric8.kubernetes.api.model.apps.DaemonSet;
 import io.fabric8.kubernetes.api.model.apps.DaemonSetBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
-import io.fabric8.kubernetes.client.KubernetesClientException;
 import io.fabric8.kubernetes.client.dsl.base.PatchContext;
 import io.fabric8.kubernetes.client.dsl.base.PatchType;
 import io.reactivex.Observable;
@@ -32,6 +29,10 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 import java.time.Instant;
+
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.LIMIT_1;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.observable;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.tryInOrder;
 
 @Singleton
 public class DaemonSetService implements Watchable<DaemonSet> {
@@ -45,14 +46,13 @@ public class DaemonSetService implements Watchable<DaemonSet> {
 
   @Override
   public Observable<WatchEvent<DaemonSet>> watch() {
-    final var limit1 = new ListOptionsBuilder().withLimit(1L).build();
-    try {
-      kubernetesClient.apps().daemonSets().inAnyNamespace().list(limit1);
-      return InformerOnSubscribe.observable(kubernetesClient.apps().daemonSets().inAnyNamespace()::inform);
-    } catch (KubernetesClientException ex) {
-      return InformerOnSubscribe.observable(kubernetesClient.apps().daemonSets()
-        .inNamespace(kubernetesClient.getConfiguration().getNamespace())::inform);
-    }
+    return tryInOrder(
+      () -> {
+        kubernetesClient.apps().daemonSets().inAnyNamespace().list(LIMIT_1);
+        return observable(kubernetesClient.apps().daemonSets().inAnyNamespace());
+      },
+      () -> observable(kubernetesClient.apps().daemonSets().inNamespace(kubernetesClient.getConfiguration().getNamespace()))
+    );
   }
 
   public void delete(String name, String namespace) {

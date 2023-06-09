@@ -18,21 +18,19 @@
 package com.marcnuri.yakd.quickstarts.dashboard.configmaps;
 
 import com.marcnuri.yakc.api.WatchEvent;
-import com.marcnuri.yakd.quickstarts.dashboard.fabric8.InformerOnSubscribe;
 import com.marcnuri.yakd.quickstarts.dashboard.watch.Watchable;
 import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.api.model.ConfigMapBuilder;
-import io.fabric8.kubernetes.api.model.ListOptionsBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
-import io.fabric8.kubernetes.client.KubernetesClientException;
 import io.reactivex.Observable;
-
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import java.io.IOException;
+
 import java.util.List;
 
-import static com.marcnuri.yakd.quickstarts.dashboard.ClientUtil.tryWithFallback;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.LIMIT_1;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.observable;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.tryInOrder;
 
 @Singleton
 public class ConfigMapService implements Watchable<ConfigMap> {
@@ -44,8 +42,8 @@ public class ConfigMapService implements Watchable<ConfigMap> {
     this.kubernetesClient = kubernetesClient;
   }
 
-  public List<ConfigMap> get() throws IOException {
-    return tryWithFallback(
+  public List<ConfigMap> get() {
+    return tryInOrder(
       () -> kubernetesClient.configMaps().inAnyNamespace().list().getItems(),
       () -> kubernetesClient.configMaps().inNamespace(kubernetesClient.getConfiguration().getNamespace()).list().getItems()
     );
@@ -53,13 +51,13 @@ public class ConfigMapService implements Watchable<ConfigMap> {
 
   @Override
   public Observable<WatchEvent<ConfigMap>> watch() {
-    try {
-      kubernetesClient.configMaps().inAnyNamespace()
-        .list(new ListOptionsBuilder().withLimit(1L).build());
-      return InformerOnSubscribe.observable(kubernetesClient.configMaps().inAnyNamespace()::inform);
-    } catch (KubernetesClientException ex) {
-      return InformerOnSubscribe.observable(kubernetesClient.configMaps().inNamespace(kubernetesClient.getConfiguration().getNamespace())::inform);
-    }
+    return tryInOrder(
+      () -> {
+        kubernetesClient.configMaps().inAnyNamespace().list(LIMIT_1);
+        return observable(kubernetesClient.configMaps().inAnyNamespace());
+      },
+      () -> observable(kubernetesClient.configMaps().inNamespace(kubernetesClient.getConfiguration().getNamespace()))
+    );
   }
 
   public void deleteConfigMap(String name, String namespace) {

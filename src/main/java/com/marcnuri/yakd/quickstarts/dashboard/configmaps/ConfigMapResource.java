@@ -32,7 +32,6 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-import java.io.IOException;
 import java.util.List;
 
 @Singleton
@@ -48,7 +47,7 @@ public class ConfigMapResource {
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  public List<ConfigMap> get() throws IOException {
+  public List<ConfigMap> get() {
     return configMapService.get();
   }
 

@@ -17,7 +17,6 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.apis;
 
-import java.io.IOException;
 import java.util.List;
 
 import jakarta.inject.Inject;
