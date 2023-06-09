@@ -17,9 +17,8 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.persistentvolumes;
 
-import com.marcnuri.yakc.model.io.k8s.api.core.v1.PersistentVolume;
+import io.fabric8.kubernetes.api.model.PersistentVolume;
 import io.quarkus.runtime.annotations.RegisterForReflection;
-
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -32,7 +31,6 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-import java.io.IOException;
 import java.util.List;
 
 @Singleton
@@ -48,13 +46,13 @@ public class PersistentVolumeResource {
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  public List<PersistentVolume> get() throws IOException {
+  public List<PersistentVolume> get() {
     return persistentVolumeService.get();
   }
 
   @DELETE
   @Path("/{name}")
-  public Response delete(@PathParam("name") String name) throws IOException {
+  public Response delete(@PathParam("name") String name) {
     persistentVolumeService.deletePersistentVolume(name);
     return Response.noContent().build();
   }
@@ -63,9 +61,7 @@ public class PersistentVolumeResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @Path("/{name}")
-  public PersistentVolume update(@PathParam("name") String name, PersistentVolume persistentVolume)
-    throws IOException {
-
+  public PersistentVolume update(@PathParam("name") String name, PersistentVolume persistentVolume) {
     return persistentVolumeService.updatePersistentVolume(name, persistentVolume);
   }
 }

@@ -17,17 +17,16 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.persistentvolumes;
 
-import com.marcnuri.yakc.KubernetesClient;
-import com.marcnuri.yakc.api.core.v1.CoreV1Api;
-import com.marcnuri.yakc.model.io.k8s.api.core.v1.PersistentVolume;
+import io.fabric8.kubernetes.api.model.PersistentVolume;
+import io.fabric8.kubernetes.api.model.PersistentVolumeBuilder;
+import io.fabric8.kubernetes.client.KubernetesClient;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-import static com.marcnuri.yakd.quickstarts.dashboard.ClientUtil.ignoreForbidden;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.ignoreForbidden;
 
 @Singleton
 public class PersistentVolumeService {
@@ -39,18 +38,20 @@ public class PersistentVolumeService {
     this.kubernetesClient = kubernetesClient;
   }
 
-  public List<PersistentVolume> get() throws IOException {
+  public List<PersistentVolume> get() {
     return ignoreForbidden(
-      () -> kubernetesClient.create(CoreV1Api.class).listPersistentVolume().get().getItems(),
+      () -> kubernetesClient.persistentVolumes().list().getItems(),
       Collections.emptyList()
     );
   }
 
-  public PersistentVolume deletePersistentVolume(String name) throws IOException {
-    return kubernetesClient.create(CoreV1Api.class).deletePersistentVolume(name).get();
+  public void deletePersistentVolume(String name) {
+    kubernetesClient.persistentVolumes().withName(name).delete();
   }
 
-  public PersistentVolume updatePersistentVolume(String name, PersistentVolume persistentVolume) throws IOException {
-    return kubernetesClient.create(CoreV1Api.class).replacePersistentVolume(name, persistentVolume).get();
+  public PersistentVolume updatePersistentVolume(String name, PersistentVolume persistentVolume) {
+    return kubernetesClient.persistentVolumes()
+      .resource(new PersistentVolumeBuilder(persistentVolume).editMetadata().withName(name).endMetadata().build())
+      .update();
   }
 }
