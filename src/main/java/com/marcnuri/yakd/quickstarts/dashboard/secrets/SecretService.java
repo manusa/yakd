@@ -17,22 +17,20 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.secrets;
 
-import com.marcnuri.yakc.KubernetesClient;
 import com.marcnuri.yakc.api.WatchEvent;
-import com.marcnuri.yakc.api.core.v1.CoreV1Api;
-import com.marcnuri.yakc.api.core.v1.CoreV1Api.ListNamespacedSecret;
-import com.marcnuri.yakc.api.core.v1.CoreV1Api.ListSecretForAllNamespaces;
-import com.marcnuri.yakc.model.io.k8s.api.core.v1.Secret;
-import com.marcnuri.yakc.model.io.k8s.apimachinery.pkg.apis.meta.v1.Status;
 import com.marcnuri.yakd.quickstarts.dashboard.watch.Watchable;
+import io.fabric8.kubernetes.api.model.Secret;
+import io.fabric8.kubernetes.api.model.SecretBuilder;
+import io.fabric8.kubernetes.client.KubernetesClient;
 import io.reactivex.Observable;
-
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import java.io.IOException;
+
 import java.util.List;
 
-import static com.marcnuri.yakd.quickstarts.dashboard.ClientUtil.tryWithFallback;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.LIMIT_1;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.observable;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.tryInOrder;
 
 @Singleton
 public class SecretService implements Watchable<Secret> {
@@ -45,34 +43,30 @@ public class SecretService implements Watchable<Secret> {
   }
 
   @Override
-  public Observable<WatchEvent<Secret>> watch() throws IOException {
-    final CoreV1Api api = kubernetesClient.create(CoreV1Api.class);
-    return tryWithFallback(
+  public Observable<WatchEvent<Secret>> watch() {
+    return tryInOrder(
       () -> {
-        api.listSecretForAllNamespaces(new ListSecretForAllNamespaces().limit(1)).get();
-        return api.listSecretForAllNamespaces().watch();
+        kubernetesClient.secrets().inAnyNamespace().list(LIMIT_1);
+        return observable(kubernetesClient.secrets().inAnyNamespace());
       },
-      () -> {
-        final String ns = kubernetesClient.getConfiguration().getNamespace();
-        api.listNamespacedSecret(ns, new ListNamespacedSecret().limit(1)).get();
-        return api.listNamespacedSecret(ns).watch();
-      }
+      () -> observable(kubernetesClient.secrets().inNamespace(kubernetesClient.getConfiguration().getNamespace()))
     );
   }
 
-  public List<Secret> get() throws IOException {
-    return tryWithFallback(
-      () -> kubernetesClient.create(CoreV1Api.class).listSecretForAllNamespaces().get().getItems(),
-      () -> kubernetesClient.create(CoreV1Api.class)
-        .listNamespacedSecret(kubernetesClient.getConfiguration().getNamespace()).get().getItems()
+  public List<Secret> get() {
+    return tryInOrder(
+      () -> kubernetesClient.secrets().inAnyNamespace().list().getItems(),
+      () -> kubernetesClient.secrets().inNamespace(kubernetesClient.getConfiguration().getNamespace()).list().getItems()
     );
   }
 
-  public Status deleteSecret(String name, String namespace) throws IOException {
-    return kubernetesClient.create(CoreV1Api.class).deleteNamespacedSecret(name, namespace).get();
+  public void deleteSecret(String name, String namespace) {
+    kubernetesClient.secrets().inNamespace(namespace).withName(name).delete();
   }
 
-  public Secret updateSecret(String name, String namespace, Secret secret) throws IOException {
-    return kubernetesClient.create(CoreV1Api.class).replaceNamespacedSecret(name, namespace, secret).get();
+  public Secret updateSecret(String name, String namespace, Secret secret) {
+    return kubernetesClient.secrets().inNamespace(namespace)
+      .resource(new SecretBuilder(secret).editMetadata().withName(name).endMetadata().build())
+      .update();
   }
 }

@@ -17,9 +17,8 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.secrets;
 
-import com.marcnuri.yakc.model.io.k8s.api.core.v1.Secret;
+import io.fabric8.kubernetes.api.model.Secret;
 import io.quarkus.runtime.annotations.RegisterForReflection;
-
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -32,7 +31,6 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-import java.io.IOException;
 import java.util.List;
 
 @Singleton
@@ -48,15 +46,13 @@ public class SecretResource {
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  public List<Secret> get() throws IOException {
+  public List<Secret> get() {
     return secretService.get();
   }
 
   @DELETE
   @Path("/{namespace}/{name}")
-  public Response delete(@PathParam("namespace") String namespace, @PathParam("name") String name)
-    throws IOException {
-
+  public Response delete(@PathParam("namespace") String namespace, @PathParam("name") String name) {
     secretService.deleteSecret(name, namespace);
     return Response.noContent().build();
   }
@@ -66,9 +62,7 @@ public class SecretResource {
   @Produces(MediaType.APPLICATION_JSON)
   @Path("/{namespace}/{name}")
   public Secret update(
-    @PathParam("namespace") String namespace, @PathParam("name") String name, Secret secret)
-    throws IOException {
-
+    @PathParam("namespace") String namespace, @PathParam("name") String name, Secret secret) {
     return secretService.updateSecret(name, namespace, secret);
   }
 }
