@@ -17,15 +17,9 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.pod;
 
-import com.marcnuri.yakc.KubernetesClient;
 import com.marcnuri.yakc.api.ExecMessage;
-import com.marcnuri.yakc.apiextensions.ExtendedCoreV1Api;
-import okhttp3.WebSocket;
-import okhttp3.WebSocketListener;
-import okio.ByteString;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import io.fabric8.kubernetes.client.KubernetesClient;
+import io.fabric8.kubernetes.client.http.WebSocket;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.websocket.CloseReason;
@@ -36,20 +30,26 @@ import jakarta.websocket.OnOpen;
 import jakarta.websocket.Session;
 import jakarta.websocket.server.PathParam;
 import jakarta.websocket.server.ServerEndpoint;
+import jakarta.ws.rs.core.UriBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 @ServerEndpoint("/api/v1/pods/{namespace}/{name}/exec/{container}")
 @Singleton
 public class PodExecEndpoint {
 
-  private final Logger log = LoggerFactory.getLogger(PodExecEndpoint.class);
+  private final Logger LOG = LoggerFactory.getLogger(PodExecEndpoint.class);
 
   private final KubernetesClient kubernetesClient;
-  private final Map<String, WebSocket> activeSessions;
+  private final Map<String, CompletableFuture<WebSocket>> activeSessions;
 
   @Inject
   public PodExecEndpoint(KubernetesClient kubernetesClient) {
@@ -59,56 +59,103 @@ public class PodExecEndpoint {
 
   @OnOpen
   public void onOpen(
-    Session session, @PathParam("namespace") String namespace, @PathParam("name") String name, @PathParam("container") String container) {
-
-    activeSessions.put(
-      session.getId(),
-      kubernetesClient.create(ExtendedCoreV1Api.class)
-        .execInNamespacedPod(name, namespace, container, Collections.singletonList("/bin/sh"), true, true, true, true)
-        .exec(new PodExecWebSocketListener(session))
-    );
+    Session session, @PathParam("namespace") String namespace, @PathParam("name") String name, @PathParam("container") String container
+  ) throws URISyntaxException {
+    final var uri = UriBuilder.fromUri(kubernetesClient.getMasterUrl().toURI())
+      .path("api").path("v1").path("namespaces").path(namespace).path("pods").path(name).path("exec")
+      .queryParam("container", container)
+      .queryParam("command", "/bin/sh")
+      .queryParam("stdin", true)
+      .queryParam("stdout", true)
+      .queryParam("stderr", true)
+      .queryParam("tty", true)
+      .build();
+    final var webSocketFuture = kubernetesClient.getHttpClient().newWebSocketBuilder()
+      .uri(uri)
+      .subprotocol("v4.channel.k8s.io")
+      .buildAsync(new PodExecWebSocketListener(session))
+      .exceptionally(throwable -> {
+        try {
+          session.close(new CloseReason(CloseReason.CloseCodes.UNEXPECTED_CONDITION, throwable.getMessage()));
+        } catch (IOException ex) {
+          LOG.error("Error closing session {}", session.getId(), ex);
+        }
+        return null;
+      });
+    activeSessions.put(session.getId(), webSocketFuture);
   }
 
   @OnMessage
   public void onMessage(Session session, String text) {
+    final var ws = activeSessions.get(session.getId()).getNow(null);
+    if (ws == null) {
+      return;
+    }
     byte[] commandBytes = text.getBytes(StandardCharsets.UTF_8);
     byte[] toSend = new byte[commandBytes.length + 1];
     toSend[0] = (byte) ExecMessage.StandardStream.STDIN.getStandardStreamCode();
     System.arraycopy(commandBytes, 0, toSend, 1, commandBytes.length);
-    activeSessions.get(session.getId()).send(ByteString.of(toSend));
+    ws.send(ByteBuffer.wrap(toSend));
   }
 
   @OnMessage
   public void onMessage(Session session, ByteBuffer byteBuffer) {
-    activeSessions.get(session.getId()).send(ByteString.of(byteBuffer));
+    final var ws = activeSessions.get(session.getId()).getNow(null);
+    if (ws == null) {
+      return;
+    }
+    ws.send(byteBuffer);
   }
 
   @OnError
   public void onError(Throwable ex) {
-    log.error("WebSocket error {}", ex.getMessage());
+    LOG.error("WebSocket error {}", ex.getMessage());
   }
 
   @OnClose
   public void onClose(Session session, CloseReason reason) {
-    activeSessions.get(session.getId()).close(reason.getCloseCode().getCode(), reason.getReasonPhrase());
+    final var as = activeSessions.get(session.getId());
+    if (as.isDone()) {
+      as.getNow(null).sendClose(reason.getCloseCode().getCode(), reason.getReasonPhrase());
+    } else {
+      as.cancel(true);
+    }
     activeSessions.remove(session.getId());
   }
 
-  private static final class PodExecWebSocketListener extends WebSocketListener {
-    private final Session session;
-
-    public PodExecWebSocketListener(Session session) {
-      this.session = session;
+  private record PodExecWebSocketListener(Session session) implements WebSocket.Listener {
+    @Override
+    public void onOpen(WebSocket webSocket) {
+      WebSocket.Listener.super.onOpen(webSocket);
+      webSocket.request();
     }
 
     @Override
     public void onMessage(WebSocket webSocket, String text) {
       session.getAsyncRemote().sendText(text);
+      webSocket.request();
     }
 
     @Override
-    public void onMessage(WebSocket webSocket, ByteString bytes) {
-      session.getAsyncRemote().sendBinary(bytes.asByteBuffer());
+    public void onMessage(WebSocket webSocket, ByteBuffer bytes) {
+      session.getAsyncRemote().sendBinary(bytes);
+      webSocket.request();
+    }
+
+    @Override
+    public void onClose(WebSocket webSocket, int code, String reason) {
+      try {
+        session.close(new CloseReason(CloseReason.CloseCodes.getCloseCode(code), reason));
+      } catch (IOException ignore) {
+      }
+    }
+
+    @Override
+    public void onError(WebSocket webSocket, Throwable error, boolean connectionError) {
+      try {
+        session.close(new CloseReason(CloseReason.CloseCodes.CLOSED_ABNORMALLY, error.getMessage()));
+      } catch (IOException ignore) {
+      }
     }
   }
 
