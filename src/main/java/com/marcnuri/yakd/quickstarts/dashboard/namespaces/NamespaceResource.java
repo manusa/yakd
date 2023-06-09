@@ -17,9 +17,8 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.namespaces;
 
-import com.marcnuri.yakc.model.io.k8s.api.core.v1.Namespace;
+import io.fabric8.kubernetes.api.model.Namespace;
 import io.quarkus.runtime.annotations.RegisterForReflection;
-
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -27,8 +26,8 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
-import java.io.IOException;
 import java.util.List;
 
 @Singleton
@@ -43,14 +42,15 @@ public class NamespaceResource {
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  public List<Namespace> get() throws IOException {
+  public List<Namespace> get() {
     return namespaceService.get();
   }
 
   @DELETE
   @Produces(MediaType.APPLICATION_JSON)
   @Path("/{name}")
-  public Namespace delete(@PathParam("name") String name) throws IOException {
-    return namespaceService.deleteNamespace(name);
+  public Response delete(@PathParam("name") String name) {
+    namespaceService.deleteNamespace(name);
+    return Response.noContent().build();
   }
 }

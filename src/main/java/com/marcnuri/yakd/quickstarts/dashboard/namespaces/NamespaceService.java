@@ -17,21 +17,22 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.namespaces;
 
-import com.marcnuri.yakc.KubernetesClient;
 import com.marcnuri.yakc.api.WatchEvent;
-import com.marcnuri.yakc.api.core.v1.CoreV1Api;
-import com.marcnuri.yakc.model.io.k8s.api.core.v1.Namespace;
 import com.marcnuri.yakd.quickstarts.dashboard.watch.Watchable;
+import io.fabric8.kubernetes.api.model.Namespace;
+import io.fabric8.kubernetes.client.KubernetesClient;
 import io.reactivex.Observable;
-
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
 import static com.marcnuri.yakd.quickstarts.dashboard.ClientUtil.justWithNoComplete;
-import static com.marcnuri.yakd.quickstarts.dashboard.ClientUtil.tryWithFallback;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.LIMIT_1;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.observable;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.tryInOrder;
 
 @Singleton
 public class NamespaceService implements Watchable<Namespace> {
@@ -45,43 +46,42 @@ public class NamespaceService implements Watchable<Namespace> {
 
   @Override
   public Observable<WatchEvent<Namespace>> watch() throws IOException {
-    final CoreV1Api core = kubernetesClient.create(CoreV1Api.class);
-    final String configNamespace = kubernetesClient.getConfiguration().getNamespace();
-    return tryWithFallback(
+    final var configNamespace = kubernetesClient.getConfiguration().getNamespace();
+    return tryInOrder(
       () -> {
-        core.listNamespace(new CoreV1Api.ListNamespace().limit(1)).get();
-        return core.listNamespace().watch();
+        kubernetesClient.namespaces().list(LIMIT_1);
+        return observable(kubernetesClient.namespaces());
       },
       () -> {
         if (configNamespace != null) {
-          core.listNamespace(new CoreV1Api.ListNamespace().limit(1).fieldSelector("metadata.name=" + configNamespace)).get();
-          return core.listNamespace(new CoreV1Api.ListNamespace().fieldSelector("metadata.name=" + configNamespace)).watch();
+          kubernetesClient.namespaces().withField("metadata.name", configNamespace).list(LIMIT_1);
+          return observable(kubernetesClient.namespaces().withField("metadata.name", configNamespace));
         }
         return Observable.empty();
       },
       () -> {
         if (configNamespace != null) {
-          return justWithNoComplete(new WatchEvent<>(WatchEvent.Type.ADDED, core.readNamespace(configNamespace).get()));
+          return justWithNoComplete(new WatchEvent<>(WatchEvent.Type.ADDED, kubernetesClient.namespaces().withName(configNamespace).get()));
         }
         return Observable.empty();
       }
     );
   }
 
-  public List<Namespace> get() throws IOException {
-    return tryWithFallback(
-      () -> kubernetesClient.create(CoreV1Api.class).listNamespace().get().getItems(),
+  public List<Namespace> get() {
+    return tryInOrder(
+      () -> kubernetesClient.namespaces().list().getItems(),
       () -> {
-        final String configNamespace = kubernetesClient.getConfiguration().getNamespace();
+        final var configNamespace = kubernetesClient.getConfiguration().getNamespace();
         if (configNamespace != null) {
-          return Collections.singletonList(kubernetesClient.create(CoreV1Api.class).readNamespace(configNamespace).get());
+          return Collections.singletonList(kubernetesClient.namespaces().withName(configNamespace).get());
         }
         return Collections.emptyList();
       }
     );
   }
 
-  public Namespace deleteNamespace(String name) throws IOException {
-    return kubernetesClient.create(CoreV1Api.class).deleteNamespace(name).get(Namespace.class);
+  public void deleteNamespace(String name) {
+    kubernetesClient.namespaces().withName(name).delete();
   }
 }
