@@ -24,14 +24,14 @@ import io.fabric8.kubernetes.api.model.apps.DaemonSetBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.dsl.base.PatchContext;
 import io.fabric8.kubernetes.client.dsl.base.PatchType;
-import io.reactivex.Observable;
+import io.smallrye.mutiny.Multi;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 import java.time.Instant;
 
 import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.LIMIT_1;
-import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.observable;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.toMulti;
 import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.tryInOrder;
 
 @Singleton
@@ -45,13 +45,13 @@ public class DaemonSetService implements Watchable<DaemonSet> {
   }
 
   @Override
-  public Observable<WatchEvent<DaemonSet>> watch() {
+  public Multi<WatchEvent<DaemonSet>> watch() {
     return tryInOrder(
       () -> {
         kubernetesClient.apps().daemonSets().inAnyNamespace().list(LIMIT_1);
-        return observable(kubernetesClient.apps().daemonSets().inAnyNamespace());
+        return toMulti(kubernetesClient.apps().daemonSets().inAnyNamespace());
       },
-      () -> observable(kubernetesClient.apps().daemonSets().inNamespace(kubernetesClient.getConfiguration().getNamespace()))
+      () -> toMulti(kubernetesClient.apps().daemonSets().inNamespace(kubernetesClient.getConfiguration().getNamespace()))
     );
   }
 

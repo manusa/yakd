@@ -20,14 +20,12 @@ package com.marcnuri.yakd.quickstarts.dashboard.events;
 import com.marcnuri.yakd.quickstarts.dashboard.watch.WatchEvent;
 import io.fabric8.kubernetes.api.model.Event;
 import io.quarkus.runtime.annotations.RegisterForReflection;
-import io.reactivex.BackpressureStrategy;
 import io.smallrye.mutiny.Multi;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
-import mutiny.zero.flow.adapters.AdaptersToFlow;
 import org.jboss.resteasy.reactive.RestStreamElementType;
 
 @Singleton
@@ -45,7 +43,6 @@ public class EventResource {
   @Produces(MediaType.SERVER_SENT_EVENTS)
   @RestStreamElementType(MediaType.APPLICATION_JSON)
   public Multi<WatchEvent<Event>> watch() {
-    return Multi.createFrom()
-      .publisher(AdaptersToFlow.publisher(eventService.watch().toFlowable(BackpressureStrategy.BUFFER)));
+    return eventService.watch();
   }
 }

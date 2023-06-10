@@ -23,7 +23,7 @@ import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.openshift.api.model.Route;
 import io.fabric8.openshift.api.model.RouteBuilder;
 import io.fabric8.openshift.client.OpenShiftClient;
-import io.reactivex.Observable;
+import io.smallrye.mutiny.Multi;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
@@ -31,7 +31,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.LIMIT_1;
-import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.observable;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.toMulti;
 import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.tryInOrder;
 
 @Singleton
@@ -50,13 +50,13 @@ public class RouteService implements Watchable<Route> {
   }
 
   @Override
-  public Observable<WatchEvent<Route>> watch() {
+  public Multi<WatchEvent<Route>> watch() {
     return tryInOrder(
       () -> {
         openShiftClient.routes().inAnyNamespace().list(LIMIT_1);
-        return observable(openShiftClient.routes().inAnyNamespace());
+        return toMulti(openShiftClient.routes().inAnyNamespace());
       },
-      () -> observable(openShiftClient.routes().inNamespace(openShiftClient.getConfiguration().getNamespace()))
+      () -> toMulti(openShiftClient.routes().inNamespace(openShiftClient.getConfiguration().getNamespace()))
     );
   }
 

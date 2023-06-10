@@ -17,7 +17,6 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.cronjobs;
 
-import com.marcnuri.yakd.quickstarts.dashboard.fabric8.InformerOnSubscribe;
 import com.marcnuri.yakd.quickstarts.dashboard.watch.WatchEvent;
 import com.marcnuri.yakd.quickstarts.dashboard.watch.Watchable;
 import io.fabric8.kubernetes.api.model.ListOptionsBuilder;
@@ -31,7 +30,7 @@ import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClientException;
 import io.fabric8.kubernetes.client.dsl.base.PatchContext;
 import io.fabric8.kubernetes.client.dsl.base.PatchType;
-import io.reactivex.Observable;
+import io.smallrye.mutiny.Multi;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
@@ -40,6 +39,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.Random;
+
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.toMulti;
 
 @Singleton
 public class CronJobService implements Watchable<CronJob> {
@@ -52,14 +53,14 @@ public class CronJobService implements Watchable<CronJob> {
   }
 
   @Override
-  public Observable<WatchEvent<CronJob>> watch() {
+  public Multi<WatchEvent<CronJob>> watch() {
     final var limit1 = new ListOptionsBuilder().withLimit(1L).build();
     try {
       kubernetesClient.batch().v1beta1().cronjobs().inAnyNamespace().list(limit1);
-      return InformerOnSubscribe.observable(kubernetesClient.batch().v1beta1().cronjobs().inAnyNamespace()::inform);
+      return toMulti(kubernetesClient.batch().v1beta1().cronjobs().inAnyNamespace());
     } catch (KubernetesClientException ex) {
-      return InformerOnSubscribe.observable(kubernetesClient.batch().v1beta1().cronjobs()
-        .inNamespace(kubernetesClient.getConfiguration().getNamespace())::inform);
+      return toMulti(kubernetesClient.batch().v1beta1().cronjobs()
+        .inNamespace(kubernetesClient.getConfiguration().getNamespace()));
     }
   }
 

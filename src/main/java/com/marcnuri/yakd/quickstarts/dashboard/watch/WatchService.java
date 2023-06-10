@@ -39,13 +39,11 @@ import com.marcnuri.yakd.quickstarts.dashboard.secrets.SecretService;
 import com.marcnuri.yakd.quickstarts.dashboard.service.ServiceService;
 import com.marcnuri.yakd.quickstarts.dashboard.statefulsets.StatefulSetService;
 import io.smallrye.mutiny.Multi;
-import io.smallrye.mutiny.subscription.BackPressureStrategy;
-
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Consumer;
 
 @Singleton
 public class WatchService {
@@ -104,12 +102,7 @@ public class WatchService {
     );
   }
 
-  @SuppressWarnings({"unchecked", "rawtypes", "java:S1452"})
   public Multi<WatchEvent<?>> newWatch() {
-    final SelfHealingWatchableConsumer consumer = new SelfHealingWatchableConsumer(watchables);
-    return Multi.createFrom().emitter((Consumer)consumer, BackPressureStrategy.BUFFER)
-      .onCompletion().call(consumer::dispose)
-      .onCancellation().call(consumer::dispose)
-      .onFailure().call(consumer::dispose);
+    return Multi.createFrom().emitter(new SelfHealingEmitter(watchables));
   }
 }

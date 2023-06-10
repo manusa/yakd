@@ -22,14 +22,14 @@ import com.marcnuri.yakd.quickstarts.dashboard.watch.Watchable;
 import io.fabric8.kubernetes.api.model.Service;
 import io.fabric8.kubernetes.api.model.ServiceBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
-import io.reactivex.Observable;
+import io.smallrye.mutiny.Multi;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 import java.util.List;
 
 import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.LIMIT_1;
-import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.observable;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.toMulti;
 import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.tryInOrder;
 
 @Singleton
@@ -43,13 +43,13 @@ public class ServiceService implements Watchable<Service> {
   }
 
   @Override
-  public Observable<WatchEvent<Service>> watch() {
+  public Multi<WatchEvent<Service>> watch() {
     return tryInOrder(
       () -> {
         kubernetesClient.services().inAnyNamespace().list(LIMIT_1);
-        return observable(kubernetesClient.services().inAnyNamespace());
+        return toMulti(kubernetesClient.services().inAnyNamespace());
       },
-      () -> observable(kubernetesClient.services().inNamespace(kubernetesClient.getConfiguration().getNamespace()))
+      () -> toMulti(kubernetesClient.services().inNamespace(kubernetesClient.getConfiguration().getNamespace()))
     );
   }
 

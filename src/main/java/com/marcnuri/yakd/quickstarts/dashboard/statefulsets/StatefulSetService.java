@@ -24,12 +24,12 @@ import io.fabric8.kubernetes.api.model.apps.StatefulSetBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.dsl.base.PatchContext;
 import io.fabric8.kubernetes.client.dsl.base.PatchType;
-import io.reactivex.Observable;
+import io.smallrye.mutiny.Multi;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.LIMIT_1;
-import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.observable;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.toMulti;
 import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.tryInOrder;
 
 @Singleton
@@ -43,13 +43,13 @@ public class StatefulSetService implements Watchable<StatefulSet> {
   }
 
   @Override
-  public Observable<WatchEvent<StatefulSet>> watch() {
+  public Multi<WatchEvent<StatefulSet>> watch() {
     return tryInOrder(
       () -> {
         kubernetesClient.apps().statefulSets().inAnyNamespace().list(LIMIT_1);
-        return observable(kubernetesClient.apps().statefulSets().inAnyNamespace());
+        return toMulti(kubernetesClient.apps().statefulSets().inAnyNamespace());
       },
-      () -> observable(kubernetesClient.apps().statefulSets().inNamespace(kubernetesClient.getConfiguration().getNamespace()))
+      () -> toMulti(kubernetesClient.apps().statefulSets().inNamespace(kubernetesClient.getConfiguration().getNamespace()))
     );
   }
 

@@ -24,19 +24,17 @@ import io.fabric8.kubernetes.api.model.PodBuilder;
 import io.fabric8.kubernetes.api.model.metrics.v1beta1.PodMetrics;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.dsl.Loggable;
-import io.reactivex.Observable;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.subscription.MultiEmitter;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.function.Consumer;
 
 import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.LIMIT_1;
-import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.observable;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.toMulti;
 import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.tryInOrder;
 
 @Singleton
@@ -50,13 +48,13 @@ public class PodService implements Watchable<Pod> {
   }
 
   @Override
-  public Observable<WatchEvent<Pod>> watch() throws IOException {
+  public Multi<WatchEvent<Pod>> watch() {
     return tryInOrder(
       () -> {
         kubernetesClient.pods().inAnyNamespace().list(LIMIT_1);
-        return observable(kubernetesClient.pods().inAnyNamespace());
+        return toMulti(kubernetesClient.pods().inAnyNamespace());
       },
-      () -> observable(kubernetesClient.pods().inNamespace(kubernetesClient.getConfiguration().getNamespace()))
+      () -> toMulti(kubernetesClient.pods().inNamespace(kubernetesClient.getConfiguration().getNamespace()))
     );
   }
 

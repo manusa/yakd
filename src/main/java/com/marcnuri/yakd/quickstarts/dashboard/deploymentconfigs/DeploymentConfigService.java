@@ -25,17 +25,16 @@ import io.fabric8.kubernetes.client.dsl.base.PatchType;
 import io.fabric8.openshift.api.model.DeploymentConfig;
 import io.fabric8.openshift.api.model.DeploymentConfigBuilder;
 import io.fabric8.openshift.client.OpenShiftClient;
-import io.reactivex.Observable;
+import io.smallrye.mutiny.Multi;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
-import java.io.IOException;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.LIMIT_1;
-import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.observable;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.toMulti;
 import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.tryInOrder;
 
 @Singleton
@@ -54,13 +53,13 @@ public class DeploymentConfigService implements Watchable<DeploymentConfig> {
   }
 
   @Override
-  public Observable<WatchEvent<DeploymentConfig>> watch() throws IOException {
+  public Multi<WatchEvent<DeploymentConfig>> watch() {
     return tryInOrder(
       () -> {
         openShiftClient.deploymentConfigs().inAnyNamespace().list(LIMIT_1);
-        return observable(openShiftClient.deploymentConfigs().inAnyNamespace());
+        return toMulti(openShiftClient.deploymentConfigs().inAnyNamespace());
       },
-      () -> observable(openShiftClient.deploymentConfigs().inNamespace(openShiftClient.getConfiguration().getNamespace()))
+      () -> toMulti(openShiftClient.deploymentConfigs().inNamespace(openShiftClient.getConfiguration().getNamespace()))
     );
   }
 

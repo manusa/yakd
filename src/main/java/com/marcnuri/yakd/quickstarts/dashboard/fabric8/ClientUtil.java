@@ -5,7 +5,7 @@ import io.fabric8.kubernetes.api.model.ListOptions;
 import io.fabric8.kubernetes.api.model.ListOptionsBuilder;
 import io.fabric8.kubernetes.client.KubernetesClientException;
 import io.fabric8.kubernetes.client.dsl.Informable;
-import io.reactivex.Observable;
+import io.smallrye.mutiny.Multi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +46,7 @@ public class ClientUtil {
     }
   }
 
-  public static <T> Observable<WatchEvent<T>> observable(Informable<T> informable) {
-    return InformerOnSubscribe.observable(informable::inform);
+  public static <T> Multi<WatchEvent<T>> toMulti(Informable<T> informable) {
+    return Multi.createFrom().emitter(new InformerEmitter<T>(informable::inform));
   }
 }

@@ -22,15 +22,14 @@ import com.marcnuri.yakd.quickstarts.dashboard.watch.Watchable;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.openshift.api.model.config.v1.ClusterVersion;
 import io.fabric8.openshift.client.OpenShiftClient;
-import io.reactivex.Observable;
+import io.smallrye.mutiny.Multi;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
-import java.io.IOException;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.observable;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.toMulti;
 
 @Singleton
 public class ClusterVersionService implements Watchable<ClusterVersion> {
@@ -53,7 +52,7 @@ public class ClusterVersionService implements Watchable<ClusterVersion> {
   }
 
   @Override
-  public Observable<WatchEvent<ClusterVersion>> watch() throws IOException {
-    return observable(openShiftClient.config().clusterVersions());
+  public Multi<WatchEvent<ClusterVersion>> watch() {
+    return toMulti(openShiftClient.config().clusterVersions());
   }
 }

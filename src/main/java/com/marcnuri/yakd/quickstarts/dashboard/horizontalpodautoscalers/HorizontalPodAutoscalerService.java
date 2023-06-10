@@ -22,12 +22,12 @@ import com.marcnuri.yakd.quickstarts.dashboard.watch.Watchable;
 import io.fabric8.kubernetes.api.model.autoscaling.v1.HorizontalPodAutoscaler;
 import io.fabric8.kubernetes.api.model.autoscaling.v1.HorizontalPodAutoscalerBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
-import io.reactivex.Observable;
+import io.smallrye.mutiny.Multi;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.LIMIT_1;
-import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.observable;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.toMulti;
 import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.tryInOrder;
 
 @Singleton
@@ -46,13 +46,13 @@ public class HorizontalPodAutoscalerService implements Watchable<HorizontalPodAu
   }
 
   @Override
-  public Observable<WatchEvent<HorizontalPodAutoscaler>> watch() {
+  public Multi<WatchEvent<HorizontalPodAutoscaler>> watch() {
     return tryInOrder(
       () -> {
         kubernetesClient.autoscaling().v1().horizontalPodAutoscalers().inAnyNamespace().list(LIMIT_1);
-        return observable(kubernetesClient.autoscaling().v1().horizontalPodAutoscalers().inAnyNamespace());
+        return toMulti(kubernetesClient.autoscaling().v1().horizontalPodAutoscalers().inAnyNamespace());
       },
-      () -> observable(kubernetesClient.autoscaling().v1().horizontalPodAutoscalers()
+      () -> toMulti(kubernetesClient.autoscaling().v1().horizontalPodAutoscalers()
         .inNamespace(kubernetesClient.getConfiguration().getNamespace()))
     );
   }

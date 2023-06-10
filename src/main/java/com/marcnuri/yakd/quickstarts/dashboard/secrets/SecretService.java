@@ -22,14 +22,14 @@ import com.marcnuri.yakd.quickstarts.dashboard.watch.Watchable;
 import io.fabric8.kubernetes.api.model.Secret;
 import io.fabric8.kubernetes.api.model.SecretBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
-import io.reactivex.Observable;
+import io.smallrye.mutiny.Multi;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 import java.util.List;
 
 import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.LIMIT_1;
-import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.observable;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.toMulti;
 import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.tryInOrder;
 
 @Singleton
@@ -43,13 +43,13 @@ public class SecretService implements Watchable<Secret> {
   }
 
   @Override
-  public Observable<WatchEvent<Secret>> watch() {
+  public Multi<WatchEvent<Secret>> watch() {
     return tryInOrder(
       () -> {
         kubernetesClient.secrets().inAnyNamespace().list(LIMIT_1);
-        return observable(kubernetesClient.secrets().inAnyNamespace());
+        return toMulti(kubernetesClient.secrets().inAnyNamespace());
       },
-      () -> observable(kubernetesClient.secrets().inNamespace(kubernetesClient.getConfiguration().getNamespace()))
+      () -> toMulti(kubernetesClient.secrets().inNamespace(kubernetesClient.getConfiguration().getNamespace()))
     );
   }
 

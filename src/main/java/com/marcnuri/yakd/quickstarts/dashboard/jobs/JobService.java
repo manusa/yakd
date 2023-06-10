@@ -22,12 +22,12 @@ import com.marcnuri.yakd.quickstarts.dashboard.watch.Watchable;
 import io.fabric8.kubernetes.api.model.batch.v1.Job;
 import io.fabric8.kubernetes.api.model.batch.v1.JobBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
-import io.reactivex.Observable;
+import io.smallrye.mutiny.Multi;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.LIMIT_1;
-import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.observable;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.toMulti;
 import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.tryInOrder;
 
 @Singleton
@@ -41,13 +41,13 @@ public class JobService implements Watchable<Job> {
   }
 
   @Override
-  public Observable<WatchEvent<Job>> watch() {
+  public Multi<WatchEvent<Job>> watch() {
     return tryInOrder(
       () -> {
         kubernetesClient.batch().v1().jobs().inAnyNamespace().list(LIMIT_1);
-        return observable(kubernetesClient.batch().v1().jobs().inAnyNamespace());
+        return toMulti(kubernetesClient.batch().v1().jobs().inAnyNamespace());
       },
-      () -> observable(kubernetesClient.batch().v1().jobs()
+      () -> toMulti(kubernetesClient.batch().v1().jobs()
         .inNamespace(kubernetesClient.getConfiguration().getNamespace()))
     );
   }

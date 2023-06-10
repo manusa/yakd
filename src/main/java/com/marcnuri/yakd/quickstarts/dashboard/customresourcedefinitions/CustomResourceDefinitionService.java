@@ -22,11 +22,11 @@ import com.marcnuri.yakd.quickstarts.dashboard.watch.Watchable;
 import io.fabric8.kubernetes.api.model.apiextensions.v1.CustomResourceDefinition;
 import io.fabric8.kubernetes.api.model.apiextensions.v1.CustomResourceDefinitionBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
-import io.reactivex.Observable;
+import io.smallrye.mutiny.Multi;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
-import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.observable;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.toMulti;
 
 @Singleton
 public class CustomResourceDefinitionService implements Watchable<CustomResourceDefinition> {
@@ -39,8 +39,8 @@ public class CustomResourceDefinitionService implements Watchable<CustomResource
   }
 
   @Override
-  public Observable<WatchEvent<CustomResourceDefinition>> watch() {
-    return observable(kubernetesClient.apiextensions().v1().customResourceDefinitions());
+  public Multi<WatchEvent<CustomResourceDefinition>> watch() {
+    return toMulti(kubernetesClient.apiextensions().v1().customResourceDefinitions());
   }
 
   public void delete(String name) {

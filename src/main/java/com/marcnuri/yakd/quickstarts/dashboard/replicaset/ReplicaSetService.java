@@ -22,12 +22,12 @@ import com.marcnuri.yakd.quickstarts.dashboard.watch.WatchEvent;
 import com.marcnuri.yakd.quickstarts.dashboard.watch.Watchable;
 import io.fabric8.kubernetes.api.model.apps.ReplicaSet;
 import io.fabric8.kubernetes.client.KubernetesClient;
-import io.reactivex.Observable;
+import io.smallrye.mutiny.Multi;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.LIMIT_1;
-import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.observable;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.toMulti;
 import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.tryInOrder;
 
 @Singleton
@@ -41,13 +41,13 @@ public class ReplicaSetService implements Watchable<ReplicaSet> {
   }
 
   @Override
-  public Observable<WatchEvent<ReplicaSet>> watch() {
+  public Multi<WatchEvent<ReplicaSet>> watch() {
     return tryInOrder(
       () -> {
         kubernetesClient.apps().replicaSets().inAnyNamespace().list(LIMIT_1);
-        return observable(kubernetesClient.apps().replicaSets().inAnyNamespace());
+        return toMulti(kubernetesClient.apps().replicaSets().inAnyNamespace());
       },
-      () -> observable(kubernetesClient.apps().replicaSets()
+      () -> toMulti(kubernetesClient.apps().replicaSets()
         .inNamespace(kubernetesClient.getConfiguration().getNamespace()))
     );
   }

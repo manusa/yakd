@@ -21,11 +21,11 @@ import com.marcnuri.yakd.quickstarts.dashboard.watch.WatchEvent;
 import com.marcnuri.yakd.quickstarts.dashboard.watch.Watchable;
 import io.fabric8.kubernetes.api.model.Event;
 import io.fabric8.kubernetes.client.KubernetesClient;
-import io.reactivex.Observable;
+import io.smallrye.mutiny.Multi;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
-import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.observable;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.toMulti;
 
 @Singleton
 public class EventService implements Watchable<Event> {
@@ -38,8 +38,8 @@ public class EventService implements Watchable<Event> {
   }
 
   @Override
-  public Observable<WatchEvent<Event>> watch() {
-    return observable(kubernetesClient.v1().events());
+  public Multi<WatchEvent<Event>> watch() {
+    return toMulti(kubernetesClient.v1().events());
   }
 
 }

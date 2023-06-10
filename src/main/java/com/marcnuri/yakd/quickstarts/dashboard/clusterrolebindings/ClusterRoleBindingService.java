@@ -17,18 +17,19 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.clusterrolebindings;
 
-import com.marcnuri.yakd.quickstarts.dashboard.fabric8.InformerOnSubscribe;
 import com.marcnuri.yakd.quickstarts.dashboard.watch.WatchEvent;
 import com.marcnuri.yakd.quickstarts.dashboard.watch.Watchable;
 import io.fabric8.kubernetes.api.model.rbac.ClusterRoleBinding;
 import io.fabric8.kubernetes.api.model.rbac.ClusterRoleBindingBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
-import io.reactivex.Observable;
+import io.smallrye.mutiny.Multi;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 import java.util.Optional;
 import java.util.function.Supplier;
+
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.toMulti;
 
 @Singleton
 public class ClusterRoleBindingService implements Watchable<ClusterRoleBinding> {
@@ -46,8 +47,8 @@ public class ClusterRoleBindingService implements Watchable<ClusterRoleBinding> 
   }
 
   @Override
-  public Observable<WatchEvent<ClusterRoleBinding>> watch() {
-    return InformerOnSubscribe.observable(kubernetesClient.rbac().clusterRoleBindings()::inform);
+  public Multi<WatchEvent<ClusterRoleBinding>> watch() {
+    return toMulti(kubernetesClient.rbac().clusterRoleBindings());
   }
 
   @Override

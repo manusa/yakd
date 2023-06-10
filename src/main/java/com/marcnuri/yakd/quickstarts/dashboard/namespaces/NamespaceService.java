@@ -21,17 +21,15 @@ import com.marcnuri.yakd.quickstarts.dashboard.watch.WatchEvent;
 import com.marcnuri.yakd.quickstarts.dashboard.watch.Watchable;
 import io.fabric8.kubernetes.api.model.Namespace;
 import io.fabric8.kubernetes.client.KubernetesClient;
-import io.reactivex.Observable;
+import io.smallrye.mutiny.Multi;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-import static com.marcnuri.yakd.quickstarts.dashboard.ClientUtil.justWithNoComplete;
 import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.LIMIT_1;
-import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.observable;
+import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.toMulti;
 import static com.marcnuri.yakd.quickstarts.dashboard.fabric8.ClientUtil.tryInOrder;
 
 @Singleton
@@ -45,25 +43,25 @@ public class NamespaceService implements Watchable<Namespace> {
   }
 
   @Override
-  public Observable<WatchEvent<Namespace>> watch() throws IOException {
+  public Multi<WatchEvent<Namespace>> watch() {
     final var configNamespace = kubernetesClient.getConfiguration().getNamespace();
     return tryInOrder(
       () -> {
         kubernetesClient.namespaces().list(LIMIT_1);
-        return observable(kubernetesClient.namespaces());
+        return toMulti(kubernetesClient.namespaces());
       },
       () -> {
         if (configNamespace != null) {
           kubernetesClient.namespaces().withField("metadata.name", configNamespace).list(LIMIT_1);
-          return observable(kubernetesClient.namespaces().withField("metadata.name", configNamespace));
+          return toMulti(kubernetesClient.namespaces().withField("metadata.name", configNamespace));
         }
-        return Observable.empty();
+        return Multi.createFrom().empty();
       },
       () -> {
         if (configNamespace != null) {
-          return justWithNoComplete(new WatchEvent<>(WatchEvent.Type.ADDED, kubernetesClient.namespaces().withName(configNamespace).get()));
+          return Multi.createFrom().item(new WatchEvent<>(WatchEvent.Type.ADDED, kubernetesClient.namespaces().withName(configNamespace).get()));
         }
-        return Observable.empty();
+        return Multi.createFrom().empty();
       }
     );
   }

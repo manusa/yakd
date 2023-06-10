@@ -17,8 +17,8 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.watch;
 
-import com.marcnuri.yakc.api.KubernetesException;
 
+import io.fabric8.kubernetes.client.KubernetesClientException;
 
 public class DashboardError {
 
@@ -34,8 +34,8 @@ public class DashboardError {
       message = null;
       cause = null;
     }
-    if (throwable instanceof KubernetesException) {
-      final KubernetesException kubernetesException = (KubernetesException) throwable;
+    if (throwable instanceof KubernetesClientException) {
+      final KubernetesClientException kubernetesException = (KubernetesClientException) throwable;
       code = kubernetesException.getCode();
     }
   }
@@ -54,9 +54,5 @@ public class DashboardError {
 
   public int getCode() {
     return code;
-  }
-
-  static WatchEvent<DashboardError> watchEvent(Throwable throwable) {
-    return new WatchEvent<>(WatchEvent.Type.ERROR, new DashboardError(throwable));
   }
 }
