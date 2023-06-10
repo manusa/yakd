@@ -22,7 +22,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.marcnuri.yakc.serialization.GoCompatibleTimeModule;
 import io.quarkus.jackson.ObjectMapperCustomizer;
 
 import jakarta.inject.Singleton;
@@ -38,6 +37,5 @@ public class JacksonConfiguration  implements ObjectMapperCustomizer {
     mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
     mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
     mapper.registerModule(new JavaTimeModule());
-    mapper.registerModule(new GoCompatibleTimeModule());
   }
 }

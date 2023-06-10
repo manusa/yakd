@@ -17,7 +17,6 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.pod;
 
-import com.marcnuri.yakc.api.ExecMessage;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.http.WebSocket;
 import jakarta.inject.Inject;
@@ -46,7 +45,20 @@ import java.util.concurrent.ConcurrentHashMap;
 @Singleton
 public class PodExecEndpoint {
 
-  private final Logger LOG = LoggerFactory.getLogger(PodExecEndpoint.class);
+  public enum StandardStream {
+    STDIN(0), STDOUT(1), STDERR(2);
+    private final int standardStreamCode;
+
+    StandardStream(int standardStreamCode) {
+      this.standardStreamCode = standardStreamCode;
+    }
+
+    public int getStandardStreamCode() {
+      return standardStreamCode;
+    }
+  }
+
+  private static final Logger LOG = LoggerFactory.getLogger(PodExecEndpoint.class);
 
   private final KubernetesClient kubernetesClient;
   private final Map<String, CompletableFuture<WebSocket>> activeSessions;
@@ -93,7 +105,7 @@ public class PodExecEndpoint {
     }
     byte[] commandBytes = text.getBytes(StandardCharsets.UTF_8);
     byte[] toSend = new byte[commandBytes.length + 1];
-    toSend[0] = (byte) ExecMessage.StandardStream.STDIN.getStandardStreamCode();
+    toSend[0] = (byte) StandardStream.STDIN.getStandardStreamCode();
     System.arraycopy(commandBytes, 0, toSend, 1, commandBytes.length);
     ws.send(ByteBuffer.wrap(toSend));
   }

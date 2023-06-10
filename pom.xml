@@ -11,10 +11,7 @@
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
     <container.image.tag>latest</container.image.tag>
-    <version.yakc>0.0.26</version.yakc>
-    <version.yakc-quarkus-extension>0.0.13</version.yakc-quarkus-extension>
     <version.quarkus>3.1.0.Final</version.quarkus>
-<!--    <version.smallrye.reactive>1.9.0</version.smallrye.reactive>-->
     <version.jkube>1.5.1</version.jkube>
     <version.exec-maven-plugin>3.0.0</version.exec-maven-plugin>
     <k8s.namespace>default</k8s.namespace>
@@ -53,26 +50,6 @@
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.marcnuri.yakc</groupId>
-      <artifactId>kubernetes-api</artifactId>
-      <version>${version.yakc}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.marcnuri.yakc.apis</groupId>
-      <artifactId>metrics-server</artifactId>
-      <version>${version.yakc}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.marcnuri.yakc.apis</groupId>
-      <artifactId>openshift</artifactId>
-      <version>${version.yakc}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.marcnuri.yakc</groupId>
-      <artifactId>kubernetes-client</artifactId>
-      <version>${version.yakc}</version>
     </dependency>
   </dependencies>
   <build>
@@ -183,7 +160,6 @@
         <quarkus.package.type>native</quarkus.package.type>
         <quarkus.native.additional-build-args>
           -H:ResourceConfigurationFiles=resources-config.json,
-          -H:DynamicProxyConfigurationFiles=dynamic-proxy-classes-config.json,
           -J-Djavax.net.ssl.trustStore=${java.home}/lib/security/cacerts,
           -J-Djavax.net.ssl.trustAnchors=${java.home}/lib/security/cacerts,
           -J-Djavax.net.ssl.trustStorePassword=changeit,
