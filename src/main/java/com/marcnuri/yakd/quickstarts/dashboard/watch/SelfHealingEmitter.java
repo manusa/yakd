@@ -25,7 +25,6 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
@@ -38,9 +37,6 @@ import java.util.function.Supplier;
  * <p>
  * In addition, it will also schedule re-subscriptions to Watchables that were not available at the moment the
  * emitter was initially subscribed.
- * <p>
- * Considering that the upstream emitters are based on Kubernetes Client Informers, this stream should be extremely
- * robust and resilient to any kind of failure.
  */
 public class SelfHealingEmitter implements Consumer<MultiEmitter<? super WatchEvent<?>>> {
 
@@ -49,10 +45,10 @@ public class SelfHealingEmitter implements Consumer<MultiEmitter<? super WatchEv
   private final Map<Class<?>, Cancellable> emitters;
   private final ScheduledExecutorService executorService;
 
-  public SelfHealingEmitter(List<Watchable<?>> watchables) {
+  public SelfHealingEmitter(ScheduledExecutorService executorService, List<Watchable<?>> watchables) {
+    this.executorService = executorService;
     this.watchables = watchables;
     emitters = new ConcurrentHashMap<>();
-    executorService = Executors.newScheduledThreadPool(1);
   }
 
   @Override
@@ -61,12 +57,11 @@ public class SelfHealingEmitter implements Consumer<MultiEmitter<? super WatchEv
     emitter.onTermination(() -> {
       LOG.debug("SelfHealingEmitter stopped downstream, cleaning all resources");
       emitters.values().forEach(Cancellable::cancel);
-      executorService.shutdown();
     });
   }
 
   private void subscribe(Watchable<?> watchable, MultiEmitter<? super WatchEvent<?>> emitter) {
-    if (watchable.getAvailabilityCheckFunction().map(Supplier::get).orElse(true)) {
+    if (!emitter.isCancelled() && watchable.getAvailabilityCheckFunction().map(Supplier::get).orElse(true)) {
       emitters.computeIfPresent(watchable.getClass(), (k, v) -> {
         v.cancel();
         return null;

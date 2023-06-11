@@ -40,19 +40,25 @@ import com.marcnuri.yakd.quickstarts.dashboard.service.ServiceService;
 import com.marcnuri.yakd.quickstarts.dashboard.statefulsets.StatefulSetService;
 import io.smallrye.mutiny.Multi;
 import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ScheduledExecutorService;
+
+import static com.marcnuri.yakd.quickstarts.dashboard.KubernetesDashboardConfiguration.WATCH_EXECUTOR_SERVICE;
 
 @Singleton
 public class WatchService {
 
   private final List<Watchable<?>> watchables;
+  private ScheduledExecutorService executorService;
 
   @SuppressWarnings("java:S107")
   @Inject
   public WatchService(
+    @Named(WATCH_EXECUTOR_SERVICE) ScheduledExecutorService executorService,
     ClusterRoleBindingService clusterRoleBindingService,
     ClusterRoleService clusterRoleService,
     ClusterVersionService clusterVersionService,
@@ -76,6 +82,7 @@ public class WatchService {
     ServiceService serviceService,
     StatefulSetService statefulSetService
   ) {
+    this.executorService = executorService;
     this.watchables = Arrays.asList(
       clusterRoleBindingService,
       clusterRoleService,
@@ -103,6 +110,6 @@ public class WatchService {
   }
 
   public Multi<WatchEvent<?>> newWatch() {
-    return Multi.createFrom().emitter(new SelfHealingEmitter(watchables));
+    return Multi.createFrom().emitter(new SelfHealingEmitter(executorService, watchables));
   }
 }

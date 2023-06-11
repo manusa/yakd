@@ -19,18 +19,25 @@ package com.marcnuri.yakd.quickstarts.dashboard;
 
 import io.fabric8.kubernetes.client.Config;
 import io.fabric8.kubernetes.client.ConfigBuilder;
+import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
 import io.smallrye.mutiny.infrastructure.Infrastructure;
 import jakarta.annotation.Priority;
 import jakarta.enterprise.event.Observes;
+import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Produces;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+
 @Singleton
 public class KubernetesDashboardConfiguration {
+
+  public static final String WATCH_EXECUTOR_SERVICE = "watchExecutorService";
 
   private static final Logger LOG = LoggerFactory.getLogger(KubernetesDashboardConfiguration.class);
 
@@ -41,6 +48,20 @@ public class KubernetesDashboardConfiguration {
     // Keep logs clean
     Infrastructure.setDroppedExceptionHandler(ex ->
       LOG.error("Mutiny subscription closed with dropped exception {}", ex.getMessage()));
+  }
+
+  void onEnd(
+    @Observes ShutdownEvent event,
+    @Named(WATCH_EXECUTOR_SERVICE) ScheduledExecutorService executorService
+  ) {
+    executorService.shutdown();
+  }
+
+  @Produces
+  @Singleton
+  @Named(WATCH_EXECUTOR_SERVICE)
+  public ScheduledExecutorService watchExecutorService() {
+    return Executors.newScheduledThreadPool(1);
   }
 
   @Produces
