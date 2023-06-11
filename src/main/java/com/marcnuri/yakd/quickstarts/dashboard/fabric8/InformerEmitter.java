@@ -18,6 +18,7 @@
 package com.marcnuri.yakd.quickstarts.dashboard.fabric8;
 
 import com.marcnuri.yakd.quickstarts.dashboard.watch.WatchEvent;
+import io.fabric8.kubernetes.client.Watcher;
 import io.fabric8.kubernetes.client.informers.ResourceEventHandler;
 import io.fabric8.kubernetes.client.informers.SharedIndexInformer;
 import io.smallrye.mutiny.subscription.MultiEmitter;
@@ -58,17 +59,17 @@ public class InformerEmitter<T> implements Consumer<MultiEmitter<? super WatchEv
 
     @Override
     public void onAdd(T obj) {
-      emitter.emit(new WatchEvent<>(WatchEvent.Type.ADDED, obj));
+      emitter.emit(new WatchEvent<>(Watcher.Action.ADDED, obj));
     }
 
     @Override
     public void onUpdate(T oldObj, T newObj) {
-      emitter.emit(new WatchEvent<>(WatchEvent.Type.MODIFIED, newObj));
+      emitter.emit(new WatchEvent<>(Watcher.Action.MODIFIED, newObj));
     }
 
     @Override
     public void onDelete(T obj, boolean finalStateUnknown) {
-      emitter.emit(new WatchEvent<>(WatchEvent.Type.DELETED, obj));
+      emitter.emit(new WatchEvent<>(Watcher.Action.DELETED, obj));
     }
   }
 

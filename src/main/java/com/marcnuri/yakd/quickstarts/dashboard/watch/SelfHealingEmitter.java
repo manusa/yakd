@@ -17,6 +17,7 @@
  */
 package com.marcnuri.yakd.quickstarts.dashboard.watch;
 
+import io.fabric8.kubernetes.client.Watcher;
 import io.smallrye.mutiny.subscription.Cancellable;
 import io.smallrye.mutiny.subscription.MultiEmitter;
 import org.slf4j.Logger;
@@ -67,10 +68,11 @@ public class SelfHealingEmitter implements Consumer<MultiEmitter<? super WatchEv
         return null;
       });
       final Consumer<Throwable> heal = throwable -> {
+        // Fabric8 Watchers automatically reconnect on timeout, so we only need to heal on other errors or completions
         if (!emitter.isCancelled() && watchable.isRetrySubscription()) {
           LOG.debug("Watchable {} stopped, self healing with delay of {} seconds",
             watchable.getType(), watchable.getSelfHealingDelay().getSeconds());
-          emitter.emit(new WatchEvent<>(WatchEvent.Type.ERROR, new RequestRestartError(watchable, throwable)));
+          emitter.emit(new WatchEvent<>(Watcher.Action.ERROR, new RequestRestartError(watchable, throwable)));
           executorService.schedule(() ->
             subscribe(watchable, emitter), watchable.getSelfHealingDelay().getSeconds(), TimeUnit.SECONDS);
         } else if (LOG.isDebugEnabled()) {

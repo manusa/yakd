@@ -1,7 +1,6 @@
 package com.marcnuri.yakd.quickstarts.dashboard.watch;
 
-public record WatchEvent<T>(WatchEvent.Type type, T object) {
-  public enum Type {
-    ADDED, MODIFIED, DELETED, ERROR
-  }
+import io.fabric8.kubernetes.client.Watcher;
+
+public record WatchEvent<T>(Watcher.Action type, T object) {
 }

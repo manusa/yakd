@@ -21,6 +21,7 @@ import com.marcnuri.yakd.quickstarts.dashboard.watch.WatchEvent;
 import com.marcnuri.yakd.quickstarts.dashboard.watch.Watchable;
 import io.fabric8.kubernetes.api.model.Namespace;
 import io.fabric8.kubernetes.client.KubernetesClient;
+import io.fabric8.kubernetes.client.Watcher;
 import io.smallrye.mutiny.Multi;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -59,7 +60,7 @@ public class NamespaceService implements Watchable<Namespace> {
       },
       () -> {
         if (configNamespace != null) {
-          return Multi.createFrom().item(new WatchEvent<>(WatchEvent.Type.ADDED, kubernetesClient.namespaces().withName(configNamespace).get()));
+          return Multi.createFrom().item(new WatchEvent<>(Watcher.Action.ADDED, kubernetesClient.namespaces().withName(configNamespace).get()));
         }
         return Multi.createFrom().empty();
       }
