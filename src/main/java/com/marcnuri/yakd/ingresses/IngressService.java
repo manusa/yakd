@@ -18,6 +18,8 @@
 package com.marcnuri.yakd.ingresses;
 
 import com.marcnuri.yakd.fabric8.ClientUtil;
+import com.marcnuri.yakd.watch.WatchEvent;
+import com.marcnuri.yakd.watch.Watchable;
 import io.fabric8.kubernetes.api.model.networking.v1.HTTPIngressPath;
 import io.fabric8.kubernetes.api.model.networking.v1.HTTPIngressPathBuilder;
 import io.fabric8.kubernetes.api.model.networking.v1.HTTPIngressRuleValue;
@@ -33,19 +35,28 @@ import io.fabric8.kubernetes.api.model.networking.v1.IngressSpec;
 import io.fabric8.kubernetes.api.model.networking.v1.IngressSpecBuilder;
 import io.fabric8.kubernetes.api.model.networking.v1.ServiceBackendPortBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
+import io.smallrye.mutiny.Multi;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 import java.util.List;
 
+import static com.marcnuri.yakd.fabric8.ClientUtil.LIMIT_1;
+import static com.marcnuri.yakd.fabric8.ClientUtil.toMulti;
+import static com.marcnuri.yakd.fabric8.ClientUtil.tryInOrder;
+
 @Singleton
-public class IngressService {
+public class IngressService implements Watchable<Ingress> {
 
   private final KubernetesClient kubernetesClient;
 
   @Inject
   public IngressService(KubernetesClient kubernetesClient) {
     this.kubernetesClient = kubernetesClient;
+  }
+
+  static WatchEvent<Ingress> to(WatchEvent<io.fabric8.kubernetes.api.model.extensions.Ingress> from) {
+    return new WatchEvent<>(from.type(), to(from.object()));
   }
 
   static Ingress to(io.fabric8.kubernetes.api.model.extensions.Ingress from) {
@@ -95,9 +106,27 @@ public class IngressService {
       .build();
   }
 
+  @Override
+  public Multi<WatchEvent<Ingress>> watch() {
+    return tryInOrder(
+      () -> {
+        kubernetesClient.network().v1().ingresses().inAnyNamespace().list(ClientUtil.LIMIT_1);
+        return toMulti(kubernetesClient.network().v1().ingresses().inAnyNamespace());
+      },
+      () -> toMulti(kubernetesClient.network().v1().ingresses()
+        .inNamespace(kubernetesClient.getConfiguration().getNamespace())),
+      () -> {
+        kubernetesClient.extensions().ingresses().inAnyNamespace().list(LIMIT_1);
+        return toMulti(kubernetesClient.extensions().ingresses().inAnyNamespace()).map(IngressService::to);
+      },
+      () -> toMulti(kubernetesClient.extensions().ingresses()
+        .inNamespace(kubernetesClient.getConfiguration().getNamespace())).map(IngressService::to)
+    );
+  }
+
   public List<Ingress> get() {
     final String namespace = kubernetesClient.getConfiguration().getNamespace();
-    return ClientUtil.tryInOrder(
+    return tryInOrder(
       () -> kubernetesClient.network().v1().ingresses().inAnyNamespace().list().getItems(),
       () -> kubernetesClient.network().v1().ingresses().inNamespace(namespace).list().getItems(),
       () -> kubernetesClient.extensions().ingresses().inAnyNamespace().list().getItems().stream().map(IngressService::to).toList(),
@@ -106,7 +135,7 @@ public class IngressService {
   }
 
   public void delete(String name, String namespace) {
-    ClientUtil.tryInOrder(
+    tryInOrder(
       () -> kubernetesClient.network().v1().ingresses().inNamespace(namespace).withName(name).delete(),
       () -> kubernetesClient.network().v1beta1().ingresses().inNamespace(namespace).withName(name).delete(),
       () -> kubernetesClient.extensions().ingresses().inNamespace(namespace).withName(name).delete()

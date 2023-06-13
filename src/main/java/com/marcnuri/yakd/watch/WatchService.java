@@ -26,6 +26,7 @@ import com.marcnuri.yakd.daemonsets.DaemonSetService;
 import com.marcnuri.yakd.deployment.DeploymentService;
 import com.marcnuri.yakd.deploymentconfigs.DeploymentConfigService;
 import com.marcnuri.yakd.horizontalpodautoscalers.HorizontalPodAutoscalerService;
+import com.marcnuri.yakd.ingresses.IngressService;
 import com.marcnuri.yakd.jobs.JobService;
 import com.marcnuri.yakd.namespaces.NamespaceService;
 import com.marcnuri.yakd.node.NodeService;
@@ -54,7 +55,7 @@ import static com.marcnuri.yakd.KubernetesDashboardConfiguration.WATCH_EXECUTOR_
 public class WatchService {
 
   private final List<Watchable<?>> watchables;
-  private ScheduledExecutorService executorService;
+  private final ScheduledExecutorService executorService;
 
   @SuppressWarnings("java:S107")
   @Inject
@@ -71,6 +72,7 @@ public class WatchService {
     DeploymentService deploymentService,
     EventService eventService,
     HorizontalPodAutoscalerService horizontalPodAutoscalerService,
+    IngressService ingressService,
     JobService jobService,
     NamespaceService namespaceService,
     NodeService nodeService,
@@ -96,6 +98,7 @@ public class WatchService {
       deploymentService,
       eventService,
       horizontalPodAutoscalerService,
+      ingressService,
       jobService,
       namespaceService,
       nodeService,
