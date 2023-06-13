@@ -258,10 +258,9 @@ const NavSection = ({
         </NavGroup>
       </div>
       <h2 className='mt-6 mb-2 px-4 text-gray-100 text-xl'>About</h2>
-      <ExtNavItem href='https://github.com/manusa/yakc/tree/master/quickstarts/quarkus-dashboard'>
-        Quarkus Kubernetes Dashboard
+      <ExtNavItem href='https://github.com/manusa/yakd'>
+        YAKD - Yet Another Kubernetes Dashboard
       </ExtNavItem>
-      <ExtNavItem href='https://github.com/manusa/yakc'>YAKC</ExtNavItem>
     </nav>
   );
 };
