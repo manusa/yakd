@@ -93,7 +93,7 @@ public class PodService implements Watchable<Pod> {
     @Override
     public void accept(MultiEmitter<? super String> emitter) {
       try (
-        final var watch = loggable.watchLog();
+        final var watch = loggable.withReadyWaitTimeout(0).watchLog();
         final var is = watch.getOutput();
         final var isr = new InputStreamReader(is);
         final var br = new BufferedReader(isr);
