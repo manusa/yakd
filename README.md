@@ -16,10 +16,10 @@ If you just want to try out the final project the easiest way is to deploy the
 into Minikube (or any other k8s cluster - needs access to node):
 
 ```shell script
-# Deploy the application using https://hub.docker.com/r/marcnuri/yakc-kubernetes-dashboard SNAPSHOT
-$ kubectl create -f https://raw.githubusercontent.com/manusa/yakc/master/quickstarts/quarkus-dashboard/docs/yakc-kubernetes-dashboard.minikube.yml
+# Deploy the application using https://hub.docker.com/r/marcnuri/yakd SNAPSHOT
+kubectl create -f https://raw.githubusercontent.com/manusa/yakd/main/docs/yakd-kubernetes-dashboard.minikube.yml
 # Open Browser and navigate to deployed application
-$ minikube service yakc-dashboard
+minikube service yakd
 ``` 
 
 ![An image of a screenshot YAKC Kubernetes Dashboard landing page](docs/yakc-kubernetes-dashboard.gif)
