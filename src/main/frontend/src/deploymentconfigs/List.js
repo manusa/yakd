@@ -76,7 +76,7 @@ const Rows = ({deploymentConfigs}) => {
             {metadata.selectors.namespace(deploymentConfig)}
           </Link.Namespace>
         </Table.Cell>
-        <Table.Cell>
+        <Table.Cell className='break-all'>
           {dc.selectors.images(deploymentConfig).map((image, idx) => (
             <div key={idx}>{image}</div>
           ))}

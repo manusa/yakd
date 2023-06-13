@@ -74,7 +74,7 @@ const Rows = ({statefulSets}) => {
             {metadata.selectors.namespace(statefulSet)}
           </Link.Namespace>
         </Table.Cell>
-        <Table.Cell>
+        <Table.Cell className='break-all'>
           {sts.selectors.images(statefulSet).map((image, idx) => (
             <div key={idx}>{image}</div>
           ))}

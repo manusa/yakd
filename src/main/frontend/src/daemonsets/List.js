@@ -72,7 +72,7 @@ const Rows = ({daemonSets}) => {
             {metadata.selectors.namespace(daemonSet)}
           </Link.Namespace>
         </Table.Cell>
-        <Table.Cell>
+        <Table.Cell className='break-all'>
           {ds.selectors.images(daemonSet).map((image, idx) => (
             <div key={idx}>{image}</div>
           ))}
