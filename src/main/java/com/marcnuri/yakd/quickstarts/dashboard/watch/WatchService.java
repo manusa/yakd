@@ -39,6 +39,7 @@ import com.marcnuri.yakd.quickstarts.dashboard.secrets.SecretService;
 import com.marcnuri.yakd.quickstarts.dashboard.service.ServiceService;
 import com.marcnuri.yakd.quickstarts.dashboard.statefulsets.StatefulSetService;
 import io.smallrye.mutiny.Multi;
+import io.smallrye.mutiny.subscription.BackPressureStrategy;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
@@ -110,6 +111,8 @@ public class WatchService {
   }
 
   public Multi<WatchEvent<?>> newWatch() {
-    return Multi.createFrom().emitter(new SelfHealingEmitter(executorService, watchables));
+    // No backpressure to reduce memory footprint.
+    // Downstream client should handle every event or provide its own buffering
+    return Multi.createFrom().emitter(new SelfHealingEmitter(executorService, watchables), BackPressureStrategy.ERROR);
   }
 }
