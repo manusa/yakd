@@ -19,6 +19,7 @@ package com.marcnuri.yakd.quickstarts.dashboard.apis;
 
 import java.util.List;
 
+import io.quarkus.vertx.http.Compressed;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.GET;
@@ -42,6 +43,7 @@ public class ApisResource {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   @Path("/groups")
+  @Compressed
   public List<String> getApiGroups() {
     return apisService.getApiGroups();
   }

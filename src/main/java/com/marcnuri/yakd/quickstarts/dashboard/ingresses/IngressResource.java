@@ -19,6 +19,7 @@ package com.marcnuri.yakd.quickstarts.dashboard.ingresses;
 
 import io.fabric8.kubernetes.api.model.networking.v1.Ingress;
 import io.quarkus.runtime.annotations.RegisterForReflection;
+import io.quarkus.vertx.http.Compressed;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -46,6 +47,7 @@ public class IngressResource {
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
+  @Compressed
   public List<Ingress> get() {
     return ingressService.get();
   }

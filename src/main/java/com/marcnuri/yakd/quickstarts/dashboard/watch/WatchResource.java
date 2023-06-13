@@ -20,6 +20,7 @@ package com.marcnuri.yakd.quickstarts.dashboard.watch;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.annotations.RegisterForReflection;
+import io.quarkus.vertx.http.Compressed;
 import io.vertx.core.http.HttpServerResponse;
 import org.jboss.resteasy.reactive.RestStreamElementType;
 import org.slf4j.Logger;
@@ -61,6 +62,7 @@ public class WatchResource {
   @GET
   @Produces(MediaType.SERVER_SENT_EVENTS)
   @RestStreamElementType(MediaType.APPLICATION_JSON)
+  @Compressed
   public void get(@Context HttpServerResponse response, @Context Sse sse, @Context SseEventSink sseEventSink) {
     watchService.newWatch().runSubscriptionOn(subscribeExecutor).subscribe()
       .with(

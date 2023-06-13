@@ -19,6 +19,7 @@ package com.marcnuri.yakd.quickstarts.dashboard.persistentvolumeclaims;
 
 import io.fabric8.kubernetes.api.model.PersistentVolumeClaim;
 import io.quarkus.runtime.annotations.RegisterForReflection;
+import io.quarkus.vertx.http.Compressed;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -48,6 +49,7 @@ public class PersistentVolumeClaimResource {
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
+  @Compressed
   public List<PersistentVolumeClaim> get() {
     return persistentVolumeClaimService.get();
   }
