@@ -1,0 +1,27 @@
+name: Kubernetes Dashboard
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish-snapshot-image:
+    name: Publish YAKD Snapshot
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+      - name: Setup Java 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: Build and Push
+        run: |
+          mvn -Pbuild-frontend,native,k8s clean package k8s:build k8s:push        \
+          -Dcontainer.image.tag=snapshot                                          \
+          -Djkube.docker.push.username=${{ secrets.DOCKER_USERNAME }}             \
+          -Djkube.docker.push.password=${{ secrets.DOCKER_PASSWORD }}

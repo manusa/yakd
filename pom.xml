@@ -10,10 +10,12 @@
   <properties>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
-    <container.image.tag>latest</container.image.tag>
     <version.quarkus>3.1.0.Final</version.quarkus>
-    <version.jkube>1.5.1</version.jkube>
+    <version.jkube>1.12.0</version.jkube>
     <version.exec-maven-plugin>3.0.0</version.exec-maven-plugin>
+    <container.image.tag>${project.version}</container.image.tag>
+    <jkube.enricher.jkube-service.type>NodePort</jkube.enricher.jkube-service.type>
+    <jkube.enricher.jkube-name.name>yakd</jkube.enricher.jkube-name.name>
     <k8s.namespace>default</k8s.namespace>
   </properties>
 
@@ -124,9 +126,6 @@
     <profile>
       <id>k8s</id>
       <properties>
-        <jkube.generator.name>marcnuri/yakc-kubernetes-dashboard:${container.image.tag}</jkube.generator.name>
-        <jkube.enricher.jkube-service.type>NodePort</jkube.enricher.jkube-service.type>
-        <jkube.enricher.jkube-service.name>yakc-dashboard</jkube.enricher.jkube-service.name>
       </properties>
       <build>
         <plugins>
@@ -134,17 +133,55 @@
             <groupId>org.eclipse.jkube</groupId>
             <artifactId>kubernetes-maven-plugin</artifactId>
             <version>${version.jkube}</version>
-            <executions>
-              <execution>
-                <id>install</id>
-                <phase>install</phase>
-                <goals>
-                  <goal>build</goal>
-                  <goal>resource</goal>
-                  <goal>apply</goal>
-                </goals>
-              </execution>
-            </executions>
+            <configuration>
+              <images>
+                <image>
+                  <name>marcnuri/yakd:${container.image.tag}</name>
+                  <alias>yakd</alias>
+                  <build>
+                    <from>quay.io/quarkus/quarkus-micro-image:2.0</from>
+                    <assembly>
+                      <targetDir>/</targetDir>
+                      <layers>
+                        <layer>
+                          <id>artifact</id>
+                          <files>
+                            <file>
+                              <outputDirectory>.</outputDirectory>
+                              <source>${project.build.directory}/yakd-runner</source>
+                              <fileMode>0755</fileMode>
+                            </file>
+                          </files>
+                        </layer>
+                      </layers>
+                    </assembly>
+                    <user>10001</user>
+                    <ports>
+                      <port>8080</port>
+                    </ports>
+                    <cmd>
+                      <exec>
+                        <arg>/yakd-runner</arg>
+                        <arg>-Dquarkus.http.host=0.0.0.0</arg>
+                        <arg>-Xmx312m</arg>
+                      </exec>
+                    </cmd>
+                  </build>
+                </image>
+              </images>
+              <resources>
+                <controller>
+                  <containerResources>
+                    <requests>
+                      <memory>256Mi</memory>
+                    </requests>
+                    <limits>
+                      <memory>512Mi</memory>
+                    </limits>
+                  </containerResources>
+                </controller>
+              </resources>
+            </configuration>
           </plugin>
         </plugins>
       </build>
