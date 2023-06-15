@@ -71,9 +71,11 @@ public class GatewayResource {
       fileToServe = FALLBACK_RESOURCE;
       inputStream = GatewayResource.class.getResourceAsStream(FALLBACK_RESOURCE);
     }
+    final CacheControl cacheControl = new CacheControl();
+    cacheControl.setMaxAge(900);
     return RestResponse.ResponseBuilder
       .ok(inputStream)
-      .cacheControl(CacheControl.valueOf("max-age=900"))
+      .cacheControl(cacheControl)
       .type(contentType(inputStream, fileToServe))
       .build();
   }
