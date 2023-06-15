@@ -31,6 +31,7 @@ import com.marcnuri.yakd.jobs.JobService;
 import com.marcnuri.yakd.namespaces.NamespaceService;
 import com.marcnuri.yakd.node.NodeService;
 import com.marcnuri.yakd.openshiftconfig.ClusterVersionService;
+import com.marcnuri.yakd.persistentvolumes.PersistentVolumeService;
 import com.marcnuri.yakd.pod.PodService;
 import com.marcnuri.yakd.replicaset.ReplicaSetService;
 import com.marcnuri.yakd.replicationcontrollers.ReplicationControllerService;
@@ -76,6 +77,7 @@ public class WatchService {
     JobService jobService,
     NamespaceService namespaceService,
     NodeService nodeService,
+    PersistentVolumeService persistentVolumeService,
     PodService podService,
     ReplicaSetService replicaSetService,
     ReplicationControllerService replicationControllerService,
@@ -102,6 +104,7 @@ public class WatchService {
       jobService,
       namespaceService,
       nodeService,
+      persistentVolumeService,
       podService,
       replicaSetService,
       replicationControllerService,

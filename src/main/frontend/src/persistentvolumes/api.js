@@ -14,11 +14,9 @@
  * limitations under the License.
  *
  */
-import {deleteResource, listResource, updateResource} from '../fetch';
+import {deleteResource, updateResource} from '../fetch';
 
 const api = {};
-
-api.list = listResource('persistentvolumes', 'PersistentVolume');
 
 api.delete = deleteResource('persistentvolumes');
 

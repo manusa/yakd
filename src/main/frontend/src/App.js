@@ -59,8 +59,7 @@ const pollResources = dispatch => {
         apis.api
           .listGroups()
           .then(apiGroups => dispatch(redux.actions.apiGroupsSet(apiGroups))),
-        pvc.api.list().then(handleResourceList('PersistentVolumeClaim')),
-        pv.api.list().then(handleResourceList('PersistentVolume'))
+        pvc.api.list().then(handleResourceList('PersistentVolumeClaim'))
       ]);
     } catch (e) {
       dispatch(

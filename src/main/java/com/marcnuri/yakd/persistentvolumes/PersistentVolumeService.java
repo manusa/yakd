@@ -17,6 +17,8 @@
  */
 package com.marcnuri.yakd.persistentvolumes;
 
+import com.marcnuri.yakd.watch.Subscriber;
+import com.marcnuri.yakd.watch.Watchable;
 import io.fabric8.kubernetes.api.model.PersistentVolume;
 import io.fabric8.kubernetes.api.model.PersistentVolumeBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
@@ -27,9 +29,10 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.marcnuri.yakd.fabric8.ClientUtil.ignoreForbidden;
+import static com.marcnuri.yakd.fabric8.WatchableSubscriber.subscriber;
 
 @Singleton
-public class PersistentVolumeService {
+public class PersistentVolumeService implements Watchable<PersistentVolume> {
 
   private final KubernetesClient kubernetesClient;
 
@@ -43,6 +46,11 @@ public class PersistentVolumeService {
       () -> kubernetesClient.persistentVolumes().list().getItems(),
       Collections.emptyList()
     );
+  }
+
+  @Override
+  public Subscriber<PersistentVolume> watch() {
+    return subscriber(kubernetesClient.persistentVolumes());
   }
 
   public void deletePersistentVolume(String name) {
