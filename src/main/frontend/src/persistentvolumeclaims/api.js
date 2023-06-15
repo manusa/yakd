@@ -16,13 +16,10 @@
  */
 import {
   deleteNamespacedResource,
-  listResource,
   updateNamespacedResource
 } from '../fetch';
 
 const api = {};
-
-api.list = listResource('persistentvolumeclaims', 'PersistentVolumeClaim');
 
 api.delete = deleteNamespacedResource('persistentvolumeclaims');
 

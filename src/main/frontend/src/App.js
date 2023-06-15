@@ -50,16 +50,11 @@ let pollResourcesTimeout;
 
 const pollResources = dispatch => {
   const dispatchedPoll = async () => {
-    const handleResourceList = kind => async resources => {
-      await dispatch(redux.actions.crudSetAll({kind, resources}));
-      dispatch(redux.actions.setResourceLoaded({kind, loaded: true}));
-    };
     try {
       await Promise.all([
         apis.api
           .listGroups()
-          .then(apiGroups => dispatch(redux.actions.apiGroupsSet(apiGroups))),
-        pvc.api.list().then(handleResourceList('PersistentVolumeClaim'))
+          .then(apiGroups => dispatch(redux.actions.apiGroupsSet(apiGroups)))
       ]);
     } catch (e) {
       dispatch(
