@@ -12,7 +12,7 @@ Kubernetes Dashboard built with [Quarkus](https://quarkus.io) and [React](https:
 ### Minikube
 
 If you just want to try out the final project the easiest way is to deploy the
-[released snapshot](https://hub.docker.com/r/marcnuri/yakc-kubernetes-dashboard)
+[released snapshot](https://hub.docker.com/r/marcnuri/yakd)
 into Minikube (or any other k8s cluster - needs access to node):
 
 ```shell script
