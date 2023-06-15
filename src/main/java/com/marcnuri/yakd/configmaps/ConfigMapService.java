@@ -17,20 +17,19 @@
  */
 package com.marcnuri.yakd.configmaps;
 
-import com.marcnuri.yakd.watch.WatchEvent;
+import com.marcnuri.yakd.watch.Subscriber;
 import com.marcnuri.yakd.watch.Watchable;
 import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.api.model.ConfigMapBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
-import io.smallrye.mutiny.Multi;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 import java.util.List;
 
 import static com.marcnuri.yakd.fabric8.ClientUtil.LIMIT_1;
-import static com.marcnuri.yakd.fabric8.ClientUtil.toMulti;
 import static com.marcnuri.yakd.fabric8.ClientUtil.tryInOrder;
+import static com.marcnuri.yakd.fabric8.WatchableSubscriber.subscriber;
 
 @Singleton
 public class ConfigMapService implements Watchable<ConfigMap> {
@@ -50,13 +49,13 @@ public class ConfigMapService implements Watchable<ConfigMap> {
   }
 
   @Override
-  public Multi<WatchEvent<ConfigMap>> watch() {
+  public Subscriber<ConfigMap> watch() {
     return tryInOrder(
       () -> {
         kubernetesClient.configMaps().inAnyNamespace().list(LIMIT_1);
-        return toMulti(kubernetesClient.configMaps().inAnyNamespace());
+        return subscriber(kubernetesClient.configMaps().inAnyNamespace());
       },
-      () -> toMulti(kubernetesClient.configMaps().inNamespace(kubernetesClient.getConfiguration().getNamespace()))
+      () -> subscriber(kubernetesClient.configMaps().inNamespace(kubernetesClient.getConfiguration().getNamespace()))
     );
   }
 

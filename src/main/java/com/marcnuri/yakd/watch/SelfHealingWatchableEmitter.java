@@ -18,11 +18,13 @@
 package com.marcnuri.yakd.watch;
 
 import io.fabric8.kubernetes.client.Watcher;
-import io.smallrye.mutiny.subscription.Cancellable;
+import io.fabric8.kubernetes.client.WatcherException;
 import io.smallrye.mutiny.subscription.MultiEmitter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,43 +33,37 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-/**
- * This class allows to funnel and merge all the Watchable events into a single MultiEmitter stream.
- * The main advantage is that it will automatically resubscribe to the Watchable if it's stopped for any
- * unforeseen reason.
- * <p>
- * In addition, it will also schedule re-subscriptions to Watchables that were not available at the moment the
- * emitter was initially subscribed.
- */
-public class SelfHealingEmitter implements Consumer<MultiEmitter<? super WatchEvent<?>>> {
+public class SelfHealingWatchableEmitter implements Consumer<MultiEmitter<? super WatchEvent<?>>> {
 
-  private static final Logger LOG = LoggerFactory.getLogger(SelfHealingEmitter.class);
-  private final List<Watchable<?>> watchables;
-  private final Map<Class<?>, Cancellable> emitters;
+  private static final Logger LOG = LoggerFactory.getLogger(SelfHealingWatchableEmitter.class);
   private final ScheduledExecutorService executorService;
+  private final List<Watchable<?>> watchables;
+  private final Map<Class<?>, Closeable> activeWatches;
 
-  public SelfHealingEmitter(ScheduledExecutorService executorService, List<Watchable<?>> watchables) {
+  public SelfHealingWatchableEmitter(ScheduledExecutorService executorService, List<Watchable<?>> watchables) {
     this.executorService = executorService;
     this.watchables = watchables;
-    emitters = new ConcurrentHashMap<>();
+    activeWatches = new ConcurrentHashMap<>();
   }
 
   @Override
   public void accept(MultiEmitter<? super WatchEvent<?>> emitter) {
     watchables.forEach(watchable -> executorService.execute(() -> subscribe(watchable, emitter)));
     emitter.onTermination(() -> {
-      LOG.debug("SelfHealingEmitter stopped downstream, cleaning all resources");
-      emitters.values().forEach(Cancellable::cancel);
+      LOG.debug("WatchEvent emitter stopped downstream, cleaning all resources");
+      activeWatches.values().forEach(SelfHealingWatchableEmitter::close);
     });
   }
 
+
   private void subscribe(Watchable<?> watchable, MultiEmitter<? super WatchEvent<?>> emitter) {
+    activeWatches.computeIfPresent(watchable.getClass(), (k, v) -> {
+      LOG.debug("Watchable {} already subscribed, cancelling previous subscription", watchable.getType());
+      close(v);
+      return null;
+    });
     if (!emitter.isCancelled() && watchable.getAvailabilityCheckFunction().map(Supplier::get).orElse(true)) {
-      emitters.computeIfPresent(watchable.getClass(), (k, v) -> {
-        v.cancel();
-        return null;
-      });
-      final Consumer<Throwable> heal = throwable -> {
+      final Consumer<WatcherException> heal = throwable -> {
         // Fabric8 Watchers automatically reconnect on timeout, so we only need to heal on other errors or completions
         if (!emitter.isCancelled() && watchable.isRetrySubscription()) {
           LOG.debug("Watchable {} stopped, self healing with delay of {} seconds",
@@ -79,16 +75,21 @@ public class SelfHealingEmitter implements Consumer<MultiEmitter<? super WatchEv
           LOG.debug("Watchable {} stopped", watchable.getType());
         }
       };
-      final var watchedEmitter = watchable.watch()
-        .onFailure().invoke(heal)
-        .onCompletion().invoke(() -> heal.accept(null))
-        .subscribe().with(emitter::emit);
-      emitters.put(watchable.getClass(), watchedEmitter);
+      final var watch = watchable.watch().subscribe(heal, emitter);
+      activeWatches.put(watchable.getClass(), watch);
     } else if (!emitter.isCancelled()) {
       LOG.debug("Watchable {} is not available, retrying in {} seconds",
         watchable.getType(), watchable.getRetrySubscriptionDelay().getSeconds());
       executorService.schedule(() ->
         subscribe(watchable, emitter), watchable.getRetrySubscriptionDelay().getSeconds(), TimeUnit.SECONDS);
+    }
+  }
+
+  private static void close(Closeable closeable) {
+    try {
+      closeable.close();
+    } catch (IOException e) {
+      LOG.debug("Error closing watch", e);
     }
   }
 }

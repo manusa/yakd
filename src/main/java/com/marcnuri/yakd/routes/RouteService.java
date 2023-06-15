@@ -17,13 +17,12 @@
  */
 package com.marcnuri.yakd.routes;
 
-import com.marcnuri.yakd.watch.WatchEvent;
+import com.marcnuri.yakd.watch.Subscriber;
 import com.marcnuri.yakd.watch.Watchable;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.openshift.api.model.Route;
 import io.fabric8.openshift.api.model.RouteBuilder;
 import io.fabric8.openshift.client.OpenShiftClient;
-import io.smallrye.mutiny.Multi;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
@@ -31,8 +30,8 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import static com.marcnuri.yakd.fabric8.ClientUtil.LIMIT_1;
-import static com.marcnuri.yakd.fabric8.ClientUtil.toMulti;
 import static com.marcnuri.yakd.fabric8.ClientUtil.tryInOrder;
+import static com.marcnuri.yakd.fabric8.WatchableSubscriber.subscriber;
 
 @Singleton
 public class RouteService implements Watchable<Route> {
@@ -50,13 +49,13 @@ public class RouteService implements Watchable<Route> {
   }
 
   @Override
-  public Multi<WatchEvent<Route>> watch() {
+  public Subscriber<Route> watch() {
     return tryInOrder(
       () -> {
         openShiftClient.routes().inAnyNamespace().list(LIMIT_1);
-        return toMulti(openShiftClient.routes().inAnyNamespace());
+        return subscriber(openShiftClient.routes().inAnyNamespace());
       },
-      () -> toMulti(openShiftClient.routes().inNamespace(openShiftClient.getConfiguration().getNamespace()))
+      () -> subscriber(openShiftClient.routes().inNamespace(openShiftClient.getConfiguration().getNamespace()))
     );
   }
 

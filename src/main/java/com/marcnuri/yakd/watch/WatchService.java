@@ -116,6 +116,6 @@ public class WatchService {
   public Multi<WatchEvent<?>> newWatch() {
     // No backpressure to reduce memory footprint.
     // Downstream client should handle every event or provide its own buffering
-    return Multi.createFrom().emitter(new SelfHealingEmitter(executorService, watchables), BackPressureStrategy.ERROR);
+    return Multi.createFrom().emitter(new SelfHealingWatchableEmitter(executorService, watchables), BackPressureStrategy.ERROR);
   }
 }

@@ -18,7 +18,7 @@
 package com.marcnuri.yakd.deploymentconfigs;
 
 import com.marcnuri.yakd.fabric8.ClientUtil;
-import com.marcnuri.yakd.watch.WatchEvent;
+import com.marcnuri.yakd.watch.Subscriber;
 import com.marcnuri.yakd.watch.Watchable;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.dsl.base.PatchContext;
@@ -26,13 +26,15 @@ import io.fabric8.kubernetes.client.dsl.base.PatchType;
 import io.fabric8.openshift.api.model.DeploymentConfig;
 import io.fabric8.openshift.api.model.DeploymentConfigBuilder;
 import io.fabric8.openshift.client.OpenShiftClient;
-import io.smallrye.mutiny.Multi;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 import java.time.Instant;
 import java.util.Optional;
 import java.util.function.Supplier;
+
+import static com.marcnuri.yakd.fabric8.ClientUtil.tryInOrder;
+import static com.marcnuri.yakd.fabric8.WatchableSubscriber.subscriber;
 
 @Singleton
 public class DeploymentConfigService implements Watchable<DeploymentConfig> {
@@ -50,13 +52,13 @@ public class DeploymentConfigService implements Watchable<DeploymentConfig> {
   }
 
   @Override
-  public Multi<WatchEvent<DeploymentConfig>> watch() {
-    return ClientUtil.tryInOrder(
+  public Subscriber<DeploymentConfig> watch() {
+    return tryInOrder(
       () -> {
         openShiftClient.deploymentConfigs().inAnyNamespace().list(ClientUtil.LIMIT_1);
-        return ClientUtil.toMulti(openShiftClient.deploymentConfigs().inAnyNamespace());
+        return subscriber(openShiftClient.deploymentConfigs().inAnyNamespace());
       },
-      () -> ClientUtil.toMulti(openShiftClient.deploymentConfigs().inNamespace(openShiftClient.getConfiguration().getNamespace()))
+      () -> subscriber(openShiftClient.deploymentConfigs().inNamespace(openShiftClient.getConfiguration().getNamespace()))
     );
   }
 

@@ -18,17 +18,16 @@
 package com.marcnuri.yakd.replicaset;
 
 
-import com.marcnuri.yakd.watch.WatchEvent;
+import com.marcnuri.yakd.watch.Subscriber;
 import com.marcnuri.yakd.watch.Watchable;
 import io.fabric8.kubernetes.api.model.apps.ReplicaSet;
 import io.fabric8.kubernetes.client.KubernetesClient;
-import io.smallrye.mutiny.Multi;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 import static com.marcnuri.yakd.fabric8.ClientUtil.LIMIT_1;
-import static com.marcnuri.yakd.fabric8.ClientUtil.toMulti;
 import static com.marcnuri.yakd.fabric8.ClientUtil.tryInOrder;
+import static com.marcnuri.yakd.fabric8.WatchableSubscriber.subscriber;
 
 @Singleton
 public class ReplicaSetService implements Watchable<ReplicaSet> {
@@ -41,13 +40,13 @@ public class ReplicaSetService implements Watchable<ReplicaSet> {
   }
 
   @Override
-  public Multi<WatchEvent<ReplicaSet>> watch() {
+  public Subscriber<ReplicaSet> watch() {
     return tryInOrder(
       () -> {
         kubernetesClient.apps().replicaSets().inAnyNamespace().list(LIMIT_1);
-        return toMulti(kubernetesClient.apps().replicaSets().inAnyNamespace());
+        return subscriber(kubernetesClient.apps().replicaSets().inAnyNamespace());
       },
-      () -> toMulti(kubernetesClient.apps().replicaSets()
+      () -> subscriber(kubernetesClient.apps().replicaSets()
         .inNamespace(kubernetesClient.getConfiguration().getNamespace()))
     );
   }

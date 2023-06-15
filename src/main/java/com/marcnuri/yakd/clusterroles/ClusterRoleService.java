@@ -17,12 +17,11 @@
  */
 package com.marcnuri.yakd.clusterroles;
 
-import com.marcnuri.yakd.watch.WatchEvent;
+import com.marcnuri.yakd.watch.Subscriber;
 import com.marcnuri.yakd.watch.Watchable;
 import io.fabric8.kubernetes.api.model.rbac.ClusterRole;
 import io.fabric8.kubernetes.api.model.rbac.ClusterRoleBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
-import io.smallrye.mutiny.Multi;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
@@ -30,7 +29,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import static com.marcnuri.yakd.fabric8.ClientUtil.toMulti;
+import static com.marcnuri.yakd.fabric8.WatchableSubscriber.subscriber;
 
 @Singleton
 public class ClusterRoleService implements Watchable<ClusterRole> {
@@ -48,8 +47,8 @@ public class ClusterRoleService implements Watchable<ClusterRole> {
   }
 
   @Override
-  public Multi<WatchEvent<ClusterRole>> watch() {
-    return toMulti(kubernetesClient.rbac().clusterRoles());
+  public Subscriber<ClusterRole> watch() {
+    return subscriber(kubernetesClient.rbac().clusterRoles());
   }
 
   public List<ClusterRole> get() {

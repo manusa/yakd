@@ -17,20 +17,19 @@
  */
 package com.marcnuri.yakd.statefulsets;
 
-import com.marcnuri.yakd.watch.WatchEvent;
+import com.marcnuri.yakd.watch.Subscriber;
 import com.marcnuri.yakd.watch.Watchable;
 import io.fabric8.kubernetes.api.model.apps.StatefulSet;
 import io.fabric8.kubernetes.api.model.apps.StatefulSetBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.dsl.base.PatchContext;
 import io.fabric8.kubernetes.client.dsl.base.PatchType;
-import io.smallrye.mutiny.Multi;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 import static com.marcnuri.yakd.fabric8.ClientUtil.LIMIT_1;
-import static com.marcnuri.yakd.fabric8.ClientUtil.toMulti;
 import static com.marcnuri.yakd.fabric8.ClientUtil.tryInOrder;
+import static com.marcnuri.yakd.fabric8.WatchableSubscriber.subscriber;
 
 @Singleton
 public class StatefulSetService implements Watchable<StatefulSet> {
@@ -43,13 +42,13 @@ public class StatefulSetService implements Watchable<StatefulSet> {
   }
 
   @Override
-  public Multi<WatchEvent<StatefulSet>> watch() {
+  public Subscriber<StatefulSet> watch() {
     return tryInOrder(
       () -> {
         kubernetesClient.apps().statefulSets().inAnyNamespace().list(LIMIT_1);
-        return toMulti(kubernetesClient.apps().statefulSets().inAnyNamespace());
+        return subscriber(kubernetesClient.apps().statefulSets().inAnyNamespace());
       },
-      () -> toMulti(kubernetesClient.apps().statefulSets().inNamespace(kubernetesClient.getConfiguration().getNamespace()))
+      () -> subscriber(kubernetesClient.apps().statefulSets().inNamespace(kubernetesClient.getConfiguration().getNamespace()))
     );
   }
 

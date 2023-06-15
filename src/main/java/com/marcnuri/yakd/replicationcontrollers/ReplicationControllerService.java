@@ -17,18 +17,17 @@
  */
 package com.marcnuri.yakd.replicationcontrollers;
 
-import com.marcnuri.yakd.watch.WatchEvent;
+import com.marcnuri.yakd.watch.Subscriber;
 import com.marcnuri.yakd.watch.Watchable;
 import io.fabric8.kubernetes.api.model.ReplicationController;
 import io.fabric8.kubernetes.api.model.ReplicationControllerBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
-import io.smallrye.mutiny.Multi;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 import static com.marcnuri.yakd.fabric8.ClientUtil.LIMIT_1;
-import static com.marcnuri.yakd.fabric8.ClientUtil.toMulti;
 import static com.marcnuri.yakd.fabric8.ClientUtil.tryInOrder;
+import static com.marcnuri.yakd.fabric8.WatchableSubscriber.subscriber;
 
 @Singleton
 public class ReplicationControllerService implements Watchable<ReplicationController> {
@@ -41,13 +40,13 @@ public class ReplicationControllerService implements Watchable<ReplicationContro
   }
 
   @Override
-  public Multi<WatchEvent<ReplicationController>> watch() {
+  public Subscriber<ReplicationController> watch() {
     return tryInOrder(
       () -> {
         kubernetesClient.replicationControllers().inAnyNamespace().list(LIMIT_1);
-        return toMulti(kubernetesClient.replicationControllers().inAnyNamespace());
+        return subscriber(kubernetesClient.replicationControllers().inAnyNamespace());
       },
-      () -> toMulti(kubernetesClient.replicationControllers()
+      () -> subscriber(kubernetesClient.replicationControllers()
         .inNamespace(kubernetesClient.getConfiguration().getNamespace()))
     );
   }

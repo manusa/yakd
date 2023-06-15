@@ -17,18 +17,17 @@
  */
 package com.marcnuri.yakd.roles;
 
-import com.marcnuri.yakd.fabric8.ClientUtil;
-import com.marcnuri.yakd.watch.WatchEvent;
+import com.marcnuri.yakd.watch.Subscriber;
 import com.marcnuri.yakd.watch.Watchable;
 import io.fabric8.kubernetes.api.model.rbac.Role;
 import io.fabric8.kubernetes.api.model.rbac.RoleBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
-import io.smallrye.mutiny.Multi;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 import static com.marcnuri.yakd.fabric8.ClientUtil.LIMIT_1;
-import static com.marcnuri.yakd.fabric8.ClientUtil.toMulti;
+import static com.marcnuri.yakd.fabric8.ClientUtil.tryInOrder;
+import static com.marcnuri.yakd.fabric8.WatchableSubscriber.subscriber;
 
 @Singleton
 public class RoleService implements Watchable<Role> {
@@ -41,13 +40,13 @@ public class RoleService implements Watchable<Role> {
   }
 
   @Override
-  public Multi<WatchEvent<Role>> watch() {
-    return ClientUtil.tryInOrder(
+  public Subscriber<Role> watch() {
+    return tryInOrder(
       () -> {
         kubernetesClient.rbac().roles().inAnyNamespace().list(LIMIT_1);
-        return toMulti(kubernetesClient.rbac().roles().inAnyNamespace());
+        return subscriber(kubernetesClient.rbac().roles().inAnyNamespace());
       },
-      () -> toMulti(kubernetesClient.rbac().roles().inNamespace(kubernetesClient.getConfiguration().getNamespace()))
+      () -> subscriber(kubernetesClient.rbac().roles().inNamespace(kubernetesClient.getConfiguration().getNamespace()))
     );
   }
 

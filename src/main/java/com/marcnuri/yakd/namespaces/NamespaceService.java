@@ -17,12 +17,10 @@
  */
 package com.marcnuri.yakd.namespaces;
 
-import com.marcnuri.yakd.watch.WatchEvent;
+import com.marcnuri.yakd.watch.Subscriber;
 import com.marcnuri.yakd.watch.Watchable;
 import io.fabric8.kubernetes.api.model.Namespace;
 import io.fabric8.kubernetes.client.KubernetesClient;
-import io.fabric8.kubernetes.client.Watcher;
-import io.smallrye.mutiny.Multi;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
@@ -30,8 +28,10 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.marcnuri.yakd.fabric8.ClientUtil.LIMIT_1;
-import static com.marcnuri.yakd.fabric8.ClientUtil.toMulti;
 import static com.marcnuri.yakd.fabric8.ClientUtil.tryInOrder;
+import static com.marcnuri.yakd.fabric8.WatchableSubscriber.subscriber;
+import static com.marcnuri.yakd.watch.Subscriber.empty;
+import static com.marcnuri.yakd.watch.Subscriber.items;
 
 @Singleton
 public class NamespaceService implements Watchable<Namespace> {
@@ -44,25 +44,25 @@ public class NamespaceService implements Watchable<Namespace> {
   }
 
   @Override
-  public Multi<WatchEvent<Namespace>> watch() {
+  public Subscriber<Namespace> watch() {
     final var configNamespace = kubernetesClient.getConfiguration().getNamespace();
     return tryInOrder(
       () -> {
         kubernetesClient.namespaces().list(LIMIT_1);
-        return toMulti(kubernetesClient.namespaces());
+        return subscriber(kubernetesClient.namespaces());
       },
       () -> {
         if (configNamespace != null) {
           kubernetesClient.namespaces().withField("metadata.name", configNamespace).list(LIMIT_1);
-          return toMulti(kubernetesClient.namespaces().withField("metadata.name", configNamespace));
+          return subscriber(kubernetesClient.namespaces().withField("metadata.name", configNamespace));
         }
-        return Multi.createFrom().empty();
+        return empty();
       },
       () -> {
         if (configNamespace != null) {
-          return Multi.createFrom().item(new WatchEvent<>(Watcher.Action.ADDED, kubernetesClient.namespaces().withName(configNamespace).get()));
+          return items(kubernetesClient.namespaces().withName(configNamespace).get());
         }
-        return Multi.createFrom().empty();
+        return empty();
       }
     );
   }

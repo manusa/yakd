@@ -18,6 +18,7 @@
 package com.marcnuri.yakd.ingresses;
 
 import com.marcnuri.yakd.fabric8.ClientUtil;
+import com.marcnuri.yakd.watch.Subscriber;
 import com.marcnuri.yakd.watch.WatchEvent;
 import com.marcnuri.yakd.watch.Watchable;
 import io.fabric8.kubernetes.api.model.networking.v1.HTTPIngressPath;
@@ -35,15 +36,14 @@ import io.fabric8.kubernetes.api.model.networking.v1.IngressSpec;
 import io.fabric8.kubernetes.api.model.networking.v1.IngressSpecBuilder;
 import io.fabric8.kubernetes.api.model.networking.v1.ServiceBackendPortBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
-import io.smallrye.mutiny.Multi;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 import java.util.List;
 
 import static com.marcnuri.yakd.fabric8.ClientUtil.LIMIT_1;
-import static com.marcnuri.yakd.fabric8.ClientUtil.toMulti;
 import static com.marcnuri.yakd.fabric8.ClientUtil.tryInOrder;
+import static com.marcnuri.yakd.fabric8.WatchableSubscriber.subscriber;
 
 @Singleton
 public class IngressService implements Watchable<Ingress> {
@@ -107,20 +107,20 @@ public class IngressService implements Watchable<Ingress> {
   }
 
   @Override
-  public Multi<WatchEvent<Ingress>> watch() {
+  public Subscriber<Ingress> watch() {
     return tryInOrder(
       () -> {
         kubernetesClient.network().v1().ingresses().inAnyNamespace().list(ClientUtil.LIMIT_1);
-        return toMulti(kubernetesClient.network().v1().ingresses().inAnyNamespace());
+        return subscriber(kubernetesClient.network().v1().ingresses().inAnyNamespace());
       },
-      () -> toMulti(kubernetesClient.network().v1().ingresses()
+      () -> subscriber(kubernetesClient.network().v1().ingresses()
         .inNamespace(kubernetesClient.getConfiguration().getNamespace())),
       () -> {
         kubernetesClient.extensions().ingresses().inAnyNamespace().list(LIMIT_1);
-        return toMulti(kubernetesClient.extensions().ingresses().inAnyNamespace()).map(IngressService::to);
+        return subscriber(kubernetesClient.extensions().ingresses().inAnyNamespace(), IngressService::to);
       },
-      () -> toMulti(kubernetesClient.extensions().ingresses()
-        .inNamespace(kubernetesClient.getConfiguration().getNamespace())).map(IngressService::to)
+      () -> subscriber(kubernetesClient.extensions().ingresses()
+        .inNamespace(kubernetesClient.getConfiguration().getNamespace()), IngressService::to)
     );
   }
 

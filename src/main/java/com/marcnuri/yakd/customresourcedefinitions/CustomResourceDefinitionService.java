@@ -17,16 +17,15 @@
  */
 package com.marcnuri.yakd.customresourcedefinitions;
 
-import com.marcnuri.yakd.watch.WatchEvent;
+import com.marcnuri.yakd.watch.Subscriber;
 import com.marcnuri.yakd.watch.Watchable;
 import io.fabric8.kubernetes.api.model.apiextensions.v1.CustomResourceDefinition;
 import io.fabric8.kubernetes.api.model.apiextensions.v1.CustomResourceDefinitionBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
-import io.smallrye.mutiny.Multi;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
-import static com.marcnuri.yakd.fabric8.ClientUtil.toMulti;
+import static com.marcnuri.yakd.fabric8.WatchableSubscriber.subscriber;
 
 @Singleton
 public class CustomResourceDefinitionService implements Watchable<CustomResourceDefinition> {
@@ -39,8 +38,8 @@ public class CustomResourceDefinitionService implements Watchable<CustomResource
   }
 
   @Override
-  public Multi<WatchEvent<CustomResourceDefinition>> watch() {
-    return toMulti(kubernetesClient.apiextensions().v1().customResourceDefinitions());
+  public Subscriber<CustomResourceDefinition> watch() {
+    return subscriber(kubernetesClient.apiextensions().v1().customResourceDefinitions());
   }
 
   public void delete(String name) {

@@ -17,8 +17,6 @@
  */
 package com.marcnuri.yakd.watch;
 
-import io.smallrye.mutiny.Multi;
-
 import java.lang.reflect.ParameterizedType;
 import java.time.Duration;
 import java.util.Arrays;
@@ -27,7 +25,7 @@ import java.util.function.Supplier;
 
 public interface Watchable<T> {
 
-  Multi<WatchEvent<T>> watch();
+  Subscriber<T> watch();
 
   default String getType() {
     return Arrays.stream(getClass().getGenericInterfaces())

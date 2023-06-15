@@ -18,16 +18,18 @@
 package com.marcnuri.yakd.deployment;
 
 import com.marcnuri.yakd.fabric8.ClientUtil;
-import com.marcnuri.yakd.watch.WatchEvent;
+import com.marcnuri.yakd.watch.Subscriber;
 import com.marcnuri.yakd.watch.Watchable;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.api.model.apps.DeploymentBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.dsl.base.PatchContext;
 import io.fabric8.kubernetes.client.dsl.base.PatchType;
-import io.smallrye.mutiny.Multi;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+
+import static com.marcnuri.yakd.fabric8.ClientUtil.tryInOrder;
+import static com.marcnuri.yakd.fabric8.WatchableSubscriber.subscriber;
 
 @Singleton
 public class DeploymentService implements Watchable<Deployment> {
@@ -40,13 +42,13 @@ public class DeploymentService implements Watchable<Deployment> {
   }
 
   @Override
-  public Multi<WatchEvent<Deployment>> watch() {
-    return ClientUtil.tryInOrder(
+  public Subscriber<Deployment> watch() {
+    return tryInOrder(
       () -> {
         kubernetesClient.apps().deployments().inAnyNamespace().list(ClientUtil.LIMIT_1);
-        return ClientUtil.toMulti(kubernetesClient.apps().deployments().inAnyNamespace());
+        return subscriber(kubernetesClient.apps().deployments().inAnyNamespace());
       },
-      () -> ClientUtil.toMulti(kubernetesClient.apps().deployments()
+      () -> subscriber(kubernetesClient.apps().deployments()
         .inNamespace(kubernetesClient.getConfiguration().getNamespace()))
     );
   }

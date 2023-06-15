@@ -17,15 +17,15 @@
  */
 package com.marcnuri.yakd.node;
 
-import com.marcnuri.yakd.fabric8.ClientUtil;
-import com.marcnuri.yakd.watch.WatchEvent;
+import com.marcnuri.yakd.watch.Subscriber;
 import com.marcnuri.yakd.watch.Watchable;
 import io.fabric8.kubernetes.api.model.Node;
 import io.fabric8.kubernetes.api.model.NodeBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
-import io.smallrye.mutiny.Multi;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+
+import static com.marcnuri.yakd.fabric8.WatchableSubscriber.subscriber;
 
 @Singleton
 public class NodeService implements Watchable<Node> {
@@ -43,8 +43,8 @@ public class NodeService implements Watchable<Node> {
   }
 
   @Override
-  public Multi<WatchEvent<Node>> watch() {
-    return ClientUtil.toMulti(kubernetesClient.nodes());
+  public Subscriber<Node> watch() {
+    return subscriber(kubernetesClient.nodes());
   }
 
   public Node update(String name, Node node) {

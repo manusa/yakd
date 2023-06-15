@@ -17,7 +17,7 @@
  */
 package com.marcnuri.yakd.pod;
 
-import com.marcnuri.yakd.watch.WatchEvent;
+import com.marcnuri.yakd.watch.Subscriber;
 import com.marcnuri.yakd.watch.Watchable;
 import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.api.model.PodBuilder;
@@ -34,8 +34,8 @@ import java.io.InputStreamReader;
 import java.util.function.Consumer;
 
 import static com.marcnuri.yakd.fabric8.ClientUtil.LIMIT_1;
-import static com.marcnuri.yakd.fabric8.ClientUtil.toMulti;
 import static com.marcnuri.yakd.fabric8.ClientUtil.tryInOrder;
+import static com.marcnuri.yakd.fabric8.WatchableSubscriber.subscriber;
 
 @Singleton
 public class PodService implements Watchable<Pod> {
@@ -48,13 +48,13 @@ public class PodService implements Watchable<Pod> {
   }
 
   @Override
-  public Multi<WatchEvent<Pod>> watch() {
+  public Subscriber<Pod> watch() {
     return tryInOrder(
       () -> {
         kubernetesClient.pods().inAnyNamespace().list(LIMIT_1);
-        return toMulti(kubernetesClient.pods().inAnyNamespace());
+        return subscriber(kubernetesClient.pods().inAnyNamespace());
       },
-      () -> toMulti(kubernetesClient.pods().inNamespace(kubernetesClient.getConfiguration().getNamespace()))
+      () -> subscriber(kubernetesClient.pods().inNamespace(kubernetesClient.getConfiguration().getNamespace()))
     );
   }
 
