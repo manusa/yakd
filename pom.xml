@@ -15,7 +15,7 @@
     <version.quarkus>999-SNAPSHOT</version.quarkus>
     <version.kubernetes-client>6.7.2</version.kubernetes-client>
     <!-- //....// -->
-    <version.jkube>1.12.0</version.jkube>
+    <version.jkube>1.13.1</version.jkube>
     <version.exec-maven-plugin>3.0.0</version.exec-maven-plugin>
     <container.image.tag>${project.version}</container.image.tag>
     <jkube.enricher.jkube-service.type>NodePort</jkube.enricher.jkube-service.type>
