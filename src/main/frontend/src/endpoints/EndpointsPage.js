@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Marc Nuri
+ * Copyright 2023 Marc Nuri
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,19 @@
  * limitations under the License.
  *
  */
-import {deleteNamespacedResource, updateNamespacedResource} from '../fetch';
+import React from 'react';
+import {connect} from 'react-redux';
+import {List} from './';
+import DashboardPage from '../components/DashboardPage';
+import FilterBar from '../components/FilterBar';
 
-const api = {};
+const mapStateToProps = ({ui: {selectedNamespace}}) => ({
+  selectedNamespace
+});
 
-api.delete = deleteNamespacedResource('persistentvolumeclaims');
-
-api.update = updateNamespacedResource('persistentvolumeclaims');
-
-export default api;
+export const EndpointsPage = connect(mapStateToProps)(({selectedNamespace}) => (
+  <DashboardPage title='Endpoints'>
+    <FilterBar />
+    <List className='mt-4' namespace={selectedNamespace} />
+  </DashboardPage>
+));

@@ -21,6 +21,7 @@ import com.marcnuri.yakd.clusterroles.ClusterRoleService;
 import com.marcnuri.yakd.configmaps.ConfigMapService;
 import com.marcnuri.yakd.cronjobs.CronJobService;
 import com.marcnuri.yakd.customresourcedefinitions.CustomResourceDefinitionService;
+import com.marcnuri.yakd.endpoints.EndpointService;
 import com.marcnuri.yakd.events.EventService;
 import com.marcnuri.yakd.daemonsets.DaemonSetService;
 import com.marcnuri.yakd.deployment.DeploymentService;
@@ -72,6 +73,7 @@ public class WatchService {
     DaemonSetService daemonSetService,
     DeploymentConfigService deploymentConfigService,
     DeploymentService deploymentService,
+    EndpointService endpointService,
     EventService eventService,
     HorizontalPodAutoscalerService horizontalPodAutoscalerService,
     IngressService ingressService,
@@ -100,6 +102,7 @@ public class WatchService {
       daemonSetService,
       deploymentConfigService,
       deploymentService,
+      endpointService,
       eventService,
       horizontalPodAutoscalerService,
       ingressService,

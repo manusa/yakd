@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Marc Nuri
+ * Copyright 2023 Marc Nuri
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,11 @@
  * limitations under the License.
  *
  */
-import {deleteNamespacedResource, updateNamespacedResource} from '../fetch';
-
-const api = {};
-
-api.delete = deleteNamespacedResource('persistentvolumeclaims');
-
-api.update = updateNamespacedResource('persistentvolumeclaims');
-
-export default api;
+export const subsets = endpoint => endpoint?.subsets ?? [];
+export const subsetsAsText = endpoint =>
+  endpoint?.subsets?.flatMap(
+    s =>
+      s.addresses
+        ?.map(a => s.ports?.map(p => `${a.ip}:${p.port}`).join(', ') ?? a.ip)
+        .join(', ') ?? ''
+  ) ?? [];

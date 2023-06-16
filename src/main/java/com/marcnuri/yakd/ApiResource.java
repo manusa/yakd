@@ -25,6 +25,7 @@ import com.marcnuri.yakd.customresourcedefinitions.CustomResourceDefinitionResou
 import com.marcnuri.yakd.customresources.CustomResourceResource;
 import com.marcnuri.yakd.daemonsets.DaemonSetResource;
 import com.marcnuri.yakd.deployment.DeploymentResource;
+import com.marcnuri.yakd.endpoints.EndpointResource;
 import com.marcnuri.yakd.horizontalpodautoscalers.HorizontalPodAutoscalerResource;
 import com.marcnuri.yakd.jobs.JobResource;
 import com.marcnuri.yakd.node.NodeResource;
@@ -73,6 +74,8 @@ public class ApiResource {
   DeploymentConfigResource deploymentConfigResource;
   @Inject
   DeploymentResource deploymentResource;
+  @Inject
+  EndpointResource endpointResource;
   @Inject
   HorizontalPodAutoscalerResource horizontalPodAutoscalerResource;
   @Inject
@@ -152,6 +155,11 @@ public class ApiResource {
   @Path("/deployments")
   public DeploymentResource getDeploymentResource() {
     return deploymentResource;
+  }
+
+  @Path("/endpoints")
+  public EndpointResource getEndpontResource() {
+    return endpointResource;
   }
 
   @Path("/horizontalpodautoscalers")

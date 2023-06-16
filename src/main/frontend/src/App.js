@@ -26,6 +26,7 @@ import crd from './customresourcedefinitions';
 import dc from './deploymentconfigs';
 import ds from './daemonsets';
 import deployments from './deployments';
+import * as ep from './endpoints';
 import hpa from './horizontalpodautoscalers';
 import ingresses from './ingresses';
 import jobs from './jobs';
@@ -204,6 +205,12 @@ const App = ({dispatch}) => {
           exact
           path='/deployments/:uid/edit'
           element={<deployments.DeploymentsEditPage />}
+        />
+        <Route exact path='/endpoints' element={<ep.EndpointsPage />} />
+        <Route
+          exact
+          path='/endpoints/:uid'
+          element={<ep.EndpointsDetailPage />}
         />
         <Route
           exact

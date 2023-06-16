@@ -106,6 +106,9 @@ Link.DeploymentConfig = ({...props}) => (
 Link.Deployment = ({...props}) => (
   <Link.ResourceLink Icon={i.Deployment} {...props} />
 );
+Link.Endpoints = ({...props}) => (
+  <Link.ResourceLink Icon={i.Endpoints} {...props} />
+);
 Link.HorizontalPodAutoscaler = ({...props}) => (
   <Link.ResourceLink Icon={i.HorizontalPodAutoscaler} {...props} />
 );

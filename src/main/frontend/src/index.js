@@ -28,6 +28,7 @@ import crd from './customresourcedefinitions';
 import ds from './daemonsets';
 import dc from './deploymentconfigs';
 import deployments from './deployments';
+import * as ep from './endpoints';
 import events from './events';
 import hpa from './horizontalpodautoscalers';
 import ing from './ingresses';
@@ -74,6 +75,7 @@ const store = createStore(
     daemonSets: ds.reducer,
     deploymentConfigs: dc.reducer,
     deployments: deployments.reducer,
+    endpoints: ep.reducer,
     events: events.reducer,
     horizontalPodAutoscalers: hpa.reducer,
     ingresses: ing.reducer,

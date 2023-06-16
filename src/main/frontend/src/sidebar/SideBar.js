@@ -177,6 +177,9 @@ const NavSection = ({
           <K8sNavItem to='/services' Icon={i.Service}>
             Services
           </K8sNavItem>
+          <K8sNavItem to='/endpoints' Icon={i.Endpoints}>
+            Endpoints
+          </K8sNavItem>
           <K8sNavItem to='/ingresses' Icon={i.Ingress}>
             Ingresses
           </K8sNavItem>
