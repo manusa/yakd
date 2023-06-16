@@ -163,8 +163,9 @@ public class PodExecEndpoint {
     }
 
     @Override
-    public void onError(WebSocket webSocket, Throwable error, boolean connectionError) {
+    public void onError(WebSocket webSocket, Throwable error) {
       try {
+        webSocket.sendClose(CloseReason.CloseCodes.CLOSED_ABNORMALLY.getCode(), error.getMessage());
         session.close(new CloseReason(CloseReason.CloseCodes.CLOSED_ABNORMALLY, error.getMessage()));
       } catch (IOException ignore) {
       }
