@@ -86,8 +86,8 @@ items:
             protocol: TCP
           resources:
             limits:
-              memory: 512Mi
-            requests:
               memory: 256Mi
+            requests:
+              memory: 128Mi
           securityContext:
             privileged: false

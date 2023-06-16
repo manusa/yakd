@@ -208,7 +208,6 @@
                       <exec>
                         <arg>/yakd-runner</arg>
                         <arg>-Dquarkus.http.host=0.0.0.0</arg>
-                        <arg>-Xmx256m</arg>
                       </exec>
                     </cmd>
                   </build>
@@ -218,10 +217,10 @@
                 <controller>
                   <containerResources>
                     <requests>
-                      <memory>256Mi</memory>
+                      <memory>128Mi</memory>
                     </requests>
                     <limits>
-                      <memory>512Mi</memory>
+                      <memory>256Mi</memory>
                     </limits>
                   </containerResources>
                 </controller>
