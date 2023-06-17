@@ -15,7 +15,7 @@
  *
  */
 import React from 'react';
-import Dropdown from '../components/Dropdown';
+import {Dropdown} from '../components';
 
 const ContainerDropdown = ({
   containers,

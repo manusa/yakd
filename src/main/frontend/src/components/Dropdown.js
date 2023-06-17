@@ -80,7 +80,7 @@ const DropdownMain = ({
   </div>
 );
 
-const Dropdown = ({
+export const Dropdown = ({
   children,
   className = '',
   text = 'Options',
@@ -150,5 +150,3 @@ Dropdown.Item = ({children, ...props}) => (
 Dropdown.Divider = ({...props}) => (
   <div className='border-t border-gray-200' {...props} />
 );
-
-export default Dropdown;

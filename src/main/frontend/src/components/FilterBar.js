@@ -15,11 +15,11 @@
  *
  */
 import React from 'react';
+import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import redux from '../redux';
 import metadata from '../metadata';
-import Dropdown from './Dropdown';
-import {bindActionCreators} from 'redux';
+import {Dropdown} from './';
 
 const NamespaceDropdown = ({
   namespaces,
