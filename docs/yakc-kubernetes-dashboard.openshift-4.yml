@@ -6,10 +6,11 @@ items:
   kind: Service
   metadata:
     labels:
-      expose: "true"
-      app: yakc-quarkus-kubernetes-dashboard
-      group: com.marcnuri.yakc.quickstart
-    name: yakc-quarkus-kubernetes-dashboard
+      app: app
+      provider: jkube
+      version: 0.0.0
+      group: com.marcnuri.yakd
+    name: yakd
   spec:
     ports:
     - name: http
@@ -17,16 +18,19 @@ items:
       protocol: TCP
       targetPort: 8080
     selector:
-      app: yakc-quarkus-kubernetes-dashboard
-      group: com.marcnuri.yakc.quickstarts
+      app: app
+      provider: jkube
+      group: com.marcnuri.yakd
     type: NodePort
 - apiVersion: rbac.authorization.k8s.io/v1
   kind: ClusterRoleBinding
   metadata:
     labels:
-      app: yakc-quarkus-kubernetes-dashboard
-      group: com.marcnuri.yakc.quickstarts
-    name: yakc-kubernetes-dashboard-cluster-admin
+      app: app
+      provider: jkube
+      version: 0.0.0
+      group: com.marcnuri.yakd
+    name: yakd
   roleRef:
     kind: ClusterRole
     apiGroup: rbac.authorization.k8s.io
@@ -39,21 +43,27 @@ items:
   kind: Deployment
   metadata:
     labels:
-      app: yakc-quarkus-kubernetes-dashboard
-      group: com.marcnuri.yakc.quickstarts
-    name: yakc-quarkus-kubernetes-dashboard
+      app: app
+      provider: jkube
+      version: 0.0.0
+      group: com.marcnuri.yakd
+    name: yakd
   spec:
     replicas: 1
     revisionHistoryLimit: 2
     selector:
       matchLabels:
-        app: yakc-quarkus-kubernetes-dashboard
-        group: com.marcnuri.yakc.quickstarts
+        app: app
+        provider: jkube
+        group: com.marcnuri.yakd
     template:
       metadata:
         labels:
-          app: yakc-quarkus-kubernetes-dashboard
-          group: com.marcnuri.yakc.quickstarts
+          app: app
+          provider: jkube
+          version: 0.0.0
+          group: com.marcnuri.yakd
+        name: yakd
       spec:
         containers:
         - env:
@@ -67,9 +77,9 @@ items:
                 fieldPath: metadata.name
           - name: YAKD_DASHBOARD_INSECURESKIPTLSVERIFY
             value: "true"
-          image: marcnuri/yakc-kubernetes-dashboard:latest
+          image: marcnuri/yakd:snapshot
           imagePullPolicy: Always
-          name: yakc-quarkus-kubernetes-dashboard
+          name: yakd
           ports:
           - containerPort: 8080
             name: http
@@ -80,13 +90,15 @@ items:
   kind: Route
   metadata:
     labels:
-      app: yakc-quarkus-kubernetes-dashboard
-      group: com.marcnuri.yakc.quickstart
-    name: yakc-quarkus-kubernetes-dashboard
+      app: app
+      provider: jkube
+      version: 0.0.0
+      group: com.marcnuri.yakd
+    name: yakd
   spec:
     path: /
     to:
       kind: Service
-      name: yakc-quarkus-kubernetes-dashboard
+      name: yakd
     port:
       targetPort: 8080

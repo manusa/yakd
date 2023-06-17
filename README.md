@@ -24,21 +24,19 @@ minikube service yakd
 
 ![An image of a screenshot YAKC Kubernetes Dashboard landing page](docs/yakc-kubernetes-dashboard.gif)
 
-### OpenShift Katacoda
+### OpenShift Instruqt
 
-You can test YAKC Kubernetes Dashboard by taking advantage of the OpenShift getting started Katacoda.
+You can test YAKD Kubernetes Dashboard by taking advantage of the OpenShift getting started Instruqt.
 
 Access the Course (from Red Hat): https://learn.openshift.com/introduction/cluster-access/
 
-Or access the Course (from Katacoda): https://www.katacoda.com/openshift/courses/developing-on-openshift/getting-started/
-
-When the terminal loads, apply the provided YAKC Kubernetes Dashboard configuration:
+When the terminal loads, apply the provided YAKD Kubernetes Dashboard configuration:
 
 ```shell script
 #
-# Deploy the application using https://hub.docker.com/r/marcnuri/yakc-kubernetes-dashboard SNAPSHOT
+# Deploy the application using https://hub.docker.com/r/marcnuri/yakd SNAPSHOT
 #
-$ oc create -f https://raw.githubusercontent.com/manusa/yakc/master/quickstarts/quarkus-dashboard/docs/yakc-kubernetes-dashboard.openshift-4.yml
+$ oc create -f https://raw.githubusercontent.com/manusa/yakd/main/docs/yakc-kubernetes-dashboard.openshift-4.yml
 service/yakc-quarkus-kubernetes-dashboard created
 clusterrolebinding.rbac.authorization.k8s.io/yakc-kubernetes-dashboard-cluster-admin created
 deployment.apps/yakc-quarkus-kubernetes-dashboard created
@@ -46,8 +44,8 @@ route.route.openshift.io/yakc-quarkus-kubernetes-dashboard created
 #
 # Retrieve URL for created route
 #
-$ echo "http://$(oc get route yakc-quarkus-kubernetes-dashboard -o jsonpath='{.spec.host}')"
-http://yakc-dashboard-default.1337-13-kota037.environments.katacoda.com
+$ echo "http://$(oc get route yakd -o jsonpath='{.spec.host}')"
+http://yakd-default.crc-lgph7-master-0.crc.q1aebzewtnbc.instruqt.io
 ```
 
 Now you can open the URL in your browser.
