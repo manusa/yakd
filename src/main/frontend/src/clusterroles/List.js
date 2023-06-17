@@ -17,18 +17,18 @@
 import React from 'react';
 import metadata from '../metadata';
 import {api} from './';
-import {Tooltip} from '../components';
+import {Age} from '../components';
 import Icon from '../components/Icon';
 import Link from '../components/Link';
 import ResourceList from '../components/ResourceList';
 import Table from '../components/Table';
 
 const headers = [
-  <span>
+  <span key='name'>
     <Icon className='fa-id-card' /> Name
   </span>,
-  <span>
-    <Icon stylePrefix='far' icon='fa-clock' /> Time
+  <span key='age'>
+    <Icon stylePrefix='far' icon='fa-clock' /> Age
   </span>,
   ''
 ];
@@ -51,21 +51,7 @@ const Rows = ({clusterRoles}) => {
           </Link.ClusterRole>
         </Table.Cell>
         <Table.Cell>
-          <Tooltip
-            content={`${metadata.selectors
-              .creationTimestamp(clusterRole)
-              .toLocaleDateString()}
-                ${metadata.selectors
-                  .creationTimestamp(clusterRole)
-                  .toLocaleTimeString()}`}
-            className='cursor-default'
-          >
-            <span>
-              {metadata.selectors
-                .creationTimestamp(clusterRole)
-                .toLocaleDateString()}
-            </span>
-          </Tooltip>
+          <Age date={metadata.selectors.creationTimestamp(clusterRole)} />
         </Table.Cell>
         <Table.Cell>
           <Table.DeleteButton onClick={deleteClusterRole(clusterRole)} />
