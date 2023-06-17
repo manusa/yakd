@@ -14,10 +14,4 @@
  * limitations under the License.
  *
  */
-import reducer from './reducer';
-
-const index = {
-  reducer
-};
-
-export default index;
+export {reducer} from './reducer';

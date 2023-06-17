@@ -21,7 +21,7 @@ import {combineReducers, createStore} from 'redux';
 import * as apis from './apis';
 import * as crb from './clusterrolebindings';
 import * as cr from './clusterroles';
-import cv from './clusterversions';
+import * as cv from './clusterversions';
 import configMaps from './configmaps';
 import cj from './cronjobs';
 import crd from './customresourcedefinitions';
