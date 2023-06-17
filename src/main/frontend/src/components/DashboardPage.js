@@ -56,7 +56,7 @@ const Header = ({isMinikube, isOpenShift, offline, setSideBarOpen, title}) => {
               strokeLinejoin='round'
             />
           </svg>
-          <i.YAKCLogo className='block ml-2 h-6' />
+          <i.YAKDLogo className='block ml-2 h-6' />
         </button>
         <div className='flex relative items-center mx-4 lg:text-xl lg:mx-0 flex-1 truncate'>
           {isMinikube && (

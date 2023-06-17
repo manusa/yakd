@@ -39,7 +39,7 @@ import Role from './Role';
 import Secret from './Secret';
 import Service from './Service';
 import StatefulSet from './StatefulSet';
-import YAKCLogo from './YAKCLogo';
+import {YAKDLogo} from './YAKDLogo';
 
 const icons = {};
 
@@ -71,6 +71,6 @@ icons.Route = ({...props}) => <Ingress kubernetesColor='#db212e' {...props} />;
 icons.Secret = Secret;
 icons.Service = Service;
 icons.StatefulSet = StatefulSet;
-icons.YAKCLogo = YAKCLogo;
+icons.YAKDLogo = YAKDLogo;
 
 export default icons;

@@ -292,7 +292,7 @@ const SideBar = ({
           variant={Link.variants.none}
           className='flex flex-col items-center'
         >
-          <i.YAKCLogo kubernetesColor='#FFFFFF' className='block h-8 lg:h-12' />
+          <i.YAKDLogo kubernetesColor='#FFFFFF' className='block h-8 lg:h-12' />
           <div className='text-white text-lg lg:text-xl mt-2 mx-2 font-semibold'>
             Kubernetes Dashboard
           </div>
