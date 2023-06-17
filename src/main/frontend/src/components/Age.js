@@ -15,7 +15,7 @@
  *
  */
 import React, {useEffect, useState} from 'react';
-import Tooltip from './Tooltip';
+import {Tooltip} from './';
 
 const components = ms => ({
   y: Math.floor(ms / 31_536_000_000),

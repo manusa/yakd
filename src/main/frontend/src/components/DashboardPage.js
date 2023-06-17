@@ -23,10 +23,9 @@ import i from './icons';
 import metadata from '../metadata';
 import nm from '../nodes';
 import sidebar from '../sidebar';
-import {Alert} from './Alert';
+import {Alert, Tooltip} from './';
 import Icon from './Icon';
 import Link from './Link';
-import Tooltip from './Tooltip';
 
 const OfflineIcon = () => (
   <div className='fa-stack text-red-700' title='Watchers stopped (No network)'>

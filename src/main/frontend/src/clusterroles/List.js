@@ -17,11 +17,11 @@
 import React from 'react';
 import metadata from '../metadata';
 import cRoles from './';
+import {Tooltip} from '../components';
 import Icon from '../components/Icon';
 import Link from '../components/Link';
 import ResourceList from '../components/ResourceList';
 import Table from '../components/Table';
-import Tooltip from '../components/Tooltip';
 
 const headers = [
   <span>

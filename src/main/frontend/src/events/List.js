@@ -18,9 +18,9 @@ import React from 'react';
 import {connect} from 'react-redux';
 import metadata from '../metadata';
 import ev from './';
+import {Tooltip} from '../components';
 import Link from '../components/Link';
 import Table from '../components/Table';
-import Tooltip from '../components/Tooltip';
 import Icon from '../components/Icon';
 import ResourceList from '../components/ResourceList';
 

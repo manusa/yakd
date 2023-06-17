@@ -16,8 +16,8 @@
  */
 import React from 'react';
 import {useNavigate} from 'react-router-dom';
+import {Tooltip} from './';
 import icons from '../components/icons';
-import Tooltip from './Tooltip';
 
 const Progress = ({
   bg = 'bg-orange-400',

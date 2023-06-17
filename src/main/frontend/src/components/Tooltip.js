@@ -16,7 +16,7 @@
  */
 import React, {useState} from 'react';
 
-const Tooltip = ({
+export const Tooltip = ({
   content,
   children,
   className = '',
@@ -49,5 +49,3 @@ const Tooltip = ({
     </div>
   );
 };
-
-export default Tooltip;
