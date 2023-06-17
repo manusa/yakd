@@ -20,7 +20,7 @@ import {Provider} from 'react-redux';
 import {combineReducers, createStore} from 'redux';
 import * as apis from './apis';
 import * as crb from './clusterrolebindings';
-import cRoles from './clusterroles';
+import * as cr from './clusterroles';
 import cv from './clusterversions';
 import configMaps from './configmaps';
 import cj from './cronjobs';
@@ -67,7 +67,7 @@ const store = createStore(
   combineReducers({
     apiGroups: apis.apiGroupsReducer,
     clusterRoleBindings: crb.reducer,
-    clusterRoles: cRoles.reducer,
+    clusterRoles: cr.reducer,
     clusterVersions: cv.reducer,
     configMaps: configMaps.reducer,
     cronJobs: cj.reducer,

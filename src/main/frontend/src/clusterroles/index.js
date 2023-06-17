@@ -14,24 +14,11 @@
  * limitations under the License.
  *
  */
-import api from './api';
-import reducer from './reducer';
-import selectors from './selectors';
-import List from './List';
-import ClusterRolesDetailPage from './ClusterRolesDetailPage';
-import ClusterRolesEditPage from './ClusterRolesEditPage';
-import ClusterRolesPage from './ClusterRolesPage';
-import RuleList from './RuleList';
-
-const cRoles = {};
-
-cRoles.api = api;
-cRoles.reducer = reducer;
-cRoles.selectors = selectors;
-cRoles.List = List;
-cRoles.ClusterRolesDetailPage = ClusterRolesDetailPage;
-cRoles.ClusterRolesEditPage = ClusterRolesEditPage;
-cRoles.ClusterRolesPage = ClusterRolesPage;
-cRoles.RuleList = RuleList;
-
-export default cRoles;
+export * as api from './api';
+export {reducer} from './reducer';
+export * as selectors from './selectors';
+export {ClusterRolesDetailPage} from './ClusterRolesDetailPage';
+export {ClusterRolesEditPage} from './ClusterRolesEditPage';
+export {ClusterRolesPage} from './ClusterRolesPage';
+export {List} from './List';
+export {RuleList} from './RuleList';

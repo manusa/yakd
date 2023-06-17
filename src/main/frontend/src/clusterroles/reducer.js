@@ -16,6 +16,4 @@
  */
 import redux from '../redux';
 
-const reducer = redux.reducer('ClusterRole');
-
-export default reducer;
+export const reducer = redux.reducer('ClusterRole');

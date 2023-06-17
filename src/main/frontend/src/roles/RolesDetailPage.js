@@ -18,7 +18,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {withParams} from '../router';
 import metadata from '../metadata';
-import cRoles from '../clusterroles';
+import {RuleList} from '../clusterroles';
 import r from './';
 import Form from '../components/Form';
 import ResourceDetailPage from '../components/ResourceDetailPage';
@@ -35,7 +35,7 @@ const RolesDetailPage = ({role}) => (
       </Form>
     }
   >
-    <cRoles.RuleList className='mt-2' rules={r.selectors.rules(role)} />
+    <RuleList className='mt-2' rules={r.selectors.rules(role)} />
   </ResourceDetailPage>
 );
 

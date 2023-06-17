@@ -14,16 +14,11 @@
  * limitations under the License.
  *
  */
-const selectors = {};
-
-selectors.rules = clusterRole => clusterRole?.rules ?? [];
+export const rules = clusterRole => clusterRole?.rules ?? [];
 
 // Selectors for rules
-
-selectors.rules.apiGroups = rule => rule?.apiGroups ?? [];
-selectors.rules.nonResourceURLs = rule => rule?.nonResourceURLs ?? [];
-selectors.rules.resourceNames = rule => rule?.resourceNames ?? [];
-selectors.rules.resources = rule => rule?.resources ?? [];
-selectors.rules.verbs = rule => rule?.verbs ?? [];
-
-export default selectors;
+rules.apiGroups = rule => rule?.apiGroups ?? [];
+rules.nonResourceURLs = rule => rule?.nonResourceURLs ?? [];
+rules.resourceNames = rule => rule?.resourceNames ?? [];
+rules.resources = rule => rule?.resources ?? [];
+rules.verbs = rule => rule?.verbs ?? [];

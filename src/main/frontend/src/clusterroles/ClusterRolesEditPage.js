@@ -16,12 +16,12 @@
  */
 import React from 'react';
 import {withParams} from '../router';
+import {api} from './';
 import md from '../metadata';
-import cRoles from './';
 import ResourceEditPage from '../components/ResourceEditPage';
 import Link from '../components/Link';
 
-const ClusterRolesEditPage = ({params: {uid}}) => (
+export const ClusterRolesEditPage = withParams(({params: {uid}}) => (
   <ResourceEditPage
     kind='ClusterRoles'
     path='clusterroles'
@@ -30,9 +30,7 @@ const ClusterRolesEditPage = ({params: {uid}}) => (
         {md.selectors.name(resource)}
       </Link.RouterLink>
     )}
-    save={async resource => await cRoles.api.update(resource)}
+    save={async resource => await api.update(resource)}
     resourceFromState={state => state.clusterRoles[uid]}
   />
-);
-
-export default withParams(ClusterRolesEditPage);
+));

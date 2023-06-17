@@ -15,13 +15,11 @@
  *
  */
 import React from 'react';
-import cRoles from './';
+import {List} from './';
 import DashboardPage from '../components/DashboardPage';
 
-const ClusterRolesPage = () => (
+export const ClusterRolesPage = () => (
   <DashboardPage title='ClusterRoles'>
-    <cRoles.List className='mt-4' />
+    <List className='mt-4' />
   </DashboardPage>
 );
-
-export default ClusterRolesPage;

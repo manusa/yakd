@@ -19,7 +19,7 @@ import {connect} from 'react-redux';
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import * as apis from './apis';
 import * as crb from './clusterrolebindings';
-import cRoles from './clusterroles';
+import * as cr from './clusterroles';
 import configMaps from './configmaps';
 import cj from './cronjobs';
 import crd from './customresourcedefinitions';
@@ -109,20 +109,16 @@ const App = ({dispatch}) => {
           path='/clusterrolebindings/:uid/edit'
           element={<crb.ClusterRoleBindingsEditPage />}
         />
-        <Route
-          exact
-          path='/clusterroles'
-          element={<cRoles.ClusterRolesPage />}
-        />
+        <Route exact path='/clusterroles' element={<cr.ClusterRolesPage />} />
         <Route
           exact
           path='/clusterroles/:uidOrName'
-          element={<cRoles.ClusterRolesDetailPage />}
+          element={<cr.ClusterRolesDetailPage />}
         />
         <Route
           exact
           path='/clusterroles/:uid/edit'
-          element={<cRoles.ClusterRolesEditPage />}
+          element={<cr.ClusterRolesEditPage />}
         />
         <Route
           exact

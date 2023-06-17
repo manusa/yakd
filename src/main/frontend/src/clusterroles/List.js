@@ -16,7 +16,7 @@
  */
 import React from 'react';
 import metadata from '../metadata';
-import cRoles from './';
+import {api} from './';
 import {Tooltip} from '../components';
 import Icon from '../components/Icon';
 import Link from '../components/Link';
@@ -35,7 +35,7 @@ const headers = [
 
 const Rows = ({clusterRoles}) => {
   const deleteClusterRole = clusterRole => async () =>
-    await cRoles.api.delete(clusterRole);
+    await api.deleteCr(clusterRole);
   return clusterRoles
     .sort(metadata.selectors.sortByCreationTimeStamp)
     .map(clusterRole => (
@@ -74,10 +74,10 @@ const Rows = ({clusterRoles}) => {
     ));
 };
 
-const List = ({resources, loadedResources, crudDelete, ...properties}) => (
-  <ResourceList headers={headers} resources={resources} {...properties}>
-    <Rows clusterRoles={resources} />
-  </ResourceList>
+export const List = ResourceList.resourceListConnect('clusterRoles')(
+  ({resources, loadedResources, crudDelete, ...properties}) => (
+    <ResourceList headers={headers} resources={resources} {...properties}>
+      <Rows clusterRoles={resources} />
+    </ResourceList>
+  )
 );
-
-export default ResourceList.resourceListConnect('clusterRoles')(List);

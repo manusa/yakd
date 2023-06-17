@@ -16,12 +16,6 @@
  */
 import {deleteResource, listResource, updateResource} from '../fetch';
 
-const api = {};
-
-api.list = listResource('clusterroles', 'ClusterRole');
-
-api.delete = deleteResource('clusterroles');
-
-api.update = updateResource('clusterroles');
-
-export default api;
+export const list = listResource('clusterroles', 'ClusterRole');
+export const deleteCr = deleteResource('clusterroles');
+export const update = updateResource('clusterroles');
