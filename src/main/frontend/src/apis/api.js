@@ -17,9 +17,5 @@
 import {toJson} from '../fetch';
 import {getApiURL} from '../env';
 
-const api = {};
-
-api.listGroups = async () =>
+export const listGroups = async () =>
   await toJson(await fetch(`${getApiURL()}/apis/groups`));
-
-export default api;

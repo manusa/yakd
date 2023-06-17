@@ -21,11 +21,9 @@ const {
 } = redux;
 const defaultState = [];
 
-const apiGroupsReducer = (state = defaultState, action = {}) => {
+export const apiGroupsReducer = (state = defaultState, action = {}) => {
   if (action.type === Types.API_GROUPS_SET) {
     return [...action.payload];
   }
   return [...state];
 };
-
-export default apiGroupsReducer;

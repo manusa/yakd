@@ -18,7 +18,7 @@ import React from 'react';
 import {createRoot} from 'react-dom/client';
 import {Provider} from 'react-redux';
 import {combineReducers, createStore} from 'redux';
-import apis from './apis';
+import * as apis from './apis';
 import crb from './clusterrolebindings';
 import cRoles from './clusterroles';
 import cv from './clusterversions';

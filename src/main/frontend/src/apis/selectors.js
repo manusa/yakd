@@ -14,9 +14,5 @@
  * limitations under the License.
  *
  */
-const selectors = {};
-
-selectors.isOpenShift = apiGroups =>
+export const isOpenShift = apiGroups =>
   apiGroups.some(g => g.endsWith('.openshift.io'));
-
-export default selectors;

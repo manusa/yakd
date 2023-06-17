@@ -14,14 +14,6 @@
  * limitations under the License.
  *
  */
-import api from './api';
-import apiGroupsReducer from './apiGroupsReducer';
-import selectors from './selectors';
-
-const apis = {};
-
-apis.api = api;
-apis.apiGroupsReducer = apiGroupsReducer;
-apis.selectors = selectors;
-
-export default apis;
+export * as api from './api';
+export {apiGroupsReducer} from './apiGroupsReducer';
+export * as selectors from './selectors';

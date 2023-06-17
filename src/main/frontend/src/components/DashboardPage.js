@@ -18,7 +18,7 @@ import React, {useState} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import redux from '../redux';
-import apis from '../apis';
+import * as apis from '../apis';
 import i from './icons';
 import metadata from '../metadata';
 import nm from '../nodes';

@@ -18,7 +18,7 @@ import React, {useRef, useLayoutEffect} from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {useMatch} from 'react-router-dom';
-import apis from '../apis';
+import * as apis from '../apis';
 import i from '../components/icons';
 import redux from '../redux';
 import crd from '../customresourcedefinitions';
