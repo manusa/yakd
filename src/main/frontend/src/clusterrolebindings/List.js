@@ -19,11 +19,11 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import metadata from '../metadata';
 import {api, selectors} from './';
+import {Age} from '../components';
 import Icon from '../components/Icon';
 import Link from '../components/Link';
 import ResourceList from '../components/ResourceList';
 import Table from '../components/Table';
-import Tooltip from '../components/Tooltip';
 
 const headers = [
   <span key='name'>
@@ -31,7 +31,7 @@ const headers = [
   </span>,
   'Role',
   <span key='time'>
-    <Icon stylePrefix='far' icon='fa-clock' /> Time
+    <Icon stylePrefix='far' icon='fa-clock' /> Age
   </span>,
   ''
 ];
@@ -63,21 +63,9 @@ const Rows = ({clusterRoleBindings}) => {
           </Link.ClusterRole>
         </Table.Cell>
         <Table.Cell>
-          <Tooltip
-            content={`${metadata.selectors
-              .creationTimestamp(clusterRoleBinding)
-              .toLocaleDateString()}
-                ${metadata.selectors
-                  .creationTimestamp(clusterRoleBinding)
-                  .toLocaleTimeString()}`}
-            className='cursor-default'
-          >
-            <span>
-              {metadata.selectors
-                .creationTimestamp(clusterRoleBinding)
-                .toLocaleDateString()}
-            </span>
-          </Tooltip>
+          <Age
+            date={metadata.selectors.creationTimestamp(clusterRoleBinding)}
+          />
         </Table.Cell>
         <Table.Cell>
           <Table.DeleteButton onClick={deleteCrb(clusterRoleBinding)} />

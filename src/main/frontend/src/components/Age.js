@@ -15,6 +15,7 @@
  *
  */
 import React, {useEffect, useState} from 'react';
+import Tooltip from './Tooltip';
 
 const components = ms => ({
   y: Math.floor(ms / 31_536_000_000),
@@ -46,5 +47,11 @@ export const Age = ({date}) => {
     const timeout = setTimeout(() => setAge(new Date() - date), intervalPeriod);
     return () => clearTimeout(timeout);
   });
-  return <>{toHumanReadable(age)}</>;
+  return (
+    <Tooltip
+      content={`${date.toLocaleDateString()} ${date.toLocaleTimeString()}`}
+    >
+      {toHumanReadable(age)}
+    </Tooltip>
+  );
 };
