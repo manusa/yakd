@@ -19,7 +19,7 @@ import React from 'react';
 const c = 20;
 const r = 15.91549430918954;
 
-const DonutChart = ({
+export const DonutChart = ({
   percent = 0,
   color = '#326ce5',
   background = '#efefef',
@@ -56,5 +56,3 @@ const DonutChart = ({
     <div>{children}</div>
   </div>
 );
-
-export default DonutChart;
