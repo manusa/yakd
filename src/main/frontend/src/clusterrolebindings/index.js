@@ -14,22 +14,10 @@
  * limitations under the License.
  *
  */
-import api from './api';
-import reducer from './reducer';
-import selectors from './selectors';
-import List from './List';
-import ClusterRoleBindingsDetailPage from './ClusterRoleBindingsDetailPage';
-import ClusterRoleBindingsEditPage from './ClusterRoleBindingsEditPage';
-import ClusterRoleBindingsPage from './ClusterRoleBindingsPage';
-
-const index = {
-  api,
-  reducer,
-  selectors,
-  ClusterRoleBindingsDetailPage,
-  ClusterRoleBindingsEditPage,
-  ClusterRoleBindingsPage,
-  List
-};
-
-export default index;
+export * as api from './api';
+export {reducer} from './reducer';
+export * as selectors from './selectors';
+export {ClusterRoleBindingsDetailPage} from './ClusterRoleBindingsDetailPage';
+export {ClusterRoleBindingsEditPage} from './ClusterRoleBindingsEditPage';
+export {ClusterRoleBindingsPage} from './ClusterRoleBindingsPage';
+export {List} from './List';

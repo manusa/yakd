@@ -19,7 +19,7 @@ import {connect} from 'react-redux';
 import {withParams} from '../router';
 import metadata from '../metadata';
 import cRoles from './';
-import crb from '../clusterrolebindings';
+import {List as CrbList} from '../clusterrolebindings';
 import Card from '../components/Card';
 import Form from '../components/Form';
 import ResourceDetailPage from '../components/ResourceDetailPage';
@@ -40,7 +40,7 @@ const ClusterRolesDetailPage = ({clusterRole}) => (
       className='mt-2'
       rules={cRoles.selectors.rules(clusterRole)}
     />
-    <crb.List
+    <CrbList
       title='Bindings'
       titleVariant={Card.titleVariants.medium}
       className='mt-2'

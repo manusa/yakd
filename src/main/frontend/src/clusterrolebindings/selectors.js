@@ -16,20 +16,18 @@
  */
 import redux from '../redux';
 
-const selectors = {};
-
-selectors.roleRefName = crb => crb?.roleRef?.name ?? '';
+export const roleRefName = crb => crb?.roleRef?.name ?? '';
 
 // Selectors for array of ClusterRoleBindings
-
-selectors.crbsBy = (crbs = {}, {roleRefName, ...filters} = undefined) =>
+export const crbsBy = (
+  crbs = {},
+  {roleRefName: roleRefNameProperty, ...filters} = undefined
+) =>
   Object.entries(redux.selectors.resourcesBy(crbs, filters))
     .filter(([, crb]) => {
-      if (roleRefName) {
-        return selectors.roleRefName(crb) === roleRefName;
+      if (roleRefNameProperty) {
+        return roleRefName(crb) === roleRefNameProperty;
       }
       return true;
     })
     .reduce(redux.selectors.toObjectReducer, {});
-
-export default selectors;

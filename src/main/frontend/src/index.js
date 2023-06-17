@@ -19,7 +19,7 @@ import {createRoot} from 'react-dom/client';
 import {Provider} from 'react-redux';
 import {combineReducers, createStore} from 'redux';
 import * as apis from './apis';
-import crb from './clusterrolebindings';
+import * as crb from './clusterrolebindings';
 import cRoles from './clusterroles';
 import cv from './clusterversions';
 import configMaps from './configmaps';

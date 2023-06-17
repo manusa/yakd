@@ -17,11 +17,11 @@
 import React from 'react';
 import {withParams} from '../router';
 import md from '../metadata';
-import crb from './';
+import {api} from './';
 import ResourceEditPage from '../components/ResourceEditPage';
 import Link from '../components/Link';
 
-const ClusterRoleBindingsEditPage = ({params: {uid}}) => (
+export const ClusterRoleBindingsEditPage = withParams(({params: {uid}}) => (
   <ResourceEditPage
     kind='ClusterRoleBindings'
     path='clusterrolebindings'
@@ -30,9 +30,7 @@ const ClusterRoleBindingsEditPage = ({params: {uid}}) => (
         {md.selectors.name(resource)}
       </Link.RouterLink>
     )}
-    save={async resource => await crb.api.update(resource)}
+    save={async resource => await api.update(resource)}
     resourceFromState={state => state.clusterRoleBindings[uid]}
   />
-);
-
-export default withParams(ClusterRoleBindingsEditPage);
+));

@@ -15,13 +15,11 @@
  *
  */
 import React from 'react';
-import crb from './';
+import {List} from './';
 import DashboardPage from '../components/DashboardPage';
 
-const ClusterRoleBindingsPage = () => (
+export const ClusterRoleBindingsPage = () => (
   <DashboardPage title='ClusterRoleBindings'>
-    <crb.List className='mt-4' />
+    <List className='mt-4' />
   </DashboardPage>
 );
-
-export default ClusterRoleBindingsPage;

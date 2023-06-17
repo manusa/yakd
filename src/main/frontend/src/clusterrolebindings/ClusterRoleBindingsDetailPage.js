@@ -16,35 +16,12 @@
  */
 import React from 'react';
 import {connect} from 'react-redux';
+import {api, selectors} from './';
 import {withParams} from '../router';
 import metadata from '../metadata';
-import crb from './index';
 import Form from '../components/Form';
 import ResourceDetailPage from '../components/ResourceDetailPage';
 import Link from '../components/Link';
-
-const ClusterRoleBindingsDetailPage = ({clusterRoleBinding}) => (
-  <ResourceDetailPage
-    kind='ClusterRoleBindings'
-    path='clusterrolebindings'
-    resource={clusterRoleBinding}
-    deleteFunction={crb.api.delete}
-    body={
-      <Form>
-        <metadata.Details resource={clusterRoleBinding} />
-        <Form.Field label='Role'>
-          <Link.ClusterRole
-            to={`/clusterroles/${crb.selectors.roleRefName(
-              clusterRoleBinding
-            )}`}
-          >
-            {crb.selectors.roleRefName(clusterRoleBinding)}
-          </Link.ClusterRole>
-        </Form.Field>
-      </Form>
-    }
-  />
-);
 
 const mapStateToProps = ({clusterRoleBindings}) => ({
   clusterRoleBindings
@@ -60,6 +37,29 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
   )
 });
 
-export default withParams(
-  connect(mapStateToProps, null, mergeProps)(ClusterRoleBindingsDetailPage)
+export const ClusterRoleBindingsDetailPage = withParams(
+  connect(
+    mapStateToProps,
+    null,
+    mergeProps
+  )(({clusterRoleBinding}) => (
+    <ResourceDetailPage
+      kind='ClusterRoleBindings'
+      path='clusterrolebindings'
+      resource={clusterRoleBinding}
+      deleteFunction={api.deleteCrb}
+      body={
+        <Form>
+          <metadata.Details resource={clusterRoleBinding} />
+          <Form.Field label='Role'>
+            <Link.ClusterRole
+              to={`/clusterroles/${selectors.roleRefName(clusterRoleBinding)}`}
+            >
+              {selectors.roleRefName(clusterRoleBinding)}
+            </Link.ClusterRole>
+          </Form.Field>
+        </Form>
+      }
+    />
+  ))
 );

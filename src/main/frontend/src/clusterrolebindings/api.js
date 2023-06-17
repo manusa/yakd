@@ -16,9 +16,5 @@
  */
 import {deleteResource, updateResource} from '../fetch';
 
-const api = {
-  delete: deleteResource('clusterrolebindings'),
-  update: updateResource('clusterrolebindings')
-};
-
-export default api;
+export const deleteCrb = deleteResource('clusterrolebindings');
+export const update = updateResource('clusterrolebindings');
