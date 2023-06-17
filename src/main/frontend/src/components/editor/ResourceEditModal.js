@@ -18,11 +18,11 @@ import React from 'react';
 import YAML from 'yaml';
 import metadata from '../../metadata';
 import editor from './index';
+import {Alert} from '../';
 import Modal from '../Modal';
 import Card from '../Card';
 import Link from '../Link';
 import Icon from '../Icon';
-import Alert from '../Alert';
 import useEditor from './useEditor';
 
 const ToolbarButton = ({title, onClick, children, ...props}) => (

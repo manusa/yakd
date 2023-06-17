@@ -20,11 +20,11 @@ import cloneDeep from 'lodash/cloneDeep';
 import YAML from 'yaml';
 import editor from './editor';
 import md from '../metadata';
+import {Alert} from './Alert';
 import DashboardPage from '../components/DashboardPage';
 import Card from '../components/Card';
 import Link from './Link';
 import Icon from './Icon';
-import Alert from './Alert';
 import useEditor from './editor/useEditor';
 
 const ResourceEditPage = ({

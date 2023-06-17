@@ -16,7 +16,7 @@
  */
 import React from 'react';
 
-const Alert = ({
+export const Alert = ({
   clearError,
   visible = true,
   margin = 'm-2',
@@ -41,4 +41,3 @@ const Alert = ({
     {children}
   </div>
 );
-export default Alert;

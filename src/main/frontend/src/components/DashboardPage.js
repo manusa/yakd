@@ -23,7 +23,7 @@ import i from './icons';
 import metadata from '../metadata';
 import nm from '../nodes';
 import sidebar from '../sidebar';
-import Alert from './Alert';
+import {Alert} from './Alert';
 import Icon from './Icon';
 import Link from './Link';
 import Tooltip from './Tooltip';
