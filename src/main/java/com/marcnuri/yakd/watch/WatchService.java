@@ -16,39 +16,14 @@
  */
 package com.marcnuri.yakd.watch;
 
-import com.marcnuri.yakd.clusterrolebindings.ClusterRoleBindingService;
-import com.marcnuri.yakd.clusterroles.ClusterRoleService;
-import com.marcnuri.yakd.configmaps.ConfigMapService;
-import com.marcnuri.yakd.cronjobs.CronJobService;
-import com.marcnuri.yakd.customresourcedefinitions.CustomResourceDefinitionService;
-import com.marcnuri.yakd.endpoints.EndpointService;
-import com.marcnuri.yakd.events.EventService;
-import com.marcnuri.yakd.daemonsets.DaemonSetService;
-import com.marcnuri.yakd.deployment.DeploymentService;
-import com.marcnuri.yakd.deploymentconfigs.DeploymentConfigService;
-import com.marcnuri.yakd.horizontalpodautoscalers.HorizontalPodAutoscalerService;
-import com.marcnuri.yakd.ingresses.IngressService;
-import com.marcnuri.yakd.jobs.JobService;
-import com.marcnuri.yakd.namespaces.NamespaceService;
-import com.marcnuri.yakd.node.NodeService;
-import com.marcnuri.yakd.openshiftconfig.ClusterVersionService;
-import com.marcnuri.yakd.persistentvolumeclaims.PersistentVolumeClaimService;
-import com.marcnuri.yakd.persistentvolumes.PersistentVolumeService;
-import com.marcnuri.yakd.pod.PodService;
-import com.marcnuri.yakd.replicaset.ReplicaSetService;
-import com.marcnuri.yakd.replicationcontrollers.ReplicationControllerService;
-import com.marcnuri.yakd.roles.RoleService;
-import com.marcnuri.yakd.routes.RouteService;
-import com.marcnuri.yakd.secrets.SecretService;
-import com.marcnuri.yakd.service.ServiceService;
-import com.marcnuri.yakd.statefulsets.StatefulSetService;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.subscription.BackPressureStrategy;
+import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -57,69 +32,18 @@ import static com.marcnuri.yakd.KubernetesDashboardConfiguration.WATCH_EXECUTOR_
 @Singleton
 public class WatchService {
 
-  private final List<Watchable<?>> watchables;
   private final ScheduledExecutorService executorService;
+  private final List<Watchable<?>> watchables;
 
   @SuppressWarnings("java:S107")
   @Inject
   public WatchService(
     @Named(WATCH_EXECUTOR_SERVICE) ScheduledExecutorService executorService,
-    ClusterRoleBindingService clusterRoleBindingService,
-    ClusterRoleService clusterRoleService,
-    ClusterVersionService clusterVersionService,
-    ConfigMapService configMapService,
-    CronJobService cronJobService,
-    CustomResourceDefinitionService customResourceDefinitionService,
-    DaemonSetService daemonSetService,
-    DeploymentConfigService deploymentConfigService,
-    DeploymentService deploymentService,
-    EndpointService endpointService,
-    EventService eventService,
-    HorizontalPodAutoscalerService horizontalPodAutoscalerService,
-    IngressService ingressService,
-    JobService jobService,
-    NamespaceService namespaceService,
-    NodeService nodeService,
-    PersistentVolumeService persistentVolumeService,
-    PersistentVolumeClaimService persistentVolumeClaimService,
-    PodService podService,
-    ReplicaSetService replicaSetService,
-    ReplicationControllerService replicationControllerService,
-    RoleService roleService,
-    RouteService routeService,
-    SecretService secretService,
-    ServiceService serviceService,
-    StatefulSetService statefulSetService
+    Instance<Watchable<?>> watchableHandlers
   ) {
     this.executorService = executorService;
-    this.watchables = Arrays.asList(
-      clusterRoleBindingService,
-      clusterRoleService,
-      clusterVersionService,
-      configMapService,
-      cronJobService,
-      customResourceDefinitionService,
-      daemonSetService,
-      deploymentConfigService,
-      deploymentService,
-      endpointService,
-      eventService,
-      horizontalPodAutoscalerService,
-      ingressService,
-      jobService,
-      namespaceService,
-      nodeService,
-      persistentVolumeService,
-      persistentVolumeClaimService,
-      podService,
-      replicaSetService,
-      replicationControllerService,
-      roleService,
-      routeService,
-      secretService,
-      serviceService,
-      statefulSetService
-    );
+    this.watchables = new ArrayList<>();
+    watchableHandlers.forEach(watchables::add);
   }
 
   public Multi<WatchEvent<?>> newWatch() {
