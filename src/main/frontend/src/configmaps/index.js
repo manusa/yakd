@@ -14,22 +14,10 @@
  * limitations under the License.
  *
  */
-import api from './api';
-import reducer from './reducer';
-import selectors from './selectors';
-import List from './List';
-import ConfigMapsDetailPage from './ConfigMapsDetailPage';
-import ConfigMapsEditPage from './ConfigMapsEditPage';
-import ConfigMapsPage from './ConfigMapsPage';
-
-const configmaps = {};
-
-configmaps.api = api;
-configmaps.reducer = reducer;
-configmaps.selectors = selectors;
-configmaps.List = List;
-configmaps.ConfigMapsDetailPage = ConfigMapsDetailPage;
-configmaps.ConfigMapsEditPage = ConfigMapsEditPage;
-configmaps.ConfigMapsPage = ConfigMapsPage;
-
-export default configmaps;
+export * as api from './api';
+export {reducer} from './reducer';
+export * as selectors from './selectors';
+export {List} from './List';
+export {ConfigMapsDetailPage} from './ConfigMapsDetailPage';
+export {ConfigMapsEditPage} from './ConfigMapsEditPage';
+export {ConfigMapsPage} from './ConfigMapsPage';

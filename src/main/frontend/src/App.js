@@ -20,7 +20,7 @@ import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import * as apis from './apis';
 import * as crb from './clusterrolebindings';
 import * as cr from './clusterroles';
-import configMaps from './configmaps';
+import * as cm from './configmaps';
 import cj from './cronjobs';
 import crd from './customresourcedefinitions';
 import dc from './deploymentconfigs';
@@ -120,20 +120,16 @@ const App = ({dispatch}) => {
           path='/clusterroles/:uid/edit'
           element={<cr.ClusterRolesEditPage />}
         />
-        <Route
-          exact
-          path='/configmaps'
-          element={<configMaps.ConfigMapsPage />}
-        />
+        <Route exact path='/configmaps' element={<cm.ConfigMapsPage />} />
         <Route
           exact
           path='/configmaps/:uid'
-          element={<configMaps.ConfigMapsDetailPage />}
+          element={<cm.ConfigMapsDetailPage />}
         />
         <Route
           exact
           path='/configmaps/:uid/edit'
-          element={<configMaps.ConfigMapsEditPage />}
+          element={<cm.ConfigMapsEditPage />}
         />
         <Route exact path='/cronjobs' element={<cj.CronJobsPage />} />
         <Route

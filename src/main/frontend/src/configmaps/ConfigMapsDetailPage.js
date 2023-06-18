@@ -17,7 +17,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {withParams} from '../router';
-import cm from './';
+import {api, selectors} from './';
 import metadata from '../metadata';
 import Form from '../components/Form';
 import ResourceDetailPage from '../components/ResourceDetailPage';
@@ -32,22 +32,6 @@ const DataField = ({label, value}) => (
     </div>
   </Form.Field>
 );
-const ConfigMapsDetailPage = ({configMap}) => (
-  <ResourceDetailPage
-    kind='ConfigMaps'
-    path='configmaps'
-    resource={configMap}
-    deleteFunction={cm.api.delete}
-    body={
-      <Form>
-        <metadata.Details resource={configMap} />
-        {Object.entries(cm.selectors.data(configMap)).map(([key, value]) => (
-          <DataField key={key} label={key} value={value} />
-        ))}
-      </Form>
-    }
-  />
-);
 
 const mapStateToProps = ({configMaps}) => ({
   configMaps
@@ -60,6 +44,25 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
   configMap: stateProps.configMaps[ownProps.params.uid]
 });
 
-export default withParams(
-  connect(mapStateToProps, null, mergeProps)(ConfigMapsDetailPage)
+export const ConfigMapsDetailPage = withParams(
+  connect(
+    mapStateToProps,
+    null,
+    mergeProps
+  )(({configMap}) => (
+    <ResourceDetailPage
+      kind='ConfigMaps'
+      path='configmaps'
+      resource={configMap}
+      deleteFunction={api.deleteCm}
+      body={
+        <Form>
+          <metadata.Details resource={configMap} />
+          {Object.entries(selectors.data(configMap)).map(([key, value]) => (
+            <DataField key={key} label={key} value={value} />
+          ))}
+        </Form>
+      }
+    />
+  ))
 );

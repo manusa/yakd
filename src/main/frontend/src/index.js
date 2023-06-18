@@ -22,7 +22,7 @@ import * as apis from './apis';
 import * as crb from './clusterrolebindings';
 import * as cr from './clusterroles';
 import * as cv from './clusterversions';
-import configMaps from './configmaps';
+import * as cm from './configmaps';
 import cj from './cronjobs';
 import crd from './customresourcedefinitions';
 import ds from './daemonsets';
@@ -69,7 +69,7 @@ const store = createStore(
     clusterRoleBindings: crb.reducer,
     clusterRoles: cr.reducer,
     clusterVersions: cv.reducer,
-    configMaps: configMaps.reducer,
+    configMaps: cm.reducer,
     cronJobs: cj.reducer,
     customResourceDefinitions: crd.reducer,
     daemonSets: ds.reducer,

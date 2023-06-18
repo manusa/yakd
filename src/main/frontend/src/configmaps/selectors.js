@@ -14,8 +14,4 @@
  * limitations under the License.
  *
  */
-const selectors = {};
-
-selectors.data = configMap => configMap?.data ?? {};
-
-export default selectors;
+export const data = configMap => configMap?.data ?? {};

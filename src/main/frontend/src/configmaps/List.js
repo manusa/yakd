@@ -16,7 +16,7 @@
  */
 import React from 'react';
 import metadata from '../metadata';
-import cm from './';
+import {api} from './';
 import Icon from '../components/Icon';
 import Link from '../components/Link';
 import ResourceList from '../components/ResourceList';
@@ -32,7 +32,7 @@ const headers = [
 
 const Rows = ({configMaps}) => {
   const deleteConfigMap = configMap => async () =>
-    await cm.api.delete(configMap);
+    await api.deleteCm(configMap);
   return configMaps
     .sort(metadata.selectors.sortByCreationTimeStamp)
     .map(configMap => (
@@ -61,10 +61,10 @@ const Rows = ({configMaps}) => {
     ));
 };
 
-const List = ({resources, loadedResources, crudDelete, ...properties}) => (
-  <ResourceList headers={headers} resources={resources} {...properties}>
-    <Rows configMaps={resources} />
-  </ResourceList>
+export const List = ResourceList.resourceListConnect('configMaps')(
+  ({resources, loadedResources, crudDelete, ...properties}) => (
+    <ResourceList headers={headers} resources={resources} {...properties}>
+      <Rows configMaps={resources} />
+    </ResourceList>
+  )
 );
-
-export default ResourceList.resourceListConnect('configMaps')(List);

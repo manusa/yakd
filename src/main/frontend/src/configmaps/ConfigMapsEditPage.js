@@ -16,23 +16,24 @@
  */
 import React from 'react';
 import {withParams} from '../router';
+import {api} from './';
 import md from '../metadata';
-import cm from './';
 import ResourceEditPage from '../components/ResourceEditPage';
 import Link from '../components/Link';
 
-const ConfigMapsEditPage = ({params: {uid}}) => (
-  <ResourceEditPage
-    kind='ConfigMaps'
-    path='configmaps'
-    cardTitle={resource => (
-      <Link.RouterLink to={`/configmaps/${uid}`}>
-        {md.selectors.name(resource)}
-      </Link.RouterLink>
-    )}
-    save={async resource => await cm.api.update(resource)}
-    resourceFromState={state => state.configMaps[uid]}
-  />
-);
-
-export default withParams(ConfigMapsEditPage);
+export const ConfigMapsEditPage = withParams(({params: {uid}}) => {
+  const cardTitle = resource => (
+    <Link.RouterLink to={`/configmaps/${uid}`}>
+      {md.selectors.name(resource)}
+    </Link.RouterLink>
+  );
+  return (
+    <ResourceEditPage
+      kind='ConfigMaps'
+      path='configmaps'
+      cardTitle={cardTitle}
+      save={async resource => await api.update(resource)}
+      resourceFromState={state => state.configMaps[uid]}
+    />
+  );
+});

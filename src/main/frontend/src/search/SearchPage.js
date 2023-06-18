@@ -18,7 +18,7 @@ import React, {useLayoutEffect, useRef} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as cr from '../clusterroles';
-import cm from '../configmaps';
+import * as cm from '../configmaps';
 import cj from '../cronjobs';
 import crd from '../customresourcedefinitions';
 import d from '../deployments';

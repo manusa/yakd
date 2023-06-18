@@ -20,12 +20,8 @@ import {
   updateNamespacedResource
 } from '../fetch';
 
-const api = {};
+export const list = listResource('configmaps', 'ConfigMap');
 
-api.list = listResource('configmaps', 'ConfigMap');
+export const deleteCm = deleteNamespacedResource('configmaps');
 
-api.delete = deleteNamespacedResource('configmaps');
-
-api.update = updateNamespacedResource('configmaps');
-
-export default api;
+export const update = updateNamespacedResource('configmaps');

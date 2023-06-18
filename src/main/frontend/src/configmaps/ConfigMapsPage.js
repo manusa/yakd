@@ -16,19 +16,19 @@
  */
 import React from 'react';
 import {connect} from 'react-redux';
-import cm from './';
+import {List} from './';
 import DashboardPage from '../components/DashboardPage';
 import FilterBar from '../components/FilterBar';
-
-const ConfigMapsPage = ({selectedNamespace}) => (
-  <DashboardPage title='ConfigMaps'>
-    <FilterBar />
-    <cm.List className='mt-4' namespace={selectedNamespace} />
-  </DashboardPage>
-);
 
 const mapStateToProps = ({ui: {selectedNamespace}}) => ({
   selectedNamespace
 });
 
-export default connect(mapStateToProps)(ConfigMapsPage);
+export const ConfigMapsPage = connect(mapStateToProps)(
+  ({selectedNamespace}) => (
+    <DashboardPage title='ConfigMaps'>
+      <FilterBar />
+      <List className='mt-4' namespace={selectedNamespace} />
+    </DashboardPage>
+  )
+);
