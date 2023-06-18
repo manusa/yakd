@@ -19,9 +19,8 @@ import {useStore} from 'react-redux';
 import cloneDeep from 'lodash/cloneDeep';
 import YAML from 'yaml';
 import md from '../metadata';
-import {useEditor, Alert, YamlEditor} from './';
+import {useEditor, Alert, Card, YamlEditor} from './';
 import DashboardPage from '../components/DashboardPage';
-import Card from '../components/Card';
 import Link from './Link';
 import Icon from './Icon';
 

@@ -16,7 +16,7 @@
  */
 import React from 'react';
 
-const Card = ({className, dispatch, children, ...props}) => (
+export const Card = ({className, dispatch, children, ...props}) => (
   <div
     className={`block overflow-x-auto bg-white shadow border-b border-gray-500 sm:rounded-lg ${
       className ?? ''
@@ -51,5 +51,3 @@ Card.Title = ({
 Card.Body = ({padding = 'p-3', className, children}) => (
   <div className={`${padding} ${className ?? ''}`}>{children}</div>
 );
-
-export default Card;

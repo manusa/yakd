@@ -21,8 +21,7 @@ import metadata from '../metadata';
 import j from './';
 import {ContainerList} from '../containers';
 import pods from '../pods';
-import {Form} from '../components';
-import Card from '../components/Card';
+import {Card, Form} from '../components';
 import DashboardPage from '../components/DashboardPage';
 import ResourceDetailPage from '../components/ResourceDetailPage';
 

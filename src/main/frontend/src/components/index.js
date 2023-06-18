@@ -18,6 +18,7 @@
 export * from './editor';
 export {Age} from './Age';
 export {Alert} from './Alert';
+export {Card} from './Card';
 export {DonutChart} from './DonutChart';
 export {Dropdown} from './Dropdown';
 export {Form} from './Form';

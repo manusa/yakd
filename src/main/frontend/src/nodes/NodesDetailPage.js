@@ -21,8 +21,7 @@ import metadata from '../metadata';
 import metrics from '../metrics';
 import n from './';
 import p from '../pods';
-import {DonutChart, Form} from '../components';
-import Card from '../components/Card';
+import {Card, DonutChart, Form} from '../components';
 import Minikube from '../components/icons/Minikube';
 import ResourceDetailPage from '../components/ResourceDetailPage';
 

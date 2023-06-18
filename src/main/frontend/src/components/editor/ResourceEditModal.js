@@ -17,10 +17,8 @@
 import React from 'react';
 import YAML from 'yaml';
 import metadata from '../../metadata';
-import {Alert} from '../';
-import {YamlEditor, useEditor} from './';
+import {Alert, Card, YamlEditor, useEditor} from '../';
 import Modal from '../Modal';
-import Card from '../Card';
 import Link from '../Link';
 import Icon from '../Icon';
 

@@ -20,7 +20,7 @@ import {withParams} from '../router';
 import metadata from '../metadata';
 import {ContainerDropdown} from '../containers';
 import p from './index';
-import Card from '../components/Card';
+import {Card} from '../components';
 import DashboardPage from '../components/DashboardPage';
 
 import Link from '../components/Link';
