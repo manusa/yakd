@@ -21,6 +21,7 @@ export {Alert} from './Alert';
 export {Card} from './Card';
 export {DonutChart} from './DonutChart';
 export {Dropdown} from './Dropdown';
+export {FilterBar} from './FilterBar';
 export {Form} from './Form';
 export {PopupMenu} from './PopupMenu';
 export {Spinner} from './Spinner';

@@ -49,12 +49,6 @@ const NamespaceDropdown = ({
   </Dropdown>
 );
 
-const FilterBar = ({className = '', ...props}) => (
-  <div className={`flex justify-end ${className}`}>
-    <NamespaceDropdown {...props} />
-  </div>
-);
-
 const mapStateToProps = ({namespaces, ui: {selectedNamespace}}) => ({
   namespaces,
   selectedNamespace
@@ -69,4 +63,11 @@ const mapDispatchToProps = dispatch =>
     dispatch
   );
 
-export default connect(mapStateToProps, mapDispatchToProps)(FilterBar);
+export const FilterBar = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(({className = '', ...props}) => (
+  <div className={`flex justify-end ${className}`}>
+    <NamespaceDropdown {...props} />
+  </div>
+));

@@ -17,8 +17,8 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import ing from './';
+import {FilterBar} from '../components';
 import DashboardPage from '../components/DashboardPage';
-import FilterBar from '../components/FilterBar';
 
 const IngressesPage = ({selectedNamespace}) => (
   <DashboardPage title='Ingresses'>

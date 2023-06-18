@@ -20,8 +20,8 @@ import deployments from './deployments';
 import events from './events';
 import nodes from './nodes';
 import pods from './pods';
+import {FilterBar} from './components';
 import DashboardPage from './components/DashboardPage';
-import FilterBar from './components/FilterBar';
 
 const cardResponsiveClass = 'w-full sm:w-1/2 md:w-1/3';
 const cardClass = 'm-2';
