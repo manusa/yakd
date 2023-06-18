@@ -18,14 +18,12 @@ import React from 'react';
 
 export const Spinner = ({
   size = 12,
-  borderSize = 4,
-  color = 'blue-600',
   shadowColor = 'transparent',
   className = ''
 }) => (
   <>
     <div
-      className={`w-${size} h-${size} border-${borderSize} border-${color} rounded-full animate-spin yakc-spinner ${className}`}
+      className={`w-12 h-12 border-4 border-blue-600 rounded-full animate-spin ${className}`}
       style={{borderRightColor: shadowColor}}
     />
   </>
