@@ -16,7 +16,7 @@
  */
 import React from 'react';
 
-const Spinner = ({
+export const Spinner = ({
   size = 12,
   borderSize = 4,
   color = 'blue-600',
@@ -30,5 +30,3 @@ const Spinner = ({
     />
   </>
 );
-
-export default Spinner;

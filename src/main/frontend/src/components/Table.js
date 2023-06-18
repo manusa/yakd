@@ -16,8 +16,8 @@
  */
 import React from 'react';
 import metadata from '../metadata';
+import {Spinner} from './';
 import Card from './Card';
-import Spinner from './Spinner';
 import Link from './Link';
 import Icon from './Icon';
 
