@@ -15,14 +15,14 @@
  *
  */
 import React from 'react';
+import {useNavigate} from 'react-router-dom';
 import YAML from 'yaml';
 import metadata from '../metadata';
+import {PopupMenu} from './';
 import Card from './Card';
 import DashboardPage from './DashboardPage';
 import Icon from './Icon';
 import Link from './Link';
-import PopupMenu from './PopupMenu';
-import {useNavigate} from 'react-router-dom';
 
 const downloadResource = resource => {
   const mimeType = 'text/yaml';

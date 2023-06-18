@@ -40,7 +40,7 @@ const PopupPanel = ({visible, onClick, children}) => (
   </div>
 );
 
-const PopupMenu = ({
+export const PopupMenu = ({
   textColor = 'text-gray-700',
   textColorActive = 'text-gray-800',
   children

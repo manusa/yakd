@@ -19,4 +19,5 @@ export {Age} from './Age';
 export {Alert} from './Alert';
 export {DonutChart} from './DonutChart';
 export {Dropdown} from './Dropdown';
+export {PopupMenu} from './PopupMenu';
 export {Tooltip} from './Tooltip';
