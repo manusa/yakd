@@ -18,7 +18,7 @@ import React, {useState, useEffect} from 'react';
 import {connect} from 'react-redux';
 import {withParams} from '../router';
 import metadata from '../metadata';
-import cnt from '../containers';
+import {ContainerList} from '../containers';
 import mts from '../metrics';
 import p from './';
 import Card from '../components/Card';
@@ -126,7 +126,7 @@ const PodsDetailPage = ({pod}) => {
         </Form>
       }
     >
-      <cnt.ContainerList
+      <ContainerList
         title='Containers'
         titleVariant={Card.titleVariants.medium}
         className='mt-2'

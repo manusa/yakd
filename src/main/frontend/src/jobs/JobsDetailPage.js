@@ -19,7 +19,7 @@ import {connect} from 'react-redux';
 import {withParams} from '../router';
 import metadata from '../metadata';
 import j from './';
-import cnt from '../containers';
+import {ContainerList} from '../containers';
 import pods from '../pods';
 import Card from '../components/Card';
 import DashboardPage from '../components/DashboardPage';
@@ -57,7 +57,7 @@ const JobsDetailPage = ({job}) => (
       </Form>
     }
   >
-    <cnt.ContainerList
+    <ContainerList
       title='Containers'
       titleVariant={Card.titleVariants.medium}
       className='mt-2'

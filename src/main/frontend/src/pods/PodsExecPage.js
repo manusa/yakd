@@ -18,7 +18,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {withParams} from '../router';
 import metadata from '../metadata';
-import cnt from '../containers';
+import {ContainerDropdown} from '../containers';
 import p from './index';
 import Card from '../components/Card';
 import DashboardPage from '../components/DashboardPage';
@@ -56,7 +56,7 @@ const PodsExecPage = ({uid, namespace, name, containers}) => {
                   {name}
                 </Link.RouterLink>
               </span>
-              <cnt.ContainerDropdown
+              <ContainerDropdown
                 containers={containers}
                 onContainerSelect={setSelectedContainer}
                 selectedContainer={selectedContainer}

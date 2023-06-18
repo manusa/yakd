@@ -17,7 +17,7 @@
 import React from 'react';
 import {Dropdown} from '../components';
 
-const ContainerDropdown = ({
+export const ContainerDropdown = ({
   containers,
   selectedContainer,
   onContainerSelect
@@ -30,5 +30,3 @@ const ContainerDropdown = ({
     ))}
   </Dropdown>
 );
-
-export default ContainerDropdown;

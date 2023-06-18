@@ -18,7 +18,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {withParams} from '../router';
 import metadata from '../metadata';
-import cnt from '../containers';
+import {ContainerList} from '../containers';
 import pods from '../pods';
 import rc from './';
 import Card from '../components/Card';
@@ -38,7 +38,7 @@ const ReplicationControllersDetailPage = ({replicationController}) => (
       </Form>
     }
   >
-    <cnt.ContainerList
+    <ContainerList
       title='Containers'
       titleVariant={Card.titleVariants.medium}
       className='mt-2'

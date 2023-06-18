@@ -14,12 +14,5 @@
  * limitations under the License.
  *
  */
-import ContainerDropdown from './ContainerDropdown';
-import ContainerList from './ContainerList';
-
-const index = {
-  ContainerDropdown,
-  ContainerList
-};
-
-export default index;
+export {ContainerDropdown} from './ContainerDropdown';
+export {ContainerList} from './ContainerList';

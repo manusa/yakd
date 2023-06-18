@@ -18,7 +18,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {withParams} from '../router';
 import metadata from '../metadata';
-import cnt from '../containers';
+import {ContainerList} from '../containers';
 import dc from './';
 import pods from '../pods';
 import rs from '../replicasets';
@@ -65,7 +65,7 @@ const DeploymentConfigsDetailPage = ({
       </Form>
     }
   >
-    <cnt.ContainerList
+    <ContainerList
       title='Containers'
       titleVariant={Card.titleVariants.medium}
       className='mt-2'

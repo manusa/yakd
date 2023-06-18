@@ -21,7 +21,7 @@ import Convert from 'ansi-to-html';
 import dompurify from 'dompurify';
 import {withParams} from '../router';
 import metadata from '../metadata';
-import cnt from '../containers';
+import {ContainerDropdown} from '../containers';
 import p from '../pods';
 import {Switch} from '../components';
 import Card from '../components/Card';
@@ -91,7 +91,7 @@ const PodsLogsPage = ({uid, namespace, name, containers}) => {
                   {name}
                 </Link.RouterLink>
               </span>
-              <cnt.ContainerDropdown
+              <ContainerDropdown
                 containers={containers}
                 onContainerSelect={setSelectedContainer}
                 selectedContainer={selectedContainer}
