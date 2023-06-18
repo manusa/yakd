@@ -20,6 +20,7 @@ export {Alert} from './Alert';
 export {DonutChart} from './DonutChart';
 export {Dropdown} from './Dropdown';
 export {PopupMenu} from './PopupMenu';
+export * from './editor';
 export {Spinner} from './Spinner';
 export {Switch} from './Switch';
 export {Tooltip} from './Tooltip';

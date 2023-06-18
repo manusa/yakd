@@ -18,10 +18,10 @@ import React, {useState} from 'react';
 import redux from '../redux';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import editor from '../components/editor';
 import metadata from '../metadata';
 import cr from './';
 import crd from '../customresourcedefinitions';
+import {ResourceEditModal} from '../components';
 import Icon from '../components/Icon';
 import Link from '../components/Link';
 import ResourceList from '../components/ResourceList';
@@ -106,7 +106,7 @@ const List = ({
           deleteResourceCallback={deleteResourceCallback}
         />
       </ResourceList>
-      <editor.ResourceEditModal
+      <ResourceEditModal
         resource={editedResource}
         title={`${cr.selectors.apiVersion(editedResource)} - ${
           crd.selectors.isNamespaced(customResourceDefinition)

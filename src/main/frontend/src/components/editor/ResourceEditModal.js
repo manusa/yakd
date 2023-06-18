@@ -17,13 +17,12 @@
 import React from 'react';
 import YAML from 'yaml';
 import metadata from '../../metadata';
-import editor from './index';
 import {Alert} from '../';
+import {YamlEditor, useEditor} from './';
 import Modal from '../Modal';
 import Card from '../Card';
 import Link from '../Link';
 import Icon from '../Icon';
-import useEditor from './useEditor';
 
 const ToolbarButton = ({title, onClick, children, ...props}) => (
   <Link
@@ -37,7 +36,7 @@ const ToolbarButton = ({title, onClick, children, ...props}) => (
   </Link>
 );
 
-const ResourceEditModal = ({
+export const ResourceEditModal = ({
   resource,
   save,
   close,
@@ -89,7 +88,7 @@ const ResourceEditModal = ({
             >
               {error}
             </Alert>
-            <editor.YamlEditor
+            <YamlEditor
               value={resourceYaml}
               onChange={value => setResourceYaml(value)}
             />

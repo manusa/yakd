@@ -14,14 +14,6 @@
  * limitations under the License.
  *
  */
-import useEditor from './useEditor';
-import ResourceEditModal from './ResourceEditModal';
-import YamlEditor from './YamlEditor';
-
-const index = {
-  useEditor,
-  ResourceEditModal,
-  YamlEditor
-};
-
-export default index;
+export {useEditor} from './useEditor';
+export {ResourceEditModal} from './ResourceEditModal';
+export {YamlEditor} from './YamlEditor';

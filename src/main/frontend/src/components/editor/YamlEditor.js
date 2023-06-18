@@ -21,7 +21,7 @@ import 'ace-builds/src-noconflict/mode-yaml';
 import 'ace-builds/src-noconflict/theme-twilight';
 import 'ace-builds/src-noconflict/ext-searchbox';
 
-const YamlEditor = ({onChange = () => {}, value = ''}) => (
+export const YamlEditor = ({onChange = () => {}, value = ''}) => (
   <AceEditor
     className='relative w-full h-full outline-none'
     style={{'--scrollbar-color': 'rgba(235, 218, 180, 0.4)'}}
@@ -37,5 +37,3 @@ const YamlEditor = ({onChange = () => {}, value = ''}) => (
     setOptions={{useWorker: false}}
   />
 );
-
-export default YamlEditor;

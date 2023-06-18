@@ -17,7 +17,7 @@
 import {useState} from 'react';
 import YAML from 'yaml';
 
-const useEditor = saveFunction => {
+export const useEditor = saveFunction => {
   const [resourceYaml, setResourceYaml] = useState(null);
   const [error, setError] = useState();
   const save = async () => {
@@ -34,5 +34,3 @@ const useEditor = saveFunction => {
   };
   return {error, setError, resourceYaml, setResourceYaml, save};
 };
-
-export default useEditor;

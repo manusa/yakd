@@ -18,14 +18,12 @@ import React, {useState} from 'react';
 import {useStore} from 'react-redux';
 import cloneDeep from 'lodash/cloneDeep';
 import YAML from 'yaml';
-import editor from './editor';
 import md from '../metadata';
-import {Alert} from './Alert';
+import {useEditor, Alert, YamlEditor} from './';
 import DashboardPage from '../components/DashboardPage';
 import Card from '../components/Card';
 import Link from './Link';
 import Icon from './Icon';
-import useEditor from './editor/useEditor';
 
 const ResourceEditPage = ({
   kind,
@@ -94,7 +92,7 @@ const ResourceEditPage = ({
             padding='p-0'
           >
             <div className='flex-1'>
-              <editor.YamlEditor
+              <YamlEditor
                 value={resourceYaml}
                 onChange={value => setResourceYaml(value)}
               />
