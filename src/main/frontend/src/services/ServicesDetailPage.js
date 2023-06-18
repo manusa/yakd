@@ -19,8 +19,8 @@ import {connect} from 'react-redux';
 import {withParams} from '../router';
 import metadata from '../metadata';
 import svc from './';
+import {Form} from '../components';
 import Card from '../components/Card';
-import Form from '../components/Form';
 import ResourceDetailPage from '../components/ResourceDetailPage';
 
 const Selectors = ({selectors}) => (

@@ -21,9 +21,9 @@ import metadata from '../metadata';
 import j from './';
 import {ContainerList} from '../containers';
 import pods from '../pods';
+import {Form} from '../components';
 import Card from '../components/Card';
 import DashboardPage from '../components/DashboardPage';
-import Form from '../components/Form';
 import ResourceDetailPage from '../components/ResourceDetailPage';
 
 const JobsDetailPage = ({job}) => (

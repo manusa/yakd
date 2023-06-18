@@ -19,7 +19,7 @@ import {connect} from 'react-redux';
 import {withParams} from '../router';
 import s from './';
 import metadata from '../metadata';
-import Form from '../components/Form';
+import {Form} from '../components';
 import ResourceDetailPage from '../components/ResourceDetailPage';
 import Icon from '../components/Icon';
 

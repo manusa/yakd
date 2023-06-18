@@ -20,8 +20,8 @@ import {withParams} from '../router';
 import metadata from '../metadata';
 import crd from './';
 import cr from '../customresources';
+import {Form} from '../components';
 import Card from '../components/Card';
-import Form from '../components/Form';
 import Link from '../components/Link';
 import ResourceDetailPage from '../components/ResourceDetailPage';
 

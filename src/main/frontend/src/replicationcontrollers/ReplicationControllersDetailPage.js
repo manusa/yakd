@@ -21,8 +21,8 @@ import metadata from '../metadata';
 import {ContainerList} from '../containers';
 import pods from '../pods';
 import rc from './';
+import {Form} from '../components';
 import Card from '../components/Card';
-import Form from '../components/Form';
 import ResourceDetailPage from '../components/ResourceDetailPage';
 
 const ReplicationControllersDetailPage = ({replicationController}) => (

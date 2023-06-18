@@ -16,7 +16,7 @@
  */
 import React from 'react';
 
-const Form = ({formClassName, className, children}) => (
+export const Form = ({formClassName, className, children}) => (
   <form
     className={`w-full ${formClassName ?? ''}`}
     onSubmit={e => e.preventDefault()}
@@ -49,5 +49,3 @@ Form.Field = ({
     {children}
   </div>
 );
-
-export default Form;

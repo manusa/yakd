@@ -16,7 +16,7 @@
  */
 import React from 'react';
 import metadata from './';
-import Form from '../components/Form';
+import {Form} from '../components';
 import Link from '../components/Link';
 import Icon from '../components/Icon';
 

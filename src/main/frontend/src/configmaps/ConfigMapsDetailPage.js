@@ -19,7 +19,7 @@ import {connect} from 'react-redux';
 import {withParams} from '../router';
 import {api, selectors} from './';
 import metadata from '../metadata';
-import Form from '../components/Form';
+import {Form} from '../components';
 import ResourceDetailPage from '../components/ResourceDetailPage';
 
 const DataField = ({label, value}) => (
