@@ -13,7 +13,6 @@
 <!--    <version.quarkus>3.1.0.Final</version.quarkus>-->
     <!-- TODO temporarily allow snapshots to deal with leak -->
     <version.quarkus>999-SNAPSHOT</version.quarkus>
-    <version.kubernetes-client>6.7.2</version.kubernetes-client>
     <!-- //....// -->
     <version.jkube>1.13.1</version.jkube>
     <version.exec-maven-plugin>3.0.0</version.exec-maven-plugin>
@@ -51,28 +50,6 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <!-- TODO temporarily allow snapshots to deal with leak -->
-      <dependency>
-        <groupId>io.fabric8</groupId>
-        <artifactId>kubernetes-httpclient-vertx</artifactId>
-        <version>${version.kubernetes-client}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.fabric8</groupId>
-        <artifactId>openshift-client</artifactId>
-        <version>${version.kubernetes-client}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.fabric8</groupId>
-        <artifactId>kubernetes-client</artifactId>
-        <version>${version.kubernetes-client}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.fabric8</groupId>
-        <artifactId>kubernetes-client-api</artifactId>
-        <version>${version.kubernetes-client}</version>
-      </dependency>
-      <!-- //....// -->
     </dependencies>
   </dependencyManagement>
 
