@@ -16,7 +16,7 @@
  */
 import React from 'react';
 import metadata from '../metadata';
-import cj from './';
+import {api, selectors} from './';
 import Icon from '../components/Icon';
 import Link from '../components/Link';
 import ResourceList from '../components/ResourceList';
@@ -35,7 +35,7 @@ const headers = [
 ];
 
 const Rows = ({cronJobs}) => {
-  const deleteJob = cronJob => () => cj.api.delete(cronJob);
+  const deleteJob = cronJob => () => api.deleteCj(cronJob);
   return cronJobs
     .sort(metadata.selectors.sortByCreationTimeStamp)
     .map(cronJob => (
@@ -46,12 +46,10 @@ const Rows = ({cronJobs}) => {
         <Table.Cell className='whitespace-nowrap w-3 text-center'>
           <Icon
             className={
-              cj.selectors.isReady(cronJob) ? 'text-green-500' : 'text-red-500'
+              selectors.isReady(cronJob) ? 'text-green-500' : 'text-red-500'
             }
             icon={
-              cj.selectors.isReady(cronJob)
-                ? 'fa-check'
-                : 'fa-exclamation-circle'
+              selectors.isReady(cronJob) ? 'fa-check' : 'fa-exclamation-circle'
             }
           />
         </Table.Cell>
@@ -67,9 +65,9 @@ const Rows = ({cronJobs}) => {
             {metadata.selectors.namespace(cronJob)}
           </Link.Namespace>
         </Table.Cell>
-        <Table.Cell>{cj.selectors.specSchedule(cronJob)}</Table.Cell>
-        <Table.Cell>{cj.selectors.specSuspend(cronJob).toString()}</Table.Cell>
-        <Table.Cell>{cj.selectors.statusActive(cronJob).length}</Table.Cell>
+        <Table.Cell>{selectors.specSchedule(cronJob)}</Table.Cell>
+        <Table.Cell>{selectors.specSuspend(cronJob).toString()}</Table.Cell>
+        <Table.Cell>{selectors.statusActive(cronJob).length}</Table.Cell>
         <Table.Cell className='whitespace-nowrap text-center'>
           <Table.DeleteButton onClick={deleteJob(cronJob)} />
         </Table.Cell>
@@ -77,10 +75,10 @@ const Rows = ({cronJobs}) => {
     ));
 };
 
-const List = ({resources, crudDelete, loadedResources, ...properties}) => (
-  <ResourceList headers={headers} resources={resources} {...properties}>
-    <Rows cronJobs={resources} loadedResources={loadedResources} />
-  </ResourceList>
+export const List = ResourceList.resourceListConnect('cronJobs')(
+  ({resources, crudDelete, loadedResources, ...properties}) => (
+    <ResourceList headers={headers} resources={resources} {...properties}>
+      <Rows cronJobs={resources} loadedResources={loadedResources} />
+    </ResourceList>
+  )
 );
-
-export default ResourceList.resourceListConnect('cronJobs')(List);

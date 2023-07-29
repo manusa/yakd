@@ -16,19 +16,17 @@
  */
 import React from 'react';
 import {connect} from 'react-redux';
-import j from './';
+import {List} from './';
 import {FilterBar} from '../components';
 import DashboardPage from '../components/DashboardPage';
-
-const CronJobsPage = ({selectedNamespace}) => (
-  <DashboardPage title='CronJobs'>
-    <FilterBar />
-    <j.List className='mt-4' namespace={selectedNamespace} />
-  </DashboardPage>
-);
 
 const mapStateToProps = ({ui: {selectedNamespace}}) => ({
   selectedNamespace
 });
 
-export default connect(mapStateToProps)(CronJobsPage);
+export const CronJobsPage = connect(mapStateToProps)(({selectedNamespace}) => (
+  <DashboardPage title='CronJobs'>
+    <FilterBar />
+    <List className='mt-4' namespace={selectedNamespace} />
+  </DashboardPage>
+));

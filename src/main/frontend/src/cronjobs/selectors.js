@@ -14,26 +14,22 @@
  * limitations under the License.
  *
  */
-const selectors = {};
-
-selectors.specSchedule = cronJob => cronJob?.spec?.schedule ?? '';
-selectors.specSuspend = cronJob => cronJob?.spec?.suspend === true;
-selectors.specConcurrencyPolicy = cronJob =>
+export const specSchedule = cronJob => cronJob?.spec?.schedule ?? '';
+export const specSuspend = cronJob => cronJob?.spec?.suspend === true;
+export const specConcurrencyPolicy = cronJob =>
   cronJob?.spec?.concurrencyPolicy ?? '';
 
-selectors.statusLastScheduleTime = cronJob => {
+export const statusLastScheduleTime = cronJob => {
   const lst = cronJob?.status?.lastScheduleTime;
   if (lst) {
     return new Date(lst);
   }
 };
-selectors.statusActive = cronJob => cronJob?.status?.active ?? [];
-selectors.statusActiveUids = cronJob =>
-  selectors.statusActive(cronJob).map(aj => aj.uid);
+export const statusActive = cronJob => cronJob?.status?.active ?? [];
+export const statusActiveUids = cronJob =>
+  statusActive(cronJob).map(aj => aj.uid);
 
-selectors.containers = cronJob =>
+export const containers = cronJob =>
   cronJob?.spec?.jobTemplate?.spec?.template?.spec?.containers ?? [];
 
-selectors.isReady = cronJob => selectors.specSuspend(cronJob) === false;
-
-export default selectors;
+export const isReady = cronJob => specSuspend(cronJob) === false;

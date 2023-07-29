@@ -18,7 +18,7 @@ import {deleteNamespacedResource, updateNamespacedResource} from '../fetch';
 import {getApiURL} from '../env';
 import metadata from '../metadata';
 
-const updateSuspend = async (resource, suspend) => {
+export const updateSuspend = async (resource, suspend) => {
   await fetch(
     `${getApiURL()}/cronjobs/${metadata.selectors.namespace(
       resource
@@ -27,7 +27,7 @@ const updateSuspend = async (resource, suspend) => {
   );
 };
 
-const trigger = async resource => {
+export const trigger = async resource => {
   await fetch(
     `${getApiURL()}/cronjobs/${metadata.selectors.namespace(
       resource
@@ -36,11 +36,6 @@ const trigger = async resource => {
   );
 };
 
-const api = {
-  delete: deleteNamespacedResource('cronjobs'),
-  update: updateNamespacedResource('cronjobs'),
-  updateSuspend,
-  trigger
-};
+export const deleteCj = deleteNamespacedResource('cronjobs');
 
-export default api;
+export const update = updateNamespacedResource('cronjobs');

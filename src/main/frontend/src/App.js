@@ -21,7 +21,7 @@ import * as apis from './apis';
 import * as crb from './clusterrolebindings';
 import * as cr from './clusterroles';
 import * as cm from './configmaps';
-import cj from './cronjobs';
+import * as cj from './cronjobs';
 import crd from './customresourcedefinitions';
 import dc from './deploymentconfigs';
 import ds from './daemonsets';

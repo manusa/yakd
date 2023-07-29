@@ -19,7 +19,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as cr from '../clusterroles';
 import * as cm from '../configmaps';
-import cj from '../cronjobs';
+import * as cj from '../cronjobs';
 import crd from '../customresourcedefinitions';
 import d from '../deployments';
 import dc from '../deploymentconfigs';

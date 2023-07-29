@@ -17,11 +17,11 @@
 import React from 'react';
 import {withParams} from '../router';
 import md from '../metadata';
-import cj from './';
+import {api} from './';
 import ResourceEditPage from '../components/ResourceEditPage';
 import Link from '../components/Link';
 
-const CronJobsEditPage = ({params: {uid}}) => (
+export const CronJobsEditPage = withParams(({params: {uid}}) => (
   <ResourceEditPage
     kind='CronJobs'
     path='cronjobs'
@@ -30,9 +30,7 @@ const CronJobsEditPage = ({params: {uid}}) => (
         {md.selectors.name(resource)}
       </Link.RouterLink>
     )}
-    save={async resource => await cj.api.update(resource)}
+    save={async resource => await api.update(resource)}
     resourceFromState={state => state.cronJobs[uid]}
   />
-);
-
-export default withParams(CronJobsEditPage);
+));

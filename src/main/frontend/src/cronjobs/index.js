@@ -14,22 +14,11 @@
  * limitations under the License.
  *
  */
-import api from './api';
-import reducer from './reducer';
-import selectors from './selectors';
-import List from './List';
-import CronJobsDetailPage from './CronJobsDetailPage';
-import CronJobsEditPage from './CronJobsEditPage';
-import CronJobsPage from './CronJobsPage';
 
-const index = {
-  api,
-  reducer,
-  selectors,
-  CronJobsDetailPage,
-  CronJobsEditPage,
-  CronJobsPage,
-  List
-};
-
-export default index;
+export * as api from './api';
+export {reducer} from './reducer';
+export * as selectors from './selectors';
+export {List} from './List';
+export {CronJobsDetailPage} from './CronJobsDetailPage';
+export {CronJobsEditPage} from './CronJobsEditPage';
+export {CronJobsPage} from './CronJobsPage';

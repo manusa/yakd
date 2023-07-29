@@ -23,7 +23,7 @@ import * as crb from './clusterrolebindings';
 import * as cr from './clusterroles';
 import * as cv from './clusterversions';
 import * as cm from './configmaps';
-import cj from './cronjobs';
+import * as cj from './cronjobs';
 import crd from './customresourcedefinitions';
 import ds from './daemonsets';
 import dc from './deploymentconfigs';

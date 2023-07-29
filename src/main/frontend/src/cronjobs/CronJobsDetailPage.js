@@ -18,7 +18,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {withParams} from '../router';
 import metadata from '../metadata';
-import cj from './';
+import {api, selectors} from './';
 import jobs from '../jobs';
 import {Card, Form} from '../components';
 import DashboardPage from '../components/DashboardPage';
@@ -27,8 +27,8 @@ import Link from '../components/Link';
 import ResourceDetailPage from '../components/ResourceDetailPage';
 
 const SuspendField = ({cronJob}) => {
-  const isSuspended = cj.selectors.specSuspend(cronJob);
-  const toggleSuspend = () => cj.api.updateSuspend(cronJob, !isSuspended);
+  const isSuspended = selectors.specSuspend(cronJob);
+  const toggleSuspend = () => api.updateSuspend(cronJob, !isSuspended);
   return (
     <Form.Field label='Suspended'>
       <div className='flex items-center'>
@@ -45,76 +45,6 @@ const SuspendField = ({cronJob}) => {
   );
 };
 
-const CronJobsDetailPage = ({cronJob}) => (
-  <ResourceDetailPage
-    path='cronjobs'
-    title={
-      <DashboardPage.Title
-        path='cronjobs'
-        kind='CronJobs'
-        namespace={metadata.selectors.namespace(cronJob)}
-        resource={cronJob}
-        isReadyFunction={cj.selectors.isReady}
-      />
-    }
-    resource={cronJob}
-    deleteFunction={cj.api.delete}
-    actions={
-      <Link
-        className='ml-2'
-        size={Link.sizes.small}
-        variant={Link.variants.outline}
-        onClick={() => cj.api.trigger(cronJob)}
-        title='Manual Trigger'
-      >
-        <Icon icon='fa-play' className='mr-2' />
-        Trigger
-      </Link>
-    }
-    body={
-      <Form>
-        <metadata.Details resource={cronJob} />
-        <Form.Field label='Schedule'>
-          {cj.selectors.specSchedule(cronJob)}
-        </Form.Field>
-        <SuspendField cronJob={cronJob} />
-        <Form.Field label='Active'>
-          {cj.selectors.statusActive(cronJob).length}
-        </Form.Field>
-        <Form.Field label='Concurrency Policy'>
-          {cj.selectors.specConcurrencyPolicy(cronJob)}
-        </Form.Field>
-        <Form.Field label='Last Schedule'>
-          {`${
-            cj.selectors
-              .statusLastScheduleTime(cronJob)
-              ?.toLocaleDateString() ?? ''
-          }
-          ${
-            cj.selectors
-              .statusLastScheduleTime(cronJob)
-              ?.toLocaleTimeString() ?? ''
-          }`}
-        </Form.Field>
-      </Form>
-    }
-  >
-    <jobs.List
-      title='Active Jobs'
-      titleVariant={Card.titleVariants.medium}
-      className='mt-2'
-      uids={cj.selectors.statusActiveUids(cronJob)}
-    />
-    <jobs.List
-      title='Inactive Jobs'
-      titleVariant={Card.titleVariants.medium}
-      className='mt-2'
-      ownerUid={metadata.selectors.uid(cronJob)}
-      uidsNotIn={cj.selectors.statusActiveUids(cronJob)}
-    />
-  </ResourceDetailPage>
-);
-
 const mapStateToProps = ({cronJobs}) => ({
   cronJobs
 });
@@ -122,6 +52,79 @@ const mapStateToProps = ({cronJobs}) => ({
 const mergeProps = ({cronJobs}, dispatchProps, {params: {uid}}) => ({
   cronJob: cronJobs[uid]
 });
+export const CronJobsDetailPage = withParams(
+  connect(
+    mapStateToProps,
+    null,
+    mergeProps
+  )(({cronJob}) => (
+    <ResourceDetailPage
+      path='cronjobs'
+      title={
+        <DashboardPage.Title
+          path='cronjobs'
+          kind='CronJobs'
+          namespace={metadata.selectors.namespace(cronJob)}
+          resource={cronJob}
+          isReadyFunction={selectors.isReady}
+        />
+      }
+      resource={cronJob}
+      deleteFunction={api.deleteCj}
+      actions={
+        <Link
+          className='ml-2'
+          size={Link.sizes.small}
+          variant={Link.variants.outline}
+          onClick={() => api.trigger(cronJob)}
+          title='Manual Trigger'
+        >
+          <Icon icon='fa-play' className='mr-2' />
+          Trigger
+        </Link>
+      }
+      body={
+        <Form>
+          <metadata.Details resource={cronJob} />
+          <Form.Field label='Schedule'>
+            {selectors.specSchedule(cronJob)}
+          </Form.Field>
+          <SuspendField cronJob={cronJob} />
+          <Form.Field label='Active'>
+            {selectors.statusActive(cronJob).length}
+          </Form.Field>
+          <Form.Field label='Concurrency Policy'>
+            {selectors.specConcurrencyPolicy(cronJob)}
+          </Form.Field>
+          <Form.Field label='Last Schedule'>
+            {`${
+              selectors.statusLastScheduleTime(cronJob)?.toLocaleDateString() ??
+              ''
+            }
+          ${
+            selectors.statusLastScheduleTime(cronJob)?.toLocaleTimeString() ??
+            ''
+          }`}
+          </Form.Field>
+        </Form>
+      }
+    >
+      <jobs.List
+        title='Active Jobs'
+        titleVariant={Card.titleVariants.medium}
+        className='mt-2'
+        uids={selectors.statusActiveUids(cronJob)}
+      />
+      <jobs.List
+        title='Inactive Jobs'
+        titleVariant={Card.titleVariants.medium}
+        className='mt-2'
+        ownerUid={metadata.selectors.uid(cronJob)}
+        uidsNotIn={selectors.statusActiveUids(cronJob)}
+      />
+    </ResourceDetailPage>
+  ))
+);
 
 export default withParams(
   connect(mapStateToProps, null, mergeProps)(CronJobsDetailPage)
