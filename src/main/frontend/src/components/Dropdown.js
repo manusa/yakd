@@ -15,7 +15,7 @@
  *
  */
 import React, {useState} from 'react';
-import usePopup from './popup/usePopup';
+import {usePopup} from './';
 import Icon from './Icon';
 
 const DropdownPanel = ({visible, items, onClick}) => (

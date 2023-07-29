@@ -16,7 +16,7 @@
  */
 import {useLayoutEffect, useRef, useState} from 'react';
 
-const usePopup = () => {
+export const usePopup = () => {
   const popupRef = useRef(null);
   const [panelVisible, setPanelVisible] = useState(false);
   useLayoutEffect(() => {
@@ -30,5 +30,3 @@ const usePopup = () => {
   }, [popupRef]);
   return {popupRef, panelVisible, setPanelVisible};
 };
-
-export default usePopup;
