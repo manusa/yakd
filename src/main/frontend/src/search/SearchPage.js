@@ -24,6 +24,7 @@ import crd from '../customresourcedefinitions';
 import d from '../deployments';
 import dc from '../deploymentconfigs';
 import ds from '../daemonsets';
+import * as ep from '../endpoints';
 import hpa from '../horizontalpodautoscalers';
 import i from '../ingresses';
 import j from '../jobs';
@@ -122,6 +123,12 @@ const Results = ({query, selectedNamespace}) => {
       <svc.List
         {...commonProps}
         title='Services'
+        nameLike={query}
+        namespace={selectedNamespace}
+      />
+      <ep.List
+        {...commonProps}
+        title='Endpoints'
         nameLike={query}
         namespace={selectedNamespace}
       />
