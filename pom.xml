@@ -10,7 +10,7 @@
   <properties>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
-    <version.quarkus>3.2.0.CR1</version.quarkus>
+    <version.quarkus>3.2.2.Final</version.quarkus>
     <version.jkube>1.13.1</version.jkube>
     <version.exec-maven-plugin>3.0.0</version.exec-maven-plugin>
     <container.image.tag>${project.version}</container.image.tag>
