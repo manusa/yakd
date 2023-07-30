@@ -30,7 +30,8 @@ actions.Types = {
   UI_CLEAR_ERROR: 'UI_CLEAR_ERROR',
   UI_SET_RESOURCE_LOADED: 'UI_SET_RESOURCE_LOADED',
   UI_SELECT_NAMESPACE: 'SELECT_NAMESPACE',
-  UI_SET_QUERY: 'UI_SET_QUERY'
+  UI_SET_QUERY: 'UI_SET_QUERY',
+  UI_SET_CREATING_NEW_RESOURCE: 'UI_SET_CREATING_NEW_RESOURCE'
 };
 
 actions.clear = () => ({
@@ -89,6 +90,11 @@ actions.selectNamespace = namespace => ({
 actions.setQuery = query => ({
   type: actions.Types.UI_SET_QUERY,
   payload: query
+});
+
+export const uiSetCreatingNewResource = creatingNewResource => ({
+  type: actions.Types.UI_SET_CREATING_NEW_RESOURCE,
+  payload: creatingNewResource
 });
 
 actions.clearSelectedNamespace = () => actions.selectNamespace(null);

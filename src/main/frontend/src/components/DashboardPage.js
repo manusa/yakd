@@ -23,7 +23,7 @@ import i from './icons';
 import metadata from '../metadata';
 import nm from '../nodes';
 import sidebar from '../sidebar';
-import {Alert, Tooltip} from './';
+import {Alert, NewResource, NewResourceButton, Tooltip} from './';
 import Icon from './Icon';
 import Link from './Link';
 
@@ -71,6 +71,7 @@ const Header = ({isMinikube, isOpenShift, offline, setSideBarOpen, title}) => {
           )}
           {title}
         </div>
+        <NewResourceButton />
         {offline && <OfflineIcon />}
       </div>
     </header>
@@ -124,6 +125,7 @@ const DashboardPage = ({
           <Alert clearError={clearError}>{error}</Alert>
           <div className='flex-1 w-100 p-4 relative'>{children}</div>
           <Footer />
+          <NewResource />
         </main>
       </div>
     </div>

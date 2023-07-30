@@ -21,6 +21,7 @@ const defaultState = {
   offline: false,
   error: '',
   loadedResources: {},
+  creatingNewResource: false,
   selectedNamespace: null,
   query: ''
 };
@@ -56,6 +57,9 @@ const uiReducer = (state = defaultState, action = {}) => {
     }
     case Types.UI_SET_QUERY: {
       return {...state, query: action.payload};
+    }
+    case Types.UI_SET_CREATING_NEW_RESOURCE: {
+      return {...state, creatingNewResource: action.payload};
     }
     default:
       return {...state};

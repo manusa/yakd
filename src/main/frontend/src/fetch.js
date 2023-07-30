@@ -58,6 +58,20 @@ export const deleteResource = path => async resource => {
   );
 };
 
+const createRequest = async (url, resource) => {
+  const headers = new Headers();
+  headers.set('Content-Type', 'application/json');
+  const response = await fetch(url, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(resource)
+  });
+  return await toJson(response);
+};
+
+export const createResource = async resource =>
+  createRequest(`${getApiURL()}`, resource);
+
 export const deleteNamespacedResource = path => async resource => {
   await deleteRequest(
     `${getApiURL()}/${path}/${metadata.selectors.namespace(

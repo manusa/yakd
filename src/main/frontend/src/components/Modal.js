@@ -16,12 +16,23 @@
  */
 import React from 'react';
 
-const Modal = ({visible, children}) =>
-  visible ? (
-    <div className='fixed z-10 inset-0 overflow-hidden'>
-      <div className='flex items-center justify-center min-h-screen lg:pl-64'>
+const Modal = ({
+  visible,
+  // Adds padding to keep sidebar visible when modal is open
+  preserveSideBar = true,
+  children
+}) => {
+  if (!visible) {
+    return '';
+  }
+  const zIndex = preserveSideBar ? 'z-10' : 'z-30';
+  const sideBarPadding = preserveSideBar ? ' lg:pl-64' : '';
+  return (
+    <div className={`fixed ${zIndex} inset-0 overflow-hidden`}>
+      <div
+        className={`flex items-center justify-center min-h-screen${sideBarPadding}`}
+      >
         {' '}
-        {/* pl-64 for sidebar */}
         <div className='fixed inset-0 transition-opacity' aria-hidden='true'>
           <div className='absolute inset-0 bg-gray-500 opacity-75' />
         </div>
@@ -35,8 +46,7 @@ const Modal = ({visible, children}) =>
         </div>
       </div>
     </div>
-  ) : (
-    ''
   );
+};
 
 export default Modal;

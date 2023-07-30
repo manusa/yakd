@@ -38,6 +38,7 @@ export const ResourceEditModal = ({
   resource,
   save,
   close,
+  preserveSideBar,
   title = metadata.selectors.name(resource)
 }) => {
   const {
@@ -57,7 +58,7 @@ export const ResourceEditModal = ({
     close();
   };
   return (
-    <Modal visible={resource !== null}>
+    <Modal visible={resource !== null} preserveSideBar={preserveSideBar}>
       <div className='h-screen max-h-screen flex flex-col'>
         <Card className='flex-1 flex flex-col md:m-4'>
           <Card.Title className='flex items-center'>
