@@ -13,7 +13,7 @@ import java.util.Optional;
 public class KubernetesClientExceptionMapper implements ExceptionMapper<KubernetesClientException> {
   @Override
   public Response toResponse(KubernetesClientException exception) {
-    final var code = exception.getCode() >= 400 || exception.getCode() <= 599 ? exception.getCode() : 500;
+    final var code = exception.getCode() >= 400 && exception.getCode() <= 599 ? exception.getCode() : 500;
     final var type = exception.getCause() != null ? exception.getCause().getClass().getName() : KubernetesClientException.class.getName();
     final var entity = Optional.ofNullable(exception.getStatus())
       .map(Status::getMessage)
