@@ -21,7 +21,7 @@ import redux from '../redux';
 import Table from './Table';
 
 const Content = ({headers, resources, loading, children}) => {
-  if (resources.length > 0) {
+  if (resources?.length > 0) {
     return children;
   }
   if (loading) {
