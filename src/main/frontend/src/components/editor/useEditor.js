@@ -20,17 +20,21 @@ import YAML from 'yaml';
 export const useEditor = saveFunction => {
   const [resourceYaml, setResourceYaml] = useState(null);
   const [error, setError] = useState();
+  const [saving, setSaving] = useState(false);
   const save = async () => {
     if (!saveFunction) {
       return;
     }
     try {
+      setSaving(true);
       setError(null);
       const updatedResource = await saveFunction(YAML.parse(resourceYaml));
       setResourceYaml(YAML.stringify(updatedResource));
     } catch (e) {
       setError(e.message);
+    } finally {
+      setSaving(false);
     }
   };
-  return {error, setError, resourceYaml, setResourceYaml, save};
+  return {error, setError, saving, resourceYaml, setResourceYaml, save};
 };

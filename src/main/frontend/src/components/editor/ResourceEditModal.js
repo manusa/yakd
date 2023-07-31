@@ -17,22 +17,32 @@
 import React from 'react';
 import YAML from 'yaml';
 import metadata from '../../metadata';
-import {Alert, Card, YamlEditor, useEditor} from '../';
+import {Alert, Card, YamlEditor, useEditor, Spinner} from '../';
 import Modal from '../Modal';
 import Link from '../Link';
 import Icon from '../Icon';
 
-const ToolbarButton = ({title, onClick, children, ...props}) => (
-  <Link
-    size={Link.sizes.small}
-    variant={Link.variants.outline}
-    title={title}
-    onClick={onClick}
-    {...props}
-  >
-    {children}
-  </Link>
-);
+const ToolbarButton = ({
+  title,
+  onClick,
+  children,
+  className = '',
+  ...props
+}) => {
+  className = `select-none ${className}`;
+  return (
+    <Link
+      size={Link.sizes.small}
+      variant={Link.variants.outline}
+      title={title}
+      onClick={onClick}
+      className={className}
+      {...props}
+    >
+      {children}
+    </Link>
+  );
+};
 
 export const ResourceEditModal = ({
   resource,
@@ -46,6 +56,7 @@ export const ResourceEditModal = ({
     setResourceYaml,
     error,
     setError,
+    saving,
     save: handleSave
   } = useEditor(save);
   if (resourceYaml === null && resource) {
@@ -64,11 +75,24 @@ export const ResourceEditModal = ({
           <Card.Title className='flex items-center'>
             <div className='flex-1'>{title}</div>
             <div>
-              <ToolbarButton title='Save' onClick={handleSave} className='mr-2'>
-                <Icon stylePrefix='far' icon='fa-save' className='mr-2' />
+              <ToolbarButton
+                title='Save'
+                onClick={handleSave}
+                disabled={saving}
+                className='mr-2'
+              >
+                {saving ? (
+                  <Spinner size={'w-3 h-3'} className='inline-flex mr-2' />
+                ) : (
+                  <Icon stylePrefix='far' icon='fa-save' className='mr-2' />
+                )}
                 Save
               </ToolbarButton>
-              <ToolbarButton title='Cancel' onClick={handleClose}>
+              <ToolbarButton
+                title='Cancel'
+                onClick={handleClose}
+                disabled={saving}
+              >
                 <Icon
                   stylePrefix='far'
                   icon='fa-window-close'

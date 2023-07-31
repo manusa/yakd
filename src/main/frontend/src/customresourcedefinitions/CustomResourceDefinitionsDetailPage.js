@@ -98,9 +98,7 @@ const CustomResourceDefinitionsDetailPage = ({customResourceDefinition}) => {
                 {v === applicableVersion ? (
                   <span>{v}</span>
                 ) : (
-                  <Link disabled onClick={() => changeVersion(v)}>
-                    {v}
-                  </Link>
+                  <Link onClick={() => changeVersion(v)}>{v}</Link>
                 )}
               </div>
             ))}

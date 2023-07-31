@@ -41,12 +41,24 @@ const Link = ({
   href = '#',
   variant = variants.default,
   size = sizes.normal,
+  disabled = false,
   ...props
-}) => (
-  <a className={`${variant} ${size} ${className ?? ''}`} href={href} {...props}>
-    {children}
-  </a>
-);
+}) => {
+  let disabledClasses = '';
+  if (disabled) {
+    props['aria-disabled'] = true;
+    disabledClasses = 'pointer-events-none opacity-50';
+  }
+  return (
+    <a
+      className={`${variant} ${size} ${disabledClasses} ${className ?? ''}`}
+      href={href}
+      {...props}
+    >
+      {children}
+    </a>
+  );
+};
 
 Link.variants = variants;
 Link.sizes = sizes;
