@@ -19,7 +19,7 @@ import {useStore} from 'react-redux';
 import cloneDeep from 'lodash/cloneDeep';
 import YAML from 'yaml';
 import md from '../metadata';
-import {useEditor, Alert, Card, YamlEditor} from './';
+import {useEditor, Alert, Card, YamlEditor, Spinner} from './';
 import DashboardPage from '../components/DashboardPage';
 import Link from './Link';
 import Icon from './Icon';
@@ -40,6 +40,7 @@ const ResourceEditPage = ({
     setResourceYaml,
     error,
     setError,
+    saving,
     save: handleSave
   } = useEditor(save);
   if (resource === undefined) {
@@ -79,9 +80,15 @@ const ResourceEditPage = ({
                 size={Link.sizes.small}
                 variant={Link.variants.outline}
                 title='Save'
+                disabled={saving}
+                className='select-none'
                 onClick={handleSave}
               >
-                <Icon stylePrefix='far' icon='fa-save' className='mr-2' />
+                {saving ? (
+                  <Spinner size={'w-3 h-3'} className='inline-flex mr-2' />
+                ) : (
+                  <Icon stylePrefix='far' icon='fa-save' className='mr-2' />
+                )}
                 Save
               </Link>
             </div>
