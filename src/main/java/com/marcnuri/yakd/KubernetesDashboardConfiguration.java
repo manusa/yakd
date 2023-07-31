@@ -74,6 +74,7 @@ public class KubernetesDashboardConfiguration {
       .withTrustCerts(insecureSkipTlsVerify)
       .withConnectionTimeout(0)
       .withRequestTimeout(0)
+      .withRequestRetryBackoffLimit(3)
       .build();
   }
 }
