@@ -22,7 +22,7 @@ kubectl create -f https://raw.githubusercontent.com/manusa/yakd/main/docs/yakd-k
 minikube service yakd
 ``` 
 
-![An image of a screenshot YAKC Kubernetes Dashboard landing page](docs/yakc-kubernetes-dashboard.gif)
+![An gif screencast of YAKD Kubernetes Dashboard](docs/yakd-kubernetes-dashboard.gif)
 
 ### OpenShift Instruqt
 
