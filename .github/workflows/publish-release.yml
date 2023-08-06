@@ -1,13 +1,13 @@
-name: Kubernetes Dashboard (SNAPSHOTS)
+name: Kubernetes Dashboard (GA)
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - 'v*'
 
 jobs:
-  publish-snapshot-image:
-    name: Publish YAKD Snapshot
+  publish-release-image:
+    name: Publish YAKD Release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -22,6 +22,6 @@ jobs:
       - name: Build and Push
         run: |
           mvn -Pbuild-frontend,native,k8s clean package k8s:build k8s:push        \
-          -Dcontainer.image.tag=snapshot                                          \
+          -Dcontainer.image.tag=${GITHUB_REF#refs/tags/v}                         \
           -Djkube.docker.push.username=${{ secrets.DOCKER_USERNAME }}             \
           -Djkube.docker.push.password=${{ secrets.DOCKER_PASSWORD }}
