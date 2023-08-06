@@ -2,9 +2,9 @@
 
 Kubernetes Dashboard built with [Quarkus](https://quarkus.io) and [React](https://www.reactjs.org).
 
-## Click the video to see a demo of the Dashboard
+## Click to see a complete demo of the Dashboard
 
-[![Thumbnail of video of a demo for YAKC - Kubernetes Dashboard](https://img.youtube.com/vi/Dum84fwA8_g/maxresdefault.jpg)](https://www.youtube.com/watch?v=Dum84fwA8_g)
+[![An gif screencast of YAKD Kubernetes Dashboard](docs/yakd-kubernetes-dashboard.gif)](https://www.youtube.com/watch?v=Dum84fwA8_g)
 
 
 ## Getting started
@@ -22,7 +22,7 @@ kubectl create -f https://raw.githubusercontent.com/manusa/yakd/main/docs/yakd-k
 minikube service yakd
 ``` 
 
-![An gif screencast of YAKD Kubernetes Dashboard](docs/yakd-kubernetes-dashboard.gif)
+
 
 ### OpenShift Instruqt
 
