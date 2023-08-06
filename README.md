@@ -1,5 +1,9 @@
 # YAKD - Yet Another Kubernetes Dashboard
 
+[![Docker Image Version (latest semver)](https://img.shields.io/docker/v/marcnuri/yakd)](https://hub.docker.com/r/marcnuri/yakd)
+[![Docker Pulls](https://img.shields.io/docker/pulls/marcnuri/yakd)](https://hub.docker.com/r/marcnuri/yakd)
+
+
 Kubernetes Dashboard built with [Quarkus](https://quarkus.io) and [React](https://www.reactjs.org).
 
 ## Click to see a complete demo of the Dashboard
