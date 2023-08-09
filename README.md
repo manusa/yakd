@@ -32,7 +32,7 @@ minikube service yakd
 
 You can test YAKD Kubernetes Dashboard by taking advantage of the OpenShift getting started Instruqt.
 
-Access the Course (from Red Hat): https://learn.openshift.com/introduction/cluster-access/
+Access the Course (from Red Hat): https://developers.redhat.com/courses/openshift/getting-started
 
 When the terminal loads, apply the provided YAKD Kubernetes Dashboard configuration:
 
@@ -46,7 +46,7 @@ clusterrolebinding.rbac.authorization.k8s.io/yakc-kubernetes-dashboard-cluster-a
 deployment.apps/yakc-quarkus-kubernetes-dashboard created
 route.route.openshift.io/yakc-quarkus-kubernetes-dashboard created
 #
-# Retrieve URL for created route
+# Retrieve URL for created route (should be ready once the YAKD Pod is running and ready)
 #
 $ echo "http://$(oc get route yakd -o jsonpath='{.spec.host}')"
 http://yakd-default.crc-lgph7-master-0.crc.q1aebzewtnbc.instruqt.io
