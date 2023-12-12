@@ -17,10 +17,10 @@
  */
 package com.marcnuri.yakd.watch;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import io.quarkus.vertx.http.Compressed;
+import io.smallrye.mutiny.Multi;
 import io.vertx.core.http.HttpServerResponse;
 import org.jboss.resteasy.reactive.RestStreamElementType;
 import org.slf4j.Logger;
@@ -45,13 +45,11 @@ public class WatchResource {
   private static final Logger LOG = LoggerFactory.getLogger(WatchResource.class);
 
   private final WatchService watchService;
-  private final ObjectMapper objectMapper;
   private final ExecutorService subscribeExecutor;
 
   @Inject
-  public WatchResource(WatchService watchService, ObjectMapper objectMapper) {
+  public WatchResource(WatchService watchService) {
     this.watchService = watchService;
-    this.objectMapper = objectMapper;
     subscribeExecutor = Executors.newCachedThreadPool();
   }
 
@@ -63,23 +61,17 @@ public class WatchResource {
   @Produces(MediaType.SERVER_SENT_EVENTS)
   @RestStreamElementType(MediaType.APPLICATION_JSON)
   @Compressed
-  public void get(@Context HttpServerResponse response, @Context Sse sse, @Context SseEventSink sseEventSink) {
-    watchService.newWatch().runSubscriptionOn(subscribeExecutor).subscribe()
-      .with(
-        subscription -> {
-          response.closeHandler(v -> subscription.cancel());
-          subscription.request(Long.MAX_VALUE); // unbounded -> request with no backpressure
-        },
-        we -> {
-          try {
-            if (!sseEventSink.isClosed()) {
-              sseEventSink.send(sse.newEvent(objectMapper.writeValueAsString(we)));
-            }
-          } catch (Exception e) {
-            LOG.error("Error serializing object", e);
-          }
-        },
-        throwable ->  LOG.warn("Watch subscription closed: {}", throwable.getMessage()),
-        () ->  LOG.debug("Watch subscription closed gracefully"));
+  public Multi<WatchEvent<?>> get(@Context HttpServerResponse response) {
+    return watchService.newWatch()
+      .runSubscriptionOn(subscribeExecutor)
+      .onSubscription()
+      .invoke(subscription -> {
+        response.closeHandler(v -> subscription.cancel());
+        subscription.request(Long.MAX_VALUE); // unbounded -> request with no backpressure
+      })
+      .onFailure()
+      .invoke(throwable ->  LOG.warn("Watch subscription closed: {}", throwable.getMessage()))
+      .onCompletion()
+      .invoke(() ->  LOG.debug("Watch subscription closed gracefully"));
   }
 }
