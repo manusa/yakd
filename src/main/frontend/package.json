@@ -5,7 +5,7 @@
   "dependencies": {
     "ace-builds": "1.22.0",
     "ansi-to-html": "0.7.2",
-    "dompurify": "3.0.3",
+    "dompurify": "3.0.6",
     "lodash": "4.17.21",
     "prop-types": "15.8.1",
     "react": "18.2.0",
