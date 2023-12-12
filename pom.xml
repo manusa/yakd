@@ -10,7 +10,7 @@
   <properties>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
-    <version.quarkus>3.6.1</version.quarkus>
+    <version.quarkus>3.3.3</version.quarkus>
     <version.jkube>1.15.0</version.jkube>
     <version.exec-maven-plugin>3.1.1</version.exec-maven-plugin>
     <container.image.tag>${project.version}</container.image.tag>
@@ -49,10 +49,6 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-kubernetes-client</artifactId>
       <exclusions>
-        <exclusion>
-          <groupId>io.fabric8</groupId>
-          <artifactId>kubernetes-model-flowcontrol</artifactId>
-        </exclusion>
         <exclusion>
           <groupId>io.fabric8</groupId>
           <artifactId>kubernetes-model-gatewayapi</artifactId>
