@@ -25,7 +25,6 @@ import io.fabric8.kubernetes.client.dsl.base.PatchContext;
 import io.fabric8.kubernetes.client.dsl.base.PatchType;
 import io.fabric8.openshift.api.model.DeploymentConfig;
 import io.fabric8.openshift.api.model.DeploymentConfigBuilder;
-import io.fabric8.openshift.client.OpenShiftClient;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
@@ -39,31 +38,31 @@ import static com.marcnuri.yakd.fabric8.WatchableSubscriber.subscriber;
 @Singleton
 public class DeploymentConfigService implements Watchable<DeploymentConfig> {
 
-  private final OpenShiftClient openShiftClient;
+  private final KubernetesClient kubernetesClient;
 
   @Inject
   public DeploymentConfigService(KubernetesClient kubernetesClient) {
-    this.openShiftClient = kubernetesClient.adapt(OpenShiftClient.class);
+    this.kubernetesClient = kubernetesClient;
   }
 
   @Override
   public Optional<Supplier<Boolean>> getAvailabilityCheckFunction() {
-    return Optional.of(() -> openShiftClient.supports(DeploymentConfig.class));
+    return Optional.of(() -> kubernetesClient.supports(DeploymentConfig.class));
   }
 
   @Override
   public Subscriber<DeploymentConfig> watch() {
     return tryInOrder(
       () -> {
-        openShiftClient.deploymentConfigs().inAnyNamespace().list(ClientUtil.LIMIT_1);
-        return subscriber(openShiftClient.deploymentConfigs().inAnyNamespace());
+        kubernetesClient.resources(DeploymentConfig.class).inAnyNamespace().list(ClientUtil.LIMIT_1);
+        return subscriber(kubernetesClient.resources(DeploymentConfig.class).inAnyNamespace());
       },
-      () -> subscriber(openShiftClient.deploymentConfigs().inNamespace(openShiftClient.getConfiguration().getNamespace()))
+      () -> subscriber(kubernetesClient.resources(DeploymentConfig.class).inNamespace(kubernetesClient.getConfiguration().getNamespace()))
     );
   }
 
   public void delete(String name, String namespace) {
-    openShiftClient.deploymentConfigs().inNamespace(namespace).withName(name).delete();
+    kubernetesClient.resources(DeploymentConfig.class).inNamespace(namespace).withName(name).delete();
   }
 
   public DeploymentConfig restart(String name, String namespace) {
@@ -75,13 +74,13 @@ public class DeploymentConfigService implements Watchable<DeploymentConfig> {
       .build();
     // TODO might be removable after Kubernetes Client 6.7.0
     // n.b. ensure triggers are not removed (empty list)
-    toPatch.getSpec().setTriggers(openShiftClient.deploymentConfigs().inNamespace(namespace).withName(name).get().getSpec().getTriggers());
-    return openShiftClient.deploymentConfigs().inNamespace(namespace).withName(name)
+    toPatch.getSpec().setTriggers(kubernetesClient.resources(DeploymentConfig.class).inNamespace(namespace).withName(name).get().getSpec().getTriggers());
+    return kubernetesClient.resources(DeploymentConfig.class).inNamespace(namespace).withName(name)
       .patch(PatchContext.of(PatchType.JSON_MERGE), toPatch);
   }
 
   public DeploymentConfig update(String name, String namespace, DeploymentConfig deploymentConfig) {
-    return openShiftClient.deploymentConfigs().inNamespace(namespace)
+    return kubernetesClient.resources(DeploymentConfig.class).inNamespace(namespace)
       .resource(new DeploymentConfigBuilder(deploymentConfig).editMetadata().withName(name).endMetadata().build()).update();
   }
 
@@ -89,8 +88,8 @@ public class DeploymentConfigService implements Watchable<DeploymentConfig> {
     final DeploymentConfig toPatch = new DeploymentConfigBuilder().withNewSpec().withReplicas(replicas).endSpec().build();
     // TODO might be removable after Kubernetes Client 6.7.0
     // n.b. ensure triggers are not removed (empty list)
-    toPatch.getSpec().setTriggers(openShiftClient.deploymentConfigs().inNamespace(namespace).withName(name).get().getSpec().getTriggers());
-    return openShiftClient.deploymentConfigs().inNamespace(namespace).withName(name)
+    toPatch.getSpec().setTriggers(kubernetesClient.resources(DeploymentConfig.class).inNamespace(namespace).withName(name).get().getSpec().getTriggers());
+    return kubernetesClient.resources(DeploymentConfig.class).inNamespace(namespace).withName(name)
       .patch(PatchContext.of(PatchType.JSON_MERGE), toPatch);
   }
 }

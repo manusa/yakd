@@ -21,7 +21,6 @@ import com.marcnuri.yakd.watch.Subscriber;
 import com.marcnuri.yakd.watch.Watchable;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.openshift.api.model.config.v1.ClusterVersion;
-import io.fabric8.openshift.client.OpenShiftClient;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
@@ -33,16 +32,16 @@ import static com.marcnuri.yakd.fabric8.WatchableSubscriber.subscriber;
 @Singleton
 public class ClusterVersionService implements Watchable<ClusterVersion> {
 
-  private final OpenShiftClient openShiftClient;
+  private final KubernetesClient kubernetesClient;
 
   @Inject
   public ClusterVersionService(KubernetesClient kubernetesClient) {
-    this.openShiftClient = kubernetesClient.adapt(OpenShiftClient.class);
+    this.kubernetesClient = kubernetesClient;
   }
 
   @Override
   public Optional<Supplier<Boolean>> getAvailabilityCheckFunction() {
-    return Optional.of(() -> openShiftClient.supports(ClusterVersion.class));
+    return Optional.of(() -> kubernetesClient.supports(ClusterVersion.class));
   }
 
   @Override
@@ -52,6 +51,6 @@ public class ClusterVersionService implements Watchable<ClusterVersion> {
 
   @Override
   public Subscriber<ClusterVersion> watch() {
-    return subscriber(openShiftClient.config().clusterVersions());
+    return subscriber(kubernetesClient.resources(ClusterVersion.class));
   }
 }

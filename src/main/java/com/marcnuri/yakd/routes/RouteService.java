@@ -22,7 +22,6 @@ import com.marcnuri.yakd.watch.Watchable;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.openshift.api.model.Route;
 import io.fabric8.openshift.api.model.RouteBuilder;
-import io.fabric8.openshift.client.OpenShiftClient;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
@@ -36,35 +35,35 @@ import static com.marcnuri.yakd.fabric8.WatchableSubscriber.subscriber;
 @Singleton
 public class RouteService implements Watchable<Route> {
 
-  private final OpenShiftClient openShiftClient;
+  private final KubernetesClient kubernetesClient;
 
   @Inject
   public RouteService(KubernetesClient kubernetesClient) {
-    this.openShiftClient = kubernetesClient.adapt(OpenShiftClient.class);
+    this.kubernetesClient = kubernetesClient;
   }
 
   @Override
   public Optional<Supplier<Boolean>> getAvailabilityCheckFunction() {
-    return Optional.of(() -> openShiftClient.supports(Route.class));
+    return Optional.of(() -> kubernetesClient.supports(Route.class));
   }
 
   @Override
   public Subscriber<Route> watch() {
     return tryInOrder(
       () -> {
-        openShiftClient.routes().inAnyNamespace().list(LIMIT_1);
-        return subscriber(openShiftClient.routes().inAnyNamespace());
+        kubernetesClient.resources(Route.class).inAnyNamespace().list(LIMIT_1);
+        return subscriber(kubernetesClient.resources(Route.class).inAnyNamespace());
       },
-      () -> subscriber(openShiftClient.routes().inNamespace(openShiftClient.getConfiguration().getNamespace()))
+      () -> subscriber(kubernetesClient.resources(Route.class).inNamespace(kubernetesClient.getConfiguration().getNamespace()))
     );
   }
 
   public void delete(String name, String namespace) {
-    openShiftClient.routes().inNamespace(namespace).withName(name).delete();
+    kubernetesClient.resources(Route.class).inNamespace(namespace).withName(name).delete();
   }
 
   public Route update(String name, String namespace, Route route) {
-    return openShiftClient.routes().inNamespace(namespace)
+    return kubernetesClient.resources(Route.class).inNamespace(namespace)
       .resource(new RouteBuilder(route).editMetadata().withName(name).endMetadata().build()).update();
   }
 }
