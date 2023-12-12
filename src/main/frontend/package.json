@@ -25,7 +25,7 @@
   "devDependencies": {
     "@fortawesome/fontawesome-free": "5.14.0",
     "autoprefixer": "10.4.14",
-    "eslint-config-prettier": "8.8.0",
+    "eslint-config-prettier": "9.1.0",
     "postcss-cli": "10.1.0",
     "prettier": "2.8.8",
     "tailwindcss": "3.3.2",
@@ -44,7 +44,10 @@
     "watch:css": "postcss src/assets/tailwind-src.css -o src/assets/tailwind.css"
   },
   "eslintConfig": {
-    "extends": ["react-app", "prettier"]
+    "extends": [
+      "react-app",
+      "prettier"
+    ]
   },
   "browserslist": {
     "production": [
