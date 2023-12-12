@@ -47,7 +47,21 @@
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-openshift-client</artifactId>
+      <artifactId>quarkus-kubernetes-client</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>io.fabric8</groupId>
+          <artifactId>kubernetes-model-flowcontrol</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.fabric8</groupId>
+          <artifactId>kubernetes-model-gatewayapi</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>io.fabric8</groupId>
+      <artifactId>openshift-model</artifactId>
     </dependency>
     <dependency>
       <groupId>commons-io</groupId>
