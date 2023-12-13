@@ -3,91 +3,109 @@ apiVersion: v1
 kind: List
 items:
 - apiVersion: v1
-  kind: Service
+  kind: Namespace
+  metadata:
+    name: yakd-dashboard
+- apiVersion: v1
+  kind: ServiceAccount
   metadata:
     labels:
-      app: app
-      provider: jkube
-      version: 0.0.0
-      group: com.marcnuri.yakd
-    name: yakd
-  spec:
-    ports:
-    - name: http
-      port: 8080
-      protocol: TCP
-      targetPort: 8080
-    selector:
-      app: app
-      provider: jkube
-      group: com.marcnuri.yakd
-    type: NodePort
+      app.kubernetes.io/name: yakd-dashboard
+    name: yakd-dashboard
+    namespace: yakd-dashboard
 - apiVersion: rbac.authorization.k8s.io/v1
   kind: ClusterRoleBinding
   metadata:
+    name: yakd-dashboard
     labels:
-      app: app
-      provider: jkube
-      version: 0.0.0
-      group: com.marcnuri.yakd
-    name: yakd
+      app.kubernetes.io/name: yakd-dashboard
   roleRef:
-    kind: ClusterRole
     apiGroup: rbac.authorization.k8s.io
+    kind: ClusterRole
     name: cluster-admin
   subjects:
-  - kind: ServiceAccount
-    name: default
-    namespace: default
+    - kind: ServiceAccount
+      name: yakd-dashboard
+      namespace: yakd-dashboard
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app.kubernetes.io/name: yakd-dashboard
+    name: yakd-dashboard
+    namespace: yakd-dashboard
+  spec:
+    type: NodePort
+    ports:
+      - port: 80
+        targetPort: 8080
+    selector:
+      app.kubernetes.io/name: yakd-dashboard
+      app.kubernetes.io/instance: yakd-dashboard
 - apiVersion: apps/v1
   kind: Deployment
   metadata:
     labels:
-      app: app
-      provider: jkube
-      version: 0.0.0
-      group: com.marcnuri.yakd
-    name: yakd
+      app.kubernetes.io/name: yakd-dashboard
+      app.kubernetes.io/instance: yakd-dashboard
+    name: yakd-dashboard
+    namespace: yakd-dashboard
   spec:
     replicas: 1
-    revisionHistoryLimit: 2
+    revisionHistoryLimit: 10
     selector:
       matchLabels:
-        app: app
-        provider: jkube
-        group: com.marcnuri.yakd
+        app.kubernetes.io/name: yakd-dashboard
+        app.kubernetes.io/instance: yakd-dashboard
     template:
       metadata:
         labels:
-          app: app
-          provider: jkube
-          version: 0.0.0
-          group: com.marcnuri.yakd
-        name: yakd
+          app.kubernetes.io/name: yakd-dashboard
+          app.kubernetes.io/instance: yakd-dashboard
+          gcp-auth-skip-secret: "true"
       spec:
         containers:
-        - env:
-          - name: KUBERNETES_NAMESPACE
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.namespace
-          - name: HOSTNAME
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.name
-          - name: YAKD_DASHBOARD_INSECURESKIPTLSVERIFY
-            value: "false"
-          image: marcnuri/yakd:snapshot
-          imagePullPolicy: Always
-          name: yakd
-          ports:
-          - containerPort: 8080
-            name: http
-            protocol: TCP
-          resources:
-            limits:
-              memory: 256Mi
-            requests:
-              memory: 128Mi
-          securityContext:
-            privileged: false
+          - name: yakd
+            image: marcnuri/yakd:snapshot
+            imagePullPolicy: Always
+            ports:
+              - name: http
+                containerPort: 8080
+                protocol: TCP
+            env:
+              - name: KUBERNETES_NAMESPACE
+                valueFrom:
+                  fieldRef:
+                    apiVersion: v1
+                    fieldPath: metadata.namespace
+              - name: HOSTNAME
+                valueFrom:
+                  fieldRef:
+                    apiVersion: v1
+                    fieldPath: metadata.name
+            resources:
+              limits:
+                memory: 256Mi
+              requests:
+                memory: 128Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              privileged: false
+              runAsUser: 1001
+              runAsGroup: 2001
+            livenessProbe:
+              httpGet:
+                path: /
+                port: 8080
+              initialDelaySeconds: 10
+              timeoutSeconds: 10
+            readinessProbe:
+              httpGet:
+                path: /
+                port: 8080
+              initialDelaySeconds: 10
+              timeoutSeconds: 10
+        restartPolicy: Always
+        serviceAccountName: yakd-dashboard
+        nodeSelector:
+          "kubernetes.io/os": linux
