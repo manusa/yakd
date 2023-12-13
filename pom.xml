@@ -136,6 +136,8 @@
     <profile>
       <id>k8s</id>
       <properties>
+        <jkube.generator.name>marcnuri/yakd:${container.image.tag}</jkube.generator.name>
+        <jkube.enricher.jkube-service.type>NodePort</jkube.enricher.jkube-service.type>
       </properties>
       <build>
         <plugins>
@@ -144,12 +146,6 @@
             <artifactId>kubernetes-maven-plugin</artifactId>
             <version>${version.jkube}</version>
             <configuration>
-              <images>
-                <image>
-                  <name>marcnuri/yakd:${container.image.tag}</name>
-                  <alias>yakd</alias>
-                </image>
-              </images>
               <resources>
                 <controller>
                   <containerResources>
