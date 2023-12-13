@@ -148,34 +148,6 @@
                 <image>
                   <name>marcnuri/yakd:${container.image.tag}</name>
                   <alias>yakd</alias>
-                  <build>
-                    <from>quay.io/quarkus/quarkus-micro-image:2.0</from>
-                    <assembly>
-                      <targetDir>/</targetDir>
-                      <layers>
-                        <layer>
-                          <id>artifact</id>
-                          <files>
-                            <file>
-                              <outputDirectory>.</outputDirectory>
-                              <source>${project.build.directory}/yakd-runner</source>
-                              <fileMode>0755</fileMode>
-                            </file>
-                          </files>
-                        </layer>
-                      </layers>
-                    </assembly>
-                    <user>10001</user>
-                    <ports>
-                      <port>8080</port>
-                    </ports>
-                    <cmd>
-                      <exec>
-                        <arg>/yakd-runner</arg>
-                        <arg>-Dquarkus.http.host=0.0.0.0</arg>
-                      </exec>
-                    </cmd>
-                  </build>
                 </image>
               </images>
               <resources>

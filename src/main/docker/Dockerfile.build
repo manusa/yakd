@@ -1,0 +1,21 @@
+FROM quay.io/quarkus/ubi-quarkus-mandrel-builder-image:23.1-java21 AS build
+
+COPY --chown=quarkus:quarkus .mvn /project/.mvn
+COPY --chown=quarkus:quarkus mvnw pom.xml /project/
+COPY --chown=quarkus:quarkus src /project/src
+
+WORKDIR /project
+
+RUN ./mvnw -Pnative package
+
+
+FROM quay.io/quarkus/quarkus-micro-image:2.0
+
+LABEL MAINTAINER="Marc Nuri <marc@marcnuri.com>"
+
+COPY --from=build /project/target/yakd-runner /
+
+CMD ["/yakd-runner", "-Dquarkus.http.host=0.0.0.0"]
+
+USER 10001
+EXPOSE 8080
