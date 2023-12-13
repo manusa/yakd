@@ -19,9 +19,21 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Package
+        run: |
+          mvn -Pbuild-frontend,native clean package
+      - name: Docker Hub Login
+        run: |
+          echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
       - name: Build and Push
         run: |
-          mvn -Pbuild-frontend,native,k8s clean package k8s:build k8s:push        \
-          -Dcontainer.image.tag=snapshot                                          \
-          -Djkube.docker.push.username=${{ secrets.DOCKER_USERNAME }}             \
-          -Djkube.docker.push.password=${{ secrets.DOCKER_PASSWORD }}
+          docker buildx build                                               \
+            --push                                                          \
+            -f src/main/docker/Dockerfile                                   \
+            --tag marcnuri/yakd:snapshot                                    \
+            --platform linux/amd64,linux/arm64                              \
+            .
