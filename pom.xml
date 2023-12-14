@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.marcnuri.yakd</groupId>
   <artifactId>app</artifactId>
-  <version>0.0.0</version>
+  <version>${container.image.tag}</version>
   <name>YAKD :: Application</name>
 
   <properties>
@@ -13,7 +13,7 @@
     <version.quarkus>3.6.1</version.quarkus>
     <version.jkube>1.15.0</version.jkube>
     <version.exec-maven-plugin>3.1.1</version.exec-maven-plugin>
-    <container.image.tag>${project.version}</container.image.tag>
+    <container.image.tag>0.0.0-SNAPSHOT</container.image.tag>
     <jkube.enricher.jkube-service.type>NodePort</jkube.enricher.jkube-service.type>
     <jkube.enricher.jkube-name.name>yakd</jkube.enricher.jkube-name.name>
     <k8s.namespace>default</k8s.namespace>

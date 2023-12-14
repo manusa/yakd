@@ -1,12 +1,14 @@
 FROM quay.io/quarkus/ubi-quarkus-mandrel-builder-image:23.1-java21 AS build
 
+ARG VERSION=snapshot
+
 COPY --chown=quarkus:quarkus .mvn /project/.mvn
 COPY --chown=quarkus:quarkus mvnw pom.xml /project/
 COPY --chown=quarkus:quarkus src /project/src
 
 WORKDIR /project
 
-RUN ./mvnw -Pnative package
+RUN ./mvnw -Dcontainer.image.tag=${VERSION} -Pnative package
 
 
 FROM quay.io/quarkus/quarkus-micro-image:2.0

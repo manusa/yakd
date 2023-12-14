@@ -33,6 +33,7 @@ jobs:
         run: |
           docker buildx build                                               \
             --push                                                          \
+            --build-arg VERSION=snapshot                                    \
             -f src/main/docker/Dockerfile.build                             \
             --tag marcnuri/yakd:snapshot                                    \
             --platform linux/amd64,linux/arm64                              \
