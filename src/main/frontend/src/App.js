@@ -24,7 +24,7 @@ import * as cm from './configmaps';
 import * as cj from './cronjobs';
 import crd from './customresourcedefinitions';
 import dc from './deploymentconfigs';
-import ds from './daemonsets';
+import * as ds from './daemonsets';
 import deployments from './deployments';
 import * as ep from './endpoints';
 import hpa from './horizontalpodautoscalers';

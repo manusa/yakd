@@ -14,22 +14,10 @@
  * limitations under the License.
  *
  */
-import api from './api';
-import reducer from './reducer';
-import selectors from './selectors';
-import List from './List';
-import DaemonSetsDetailPage from './DaemonSetsDetailPage';
-import DaemonSetsEditPage from './DaemonSetsEditPage';
-import DaemonSetsPage from './DaemonSetsPage';
-
-const index = {
-  api,
-  reducer,
-  selectors,
-  DaemonSetsDetailPage,
-  DaemonSetsEditPage,
-  DaemonSetsPage,
-  List
-};
-
-export default index;
+export * as api from './api';
+export {reducer} from './reducer';
+export * as selectors from './selectors';
+export {List} from './List';
+export {DaemonSetsDetailPage} from './DaemonSetsDetailPage';
+export {DaemonSetsEditPage} from './DaemonSetsEditPage';
+export {DaemonSetsPage} from './DaemonSetsPage';

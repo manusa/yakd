@@ -16,19 +16,19 @@
  */
 import React from 'react';
 import {connect} from 'react-redux';
-import ds from './';
+import {List} from './';
 import {FilterBar} from '../components';
 import DashboardPage from '../components/DashboardPage';
-
-const DaemonSetsPage = ({selectedNamespace}) => (
-  <DashboardPage title='DaemonSets'>
-    <FilterBar />
-    <ds.List className='mt-4' namespace={selectedNamespace} />
-  </DashboardPage>
-);
 
 const mapStateToProps = ({ui: {selectedNamespace}}) => ({
   selectedNamespace
 });
 
-export default connect(mapStateToProps)(DaemonSetsPage);
+export const DaemonSetsPage = connect(mapStateToProps)(
+  ({selectedNamespace}) => (
+    <DashboardPage title='DaemonSets'>
+      <FilterBar />
+      <List className='mt-4' namespace={selectedNamespace} />
+    </DashboardPage>
+  )
+);

@@ -19,55 +19,12 @@ import {connect} from 'react-redux';
 import {withParams} from '../router';
 import metadata from '../metadata';
 import {ContainerList} from '../containers';
-import ds from './';
+import {api, selectors} from './';
 import pods from '../pods';
 import {Card, Form} from '../components';
 import Icon from '../components/Icon';
 import Link from '../components/Link';
 import ResourceDetailPage from '../components/ResourceDetailPage';
-
-const DaemonSetsDetailPage = ({daemonSet}) => (
-  <ResourceDetailPage
-    kind='DaemonSets'
-    path='daemonsets'
-    resource={daemonSet}
-    isReadyFunction={ds.selectors.isReady}
-    deleteFunction={ds.api.delete}
-    actions={
-      <Link
-        className='ml-2'
-        size={Link.sizes.small}
-        variant={Link.variants.outline}
-        onClick={() => ds.api.restart(daemonSet)}
-        title='Restart'
-      >
-        <Icon stylePrefix='fas' icon='fa-redo-alt' className='mr-2' />
-        Restart
-      </Link>
-    }
-    body={
-      <Form>
-        <metadata.Details resource={daemonSet} />
-        <Form.Field label='Update Strategy'>
-          {ds.selectors.specUpdateStrategyType(daemonSet)}
-        </Form.Field>
-      </Form>
-    }
-  >
-    <ContainerList
-      title='Containers'
-      titleVariant={Card.titleVariants.medium}
-      className='mt-2'
-      containers={ds.selectors.containers(daemonSet)}
-    />
-    <pods.List
-      title='Pods'
-      titleVariant={Card.titleVariants.medium}
-      className='mt-2'
-      ownerUid={metadata.selectors.uid(daemonSet)}
-    />
-  </ResourceDetailPage>
-);
 
 const mapStateToProps = ({daemonSets}) => ({
   daemonSets
@@ -77,6 +34,51 @@ const mergeProps = ({daemonSets}, dispatchProps, {params: {uid}}) => ({
   daemonSet: daemonSets[uid]
 });
 
-export default withParams(
-  connect(mapStateToProps, null, mergeProps)(DaemonSetsDetailPage)
+export const DaemonSetsDetailPage = withParams(
+  connect(
+    mapStateToProps,
+    null,
+    mergeProps
+  )(({daemonSet}) => (
+    <ResourceDetailPage
+      kind='DaemonSets'
+      path='daemonsets'
+      resource={daemonSet}
+      isReadyFunction={selectors.isReady}
+      deleteFunction={api.deleteDs}
+      actions={
+        <Link
+          className='ml-2'
+          size={Link.sizes.small}
+          variant={Link.variants.outline}
+          onClick={() => api.restart(daemonSet)}
+          title='Restart'
+        >
+          <Icon stylePrefix='fas' icon='fa-redo-alt' className='mr-2' />
+          Restart
+        </Link>
+      }
+      body={
+        <Form>
+          <metadata.Details resource={daemonSet} />
+          <Form.Field label='Update Strategy'>
+            {selectors.specUpdateStrategyType(daemonSet)}
+          </Form.Field>
+        </Form>
+      }
+    >
+      <ContainerList
+        title='Containers'
+        titleVariant={Card.titleVariants.medium}
+        className='mt-2'
+        containers={selectors.containers(daemonSet)}
+      />
+      <pods.List
+        title='Pods'
+        titleVariant={Card.titleVariants.medium}
+        className='mt-2'
+        ownerUid={metadata.selectors.uid(daemonSet)}
+      />
+    </ResourceDetailPage>
+  ))
 );

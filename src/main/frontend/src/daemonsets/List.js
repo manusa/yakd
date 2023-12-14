@@ -16,7 +16,7 @@
  */
 import React from 'react';
 import metadata from '../metadata';
-import ds from './';
+import {api, selectors} from './';
 import Icon from '../components/Icon';
 import Link from '../components/Link';
 import ResourceList from '../components/ResourceList';
@@ -35,8 +35,8 @@ const headers = [
 ];
 
 const Rows = ({daemonSets}) => {
-  const deleteDS = daemonSet => () => ds.api.delete(daemonSet);
-  const restart = daemonSet => () => ds.api.restart(daemonSet);
+  const deleteDS = daemonSet => () => api.deleteDs(daemonSet);
+  const restart = daemonSet => () => api.restart(daemonSet);
   return daemonSets
     .sort(metadata.selectors.sortByCreationTimeStamp)
     .map(daemonSet => (
@@ -47,12 +47,10 @@ const Rows = ({daemonSets}) => {
         <Table.Cell className='whitespace-nowrap w-3 text-center'>
           <Icon
             className={
-              ds.selectors.isReady(daemonSet)
-                ? 'text-green-500'
-                : 'text-red-500'
+              selectors.isReady(daemonSet) ? 'text-green-500' : 'text-red-500'
             }
             icon={
-              ds.selectors.isReady(daemonSet)
+              selectors.isReady(daemonSet)
                 ? 'fa-check'
                 : 'fa-exclamation-circle'
             }
@@ -73,7 +71,7 @@ const Rows = ({daemonSets}) => {
           </Link.Namespace>
         </Table.Cell>
         <Table.Cell className='break-all'>
-          {ds.selectors.images(daemonSet).map((image, idx) => (
+          {selectors.images(daemonSet).map((image, idx) => (
             <div key={idx}>{image}</div>
           ))}
         </Table.Cell>
@@ -91,10 +89,10 @@ const Rows = ({daemonSets}) => {
     ));
 };
 
-const List = ({resources, crudDelete, loadedResources, ...properties}) => (
-  <ResourceList headers={headers} resources={resources} {...properties}>
-    <Rows daemonSets={resources} loadedResources={loadedResources} />
-  </ResourceList>
+export const List = ResourceList.resourceListConnect('daemonSets')(
+  ({resources, crudDelete, loadedResources, ...properties}) => (
+    <ResourceList headers={headers} resources={resources} {...properties}>
+      <Rows daemonSets={resources} loadedResources={loadedResources} />
+    </ResourceList>
+  )
 );
-
-export default ResourceList.resourceListConnect('daemonSets')(List);

@@ -20,10 +20,6 @@ import {
   updateNamespacedResource
 } from '../fetch';
 
-const api = {
-  delete: deleteNamespacedResource('daemonsets'),
-  restart: restartNamespacedResource('daemonsets'),
-  update: updateNamespacedResource('daemonsets')
-};
-
-export default api;
+export const deleteDs = deleteNamespacedResource('daemonsets');
+export const restart = restartNamespacedResource('daemonsets');
+export const update = updateNamespacedResource('daemonsets');

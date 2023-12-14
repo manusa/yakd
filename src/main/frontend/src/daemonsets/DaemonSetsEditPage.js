@@ -17,11 +17,11 @@
 import React from 'react';
 import {withParams} from '../router';
 import md from '../metadata';
-import ds from './';
+import {api} from './';
 import ResourceEditPage from '../components/ResourceEditPage';
 import Link from '../components/Link';
 
-const DaemonSetsEditPage = ({params: {uid}}) => (
+export const DaemonSetsEditPage = withParams(({params: {uid}}) => (
   <ResourceEditPage
     kind='DaemonSets'
     path='daemonsets'
@@ -30,9 +30,7 @@ const DaemonSetsEditPage = ({params: {uid}}) => (
         {md.selectors.name(resource)}
       </Link.RouterLink>
     )}
-    save={async resource => await ds.api.update(resource)}
+    save={async resource => await api.update(resource)}
     resourceFromState={state => state.daemonSets[uid]}
   />
-);
-
-export default withParams(DaemonSetsEditPage);
+));

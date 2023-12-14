@@ -23,7 +23,7 @@ import * as cj from '../cronjobs';
 import crd from '../customresourcedefinitions';
 import d from '../deployments';
 import dc from '../deploymentconfigs';
-import ds from '../daemonsets';
+import * as ds from '../daemonsets';
 import * as ep from '../endpoints';
 import hpa from '../horizontalpodautoscalers';
 import i from '../ingresses';
