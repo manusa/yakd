@@ -148,6 +148,9 @@ Link.Secret = ({...props}) => <Link.ResourceLink Icon={i.Secret} {...props} />;
 Link.Service = ({...props}) => (
   <Link.ResourceLink Icon={i.Service} {...props} />
 );
+Link.ServiceAccount = ({...props}) => (
+  <Link.ResourceLink Icon={i.ServiceAccount} {...props} />
+);
 Link.StatefulSet = ({...props}) => (
   <Link.ResourceLink Icon={i.StatefulSet} {...props} />
 );

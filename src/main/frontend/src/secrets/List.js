@@ -58,12 +58,7 @@ const Rows = ({secrets}) => {
 };
 
 const List = ({resources, loadedResources, crudDelete, ...properties}) => (
-  <ResourceList
-    headers={headers}
-    resources={resources}
-    loading={!loadedResources['Secret']}
-    {...properties}
-  >
+  <ResourceList headers={headers} resources={resources} {...properties}>
     <Rows secrets={resources} />
   </ResourceList>
 );

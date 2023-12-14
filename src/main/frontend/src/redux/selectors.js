@@ -25,11 +25,14 @@ selectors.toObjectReducer = (acc, [key, configMap]) => {
 
 selectors.resourcesBy = (
   resources = {},
-  {namespace, nameLike, ownerUid, ownerUids, uids, uidsNotIn} = undefined
+  {namespace, names, nameLike, ownerUid, ownerUids, uids, uidsNotIn} = undefined
 ) =>
   Object.entries(resources)
     .filter(([, resource]) => {
       if (namespace && md.selectors.namespace(resource) !== namespace) {
+        return false;
+      }
+      if (names && !names.includes(md.selectors.name(resource))) {
         return false;
       }
       if (
@@ -54,7 +57,7 @@ selectors.resourcesBy = (
       if (uids && !uids.includes(md.selectors.uid(resource))) {
         return false;
       }
-      if (uidsNotIn && uidsNotIn.includes(md.selectors.uid(resource))) {
+      if (uidsNotIn?.includes(md.selectors.uid(resource))) {
         return false;
       }
       return true;
