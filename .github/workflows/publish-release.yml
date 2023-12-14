@@ -33,6 +33,7 @@ jobs:
         run: |
           docker buildx build                                               \
             --push                                                          \
+            --build-arg VERSION=${GITHUB_REF#refs/tags/v}                   \
             -f src/main/docker/Dockerfile.build                             \
             --tag marcnuri/yakd:${GITHUB_REF#refs/tags/v}                   \
             --platform linux/amd64,linux/arm64                              \
