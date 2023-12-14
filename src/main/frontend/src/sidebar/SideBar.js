@@ -224,6 +224,9 @@ const NavSection = ({
           label='Access Control'
           icon='fa-shield-alt'
         >
+          <K8sNavItem to='/serviceaccounts' Icon={i.ServiceAccount}>
+            ServiceAccounts
+          </K8sNavItem>
           <K8sNavItem to='/clusterroles' Icon={i.ClusterRole}>
             ClusterRoles
           </K8sNavItem>

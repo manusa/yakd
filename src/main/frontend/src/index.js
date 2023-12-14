@@ -45,6 +45,7 @@ import roles from './roles';
 import routes from './routes';
 import secrets from './secrets';
 import services from './services';
+import * as sa from './serviceaccounts';
 import sidebar from './sidebar';
 import statefulSets from './statefulsets';
 import App from './App';
@@ -91,6 +92,7 @@ const store = createStore(
     routes: routes.reducer,
     secrets: secrets.reducer,
     services: services.reducer,
+    serviceAccounts: sa.reducer,
     statefulSets: statefulSets.reducer,
     sidebar: sidebar.reducer,
     ui: redux.uiReducer

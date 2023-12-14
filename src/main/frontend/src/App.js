@@ -42,6 +42,7 @@ import routes from './routes';
 import search from './search';
 import secrets from './secrets';
 import services from './services';
+import * as sa from './serviceaccounts';
 import sts from './statefulsets';
 import watch from './watch';
 import Home from './Home';
@@ -336,6 +337,21 @@ const App = ({dispatch}) => {
           exact
           path='/services/:uid/edit'
           element={<services.ServicesEditPage />}
+        />
+        <Route
+          exact
+          path='/serviceaccounts'
+          element={<sa.ServiceAccountsPage />}
+        />
+        <Route
+          exact
+          path='/serviceaccounts/:uid'
+          element={<sa.ServiceAccountsDetailPage />}
+        />
+        <Route
+          exact
+          path='/serviceaccounts/:uid/edit'
+          element={<sa.ServiceAccountsEditPage />}
         />
         <Route exact path='/statefulsets' element={<sts.StatefulSetsPage />} />
         <Route

@@ -43,6 +43,7 @@ import com.marcnuri.yakd.roles.RoleResource;
 import com.marcnuri.yakd.routes.RouteResource;
 import com.marcnuri.yakd.secrets.SecretResource;
 import com.marcnuri.yakd.service.ServiceResource;
+import com.marcnuri.yakd.serviceaccounts.ServiceAccountResource;
 import com.marcnuri.yakd.statefulsets.StatefulSetResource;
 import com.marcnuri.yakd.watch.WatchResource;
 import io.fabric8.kubernetes.api.model.HasMetadata;
@@ -112,6 +113,8 @@ public class ApiResource {
   SecretResource secretResource;
   @Inject
   ServiceResource serviceResource;
+  @Inject
+  ServiceAccountResource serviceAccountResource;
   @Inject
   StatefulSetResource statefulSetResource;
   @Inject
@@ -240,6 +243,11 @@ public class ApiResource {
   @Path("/services")
   public ServiceResource getServiceResource() {
     return serviceResource;
+  }
+
+  @Path("/serviceaccounts")
+  public ServiceAccountResource getServiceAccountsResource() {
+    return serviceAccountResource;
   }
 
   @Path("/statefulsets")

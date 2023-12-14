@@ -38,6 +38,7 @@ import ReplicaSet from './ReplicaSet';
 import Role from './Role';
 import Secret from './Secret';
 import Service from './Service';
+import {ServiceAccount} from './ServiceAccount';
 import StatefulSet from './StatefulSet';
 import {YAKDLogo} from './YAKDLogo';
 
@@ -70,6 +71,7 @@ icons.Role = Role;
 icons.Route = ({...props}) => <Ingress kubernetesColor='#db212e' {...props} />;
 icons.Secret = Secret;
 icons.Service = Service;
+icons.ServiceAccount = ServiceAccount;
 icons.StatefulSet = StatefulSet;
 icons.YAKDLogo = YAKDLogo;
 
