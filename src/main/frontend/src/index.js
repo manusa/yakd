@@ -25,7 +25,7 @@ import * as cv from './clusterversions';
 import * as cm from './configmaps';
 import * as cj from './cronjobs';
 import crd from './customresourcedefinitions';
-import ds from './daemonsets';
+import * as ds from './daemonsets';
 import dc from './deploymentconfigs';
 import deployments from './deployments';
 import * as ep from './endpoints';
