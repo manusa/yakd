@@ -35,6 +35,7 @@ import pv from '../persistentvolumes';
 import s from '../secrets';
 import ss from '../statefulsets';
 import svc from '../services';
+import * as sa from '../serviceaccounts';
 import redux from '../redux';
 import rs from '../replicasets';
 import rc from '../replicationcontrollers';
@@ -159,6 +160,12 @@ const Results = ({query, selectedNamespace}) => {
       <s.List
         {...commonProps}
         title='Secrets'
+        nameLike={query}
+        namespace={selectedNamespace}
+      />
+      <sa.List
+        {...commonProps}
+        title='ServiceAccounts'
         nameLike={query}
         namespace={selectedNamespace}
       />
