@@ -19,6 +19,7 @@ package com.marcnuri.yakd;
 
 import io.quarkus.vertx.http.Compressed;
 import org.apache.commons.io.FilenameUtils;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.resteasy.reactive.RestResponse;
 
 import jakarta.inject.Inject;
@@ -34,15 +35,17 @@ import java.util.Map;
 @Path("/")
 public class GatewayResource {
 
-  private static final String FALLBACK_RESOURCE = "/frontend/index.html";
+  private static final String FALLBACK_RESOURCE = "/index.html";
   private static final Map<String, String> EXTENSION_TYPES = Map.of(
     "svg", "image/svg+xml"
   );
   private final ApiResource apiResource;
+  private final String frontendRoot;
 
   @Inject
-  public GatewayResource(ApiResource apiResource) {
+  public GatewayResource(ApiResource apiResource, @ConfigProperty(name ="yakd.frontend.root") String frontendRoot) {
     this.apiResource = apiResource;
+    this.frontendRoot = frontendRoot;
   }
 
   @Path("/api/v1")
@@ -61,15 +64,15 @@ public class GatewayResource {
   @Path("/{fileName:.+}")
   @Compressed
   public RestResponse<InputStream> getFrontendStaticFile(@PathParam("fileName") String fileName) throws IOException {
-    final InputStream requestedFileStream = GatewayResource.class.getResourceAsStream("/frontend/" + fileName);
+    final InputStream requestedFileStream = GatewayResource.class.getResourceAsStream(frontendRoot + "/" + fileName);
     final InputStream inputStream;
     final String fileToServe;
     if (requestedFileStream != null) {
       fileToServe = fileName;
       inputStream = requestedFileStream;
     } else {
-      fileToServe = FALLBACK_RESOURCE;
-      inputStream = GatewayResource.class.getResourceAsStream(FALLBACK_RESOURCE);
+      fileToServe = frontendRoot + FALLBACK_RESOURCE;
+      inputStream = GatewayResource.class.getResourceAsStream(fileToServe);
     }
     final CacheControl cacheControl = new CacheControl();
     cacheControl.setMaxAge(900);

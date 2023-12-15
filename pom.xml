@@ -13,6 +13,7 @@
     <version.quarkus>3.6.1</version.quarkus>
     <version.jkube>1.15.0</version.jkube>
     <version.exec-maven-plugin>3.1.1</version.exec-maven-plugin>
+    <version.surefire-maven-plugin>3.1.2</version.surefire-maven-plugin>
     <container.image.tag>0.0.0-SNAPSHOT</container.image.tag>
     <jkube.enricher.jkube-service.type>NodePort</jkube.enricher.jkube-service.type>
     <jkube.enricher.jkube-name.name>yakd</jkube.enricher.jkube-name.name>
@@ -63,6 +64,22 @@
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
     </dependency>
+    <!-- Test dependencies -->
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-junit5</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-test-kubernetes-client</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.rest-assured</groupId>
+      <artifactId>rest-assured</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <build>
     <resources>
@@ -74,6 +91,19 @@
         <targetPath>frontend</targetPath>
       </resource>
     </resources>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${version.surefire-maven-plugin}</version>
+          <configuration>
+            <systemPropertyVariables>
+              <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+            </systemPropertyVariables>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <plugin>
         <groupId>io.quarkus</groupId>
