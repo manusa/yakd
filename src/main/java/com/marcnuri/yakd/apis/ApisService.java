@@ -22,7 +22,6 @@ import io.fabric8.kubernetes.client.KubernetesClient;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Singleton
 public class ApisService {
@@ -36,6 +35,6 @@ public class ApisService {
 
   public List<String> getApiGroups() {
     return kubernetesClient.getApiGroups().getGroups().stream()
-      .map(APIGroup::getName).collect(Collectors.toList());
+      .map(APIGroup::getName).toList();
   }
 }
