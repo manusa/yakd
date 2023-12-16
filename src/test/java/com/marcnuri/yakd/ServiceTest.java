@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Created on 2023-12-16, 06:15
+ * Created on 2023-12-16, 13:16
  */
 package com.marcnuri.yakd;
 
 
-import io.fabric8.kubernetes.api.model.NodeBuilder;
+import io.fabric8.kubernetes.api.model.ServiceBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.Watcher;
 import io.quarkus.test.common.http.TestHTTPResource;
@@ -31,16 +31,19 @@ import org.junit.jupiter.api.Test;
 
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.when;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.matchesRegex;
 
 @QuarkusTest
 @WithKubernetesTestServer
-class NodeTest {
+class ServiceTest {
 
   @Inject
   KubernetesClient kubernetesClient;
@@ -48,19 +51,32 @@ class NodeTest {
   URL url;
 
   @Test
-  @DisplayName("PUT /api/v1/nodes/{name} - Should update the node")
+  @DisplayName("DELETE /api/v1/services/{namespace}/{name} - Should delete the service")
+  void delete() throws Exception {
+    kubernetesClient.services().resource(new ServiceBuilder().withNewMetadata().withName("to-delete").endMetadata().build())
+      .create();
+    final var noResourceFuture = kubernetesClient.services().withName("to-delete").informOnCondition(List::isEmpty);
+    when()
+      .delete("/api/v1/services/" + kubernetesClient.getConfiguration().getNamespace() + "/to-delete")
+      .then()
+      .statusCode(204);
+    noResourceFuture.get(10, TimeUnit.SECONDS);
+  }
+
+  @Test
+  @DisplayName("PUT /api/v1/services/{namespace}/{name} - Should update the service")
   void update() {
-    final var node = kubernetesClient.nodes().resource(new NodeBuilder().withNewMetadata().withName("to-update").endMetadata().build())
+    final var service = kubernetesClient.services().resource(new ServiceBuilder().withNewMetadata().withName("to-update").endMetadata().build())
       .create();
     given()
       .contentType("application/json")
-      .body(new NodeBuilder(node).withNewMetadata().addToAnnotations("updated", "true").endMetadata().build())
+      .body(new ServiceBuilder(service).withNewMetadata().addToAnnotations("updated", "true").endMetadata().build())
       .when()
-      .put("/api/v1/nodes/to-update")
+      .put("/api/v1/services/" + kubernetesClient.getConfiguration().getNamespace() + "/to-update")
       .then()
       .statusCode(200)
       .body(
-        "metadata.resourceVersion", is("2"),
+        "metadata.resourceVersion", matchesRegex("[2-9]"),
         "metadata.annotations.updated", is("true"));
   }
 
@@ -68,7 +84,7 @@ class NodeTest {
   void watch() throws URISyntaxException {
     try (var watch = WatcherUtil.watch(url, "/api/v1/watch")) {
       // Given
-      kubernetesClient.nodes().resource(new NodeBuilder().withNewMetadata().withName("to-watch").endMetadata().build())
+      kubernetesClient.services().resource(new ServiceBuilder().withNewMetadata().withName("to-watch").endMetadata().build())
         .create();
       // When
       Awaitility.await()
@@ -77,7 +93,7 @@ class NodeTest {
       // Then
       assertThat(watch.events())
         .extracting("object.kind", "object.metadata.name")
-        .contains(tuple("Node", "to-watch"));
+        .contains(tuple("Service", "to-watch"));
     }
   }
 }
