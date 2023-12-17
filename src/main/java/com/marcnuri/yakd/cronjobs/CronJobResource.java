@@ -17,7 +17,7 @@
  */
 package com.marcnuri.yakd.cronjobs;
 
-import io.fabric8.kubernetes.api.model.batch.v1beta1.CronJob;
+import io.fabric8.kubernetes.api.model.batch.v1.CronJob;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 
 import jakarta.inject.Inject;
