@@ -14,10 +14,4 @@
  * limitations under the License.
  *
  */
-import SearchPage from './SearchPage';
-
-const search = {};
-
-search.SearchPage = SearchPage;
-
-export default search;
+export {SearchPage} from './SearchPage';

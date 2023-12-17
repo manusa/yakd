@@ -203,7 +203,23 @@ const Results = ({query, selectedNamespace}) => {
   );
 };
 
-const SearchPage = ({selectedNamespace, query, setQuery}) => {
+const mapStateToProps = ({ui: {selectedNamespace, query}}) => ({
+  selectedNamespace,
+  query
+});
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(
+    {
+      setQuery: redux.actions.setQuery
+    },
+    dispatch
+  );
+
+export const SearchPage = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(({selectedNamespace, query, setQuery}) => {
   const inputRef = useRef(null);
   useLayoutEffect(() => {
     inputRef.current.focus();
@@ -228,19 +244,4 @@ const SearchPage = ({selectedNamespace, query, setQuery}) => {
       )}
     </DashboardPage>
   );
-};
-
-const mapStateToProps = ({ui: {selectedNamespace, query}}) => ({
-  selectedNamespace,
-  query
 });
-
-const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      setQuery: redux.actions.setQuery
-    },
-    dispatch
-  );
-
-export default connect(mapStateToProps, mapDispatchToProps)(SearchPage);
