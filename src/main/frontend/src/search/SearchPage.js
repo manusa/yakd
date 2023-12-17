@@ -14,8 +14,9 @@
  * limitations under the License.
  *
  */
-import React, {useLayoutEffect, useRef} from 'react';
+import React, {useEffect, useLayoutEffect, useRef} from 'react';
 import {bindActionCreators} from 'redux';
+import {useSearchParams} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as cr from '../clusterroles';
 import * as cm from '../configmaps';
@@ -220,6 +221,12 @@ export const SearchPage = connect(
   mapStateToProps,
   mapDispatchToProps
 )(({selectedNamespace, query, setQuery}) => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  useEffect(() => {
+    if (searchParams.get('q') !== query) {
+      setQuery(searchParams.get('q'));
+    }
+  }, [searchParams, query, setQuery]);
   const inputRef = useRef(null);
   useLayoutEffect(() => {
     inputRef.current.focus();
@@ -233,7 +240,7 @@ export const SearchPage = connect(
           placeholder='Search'
           icon='fa-search'
           value={query}
-          onChange={({target: {value}}) => setQuery(value)}
+          onChange={({target: {value: q}}) => setSearchParams(`?${new URLSearchParams({q})}`)}
         />
         <FilterBar />
       </div>
