@@ -223,8 +223,9 @@ export const SearchPage = connect(
 )(({selectedNamespace, query, setQuery}) => {
   const [searchParams, setSearchParams] = useSearchParams();
   useEffect(() => {
-    if (searchParams.get('q') !== query) {
-      setQuery(searchParams.get('q'));
+    const q = searchParams.get('q');
+    if (typeof q === 'string' && q !== query) {
+      setQuery(q);
     }
   }, [searchParams, query, setQuery]);
   const inputRef = useRef(null);
@@ -240,7 +241,9 @@ export const SearchPage = connect(
           placeholder='Search'
           icon='fa-search'
           value={query}
-          onChange={({target: {value: q}}) => setSearchParams(`?${new URLSearchParams({q})}`)}
+          onChange={({target: {value: q}}) =>
+            setSearchParams(`?${new URLSearchParams({q})}`)
+          }
         />
         <FilterBar />
       </div>
