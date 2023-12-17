@@ -39,7 +39,7 @@ import rc from './replicationcontrollers';
 import redux from './redux';
 import roles from './roles';
 import routes from './routes';
-import search from './search';
+import * as search from './search';
 import secrets from './secrets';
 import services from './services';
 import * as sa from './serviceaccounts';
