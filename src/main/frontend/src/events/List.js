@@ -18,7 +18,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import metadata from '../metadata';
 import ev from './';
-import {Tooltip} from '../components';
+import {Age} from '../components';
 import Link from '../components/Link';
 import Table from '../components/Table';
 import Icon from '../components/Icon';
@@ -30,11 +30,11 @@ const headers = [
   <span>
     <Icon icon='fa-id-card' /> Name
   </span>,
-  <span>
-    <Icon stylePrefix='far' icon='fa-clock' /> Time
-  </span>,
   'Reason',
-  'Event'
+  'Event',
+  <div className='text-right'>
+    <Icon stylePrefix='far' icon='fa-clock' /> Last Seen
+  </div>
 ];
 
 const EventName = ({event}) => {
@@ -127,17 +127,11 @@ const Rows = ({events}) => {
           <Table.Cell>
             <EventName event={event} />
           </Table.Cell>
-          <Table.Cell>
-            <Tooltip
-              content={`${lastTimestamp.toLocaleDateString()}
-                ${lastTimestamp.toLocaleTimeString()}`}
-              className='cursor-default'
-            >
-              <span>{lastTimestamp.toLocaleDateString()}</span>
-            </Tooltip>
-          </Table.Cell>
           <Table.Cell>{event.reason}</Table.Cell>
           <Table.Cell>{event.message}</Table.Cell>
+          <Table.Cell className='text-right'>
+            <Age date={lastTimestamp} />
+          </Table.Cell>
         </Table.ResourceRow>
       );
     });
