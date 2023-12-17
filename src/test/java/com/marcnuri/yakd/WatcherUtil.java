@@ -25,13 +25,14 @@ import jakarta.ws.rs.sse.SseEventSource;
 
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class WatcherUtil {
   private WatcherUtil() {
   }
 
-  public record Watch(Client client, SseEventSource eventSource, ConcurrentLinkedQueue<WatchEvent<?>> events) implements AutoCloseable {
+  public record Watch(Client client, SseEventSource eventSource, ConcurrentLinkedQueue<WatchEvent<Map<String, ?>>> events) implements AutoCloseable {
     @Override
     public void close() {
       eventSource.close();
@@ -40,7 +41,7 @@ public class WatcherUtil {
   }
 
   public static Watch watch(URL url, String path) throws URISyntaxException {
-    final ConcurrentLinkedQueue<WatchEvent<?>> messagesReceived = new ConcurrentLinkedQueue<>();
+    final ConcurrentLinkedQueue<WatchEvent<Map<String, ?>>> messagesReceived = new ConcurrentLinkedQueue<>();
     final var uri = UriBuilder.fromUri(url.toURI()).replacePath(path).build();
     var wsCli = ClientBuilder.newClient();
     final var sseSource = SseEventSource.target(wsCli.target(uri)).build();

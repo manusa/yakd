@@ -19,7 +19,6 @@ package com.marcnuri.yakd.cronjobs;
 
 import io.fabric8.kubernetes.api.model.batch.v1.CronJob;
 import io.quarkus.runtime.annotations.RegisterForReflection;
-
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -30,7 +29,6 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import java.io.IOException;
 
 @Singleton
 @RegisterForReflection // Quarkus doesn't generate constructors for JAX-RS Subresources
@@ -71,7 +69,7 @@ public class CronJobResource {
 
   @PUT
   @Path("/{namespace}/{name}/trigger")
-  public Response trigger(@PathParam("namespace") String namespace, @PathParam("name") String name) throws IOException {
+  public Response trigger(@PathParam("namespace") String namespace, @PathParam("name") String name) {
     cronJobService.trigger(name, namespace);
     return Response.noContent().build();
   }
