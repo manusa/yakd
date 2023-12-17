@@ -17,11 +17,7 @@
 import React from 'react';
 import {useParams} from 'react-router-dom';
 
-const router = {};
-
 export const withParams = Component => props => {
   const params = useParams();
   return <Component params={params} {...props} />;
 };
-
-export default router;
