@@ -17,6 +17,7 @@
  */
 package com.marcnuri.yakd.events;
 
+import com.marcnuri.yakd.fabric8.ClientUtil;
 import com.marcnuri.yakd.watch.Subscriber;
 import com.marcnuri.yakd.watch.Watchable;
 import io.fabric8.kubernetes.api.model.Event;
@@ -24,6 +25,7 @@ import io.fabric8.kubernetes.client.KubernetesClient;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
+import static com.marcnuri.yakd.fabric8.ClientUtil.tryInOrder;
 import static com.marcnuri.yakd.fabric8.WatchableSubscriber.subscriber;
 
 @Singleton
@@ -38,7 +40,13 @@ public class EventService implements Watchable<Event> {
 
   @Override
   public Subscriber<Event> watch() {
-    return subscriber(kubernetesClient.v1().events());
+    return tryInOrder(
+      () -> {
+        kubernetesClient.v1().events().inAnyNamespace().list(ClientUtil.LIMIT_1);
+        return subscriber(kubernetesClient.v1().events().inAnyNamespace());
+      },
+      () -> subscriber(kubernetesClient.v1().events().inNamespace(kubernetesClient.getConfiguration().getNamespace()))
+    );
   }
 
 }
