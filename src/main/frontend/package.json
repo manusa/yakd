@@ -20,7 +20,7 @@
     "xterm-addon-attach": "0.9.0",
     "xterm-addon-fit": "0.8.0",
     "xterm-addon-web-links": "0.9.0",
-    "yaml": "2.3.4"
+    "yaml": "2.4.1"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "5.14.0",
