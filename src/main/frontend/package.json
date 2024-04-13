@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
-    "ace-builds": "1.32.1",
+    "ace-builds": "1.33.0",
     "ansi-to-html": "0.7.2",
     "dompurify": "3.0.6",
     "lodash": "4.17.21",
