@@ -18,27 +18,9 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {withParams} from '../router';
 import metadata from '../metadata';
-import hpa from './';
+import {api, selectors} from './';
 import {Form} from '../components';
 import ResourceDetailPage from '../components/ResourceDetailPage';
-
-const HorizontalPodAutoscalersDetailPage = ({horizontalPodAutoscaler}) => (
-  <ResourceDetailPage
-    kind='HorizontalPodAutoscalers'
-    path='horizontalpodautoscalers'
-    resource={horizontalPodAutoscaler}
-    isReadyFunction={hpa.selectors.isReady}
-    deleteFunction={hpa.api.delete}
-    body={
-      <Form>
-        <metadata.Details resource={horizontalPodAutoscaler} />
-        <Form.Field label='Scale Target'>
-          {hpa.selectors.scaleTargetRefName(horizontalPodAutoscaler)}
-        </Form.Field>
-      </Form>
-    }
-  />
-);
 
 const mapStateToProps = ({horizontalPodAutoscalers}) => ({
   horizontalPodAutoscalers
@@ -52,6 +34,26 @@ const mergeProps = (
   horizontalPodAutoscaler: horizontalPodAutoscalers[uid]
 });
 
-export default withParams(
-  connect(mapStateToProps, null, mergeProps)(HorizontalPodAutoscalersDetailPage)
+export const HorizontalPodAutoscalersDetailPage = withParams(
+  connect(
+    mapStateToProps,
+    null,
+    mergeProps
+  )(({horizontalPodAutoscaler}) => (
+    <ResourceDetailPage
+      kind='HorizontalPodAutoscalers'
+      path='horizontalpodautoscalers'
+      resource={horizontalPodAutoscaler}
+      isReadyFunction={selectors.isReady}
+      deleteFunction={api.deleteHpa}
+      body={
+        <Form>
+          <metadata.Details resource={horizontalPodAutoscaler} />
+          <Form.Field label='Scale Target'>
+            {selectors.scaleTargetRefName(horizontalPodAutoscaler)}
+          </Form.Field>
+        </Form>
+      }
+    />
+  ))
 );
