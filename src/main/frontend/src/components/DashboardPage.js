@@ -15,8 +15,7 @@
  *
  */
 import React, {useState} from 'react';
-import {bindActionCreators} from 'redux';
-import {connect} from 'react-redux';
+import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 import redux from '../redux';
 import * as apis from '../apis';
 import i from './icons';
@@ -34,7 +33,15 @@ const OfflineIcon = () => (
   </div>
 );
 
-const Header = ({isMinikube, isOpenShift, offline, setSideBarOpen, title}) => {
+const Header = ({setSideBarOpen, title}) => {
+  const {isMinikube, isOpenShift, offline} = useSelector(
+    ({apiGroups, nodes, ui: {offline}}) => ({
+      isMinikube: nm.selectors.isMinikube(nodes),
+      isOpenShift: apis.selectors.isOpenShift(apiGroups),
+      offline
+    }),
+    shallowEqual
+  );
   return (
     <header className='flex justify-between items-center py-4 px-6 bg-white border-b-2 border-blue-700/75'>
       <div className='flex w-full items-center'>
@@ -90,17 +97,11 @@ const Footer = () => (
   </footer>
 );
 
-const DashboardPage = ({
-  className,
-  isMinikube,
-  isOpenShift,
-  offline,
-  error,
-  clearError,
-  title,
-  children
-}) => {
+const DashboardPage = ({className, title, children}) => {
+  const dispatch = useDispatch();
+  const clearError = () => dispatch(redux.actions.clearError());
   const [sideBarOpen, setSideBarOpen] = useState(false);
+  const error = useSelector(({ui: {error}}) => error);
   return (
     <div
       className={`dashboard-page flex h-screen bg-gray-200 overflow-hidden ${
@@ -114,13 +115,7 @@ const DashboardPage = ({
       />
       <sidebar.SideBar sideBarOpen={sideBarOpen} />
       <div className='flex-1 flex flex-col overflow-hidden'>
-        <Header
-          isMinikube={isMinikube}
-          isOpenShift={isOpenShift}
-          offline={offline}
-          setSideBarOpen={setSideBarOpen}
-          title={title}
-        />
+        <Header setSideBarOpen={setSideBarOpen} title={title} />
         <main className='flex-1 flex flex-col overflow-x-hidden overflow-y-auto bg-gray-200'>
           <Alert clearError={clearError}>{error}</Alert>
           <div className='flex-1 w-100 p-4 relative'>{children}</div>
@@ -162,19 +157,4 @@ DashboardPage.Title = ({
   </div>
 );
 
-const mapStateToProps = ({apiGroups, nodes, ui: {offline, error}}) => ({
-  isMinikube: nm.selectors.isMinikube(nodes),
-  isOpenShift: apis.selectors.isOpenShift(apiGroups),
-  offline,
-  error
-});
-
-const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      clearError: redux.actions.clearError
-    },
-    dispatch
-  );
-
-export default connect(mapStateToProps, mapDispatchToProps)(DashboardPage);
+export default DashboardPage;
