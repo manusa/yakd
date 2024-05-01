@@ -16,15 +16,16 @@
  */
 import React, {useState} from 'react';
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
-import {clearError} from '../redux';
-import * as apis from '../apis';
-import i from './icons';
-import metadata from '../metadata';
-import {selectors as nodeSelectors} from '../nodes';
-import sidebar from '../sidebar';
-import {Alert, NewResource, NewResourceButton, Tooltip} from './';
-import Icon from './Icon';
-import Link from './Link';
+import {clearError} from '../../redux';
+import * as apis from '../../apis';
+import i from '../icons';
+import metadata from '../../metadata';
+import {selectors as nodeSelectors} from '../../nodes';
+import sidebar from '../../sidebar';
+import {Alert, Tooltip} from '../';
+import Icon from '../Icon';
+import Link from '../Link';
+import {NewResource, NewResourceButton} from './';
 
 const OfflineIcon = () => (
   <div className='fa-stack text-red-700' title='Watchers stopped (No network)'>
@@ -97,7 +98,7 @@ const Footer = () => (
   </footer>
 );
 
-const DashboardPage = ({className, title, children}) => {
+export const DashboardPage = ({className, title, children}) => {
   const dispatch = useDispatch();
   const doClearError = () => dispatch(clearError());
   const [sideBarOpen, setSideBarOpen] = useState(false);
@@ -156,5 +157,3 @@ DashboardPage.Title = ({
     {children}
   </div>
 );
-
-export default DashboardPage;

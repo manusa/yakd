@@ -16,9 +16,9 @@
  */
 import React from 'react';
 import {useLocation} from 'react-router-dom';
-import crd from './';
-import DashboardPage from '../components/DashboardPage';
+import {DashboardPage} from '../components';
 import Link from '../components/Link';
+import crd from './';
 
 const CustomResourceDefinitionsPage = () => {
   const queryParams = new URLSearchParams(useLocation().search);

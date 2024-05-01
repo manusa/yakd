@@ -20,8 +20,7 @@ import {DeploymentsCard} from './deployments';
 import {EventsList} from './events';
 import {NodesCard} from './nodes';
 import pods from './pods';
-import {FilterBar} from './components';
-import DashboardPage from './components/DashboardPage';
+import {DashboardPage, FilterBar} from './components';
 
 const cardResponsiveClass = 'w-full sm:w-1/2 md:w-1/3';
 const cardClass = 'm-2';

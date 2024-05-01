@@ -15,8 +15,8 @@
  *
  */
 import React from 'react';
+import {DashboardPage} from '../components/';
 import {NodesCard, NodesList} from './';
-import DashboardPage from '../components/DashboardPage';
 
 export const NodesPage = () => (
   <DashboardPage title='Nodes'>

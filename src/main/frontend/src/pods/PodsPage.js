@@ -16,9 +16,8 @@
  */
 import React from 'react';
 import {connect} from 'react-redux';
+import {DashboardPage, FilterBar} from '../components';
 import pods from './';
-import {FilterBar} from '../components';
-import DashboardPage from '../components/DashboardPage';
 
 const PodsPage = ({selectedNamespace}) => (
   <DashboardPage title='Pods'>

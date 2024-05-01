@@ -14,5 +14,6 @@
  * limitations under the License.
  *
  */
+export {DashboardPage} from './DashboardPage';
 export {NewResource} from './NewResource';
 export {NewResourceButton} from './NewResourceButton';

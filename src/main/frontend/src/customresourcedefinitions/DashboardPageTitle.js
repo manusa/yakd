@@ -15,9 +15,9 @@
  *
  */
 import React from 'react';
+import {DashboardPage} from '../components';
 import metadata from '../metadata';
 import crd from './index';
-import DashboardPage from '../components/DashboardPage';
 
 const DashboardPageTitle = ({customResourceDefinition, children}) => (
   <DashboardPage.Title

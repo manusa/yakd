@@ -15,8 +15,8 @@
  *
  */
 import React from 'react';
+import {DashboardPage} from '../components';
 import pv from './';
-import DashboardPage from '../components/DashboardPage';
 
 const PersistentVolumesPage = () => (
   <DashboardPage title='PersistentVolumes'>
