@@ -31,7 +31,7 @@ import deployments from './deployments';
 import * as ep from './endpoints';
 import events from './events';
 import hpa from './horizontalpodautoscalers';
-import ing from './ingresses';
+import * as ing from './ingresses';
 import job from './jobs';
 import ns from './namespaces';
 import nodes from './nodes';

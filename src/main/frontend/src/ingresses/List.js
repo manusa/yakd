@@ -16,7 +16,7 @@
  */
 import React from 'react';
 import metadata from '../metadata';
-import ing from './';
+import {api, selectors} from './';
 import Icon from '../components/Icon';
 import Link from '../components/Link';
 import ResourceList from '../components/ResourceList';
@@ -34,7 +34,7 @@ const headers = [
 
 const Rows = ({ingresses, crudDelete}) => {
   const deleteIngress = ingress => async () => {
-    await ing.api.delete(ingress);
+    await api.deleteIng(ingress);
     crudDelete(ingress);
   };
   return ingresses
@@ -57,7 +57,7 @@ const Rows = ({ingresses, crudDelete}) => {
           </Link.Namespace>
         </Table.Cell>
         <Table.Cell>
-          {ing.selectors.allHosts(ingress).map((host, idx) => (
+          {selectors.allHosts(ingress).map((host, idx) => (
             <div key={idx}>
               <Link href={`http://${host}`} target='_blank'>
                 {host}
@@ -66,7 +66,7 @@ const Rows = ({ingresses, crudDelete}) => {
           ))}
         </Table.Cell>
         <Table.Cell>
-          {ing.selectors.allPaths(ingress).map((path, idx) => (
+          {selectors.allPaths(ingress).map((path, idx) => (
             <div key={idx}>{path}</div>
           ))}
         </Table.Cell>
@@ -77,19 +77,14 @@ const Rows = ({ingresses, crudDelete}) => {
     ));
 };
 
-const List = ({resources, loadedResources, crudDelete, ...properties}) => (
-  <ResourceList
-    headers={headers}
-    resources={resources}
-    loading={!loadedResources['Ingress']}
-    {...properties}
-  >
-    <Rows
-      ingresses={resources}
-      loadedResources={loadedResources}
-      crudDelete={crudDelete}
-    />
-  </ResourceList>
+export const List = ResourceList.resourceListConnect('ingresses')(
+  ({resources, loadedResources, crudDelete, ...properties}) => (
+    <ResourceList headers={headers} resources={resources} {...properties}>
+      <Rows
+        ingresses={resources}
+        loadedResources={loadedResources}
+        crudDelete={crudDelete}
+      />
+    </ResourceList>
+  )
 );
-
-export default ResourceList.resourceListConnect('ingresses')(List);

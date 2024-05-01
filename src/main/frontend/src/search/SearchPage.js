@@ -27,7 +27,7 @@ import dc from '../deploymentconfigs';
 import * as ds from '../daemonsets';
 import * as ep from '../endpoints';
 import hpa from '../horizontalpodautoscalers';
-import i from '../ingresses';
+import {List as IngressList} from '../ingresses';
 import j from '../jobs';
 import ns from '../namespaces';
 import p from '../pods';
@@ -134,7 +134,7 @@ const Results = ({query, selectedNamespace}) => {
         nameLike={query}
         namespace={selectedNamespace}
       />
-      <i.List
+      <IngressList
         {...commonProps}
         title='Ingresses'
         nameLike={query}

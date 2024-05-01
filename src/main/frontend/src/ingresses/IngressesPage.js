@@ -16,19 +16,17 @@
  */
 import React from 'react';
 import {connect} from 'react-redux';
-import ing from './';
+import {List} from './';
 import {FilterBar} from '../components';
 import DashboardPage from '../components/DashboardPage';
-
-const IngressesPage = ({selectedNamespace}) => (
-  <DashboardPage title='Ingresses'>
-    <FilterBar />
-    <ing.List className='mt-4' namespace={selectedNamespace} />
-  </DashboardPage>
-);
 
 const mapStateToProps = ({ui: {selectedNamespace}}) => ({
   selectedNamespace
 });
 
-export default connect(mapStateToProps)(IngressesPage);
+export const IngressesPage = connect(mapStateToProps)(({selectedNamespace}) => (
+  <DashboardPage title='Ingresses'>
+    <FilterBar />
+    <List className='mt-4' namespace={selectedNamespace} />
+  </DashboardPage>
+));

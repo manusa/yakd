@@ -17,11 +17,11 @@
 import React from 'react';
 import {withParams} from '../router';
 import md from '../metadata';
-import i from './';
+import {api} from './';
 import ResourceEditPage from '../components/ResourceEditPage';
 import Link from '../components/Link';
 
-const IngressesEditPage = ({params: {uid}}) => (
+export const IngressesEditPage = withParams(({params: {uid}}) => (
   <ResourceEditPage
     kind='Ingresses'
     path='ingresses'
@@ -30,9 +30,7 @@ const IngressesEditPage = ({params: {uid}}) => (
         {md.selectors.name(resource)}
       </Link.RouterLink>
     )}
-    save={async resource => await i.api.update(resource)}
+    save={async resource => await api.update(resource)}
     resourceFromState={state => state.ingresses[uid]}
   />
-);
-
-export default withParams(IngressesEditPage);
+));

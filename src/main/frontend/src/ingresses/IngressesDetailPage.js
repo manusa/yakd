@@ -18,23 +18,9 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {withParams} from '../router';
 import metadata from '../metadata';
-import i from './';
+import {api} from './';
 import {Form} from '../components';
 import ResourceDetailPage from '../components/ResourceDetailPage';
-
-const IngressesDetailPage = ({ingress}) => (
-  <ResourceDetailPage
-    kind='Ingresses'
-    path='ingresses'
-    resource={ingress}
-    deleteFunction={i.api.delete}
-    body={
-      <Form>
-        <metadata.Details resource={ingress} />
-      </Form>
-    }
-  />
-);
 
 const mapStateToProps = ({ingresses}) => ({
   ingresses
@@ -47,6 +33,22 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
   ingress: stateProps.ingresses[ownProps.params.uid]
 });
 
-export default withParams(
-  connect(mapStateToProps, null, mergeProps)(IngressesDetailPage)
+export const IngressesDetailPage = withParams(
+  connect(
+    mapStateToProps,
+    null,
+    mergeProps
+  )(({ingress}) => (
+    <ResourceDetailPage
+      kind='Ingresses'
+      path='ingresses'
+      resource={ingress}
+      deleteFunction={api.deleteIng}
+      body={
+        <Form>
+          <metadata.Details resource={ingress} />
+        </Form>
+      }
+    />
+  ))
 );
