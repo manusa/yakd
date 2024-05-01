@@ -28,7 +28,7 @@ import * as ds from '../daemonsets';
 import * as ep from '../endpoints';
 import hpa from '../horizontalpodautoscalers';
 import {IngressesList} from '../ingresses';
-import j from '../jobs';
+import {JobsList} from '../jobs';
 import ns from '../namespaces';
 import p from '../pods';
 import pvc from '../persistentvolumeclaims';
@@ -92,7 +92,7 @@ const Results = ({query, selectedNamespace}) => {
         nameLike={query}
         namespace={selectedNamespace}
       />
-      <j.List
+      <JobsList
         {...commonProps}
         title='Jobs'
         nameLike={query}

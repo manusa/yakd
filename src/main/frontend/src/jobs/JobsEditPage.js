@@ -17,11 +17,11 @@
 import React from 'react';
 import {withParams} from '../router';
 import md from '../metadata';
-import j from './';
+import {api} from './';
 import ResourceEditPage from '../components/ResourceEditPage';
 import Link from '../components/Link';
 
-const JobsEditPage = ({params: {uid}}) => (
+export const JobsEditPage = withParams(({params: {uid}}) => (
   <ResourceEditPage
     kind='Jobs'
     path='jobs'
@@ -30,9 +30,7 @@ const JobsEditPage = ({params: {uid}}) => (
         {md.selectors.name(resource)}
       </Link.RouterLink>
     )}
-    save={async resource => await j.api.update(resource)}
+    save={async resource => await api.update(resource)}
     resourceFromState={state => state.jobs[uid]}
   />
-);
-
-export default withParams(JobsEditPage);
+));

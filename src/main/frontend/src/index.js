@@ -32,7 +32,7 @@ import * as ep from './endpoints';
 import * as events from './events';
 import hpa from './horizontalpodautoscalers';
 import * as ing from './ingresses';
-import job from './jobs';
+import * as job from './jobs';
 import ns from './namespaces';
 import nodes from './nodes';
 import pvc from './persistentvolumeclaims';

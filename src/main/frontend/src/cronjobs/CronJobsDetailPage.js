@@ -19,7 +19,7 @@ import {connect} from 'react-redux';
 import {withParams} from '../router';
 import metadata from '../metadata';
 import {api, selectors} from './';
-import jobs from '../jobs';
+import {JobsList} from '../jobs';
 import {Card, Form} from '../components';
 import DashboardPage from '../components/DashboardPage';
 import Icon from '../components/Icon';
@@ -109,13 +109,13 @@ export const CronJobsDetailPage = withParams(
         </Form>
       }
     >
-      <jobs.List
+      <JobsList
         title='Active Jobs'
         titleVariant={Card.titleVariants.medium}
         className='mt-2'
         uids={selectors.statusActiveUids(cronJob)}
       />
-      <jobs.List
+      <JobsList
         title='Inactive Jobs'
         titleVariant={Card.titleVariants.medium}
         className='mt-2'

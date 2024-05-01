@@ -33,7 +33,7 @@ import {
 import * as ep from './endpoints';
 import hpa from './horizontalpodautoscalers';
 import * as ingresses from './ingresses';
-import jobs from './jobs';
+import {JobsPage, JobsEditPage, JobsDetailPage} from './jobs';
 import nodes from './nodes';
 import ns from './namespaces';
 import pvc from './persistentvolumeclaims';
@@ -231,9 +231,9 @@ const App = ({dispatch}) => {
           path='/ingresses/:uid/edit'
           element={<ingresses.IngressesEditPage />}
         />
-        <Route exact path='/jobs' element={<jobs.JobsPage />} />
-        <Route exact path='/jobs/:uid' element={<jobs.JobsDetailPage />} />
-        <Route exact path='/jobs/:uid/edit' element={<jobs.JobsEditPage />} />
+        <Route exact path='/jobs' element={<JobsPage />} />
+        <Route exact path='/jobs/:uid' element={<JobsDetailPage />} />
+        <Route exact path='/jobs/:uid/edit' element={<JobsEditPage />} />
         <Route exact path='/namespaces' element={<ns.NamespacesPage />} />
         <Route
           exact
