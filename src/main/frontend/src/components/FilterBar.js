@@ -16,14 +16,18 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import {useDispatch, useSelector} from 'react-redux';
+import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 import redux from '../redux';
 import metadata from '../metadata';
 import {Dropdown} from './';
 
 const NamespaceDropdown = () => {
   const {namespaces, selectedNamespace} = useSelector(
-    ({namespaces, ui: {selectedNamespace}}) => ({namespaces, selectedNamespace})
+    ({namespaces, ui: {selectedNamespace}}) => ({
+      namespaces,
+      selectedNamespace
+    }),
+    shallowEqual
   );
   const dispatch = useDispatch();
   const selectNamespace = namespace =>
