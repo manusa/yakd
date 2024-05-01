@@ -14,22 +14,10 @@
  * limitations under the License.
  *
  */
-import api from './api';
-import reducer from './reducer';
-import selectors from './selectors';
-import List from './List';
-import JobsDetailPage from './JobsDetailPage';
-import JobsEditPage from './JobsEditPage';
-import JobsPage from './JobsPage';
-
-const index = {
-  api,
-  reducer,
-  selectors,
-  JobsDetailPage,
-  JobsEditPage,
-  JobsPage,
-  List
-};
-
-export default index;
+export * as api from './api';
+export {reducer} from './reducer';
+export * as selectors from './selectors';
+export {List as JobsList} from './List';
+export {JobsDetailPage} from './JobsDetailPage';
+export {JobsEditPage} from './JobsEditPage';
+export {JobsPage} from './JobsPage';

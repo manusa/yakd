@@ -16,9 +16,5 @@
  */
 import {deleteNamespacedResource, updateNamespacedResource} from '../fetch';
 
-const api = {
-  delete: deleteNamespacedResource('jobs'),
-  update: updateNamespacedResource('jobs')
-};
-
-export default api;
+export const deleteJob = deleteNamespacedResource('jobs');
+export const update = updateNamespacedResource('jobs');

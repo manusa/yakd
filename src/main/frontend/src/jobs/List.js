@@ -16,7 +16,7 @@
  */
 import React from 'react';
 import metadata from '../metadata';
-import j from './';
+import {api, selectors} from './';
 import Icon from '../components/Icon';
 import Link from '../components/Link';
 import ResourceList from '../components/ResourceList';
@@ -33,15 +33,15 @@ const headers = [
 ];
 
 const Rows = ({jobs}) => {
-  const deleteJob = job => () => j.api.delete(job);
+  const deleteJob = job => () => api.deleteJob(job);
   return jobs.sort(metadata.selectors.sortByCreationTimeStamp).map(job => (
     <Table.ResourceRow key={metadata.selectors.uid(job)} resource={job}>
       <Table.Cell className='whitespace-nowrap w-3 text-center'>
         <Icon
           className={
-            j.selectors.isComplete(job) ? 'text-green-500' : 'text-gray-500'
+            selectors.isComplete(job) ? 'text-green-500' : 'text-gray-500'
           }
-          icon={j.selectors.isComplete(job) ? 'fa-check' : 'fa-hourglass-half'}
+          icon={selectors.isComplete(job) ? 'fa-check' : 'fa-hourglass-half'}
         />
       </Table.Cell>
       <Table.Cell className='whitespace-nowrap'>
@@ -55,7 +55,7 @@ const Rows = ({jobs}) => {
         </Link.Namespace>
       </Table.Cell>
       <Table.Cell className=''>
-        {j.selectors.statusSucceeded(job)}/{j.selectors.specCompletions(job)}
+        {selectors.statusSucceeded(job)}/{selectors.specCompletions(job)}
       </Table.Cell>
       <Table.Cell className='whitespace-nowrap text-center'>
         <Table.DeleteButton onClick={deleteJob(job)} />
@@ -64,18 +64,18 @@ const Rows = ({jobs}) => {
   ));
 };
 
-const List = ({
-  resources,
-  ownerUid,
-  uids,
-  uidsNotIn,
-  crudDelete,
-  loadedResources,
-  ...properties
-}) => (
-  <ResourceList headers={headers} resources={resources} {...properties}>
-    <Rows jobs={resources} loadedResources={loadedResources} />
-  </ResourceList>
+export const List = ResourceList.resourceListConnect('jobs')(
+  ({
+    resources,
+    ownerUid,
+    uids,
+    uidsNotIn,
+    crudDelete,
+    loadedResources,
+    ...properties
+  }) => (
+    <ResourceList headers={headers} resources={resources} {...properties}>
+      <Rows jobs={resources} loadedResources={loadedResources} />
+    </ResourceList>
+  )
 );
-
-export default ResourceList.resourceListConnect('jobs')(List);

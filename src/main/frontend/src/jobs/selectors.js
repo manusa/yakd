@@ -14,19 +14,15 @@
  * limitations under the License.
  *
  */
-const selectors = {};
+export const specCompletions = job => job?.spec?.completions ?? 0;
+export const specParallelism = job => job?.spec?.parallelism ?? 0;
 
-selectors.specCompletions = job => job?.spec?.completions ?? 0;
-selectors.specParallelism = job => job?.spec?.parallelism ?? 0;
+export const containers = job => job?.spec?.template?.spec?.containers ?? [];
 
-selectors.containers = job => job?.spec?.template?.spec?.containers ?? [];
+export const statusSucceeded = job => job?.status?.succeeded ?? 0;
 
-selectors.statusSucceeded = job => job?.status?.succeeded ?? 0;
-
-selectors.isComplete = job =>
+export const isComplete = job =>
   job?.status?.conditions ??
   []
     .filter(condition => condition.type === 'Complete')
     .filter(condition => condition.status.equalsIgnoreCase('true')).length > 0;
-
-export default selectors;

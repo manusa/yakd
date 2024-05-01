@@ -18,58 +18,12 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {withParams} from '../router';
 import metadata from '../metadata';
-import j from './';
+import {api, selectors} from './';
 import {ContainerList} from '../containers';
 import pods from '../pods';
 import {Card, Form} from '../components';
 import DashboardPage from '../components/DashboardPage';
 import ResourceDetailPage from '../components/ResourceDetailPage';
-
-const JobsDetailPage = ({job}) => (
-  <ResourceDetailPage
-    path='jobs'
-    title={
-      <DashboardPage.Title
-        path='jobs'
-        kind='Jobs'
-        namespace={metadata.selectors.namespace(job)}
-        resource={job}
-        isReadyFunction={j.selectors.isComplete}
-        notReadyClassName='text-gray-500'
-        notReadyIcon='fa-hourglass-half'
-      />
-    }
-    resource={job}
-    deleteFunction={j.api.delete}
-    body={
-      <Form>
-        <metadata.Details resource={job} />
-        <Form.Field label='Completions'>
-          {j.selectors.specCompletions(job)}
-        </Form.Field>
-        <Form.Field label='Parallelism'>
-          {j.selectors.specParallelism(job)}
-        </Form.Field>
-        <Form.Field label='Succeeded'>
-          {j.selectors.statusSucceeded(job)}
-        </Form.Field>
-      </Form>
-    }
-  >
-    <ContainerList
-      title='Containers'
-      titleVariant={Card.titleVariants.medium}
-      className='mt-2'
-      containers={j.selectors.containers(job)}
-    />
-    <pods.List
-      title='Pods'
-      titleVariant={Card.titleVariants.medium}
-      className='mt-2'
-      ownerUid={metadata.selectors.uid(job)}
-    />
-  </ResourceDetailPage>
-);
 
 const mapStateToProps = ({jobs}) => ({
   jobs
@@ -79,6 +33,54 @@ const mergeProps = ({jobs}, dispatchProps, {params: {uid}}) => ({
   job: jobs[uid]
 });
 
-export default withParams(
-  connect(mapStateToProps, null, mergeProps)(JobsDetailPage)
+export const JobsDetailPage = withParams(
+  connect(
+    mapStateToProps,
+    null,
+    mergeProps
+  )(({job}) => (
+    <ResourceDetailPage
+      path='jobs'
+      title={
+        <DashboardPage.Title
+          path='jobs'
+          kind='Jobs'
+          namespace={metadata.selectors.namespace(job)}
+          resource={job}
+          isReadyFunction={selectors.isComplete}
+          notReadyClassName='text-gray-500'
+          notReadyIcon='fa-hourglass-half'
+        />
+      }
+      resource={job}
+      deleteFunction={api.deleteJob}
+      body={
+        <Form>
+          <metadata.Details resource={job} />
+          <Form.Field label='Completions'>
+            {selectors.specCompletions(job)}
+          </Form.Field>
+          <Form.Field label='Parallelism'>
+            {selectors.specParallelism(job)}
+          </Form.Field>
+          <Form.Field label='Succeeded'>
+            {selectors.statusSucceeded(job)}
+          </Form.Field>
+        </Form>
+      }
+    >
+      <ContainerList
+        title='Containers'
+        titleVariant={Card.titleVariants.medium}
+        className='mt-2'
+        containers={selectors.containers(job)}
+      />
+      <pods.List
+        title='Pods'
+        titleVariant={Card.titleVariants.medium}
+        className='mt-2'
+        ownerUid={metadata.selectors.uid(job)}
+      />
+    </ResourceDetailPage>
+  ))
 );
