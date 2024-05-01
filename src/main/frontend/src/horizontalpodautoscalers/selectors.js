@@ -14,15 +14,11 @@
  * limitations under the License.
  *
  */
-const selectors = {};
+export const statusDesiredReplicas = hpa => hpa?.status?.desiredReplicas ?? 0;
+export const statusCurrentReplicas = hpa => hpa?.status?.currentReplicas ?? 0;
 
-selectors.statusDesiredReplicas = hpa => hpa?.status?.desiredReplicas ?? 0;
-selectors.statusCurrentReplicas = hpa => hpa?.status?.currentReplicas ?? 0;
+export const isReady = hpa =>
+  statusDesiredReplicas(hpa) === statusCurrentReplicas(hpa);
 
-selectors.isReady = hpa =>
-  selectors.statusDesiredReplicas(hpa) === selectors.statusCurrentReplicas(hpa);
-
-selectors.scaleTargetRef = hpa => hpa?.spec?.scaleTargetRef ?? {};
-selectors.scaleTargetRefName = hpa => selectors.scaleTargetRef(hpa)?.name ?? '';
-
-export default selectors;
+export const scaleTargetRef = hpa => hpa?.spec?.scaleTargetRef ?? {};
+export const scaleTargetRefName = hpa => scaleTargetRef(hpa)?.name ?? '';

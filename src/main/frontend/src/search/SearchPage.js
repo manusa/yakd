@@ -26,7 +26,7 @@ import {DeploymentsList} from '../deployments';
 import dc from '../deploymentconfigs';
 import * as ds from '../daemonsets';
 import * as ep from '../endpoints';
-import hpa from '../horizontalpodautoscalers';
+import {HorizontalPodAutoscalersList} from '../horizontalpodautoscalers';
 import {IngressesList} from '../ingresses';
 import {JobsList} from '../jobs';
 import ns from '../namespaces';
@@ -116,7 +116,7 @@ const Results = ({query, selectedNamespace}) => {
         nameLike={query}
         namespace={selectedNamespace}
       />
-      <hpa.List
+      <HorizontalPodAutoscalersList
         {...commonProps}
         title='HorizontalPodAutoscalers'
         nameLike={query}

@@ -17,23 +17,23 @@
 import React from 'react';
 import {withParams} from '../router';
 import md from '../metadata';
-import hpa from './';
+import {api} from './';
 import ResourceEditPage from '../components/ResourceEditPage';
 import Link from '../components/Link';
 
-const HorizontalPodAutoscalersEditPage = ({params: {uid}}) => (
-  <ResourceEditPage
-    kind='HorizontalPodAutoscalers'
-    h
-    path='horizontalpodautoscalers'
-    cardTitle={resource => (
-      <Link.RouterLink to={`/horizontalpodautoscalers/${uid}`}>
-        {md.selectors.name(resource)}
-      </Link.RouterLink>
-    )}
-    save={async resource => await hpa.api.update(resource)}
-    resourceFromState={state => state.horizontalPodAutoscalers[uid]}
-  />
+export const HorizontalPodAutoscalersEditPage = withParams(
+  ({params: {uid}}) => (
+    <ResourceEditPage
+      kind='HorizontalPodAutoscalers'
+      h
+      path='horizontalpodautoscalers'
+      cardTitle={resource => (
+        <Link.RouterLink to={`/horizontalpodautoscalers/${uid}`}>
+          {md.selectors.name(resource)}
+        </Link.RouterLink>
+      )}
+      save={async resource => await api.update(resource)}
+      resourceFromState={state => state.horizontalPodAutoscalers[uid]}
+    />
+  )
 );
-
-export default withParams(HorizontalPodAutoscalersEditPage);

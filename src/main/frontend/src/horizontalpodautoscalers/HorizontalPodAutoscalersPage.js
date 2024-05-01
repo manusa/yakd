@@ -16,19 +16,22 @@
  */
 import React from 'react';
 import {connect} from 'react-redux';
-import hpa from './';
+import {HorizontalPodAutoscalersList} from './';
 import {FilterBar} from '../components';
 import DashboardPage from '../components/DashboardPage';
-
-const HorizontalPodAutoscalersPage = ({selectedNamespace}) => (
-  <DashboardPage title='HorizontalPodAutoscalers'>
-    <FilterBar />
-    <hpa.List className='mt-4' namespace={selectedNamespace} />
-  </DashboardPage>
-);
 
 const mapStateToProps = ({ui: {selectedNamespace}}) => ({
   selectedNamespace
 });
 
-export default connect(mapStateToProps)(HorizontalPodAutoscalersPage);
+export const HorizontalPodAutoscalersPage = connect(mapStateToProps)(
+  ({selectedNamespace}) => (
+    <DashboardPage title='HorizontalPodAutoscalers'>
+      <FilterBar />
+      <HorizontalPodAutoscalersList
+        className='mt-4'
+        namespace={selectedNamespace}
+      />
+    </DashboardPage>
+  )
+);

@@ -16,11 +16,11 @@
  */
 import React from 'react';
 import metadata from '../metadata';
-import hpa from './';
 import Icon from '../components/Icon';
 import Link from '../components/Link';
 import ResourceList from '../components/ResourceList';
 import Table from '../components/Table';
+import {api, selectors} from './';
 
 const headers = [
   '',
@@ -34,7 +34,7 @@ const headers = [
 
 const Rows = ({horizontalPodAutoscalers}) => {
   const deleteAction = horizontalPodAutoscaler => () =>
-    hpa.api.delete(horizontalPodAutoscaler);
+    api.deleteHpa(horizontalPodAutoscaler);
   return horizontalPodAutoscalers
     .sort(metadata.selectors.sortByCreationTimeStamp)
     .map(horizontalPodAutoscaler => (
@@ -45,12 +45,12 @@ const Rows = ({horizontalPodAutoscalers}) => {
         <Table.Cell className='whitespace-nowrap w-3 text-center'>
           <Icon
             className={
-              hpa.selectors.isReady(horizontalPodAutoscaler)
+              selectors.isReady(horizontalPodAutoscaler)
                 ? 'text-green-500'
                 : 'text-red-500'
             }
             icon={
-              hpa.selectors.isReady(horizontalPodAutoscaler)
+              selectors.isReady(horizontalPodAutoscaler)
                 ? 'fa-check'
                 : 'fa-exclamation-circle'
             }
@@ -75,7 +75,7 @@ const Rows = ({horizontalPodAutoscalers}) => {
           </Link.Namespace>
         </Table.Cell>
         <Table.Cell>
-          {hpa.selectors.scaleTargetRefName(horizontalPodAutoscaler)}
+          {selectors.scaleTargetRefName(horizontalPodAutoscaler)}
         </Table.Cell>
         <Table.Cell className='whitespace-nowrap text-center'>
           <Table.DeleteButton onClick={deleteAction(horizontalPodAutoscaler)} />
@@ -84,15 +84,13 @@ const Rows = ({horizontalPodAutoscalers}) => {
     ));
 };
 
-const List = ({resources, crudDelete, loadedResources, ...properties}) => (
+export const List = ResourceList.resourceListConnect(
+  'horizontalPodAutoscalers'
+)(({resources, crudDelete, loadedResources, ...properties}) => (
   <ResourceList headers={headers} resources={resources} {...properties}>
     <Rows
       horizontalPodAutoscalers={resources}
       loadedResources={loadedResources}
     />
   </ResourceList>
-);
-
-export default ResourceList.resourceListConnect('horizontalPodAutoscalers')(
-  List
-);
+));

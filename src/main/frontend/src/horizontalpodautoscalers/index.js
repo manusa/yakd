@@ -14,22 +14,10 @@
  * limitations under the License.
  *
  */
-import api from './api';
-import reducer from './reducer';
-import selectors from './selectors';
-import List from './List';
-import HorizontalPodAutoscalersDetailPage from './HorizontalPodAutoscalersDetailPage';
-import HorizontalPodAutoscalersEditPage from './HorizontalPodAutoscalersEditPage';
-import HorizontalPodAutoscalersPage from './HorizontalPodAutoscalersPage';
-
-const index = {
-  api,
-  reducer,
-  selectors,
-  HorizontalPodAutoscalersDetailPage,
-  HorizontalPodAutoscalersEditPage,
-  HorizontalPodAutoscalersPage,
-  List
-};
-
-export default index;
+export * as api from './api';
+export {reducer} from './reducer';
+export * as selectors from './selectors';
+export {List as HorizontalPodAutoscalersList} from './List';
+export {HorizontalPodAutoscalersDetailPage} from './HorizontalPodAutoscalersDetailPage';
+export {HorizontalPodAutoscalersEditPage} from './HorizontalPodAutoscalersEditPage';
+export {HorizontalPodAutoscalersPage} from './HorizontalPodAutoscalersPage';

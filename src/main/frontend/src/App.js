@@ -31,7 +31,11 @@ import {
   DeploymentsDetailPage
 } from './deployments';
 import * as ep from './endpoints';
-import hpa from './horizontalpodautoscalers';
+import {
+  HorizontalPodAutoscalersPage,
+  HorizontalPodAutoscalersDetailPage,
+  HorizontalPodAutoscalersEditPage
+} from './horizontalpodautoscalers';
 import * as ingresses from './ingresses';
 import {JobsPage, JobsEditPage, JobsDetailPage} from './jobs';
 import nodes from './nodes';
@@ -208,17 +212,17 @@ const App = ({dispatch}) => {
         <Route
           exact
           path='/horizontalpodautoscalers'
-          element={<hpa.HorizontalPodAutoscalersPage />}
+          element={<HorizontalPodAutoscalersPage />}
         />
         <Route
           exact
           path='/horizontalpodautoscalers/:uid'
-          element={<hpa.HorizontalPodAutoscalersDetailPage />}
+          element={<HorizontalPodAutoscalersDetailPage />}
         />
         <Route
           exact
           path='/horizontalpodautoscalers/:uid/edit'
-          element={<hpa.HorizontalPodAutoscalersEditPage />}
+          element={<HorizontalPodAutoscalersEditPage />}
         />
         <Route exact path='/ingresses' element={<ingresses.IngressesPage />} />
         <Route
