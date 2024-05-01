@@ -28,7 +28,7 @@ import * as ds from './daemonsets';
 import deployments from './deployments';
 import * as ep from './endpoints';
 import hpa from './horizontalpodautoscalers';
-import ingresses from './ingresses';
+import * as ingresses from './ingresses';
 import jobs from './jobs';
 import nodes from './nodes';
 import ns from './namespaces';
@@ -229,7 +229,7 @@ const App = ({dispatch}) => {
         <Route
           exact
           path='/ingresses/:uid/edit'
-          element={<ingresses.IngressEditPage />}
+          element={<ingresses.IngressesEditPage />}
         />
         <Route exact path='/jobs' element={<jobs.JobsPage />} />
         <Route exact path='/jobs/:uid' element={<jobs.JobsDetailPage />} />

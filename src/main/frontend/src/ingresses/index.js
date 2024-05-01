@@ -14,22 +14,10 @@
  * limitations under the License.
  *
  */
-import api from './api';
-import reducer from './reducer';
-import selectors from './selectors';
-import List from './List';
-import IngressesDetailPage from './IngressesDetailPage';
-import IngressesEditPage from './IngressesEditPage';
-import IngressesPage from './IngressesPage';
-
-const ingresses = {};
-
-ingresses.api = api;
-ingresses.reducer = reducer;
-ingresses.selectors = selectors;
-ingresses.List = List;
-ingresses.IngressesDetailPage = IngressesDetailPage;
-ingresses.IngressEditPage = IngressesEditPage;
-ingresses.IngressesPage = IngressesPage;
-
-export default ingresses;
+export * as api from './api';
+export {reducer} from './reducer';
+export * as selectors from './selectors';
+export {List} from './List';
+export {IngressesDetailPage} from './IngressesDetailPage';
+export {IngressesEditPage} from './IngressesEditPage';
+export {IngressesPage} from './IngressesPage';
