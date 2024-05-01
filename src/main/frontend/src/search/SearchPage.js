@@ -22,12 +22,12 @@ import * as cr from '../clusterroles';
 import * as cm from '../configmaps';
 import * as cj from '../cronjobs';
 import crd from '../customresourcedefinitions';
-import d from '../deployments';
+import {DeploymentsList} from '../deployments';
 import dc from '../deploymentconfigs';
 import * as ds from '../daemonsets';
 import * as ep from '../endpoints';
 import hpa from '../horizontalpodautoscalers';
-import {List as IngressList} from '../ingresses';
+import {IngressesList} from '../ingresses';
 import j from '../jobs';
 import ns from '../namespaces';
 import p from '../pods';
@@ -68,7 +68,7 @@ const Results = ({query, selectedNamespace}) => {
         nameLike={query}
         namespace={selectedNamespace}
       />
-      <d.List
+      <DeploymentsList
         {...commonProps}
         title='Deployments'
         nameLike={query}
@@ -134,7 +134,7 @@ const Results = ({query, selectedNamespace}) => {
         nameLike={query}
         namespace={selectedNamespace}
       />
-      <IngressList
+      <IngressesList
         {...commonProps}
         title='Ingresses'
         nameLike={query}

@@ -19,67 +19,13 @@ import {connect} from 'react-redux';
 import {withParams} from '../router';
 import metadata from '../metadata';
 import {ContainerList} from '../containers';
-import d from './';
+import {api, selectors} from './';
 import pods from '../pods';
 import rs from '../replicasets';
 import {Card, Form} from '../components';
 import Icon from '../components/Icon';
 import Link from '../components/Link';
 import ResourceDetailPage from '../components/ResourceDetailPage';
-
-const DeploymentsDetailPage = ({deployment, replicaSetsUids}) => (
-  <ResourceDetailPage
-    kind='Deployments'
-    path='deployments'
-    resource={deployment}
-    isReadyFunction={d.selectors.isReady}
-    deleteFunction={d.api.delete}
-    actions={
-      <Link
-        className='ml-2'
-        size={Link.sizes.small}
-        variant={Link.variants.outline}
-        onClick={() => d.api.restart(deployment)}
-        title='Restart'
-      >
-        <Icon stylePrefix='fas' icon='fa-redo-alt' className='mr-2' />
-        Restart
-      </Link>
-    }
-    body={
-      <Form>
-        <metadata.Details resource={deployment} />
-        <rs.ReplicasField
-          resource={deployment}
-          replicas={d.selectors.specReplicas(deployment)}
-          updateReplicas={d.api.updateReplicas}
-        />
-        <Form.Field label='Strategy'>
-          {d.selectors.specStrategyType(deployment)}
-        </Form.Field>
-      </Form>
-    }
-  >
-    <ContainerList
-      title='Containers'
-      titleVariant={Card.titleVariants.medium}
-      className='mt-2'
-      containers={d.selectors.containers(deployment)}
-    />
-    <rs.List
-      title='Replica Sets'
-      titleVariant={Card.titleVariants.medium}
-      className='mt-2'
-      ownerUid={metadata.selectors.uid(deployment)}
-    />
-    <pods.List
-      title='Pods'
-      titleVariant={Card.titleVariants.medium}
-      className='mt-2'
-      ownerUids={replicaSetsUids}
-    />
-  </ResourceDetailPage>
-);
 
 const mapStateToProps = ({deployments, replicaSets}) => ({
   deployments,
@@ -102,6 +48,62 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
     .map(replicaSet => metadata.selectors.uid(replicaSet))
 });
 
-export default withParams(
-  connect(mapStateToProps, null, mergeProps)(DeploymentsDetailPage)
+export const DeploymentsDetailPage = withParams(
+  connect(
+    mapStateToProps,
+    null,
+    mergeProps
+  )(({deployment, replicaSetsUids}) => (
+    <ResourceDetailPage
+      kind='Deployments'
+      path='deployments'
+      resource={deployment}
+      isReadyFunction={selectors.isReady}
+      deleteFunction={api.deleteDeployment}
+      actions={
+        <Link
+          className='ml-2'
+          size={Link.sizes.small}
+          variant={Link.variants.outline}
+          onClick={() => api.restart(deployment)}
+          title='Restart'
+        >
+          <Icon stylePrefix='fas' icon='fa-redo-alt' className='mr-2' />
+          Restart
+        </Link>
+      }
+      body={
+        <Form>
+          <metadata.Details resource={deployment} />
+          <rs.ReplicasField
+            resource={deployment}
+            replicas={selectors.specReplicas(deployment)}
+            updateReplicas={api.updateReplicas}
+          />
+          <Form.Field label='Strategy'>
+            {selectors.specStrategyType(deployment)}
+          </Form.Field>
+        </Form>
+      }
+    >
+      <ContainerList
+        title='Containers'
+        titleVariant={Card.titleVariants.medium}
+        className='mt-2'
+        containers={selectors.containers(deployment)}
+      />
+      <rs.List
+        title='Replica Sets'
+        titleVariant={Card.titleVariants.medium}
+        className='mt-2'
+        ownerUid={metadata.selectors.uid(deployment)}
+      />
+      <pods.List
+        title='Pods'
+        titleVariant={Card.titleVariants.medium}
+        className='mt-2'
+        ownerUids={replicaSetsUids}
+      />
+    </ResourceDetailPage>
+  ))
 );

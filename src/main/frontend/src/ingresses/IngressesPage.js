@@ -16,7 +16,7 @@
  */
 import React from 'react';
 import {connect} from 'react-redux';
-import {List} from './';
+import {IngressesList} from './';
 import {FilterBar} from '../components';
 import DashboardPage from '../components/DashboardPage';
 
@@ -27,6 +27,6 @@ const mapStateToProps = ({ui: {selectedNamespace}}) => ({
 export const IngressesPage = connect(mapStateToProps)(({selectedNamespace}) => (
   <DashboardPage title='Ingresses'>
     <FilterBar />
-    <List className='mt-4' namespace={selectedNamespace} />
+    <IngressesList className='mt-4' namespace={selectedNamespace} />
   </DashboardPage>
 ));

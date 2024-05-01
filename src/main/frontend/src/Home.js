@@ -16,7 +16,7 @@
  */
 import React from 'react';
 import {connect} from 'react-redux';
-import deployments from './deployments';
+import {DeploymentsCard} from './deployments';
 import events from './events';
 import nodes from './nodes';
 import pods from './pods';
@@ -33,7 +33,7 @@ const Home = ({selectedNamespace}) => (
         responsiveClassName={cardResponsiveClass}
         className={cardClass}
       />
-      <deployments.DeploymentsCard
+      <DeploymentsCard
         responsiveClassName={cardResponsiveClass}
         className={cardClass}
       />

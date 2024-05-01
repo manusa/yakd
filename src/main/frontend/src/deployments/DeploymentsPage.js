@@ -16,20 +16,20 @@
  */
 import React from 'react';
 import {connect} from 'react-redux';
-import deployments from './';
+import {DeploymentsCard, DeploymentsList} from './';
 import {FilterBar} from '../components';
 import DashboardPage from '../components/DashboardPage';
-
-const DeploymentsPage = ({selectedNamespace}) => (
-  <DashboardPage title='Deployments'>
-    <deployments.DeploymentsCard />
-    <FilterBar className='mt-4' />
-    <deployments.List className='mt-4' namespace={selectedNamespace} />
-  </DashboardPage>
-);
 
 const mapStateToProps = ({ui: {selectedNamespace}}) => ({
   selectedNamespace
 });
 
-export default connect(mapStateToProps)(DeploymentsPage);
+export const DeploymentsPage = connect(mapStateToProps)(
+  ({selectedNamespace}) => (
+    <DashboardPage title='Deployments'>
+      <DeploymentsCard />
+      <FilterBar className='mt-4' />
+      <DeploymentsList className='mt-4' namespace={selectedNamespace} />
+    </DashboardPage>
+  )
+);

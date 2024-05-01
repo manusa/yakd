@@ -17,11 +17,11 @@
 import React from 'react';
 import {withParams} from '../router';
 import md from '../metadata';
-import d from './';
+import {api} from './';
 import ResourceEditPage from '../components/ResourceEditPage';
 import Link from '../components/Link';
 
-const DeploymentsEditPage = ({params: {uid}}) => (
+export const DeploymentsEditPage = withParams(({params: {uid}}) => (
   <ResourceEditPage
     kind='Deployments'
     path='deployments'
@@ -30,9 +30,7 @@ const DeploymentsEditPage = ({params: {uid}}) => (
         {md.selectors.name(resource)}
       </Link.RouterLink>
     )}
-    save={async resource => await d.api.update(resource)}
+    save={async resource => await api.update(resource)}
     resourceFromState={state => state.deployments[uid]}
   />
-);
-
-export default withParams(DeploymentsEditPage);
+));

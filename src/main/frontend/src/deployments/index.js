@@ -14,24 +14,11 @@
  * limitations under the License.
  *
  */
-import api from './api';
-import reducer from './reducer';
-import selectors from './selectors';
-import List from './List';
-import DeploymentsCard from './DeploymentsCard';
-import DeploymentsDetailPage from './DeploymentsDetailPage';
-import DeploymentsEditPage from './DeploymentsEditPage';
-import DeploymentsPage from './DeploymentsPage';
-
-const deployments = {};
-
-deployments.api = api;
-deployments.reducer = reducer;
-deployments.selectors = selectors;
-deployments.List = List;
-deployments.DeploymentsCard = DeploymentsCard;
-deployments.DeploymentsDetailPage = DeploymentsDetailPage;
-deployments.DeploymentsEditPage = DeploymentsEditPage;
-deployments.DeploymentsPage = DeploymentsPage;
-
-export default deployments;
+export * as api from './api';
+export {reducer} from './reducer';
+export * as selectors from './selectors';
+export {List as DeploymentsList} from './List';
+export {DeploymentsCard} from './DeploymentsCard';
+export {DeploymentsDetailPage} from './DeploymentsDetailPage';
+export {DeploymentsEditPage} from './DeploymentsEditPage';
+export {DeploymentsPage} from './DeploymentsPage';

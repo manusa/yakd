@@ -25,7 +25,11 @@ import * as cj from './cronjobs';
 import crd from './customresourcedefinitions';
 import dc from './deploymentconfigs';
 import * as ds from './daemonsets';
-import deployments from './deployments';
+import {
+  DeploymentsPage,
+  DeploymentsEditPage,
+  DeploymentsDetailPage
+} from './deployments';
 import * as ep from './endpoints';
 import hpa from './horizontalpodautoscalers';
 import * as ingresses from './ingresses';
@@ -184,20 +188,16 @@ const App = ({dispatch}) => {
           path='/deploymentconfigs/:uid/edit'
           element={<dc.DeploymentConfigsEditPage />}
         />
-        <Route
-          exact
-          path='/deployments'
-          element={<deployments.DeploymentsPage />}
-        />
+        <Route exact path='/deployments' element={<DeploymentsPage />} />
         <Route
           exact
           path='/deployments/:uid'
-          element={<deployments.DeploymentsDetailPage />}
+          element={<DeploymentsDetailPage />}
         />
         <Route
           exact
           path='/deployments/:uid/edit'
-          element={<deployments.DeploymentsEditPage />}
+          element={<DeploymentsEditPage />}
         />
         <Route exact path='/endpoints' element={<ep.EndpointsPage />} />
         <Route
