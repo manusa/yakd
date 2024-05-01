@@ -17,7 +17,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import metadata from '../metadata';
-import ev from './';
+import {selectors} from './';
 import {Age} from '../components';
 import Link from '../components/Link';
 import Table from '../components/Table';
@@ -40,9 +40,9 @@ const headers = [
 const EventName = ({event}) => {
   let Component = Link.RouterLink;
   let url;
-  const uid = ev.selectors.involvedObjectUid(event);
-  const name = ev.selectors.involvedObjectName(event);
-  switch (ev.selectors.involvedObjectKind(event)) {
+  const uid = selectors.involvedObjectUid(event);
+  const name = selectors.involvedObjectName(event);
+  switch (selectors.involvedObjectKind(event)) {
     case 'ConfigMap':
       Component = Link.ConfigMap;
       url = `/configmaps/${uid}`;
@@ -110,19 +110,19 @@ const Rows = ({events}) => {
           <Table.Cell className='whitespace-nowrap w-3 text-center'>
             <Icon
               className={
-                ev.selectors.typeIsNormal(event)
+                selectors.typeIsNormal(event)
                   ? 'text-green-500'
                   : 'text-red-500'
               }
               icon={
-                ev.selectors.typeIsNormal(event)
+                selectors.typeIsNormal(event)
                   ? 'fa-check'
                   : 'fa-exclamation-circle'
               }
             />
           </Table.Cell>
           <Table.Cell className='whitespace-nowrap'>
-            {ev.selectors.involvedObjectKind(event)}
+            {selectors.involvedObjectKind(event)}
           </Table.Cell>
           <Table.Cell>
             <EventName event={event} />
@@ -137,22 +137,11 @@ const Rows = ({events}) => {
     });
 };
 
-const List = ({events, ...properties}) => (
-  <ResourceList
-    title='Latest Events'
-    headers={headers}
-    resources={events}
-    {...properties}
-  >
-    <Rows events={events} />
-  </ResourceList>
-);
-
 const filterEvents = (events = [], {namespace} = undefined) =>
   Object.entries(events)
     .filter(([, event]) => {
       if (namespace) {
-        return ev.selectors.involvedObjectNamespace(event) === namespace;
+        return selectors.involvedObjectNamespace(event) === namespace;
       }
       return true;
     })
@@ -172,4 +161,17 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
   events: Object.values(filterEvents(stateProps.events, ownProps))
 });
 
-export default connect(mapStateToProps, null, mergeProps)(List);
+export const List = connect(
+  mapStateToProps,
+  null,
+  mergeProps
+)(({events, ...properties}) => (
+  <ResourceList
+    title='Latest Events'
+    headers={headers}
+    resources={events}
+    {...properties}
+  >
+    <Rows events={events} />
+  </ResourceList>
+));

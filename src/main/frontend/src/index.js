@@ -29,7 +29,7 @@ import * as ds from './daemonsets';
 import dc from './deploymentconfigs';
 import * as deployments from './deployments';
 import * as ep from './endpoints';
-import events from './events';
+import * as events from './events';
 import hpa from './horizontalpodautoscalers';
 import * as ing from './ingresses';
 import job from './jobs';
