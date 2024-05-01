@@ -21,14 +21,7 @@ import {
   updateReplicasInNamespacedResource
 } from '../fetch';
 
-const api = {};
-
-api.delete = deleteNamespacedResource('deployments');
-
-api.restart = restartNamespacedResource('deployments');
-
-api.update = updateNamespacedResource('deployments');
-
-api.updateReplicas = updateReplicasInNamespacedResource('deployments');
-
-export default api;
+export const deleteDeployment = deleteNamespacedResource('deployments');
+export const restart = restartNamespacedResource('deployments');
+export const update = updateNamespacedResource('deployments');
+export const updateReplicas = updateReplicasInNamespacedResource('deployments');

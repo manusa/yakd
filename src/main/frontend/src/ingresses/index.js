@@ -17,7 +17,7 @@
 export * as api from './api';
 export {reducer} from './reducer';
 export * as selectors from './selectors';
-export {List} from './List';
+export {List as IngressesList} from './List';
 export {IngressesDetailPage} from './IngressesDetailPage';
 export {IngressesEditPage} from './IngressesEditPage';
 export {IngressesPage} from './IngressesPage';

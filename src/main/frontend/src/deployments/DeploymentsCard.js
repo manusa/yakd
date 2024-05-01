@@ -18,11 +18,18 @@ import React from 'react';
 import {connect} from 'react-redux';
 import StatusCard from '../components/StatusCard';
 import icons from '../components/icons';
-import deploymentsModule from './';
+import {selectors} from './';
 
-const DeploymentsCard = ({deployments, ...properties}) => {
+const mapStateToProps = ({deployments}) => ({
+  deployments
+});
+
+export const DeploymentsCard = connect(mapStateToProps)(({
+  deployments,
+  ...properties
+}) => {
   const objects = Object.values(deployments);
-  const ready = deploymentsModule.selectors.readyCount(objects);
+  const ready = selectors.readyCount(objects);
   const total = objects.length;
   return (
     <StatusCard
@@ -35,10 +42,4 @@ const DeploymentsCard = ({deployments, ...properties}) => {
       {...properties}
     />
   );
-};
-
-const mapStateToProps = ({deployments}) => ({
-  deployments
 });
-
-export default connect(mapStateToProps)(DeploymentsCard);
