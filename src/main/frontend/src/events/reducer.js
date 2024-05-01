@@ -16,6 +16,4 @@
  */
 import redux from '../redux';
 
-const reducer = redux.reducer('Event');
-
-export default reducer;
+export const reducer = redux.reducer('Event');

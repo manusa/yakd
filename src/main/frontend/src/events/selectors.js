@@ -14,15 +14,11 @@
  * limitations under the License.
  *
  */
-const selectors = {};
-
-selectors.involvedObjectKind = event => event?.involvedObject?.kind ?? '';
-selectors.involvedObjectName = event => event?.involvedObject?.name ?? '';
-selectors.involvedObjectNamespace = event =>
+export const involvedObjectKind = event => event?.involvedObject?.kind ?? '';
+export const involvedObjectName = event => event?.involvedObject?.name ?? '';
+export const involvedObjectNamespace = event =>
   event?.involvedObject?.namespace ?? '';
-selectors.involvedObjectUid = event => event?.involvedObject?.uid ?? '';
+export const involvedObjectUid = event => event?.involvedObject?.uid ?? '';
 
-selectors.type = event => event?.type ?? '';
-selectors.typeIsNormal = event => selectors.type(event) === 'Normal';
-
-export default selectors;
+export const type = event => event?.type ?? '';
+export const typeIsNormal = event => type(event) === 'Normal';

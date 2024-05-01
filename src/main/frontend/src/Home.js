@@ -17,7 +17,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {DeploymentsCard} from './deployments';
-import events from './events';
+import {EventsList} from './events';
 import nodes from './nodes';
 import pods from './pods';
 import {FilterBar} from './components';
@@ -43,7 +43,7 @@ const Home = ({selectedNamespace}) => (
       />
     </div>
     <FilterBar className='mt-4' />
-    <events.List className='mt-4' namespace={selectedNamespace} />
+    <EventsList className='mt-4' namespace={selectedNamespace} />
   </DashboardPage>
 );
 
