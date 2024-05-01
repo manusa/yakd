@@ -15,9 +15,19 @@ Kubernetes Dashboard built with [Quarkus](https://quarkus.io) and [React](https:
 
 ### Minikube
 
-If you just want to try out the final project the easiest way is to deploy the
+If you just want to try out the final project, the easiest way is to try it out in Minikube.
+
+```shell script
+# Enable the YAKD minikube addon 
+minikube addons enable yakd
+# Open Browser and navigate to deployed application
+minikube service yakd-dashboard -n yakd-dashboard
+```
+
+In case that you're running an older Minikube version (or any other k8s cluster - needs access to node),
+or you want to deploy the latest
 [released snapshot](https://hub.docker.com/r/marcnuri/yakd)
-into Minikube (or any other k8s cluster - needs access to node):
+you can deploy the application using the provided Kubernetes manifests:
 
 ```shell script
 # Deploy the application using https://hub.docker.com/r/marcnuri/yakd SNAPSHOT
@@ -25,7 +35,6 @@ kubectl create -f https://raw.githubusercontent.com/manusa/yakd/main/docs/yakd-k
 # Open Browser and navigate to deployed application
 minikube service yakd
 ``` 
-
 
 
 ### OpenShift Instruqt
