@@ -15,59 +15,53 @@
  *
  */
 import React from 'react';
-import {bindActionCreators} from 'redux';
-import {connect} from 'react-redux';
+import PropTypes from 'prop-types';
+import {useDispatch, useSelector} from 'react-redux';
 import redux from '../redux';
 import metadata from '../metadata';
 import {Dropdown} from './';
 
-const NamespaceDropdown = ({
-  namespaces,
-  selectedNamespace,
-  selectNamespace,
-  clearSelectedNamespace
-}) => (
-  <Dropdown
-    closeOnPanelClick={true}
-    text={selectedNamespace ?? 'Namespace'}
-    textColor={selectedNamespace ? 'text-blue-700' : 'text-gray-500'}
-    textColorActive={selectedNamespace ? 'text-blue-800' : null}
-  >
-    <Dropdown.Item onClick={clearSelectedNamespace}>
-      All namespaces
-    </Dropdown.Item>
-    {Object.values(namespaces)
-      .map(ns => metadata.selectors.name(ns))
-      .map(namespace => (
-        <Dropdown.Item
-          key={namespace}
-          onClick={() => selectNamespace(namespace)}
-        >
-          {namespace}
-        </Dropdown.Item>
-      ))}
-  </Dropdown>
-);
-
-const mapStateToProps = ({namespaces, ui: {selectedNamespace}}) => ({
-  namespaces,
-  selectedNamespace
-});
-
-const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      selectNamespace: redux.actions.selectNamespace,
-      clearSelectedNamespace: redux.actions.clearSelectedNamespace
-    },
-    dispatch
+const NamespaceDropdown = () => {
+  const {namespaces, selectedNamespace} = useSelector(
+    ({namespaces, ui: {selectedNamespace}}) => ({namespaces, selectedNamespace})
   );
+  const dispatch = useDispatch();
+  const selectNamespace = namespace =>
+    dispatch(redux.actions.selectNamespace(namespace));
+  const clearSelectedNamespace = () =>
+    dispatch(redux.actions.clearSelectedNamespace);
+  return (
+    <Dropdown
+      closeOnPanelClick={true}
+      text={selectedNamespace ?? 'Namespace'}
+      textColor={selectedNamespace ? 'text-blue-700' : 'text-gray-500'}
+      textColorActive={selectedNamespace ? 'text-blue-800' : null}
+    >
+      <Dropdown.Item onClick={clearSelectedNamespace}>
+        All namespaces
+      </Dropdown.Item>
+      {Object.values(namespaces)
+        .map(ns => metadata.selectors.name(ns))
+        .map(namespace => (
+          <Dropdown.Item
+            key={namespace}
+            onClick={() => selectNamespace(namespace)}
+          >
+            {namespace}
+          </Dropdown.Item>
+        ))}
+    </Dropdown>
+  );
+};
 
-export const FilterBar = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(({className = '', ...props}) => (
-  <div className={`flex justify-end ${className}`}>
-    <NamespaceDropdown {...props} />
-  </div>
-));
+export const FilterBar = ({className = '', ...props}) => {
+  return (
+    <div className={`flex justify-end ${className}`}>
+      <NamespaceDropdown {...props} />
+    </div>
+  );
+};
+
+FilterBar.propTypes = {
+  className: PropTypes.string
+};
