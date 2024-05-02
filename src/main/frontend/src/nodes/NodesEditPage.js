@@ -17,11 +17,11 @@
 import React from 'react';
 import {withParams} from '../router';
 import md from '../metadata';
-import n from './';
+import {api} from './';
 import ResourceEditPage from '../components/ResourceEditPage';
 import Link from '../components/Link';
 
-const NodesEditPage = ({params: {uid}}) => (
+export const NodesEditPage = withParams(({params: {uid}}) => (
   <ResourceEditPage
     kind='Nodes'
     path='nodes'
@@ -30,9 +30,7 @@ const NodesEditPage = ({params: {uid}}) => (
         {md.selectors.name(resource)}
       </Link.RouterLink>
     )}
-    save={async resource => await n.api.update(resource)}
+    save={async resource => await api.update(resource)}
     resourceFromState={state => state.nodes[uid]}
   />
-);
-
-export default withParams(NodesEditPage);
+));

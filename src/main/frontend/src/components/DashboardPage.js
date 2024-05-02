@@ -20,7 +20,7 @@ import redux from '../redux';
 import * as apis from '../apis';
 import i from './icons';
 import metadata from '../metadata';
-import nm from '../nodes';
+import {selectors as nodeSelectors} from '../nodes';
 import sidebar from '../sidebar';
 import {Alert, NewResource, NewResourceButton, Tooltip} from './';
 import Icon from './Icon';
@@ -36,7 +36,7 @@ const OfflineIcon = () => (
 const Header = ({setSideBarOpen, title}) => {
   const {isMinikube, isOpenShift, offline} = useSelector(
     ({apiGroups, nodes, ui: {offline}}) => ({
-      isMinikube: nm.selectors.isMinikube(nodes),
+      isMinikube: nodeSelectors.isMinikube(nodes),
       isOpenShift: apis.selectors.isOpenShift(apiGroups),
       offline
     }),

@@ -19,7 +19,7 @@ import {connect} from 'react-redux';
 import {withParams} from '../router';
 import metadata from '../metadata';
 import metrics from '../metrics';
-import n from './';
+import {selectors} from './';
 import p from '../pods';
 import {Card, DonutChart, Form} from '../components';
 import Minikube from '../components/icons/Minikube';
@@ -45,81 +45,6 @@ const Dial = ({
   </div>
 );
 
-const NodesDetailPage = ({node, isMinikube, pods}) => {
-  const nodeName = metadata.selectors.name(node);
-  const podsForNode = Object.values(p.selectors.podsBy(pods, {nodeName}));
-  const requests = podsForNode
-    .flatMap(p.selectors.containers)
-    .map(c => c.resources.requests ?? {});
-  const requestedCpu = requests
-    .map(r => r.cpu ?? 0)
-    .reduce((acc, c) => acc + metrics.selectors.quantityToScalar(c), 0);
-  const allocatableMemory = metrics.selectors.quantityToScalar(
-    n.selectors.statusAllocatableMemory(node)
-  );
-  const requestedMemory = requests
-    .map(r => r.memory ?? 0)
-    .reduce((acc, c) => acc + metrics.selectors.quantityToScalar(c), 0);
-  return (
-    <ResourceDetailPage
-      kind='Nodes'
-      path='nodes'
-      resource={node}
-      isReadyFunction={n.selectors.isReady}
-      actions={isMinikube && <Minikube className='ml-2 h-6' />}
-      body={
-        <Form>
-          <div className='w-full mb-4 flex flex-wrap justify-around'>
-            <Dial
-              title='CPU'
-              description='Requested vs. allocatable'
-              partial={requestedCpu.toFixed(3)}
-              total={metrics.selectors
-                .quantityToScalar(n.selectors.statusAllocatableCpu(node))
-                .toFixed(3)}
-            />
-            <Dial
-              title='Memory'
-              description='Requested vs. allocatable'
-              percent={(requestedMemory / allocatableMemory) * 100}
-              partial={metrics.selectors.bytesToHumanReadable(requestedMemory)}
-              total={metrics.selectors.bytesToHumanReadable(allocatableMemory)}
-            />
-            <Dial
-              title='Pods'
-              description='Allocated vs. allocatable'
-              partial={podsForNode.length}
-              total={n.selectors.statusAllocatablePods(node)}
-            />
-          </div>
-
-          <metadata.Details resource={node} />
-          <Form.Field label='OS'>
-            {n.selectors.statusNodeInfoOS(node)} (
-            {n.selectors.statusNodeInfoArchitecture(node)})
-          </Form.Field>
-          <Form.Field label='Kernel Version'>
-            {n.selectors.statusNodeInfoKernelVersion(node)}
-          </Form.Field>
-          <Form.Field label='Container Runtime'>
-            {n.selectors.statusNodeInfoContainerRuntimeVersion(node)}
-          </Form.Field>
-          <Form.Field label='Kubelet Version'>
-            {n.selectors.statusNodeInfoKubeletVersion(node)}
-          </Form.Field>
-        </Form>
-      }
-    >
-      <p.List
-        title='Pods'
-        titleVariant={Card.titleVariants.medium}
-        className='mt-2'
-        nodeName={nodeName}
-      />
-    </ResourceDetailPage>
-  );
-};
-
 const mapStateToProps = ({nodes, pods}) => ({
   nodes,
   pods
@@ -129,12 +54,93 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
   ...stateProps,
   ...dispatchProps,
   ...ownProps,
-  isMinikube: n.selectors.isMinikube(stateProps.nodes),
+  isMinikube: selectors.isMinikube(stateProps.nodes),
   node: Object.values(stateProps.nodes).find(
     node => metadata.selectors.name(node) === ownProps.params.name
   )
 });
 
-export default withParams(
-  connect(mapStateToProps, null, mergeProps)(NodesDetailPage)
+export const NodesDetailPage = withParams(
+  connect(
+    mapStateToProps,
+    null,
+    mergeProps
+  )(({node, isMinikube, pods}) => {
+    const nodeName = metadata.selectors.name(node);
+    const podsForNode = Object.values(p.selectors.podsBy(pods, {nodeName}));
+    const requests = podsForNode
+      .flatMap(p.selectors.containers)
+      .map(c => c.resources.requests ?? {});
+    const requestedCpu = requests
+      .map(r => r.cpu ?? 0)
+      .reduce((acc, c) => acc + metrics.selectors.quantityToScalar(c), 0);
+    const allocatableMemory = metrics.selectors.quantityToScalar(
+      selectors.statusAllocatableMemory(node)
+    );
+    const requestedMemory = requests
+      .map(r => r.memory ?? 0)
+      .reduce((acc, c) => acc + metrics.selectors.quantityToScalar(c), 0);
+    return (
+      <ResourceDetailPage
+        kind='Nodes'
+        path='nodes'
+        resource={node}
+        isReadyFunction={selectors.isReady}
+        actions={isMinikube && <Minikube className='ml-2 h-6' />}
+        body={
+          <Form>
+            <div className='w-full mb-4 flex flex-wrap justify-around'>
+              <Dial
+                title='CPU'
+                description='Requested vs. allocatable'
+                partial={requestedCpu.toFixed(3)}
+                total={metrics.selectors
+                  .quantityToScalar(selectors.statusAllocatableCpu(node))
+                  .toFixed(3)}
+              />
+              <Dial
+                title='Memory'
+                description='Requested vs. allocatable'
+                percent={(requestedMemory / allocatableMemory) * 100}
+                partial={metrics.selectors.bytesToHumanReadable(
+                  requestedMemory
+                )}
+                total={metrics.selectors.bytesToHumanReadable(
+                  allocatableMemory
+                )}
+              />
+              <Dial
+                title='Pods'
+                description='Allocated vs. allocatable'
+                partial={podsForNode.length}
+                total={selectors.statusAllocatablePods(node)}
+              />
+            </div>
+
+            <metadata.Details resource={node} />
+            <Form.Field label='OS'>
+              {selectors.statusNodeInfoOS(node)} (
+              {selectors.statusNodeInfoArchitecture(node)})
+            </Form.Field>
+            <Form.Field label='Kernel Version'>
+              {selectors.statusNodeInfoKernelVersion(node)}
+            </Form.Field>
+            <Form.Field label='Container Runtime'>
+              {selectors.statusNodeInfoContainerRuntimeVersion(node)}
+            </Form.Field>
+            <Form.Field label='Kubelet Version'>
+              {selectors.statusNodeInfoKubeletVersion(node)}
+            </Form.Field>
+          </Form>
+        }
+      >
+        <p.List
+          title='Pods'
+          titleVariant={Card.titleVariants.medium}
+          className='mt-2'
+          nodeName={nodeName}
+        />
+      </ResourceDetailPage>
+    );
+  })
 );

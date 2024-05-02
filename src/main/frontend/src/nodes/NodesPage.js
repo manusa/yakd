@@ -15,16 +15,14 @@
  *
  */
 import React from 'react';
-import nodes from './';
+import {NodesCard, NodesList} from './';
 import DashboardPage from '../components/DashboardPage';
 
-const NodesPage = () => (
+export const NodesPage = () => (
   <DashboardPage title='Nodes'>
     <div className='flex justify-center'>
-      <nodes.NodesCard responsiveClassName='w-full' />
+      <NodesCard responsiveClassName='w-full' />
     </div>
-    <nodes.List className='mt-4' />
+    <NodesList className='mt-4' />
   </DashboardPage>
 );
-
-export default NodesPage;

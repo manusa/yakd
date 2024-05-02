@@ -16,57 +16,55 @@
  */
 import metadata from '../metadata';
 
-const s = {};
-
-s.isReady = node => {
+export const isReady = node => {
   const ready = (node?.status?.conditions ?? []).find(
     condition => condition.type === 'Ready'
   );
   return ready && ready.status;
 };
 
-s.statusAllocatable = node => node?.status?.allocatable ?? {};
-s.statusAllocatablePods = node => s.statusAllocatable(node).pods ?? 0;
-s.statusAllocatableCpu = node => s.statusAllocatable(node).cpu ?? 0;
-s.statusAllocatableMemory = node => s.statusAllocatable(node).memory ?? 0;
+export const statusAllocatable = node => node?.status?.allocatable ?? {};
+export const statusAllocatablePods = node => statusAllocatable(node).pods ?? 0;
+export const statusAllocatableCpu = node => statusAllocatable(node).cpu ?? 0;
+export const statusAllocatableMemory = node =>
+  statusAllocatable(node).memory ?? 0;
 
-s.statusNodeInfo = node => node?.status?.nodeInfo ?? {};
-s.statusNodeInfoArchitecture = node =>
-  s.statusNodeInfo(node).architecture ?? '';
-s.statusNodeInfoContainerRuntimeVersion = node =>
-  s.statusNodeInfo(node).containerRuntimeVersion ?? '';
-s.statusNodeInfoKernelVersion = node =>
-  s.statusNodeInfo(node).kernelVersion ?? '';
-s.statusNodeInfoKubeletVersion = node =>
-  s.statusNodeInfo(node).kubeletVersion ?? '';
-s.statusNodeInfoOS = node => s.statusNodeInfo(node).operatingSystem ?? '';
+export const statusNodeInfo = node => node?.status?.nodeInfo ?? {};
+export const statusNodeInfoArchitecture = node =>
+  statusNodeInfo(node).architecture ?? '';
+export const statusNodeInfoContainerRuntimeVersion = node =>
+  statusNodeInfo(node).containerRuntimeVersion ?? '';
+export const statusNodeInfoKernelVersion = node =>
+  statusNodeInfo(node).kernelVersion ?? '';
+export const statusNodeInfoKubeletVersion = node =>
+  statusNodeInfo(node).kubeletVersion ?? '';
+export const statusNodeInfoOS = node =>
+  statusNodeInfo(node).operatingSystem ?? '';
 
-s.statusAddresses = node => node?.status?.addresses ?? [];
+export const statusAddresses = node => node?.status?.addresses ?? [];
 
-s.statusAddressExternalIPOrFirst = node =>
-  s
-    .statusAddresses(node)
+export const statusAddressExternalIPOrFirst = node =>
+  statusAddresses(node)
     .filter(a => a.type === 'ExternalIP')
     .map(a => a.address)
-    .find(a => a) ?? s.statusAddressesFirstAddress(node);
+    .find(a => a) ?? statusAddressesFirstAddress(node);
 
-s.statusAddressesFirstAddress = node =>
-  s
-    .statusAddresses(node)
+export const statusAddressesFirstAddress = node =>
+  statusAddresses(node)
     .map(a => a.address ?? '')
     .find(a => a) ?? '';
 
-s.roles = node =>
+export const roles = node =>
   Object.keys(metadata.selectors.labels(node))
     .filter(key => key.indexOf('node-role.kubernetes.io/') === 0)
     .map(key => key.split('/')[1]);
 
 // Selectors for array of Nodes
 
-s.readyCount = nodes =>
-  nodes.reduce((count, node) => (s.isReady(node) ? count + 1 : count), 0);
+export const readyCount = nodes =>
+  nodes.reduce((count, node) => (isReady(node) ? count + 1 : count), 0);
 
-s.isMinikube = nodes =>
+export const isMinikube = nodes =>
   Object.values(nodes).length === 1 &&
   Object.values(nodes)
     .filter(node => metadata.selectors.name(node) === 'minikube')
@@ -77,5 +75,3 @@ s.isMinikube = nodes =>
     .filter(node =>
       metadata.selectors.labels(node).hasOwnProperty('minikube.k8s.io/version')
     ).length === 1;
-
-export default s;

@@ -18,7 +18,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {DeploymentsCard} from './deployments';
 import {EventsList} from './events';
-import nodes from './nodes';
+import {NodesCard} from './nodes';
 import pods from './pods';
 import {FilterBar} from './components';
 import DashboardPage from './components/DashboardPage';
@@ -29,7 +29,7 @@ const cardClass = 'm-2';
 const Home = ({selectedNamespace}) => (
   <DashboardPage title='Kubernetes Dashboard'>
     <div className='flex flex-wrap -m-2'>
-      <nodes.NodesCard
+      <NodesCard
         responsiveClassName={cardResponsiveClass}
         className={cardClass}
       />

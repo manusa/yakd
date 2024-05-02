@@ -17,7 +17,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import metadata from '../metadata';
-import n from './';
+import {selectors} from './';
 import Icon from '../components/Icon';
 import Link from '../components/Link';
 import ResourceList from '../components/ResourceList';
@@ -42,10 +42,10 @@ const Rows = ({nodes}) => {
       <Table.Cell className='whitespace-nowrap w-3 text-center'>
         <Icon
           className={
-            n.selectors.isReady(node) ? 'text-green-500' : 'text-red-500'
+            selectors.isReady(node) ? 'text-green-500' : 'text-red-500'
           }
           icon={
-            n.selectors.isReady(node) ? 'fa-check' : 'fa-exclamation-circle'
+            selectors.isReady(node) ? 'fa-check' : 'fa-exclamation-circle'
           }
         />
       </Table.Cell>
@@ -60,7 +60,7 @@ const Rows = ({nodes}) => {
             return '<none>';
           }
           return roles.map((role, idx) => <div key={idx}>{role}</div>);
-        })(n.selectors.roles(node))}
+        })(selectors.roles(node))}
       </Table.Cell>
       <Table.Cell>
         <metadata.KeyValueList
@@ -72,14 +72,12 @@ const Rows = ({nodes}) => {
   ));
 };
 
-const List = ({nodes, ...properties}) => (
-  <ResourceList headers={headers} resources={nodes} {...properties}>
-    <Rows nodes={nodes} />
-  </ResourceList>
-);
-
 const mapStateToProps = ({nodes}) => ({
   nodes: Object.values(nodes)
 });
 
-export default connect(mapStateToProps)(List);
+export const List = connect(mapStateToProps)(({nodes, ...properties}) => (
+  <ResourceList headers={headers} resources={nodes} {...properties}>
+    <Rows nodes={nodes} />
+  </ResourceList>
+));
