@@ -15,7 +15,6 @@
  *
  */
 import api from './api';
-import reducer from './reducer';
 import selectors from './selectors';
 import List from './List';
 import RolesDetailPage from './RolesDetailPage';
@@ -25,7 +24,6 @@ import RolesPage from './RolesPage';
 const roles = {};
 
 roles.api = api;
-roles.reducer = reducer;
 roles.selectors = selectors;
 roles.List = List;
 roles.RolesDetailPage = RolesDetailPage;

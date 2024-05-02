@@ -15,7 +15,6 @@
  *
  */
 import api from './api';
-import reducer from './reducer';
 import selectors from './selectors';
 import List from './List';
 import DashboardPageTitle from './DashboardPageTitle';
@@ -26,7 +25,6 @@ import GroupLink from './GroupLink';
 
 const index = {
   api,
-  reducer,
   selectors,
   List,
   CustomResourceDefinitionsDetailPage,

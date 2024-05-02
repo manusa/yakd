@@ -14,6 +14,5 @@
  * limitations under the License.
  *
  */
-export {reducer} from './reducer';
 export * as selectors from './selectors';
 export {List as EventsList} from './List';

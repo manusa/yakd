@@ -15,7 +15,6 @@
  *
  */
 import api from './api';
-import reducer from './reducer';
 import selectors from './selectors';
 import List from './List';
 import StatefulSetsDetailPage from './StatefulSetsDetailPage';
@@ -25,7 +24,6 @@ import StatefulSetsPage from './StatefulSetsPage';
 const statefulSets = {};
 
 statefulSets.api = api;
-statefulSets.reducer = reducer;
 statefulSets.selectors = selectors;
 statefulSets.List = List;
 statefulSets.StatefulSetsDetailPage = StatefulSetsDetailPage;

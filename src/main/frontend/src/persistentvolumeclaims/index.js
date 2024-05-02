@@ -15,7 +15,6 @@
  *
  */
 import api from './api';
-import reducer from './reducer';
 import selectors from './selectors';
 import List from './List';
 import PersistentVolumeClaimsDetailPage from './PersistentVolumeClaimsDetailPage';
@@ -25,7 +24,6 @@ import PersistentVolumeClaimsPage from './PersistentVolumeClaimsPage';
 const pvc = {};
 
 pvc.api = api;
-pvc.reducer = reducer;
 pvc.selectors = selectors;
 pvc.List = List;
 pvc.PersistentVolumeClaimsDetailPage = PersistentVolumeClaimsDetailPage;

@@ -15,7 +15,6 @@
  *
  */
 import api from './api';
-import reducer from './reducer';
 import selectors from './selectors';
 import List from './List';
 import DeploymentConfigsDetailPage from './DeploymentConfigsDetailPage';
@@ -25,7 +24,6 @@ import DeploymentConfigsPage from './DeploymentConfigsPage';
 const deploymentConfigs = {};
 
 deploymentConfigs.api = api;
-deploymentConfigs.reducer = reducer;
 deploymentConfigs.selectors = selectors;
 deploymentConfigs.List = List;
 deploymentConfigs.DeploymentConfigsDetailPage = DeploymentConfigsDetailPage;

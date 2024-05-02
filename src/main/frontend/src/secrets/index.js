@@ -15,7 +15,6 @@
  *
  */
 import api from './api';
-import reducer from './reducer';
 import selectors from './selectors';
 import List from './List';
 import SecretsDetailPage from './SecretsDetailPage';
@@ -25,7 +24,6 @@ import SecretsPage from './SecretsPage';
 const secrets = {};
 
 secrets.api = api;
-secrets.reducer = reducer;
 secrets.selectors = selectors;
 secrets.List = List;
 secrets.SecretsDetailPage = SecretsDetailPage;
