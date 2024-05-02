@@ -17,61 +17,13 @@
 import React from 'react';
 import {createRoot} from 'react-dom/client';
 import {Provider} from 'react-redux';
-import {combineReducers, createStore} from 'redux';
-import * as apis from './apis';
-import {reducer as reduxReducer, uiReducer} from './redux';
-import sidebar from './sidebar';
+import {store} from './redux';
 import App from './App';
 
 import 'typeface-open-sans/index.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import './assets/tailwind.css';
 import './assets/scroll.css';
-
-const storeEnhancer = () => {
-  if (
-    process.env.NODE_ENV === 'development' &&
-    window.__REDUX_DEVTOOLS_EXTENSION__
-  ) {
-    return window.__REDUX_DEVTOOLS_EXTENSION__();
-  }
-};
-
-const store = createStore(
-  combineReducers({
-    apiGroups: apis.apiGroupsReducer,
-    clusterRoleBindings: reduxReducer('ClusterRoleBinding'),
-    clusterRoles: reduxReducer('ClusterRole'),
-    clusterVersions: reduxReducer('ClusterVersion'),
-    configMaps: reduxReducer('ConfigMap'),
-    cronJobs: reduxReducer('CronJob'),
-    customResourceDefinitions: reduxReducer('CustomResourceDefinition'),
-    daemonSets: reduxReducer('DaemonSet'),
-    deploymentConfigs: reduxReducer('DeploymentConfig'),
-    deployments: reduxReducer('Deployment'),
-    endpoints: reduxReducer('Endpoints'),
-    events: reduxReducer('Event'),
-    horizontalPodAutoscalers: reduxReducer('HorizontalPodAutoscaler'),
-    ingresses: reduxReducer('Ingress'),
-    jobs: reduxReducer('Job'),
-    namespaces: reduxReducer('Namespace'),
-    nodes: reduxReducer('Node'),
-    persistentVolumeClaims: reduxReducer('PersistentVolumeClaim'),
-    persistentVolumes: reduxReducer('PersistentVolume'),
-    pods: reduxReducer('Pod'),
-    replicaSets: reduxReducer('ReplicaSet'),
-    replicationControllers: reduxReducer('ReplicationController'),
-    roles: reduxReducer('Role'),
-    routes: reduxReducer('Route'),
-    secrets: reduxReducer('Secret'),
-    services: reduxReducer('Service'),
-    serviceAccounts: reduxReducer('ServiceAccount'),
-    statefulSets: reduxReducer('StatefulSet'),
-    sidebar: sidebar.reducer,
-    ui: uiReducer
-  }),
-  storeEnhancer()
-);
 
 const root = createRoot(document.getElementById('root'));
 root.render(

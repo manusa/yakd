@@ -14,7 +14,8 @@
  * limitations under the License.
  *
  */
+export * from './actions';
 export {reducer} from './reducer';
 export {toObjectReducer, resourcesBy} from './selectors';
 export {uiReducer} from './ui-reducer';
-export * from './actions';
+export {store} from './store';

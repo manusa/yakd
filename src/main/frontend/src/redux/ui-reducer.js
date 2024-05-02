@@ -15,7 +15,7 @@
  *
  */
 
-import {Types} from './index';
+import {Types} from './';
 
 const defaultState = {
   offline: false,
