@@ -15,7 +15,6 @@
  *
  */
 
-export {DashboardPage} from './dashboard';
 export * from './editor';
 export * from './popup';
 export {Age} from './Age';
@@ -25,7 +24,9 @@ export {DonutChart} from './DonutChart';
 export {Dropdown} from './Dropdown';
 export {FilterBar} from './FilterBar';
 export {Form} from './Form';
+export {Icon} from './Icon';
 export {PopupMenu} from './PopupMenu';
 export {Spinner} from './Spinner';
 export {Switch} from './Switch';
 export {Tooltip} from './Tooltip';
+export {DashboardPage} from './dashboard';

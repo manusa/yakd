@@ -16,7 +16,7 @@
  */
 import React from 'react';
 import {usePopup} from './';
-import Icon from './Icon';
+import {Icon} from './';
 
 const PopupPanel = ({visible, onClick, children}) => (
   <div

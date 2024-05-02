@@ -21,8 +21,7 @@ import metadata from '../metadata';
 import {ContainerList} from '../containers';
 import mts from '../metrics';
 import p from './';
-import {Card, Form} from '../components';
-import Icon from '../components/Icon';
+import {Card, Form, Icon} from '../components';
 import Link from '../components/Link';
 import ResourceDetailPage from '../components/ResourceDetailPage';
 

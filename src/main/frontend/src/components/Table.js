@@ -16,9 +16,8 @@
  */
 import React from 'react';
 import metadata from '../metadata';
-import {Card, Spinner} from './';
+import {Card, Icon, Spinner} from './';
 import Link from './Link';
-import Icon from './Icon';
 
 const Table = ({title, titleVariant, className, children, ...props}) => (
   <Card className={className} {...props}>
