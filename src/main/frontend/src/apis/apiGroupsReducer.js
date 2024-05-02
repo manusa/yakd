@@ -14,11 +14,8 @@
  * limitations under the License.
  *
  */
-import redux from '../redux';
+import {Types} from '../redux';
 
-const {
-  actions: {Types}
-} = redux;
 const defaultState = [];
 
 export const apiGroupsReducer = (state = defaultState, action = {}) => {

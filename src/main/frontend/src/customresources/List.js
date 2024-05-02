@@ -15,9 +15,9 @@
  *
  */
 import React, {useState} from 'react';
-import redux from '../redux';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
+import {crudDelete} from '../redux';
 import metadata from '../metadata';
 import cr from './';
 import crd from '../customresourcedefinitions';
@@ -125,7 +125,7 @@ const List = ({
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      crudDelete: redux.actions.crudDelete
+      crudDelete
     },
     dispatch
   );

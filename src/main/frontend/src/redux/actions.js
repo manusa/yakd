@@ -14,9 +14,8 @@
  * limitations under the License.
  *
  */
-const actions = {};
 
-actions.Types = {
+export const Types = {
   CLEAR: 'CLEAR',
   CRUD_CLEAR: 'CRUD_CLEAR',
   CRUD_ADD_OR_REPLACE: 'CRUD_ADD_OR_REPLACE',
@@ -34,79 +33,77 @@ actions.Types = {
   UI_SET_CREATING_NEW_RESOURCE: 'UI_SET_CREATING_NEW_RESOURCE'
 };
 
-actions.clear = () => ({
-  type: actions.Types.CLEAR
+export const clear = () => ({
+  type: Types.CLEAR
 });
 
-actions.crudClear = kind => ({
-  type: actions.Types.CRUD_CLEAR,
+export const crudClear = kind => ({
+  type: Types.CRUD_CLEAR,
   payload: kind
 });
 
-actions.crudAddOrReplace = object => ({
-  type: actions.Types.CRUD_ADD_OR_REPLACE,
+export const crudAddOrReplace = object => ({
+  type: Types.CRUD_ADD_OR_REPLACE,
   payload: object
 });
 
-actions.crudDelete = object => ({
-  type: actions.Types.CRUD_DELETE,
+export const crudDelete = object => ({
+  type: Types.CRUD_DELETE,
   payload: object
 });
 
-actions.crudSetAll = ({kind, resources}) => ({
-  type: actions.Types.CRUD_SET_ALL,
+export const crudSetAll = ({kind, resources}) => ({
+  type: Types.CRUD_SET_ALL,
   payload: {kind, resources}
 });
 
-actions.apiGroupsSet = apiGroups => ({
-  type: actions.Types.API_GROUPS_SET,
+export const apiGroupsSet = apiGroups => ({
+  type: Types.API_GROUPS_SET,
   payload: apiGroups
 });
 
-actions.setOffline = (offline = false) => ({
-  type: actions.Types.UI_SET_OFFLINE,
+export const setOffline = (offline = false) => ({
+  type: Types.UI_SET_OFFLINE,
   payload: offline
 });
 
-actions.setError = error => ({
-  type: actions.Types.UI_SET_ERROR,
+export const setError = error => ({
+  type: Types.UI_SET_ERROR,
   payload: error
 });
 
-actions.clearError = () => ({
-  type: actions.Types.UI_CLEAR_ERROR
+export const clearError = () => ({
+  type: Types.UI_CLEAR_ERROR
 });
 
-actions.setResourceLoaded = ({kind, loaded = false}) => ({
-  type: actions.Types.UI_SET_RESOURCE_LOADED,
+export const setResourceLoaded = ({kind, loaded = false}) => ({
+  type: Types.UI_SET_RESOURCE_LOADED,
   payload: {kind, loaded}
 });
 
-actions.selectNamespace = namespace => ({
-  type: actions.Types.UI_SELECT_NAMESPACE,
+export const selectNamespace = namespace => ({
+  type: Types.UI_SELECT_NAMESPACE,
   payload: namespace
 });
 
-actions.setQuery = query => ({
-  type: actions.Types.UI_SET_QUERY,
+export const setQuery = query => ({
+  type: Types.UI_SET_QUERY,
   payload: query
 });
 
 export const uiSetCreatingNewResource = creatingNewResource => ({
-  type: actions.Types.UI_SET_CREATING_NEW_RESOURCE,
+  type: Types.UI_SET_CREATING_NEW_RESOURCE,
   payload: creatingNewResource
 });
 
-actions.clearSelectedNamespace = () => actions.selectNamespace(null);
+export const clearSelectedNamespace = () => selectNamespace(null);
 
-actions.sideBarScroll = ({scrollTop = 0, scrollLeft = 0}) => ({
-  type: actions.Types.SIDEBAR_SCROLL,
+export const sideBarScroll = ({scrollTop = 0, scrollLeft = 0}) => ({
+  type: Types.SIDEBAR_SCROLL,
   payload: {scrollTop, scrollLeft}
 });
 
-actions.sideBarToggleItem = item => ({
-  type: actions.Types.SIDEBAR_TOGGLE_ITEM,
+export const sideBarToggleItem = item => ({
+  type: Types.SIDEBAR_TOGGLE_ITEM,
   payload: item
 });
-
-export default actions;

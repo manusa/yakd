@@ -14,16 +14,7 @@
  * limitations under the License.
  *
  */
-import actions, {uiSetCreatingNewResource} from './actions';
-import reducer from './reducer';
-import selectors from './selectors';
-import uiReducer from './ui-reducer';
-
-const redux = {};
-
-redux.actions = {...actions, uiSetCreatingNewResource};
-redux.reducer = reducer;
-redux.selectors = selectors;
-redux.uiReducer = uiReducer;
-
-export default redux;
+export {reducer} from './reducer';
+export {toObjectReducer, resourcesBy} from './selectors';
+export {uiReducer} from './ui-reducer';
+export * from './actions';

@@ -16,14 +16,12 @@
  */
 import md from '../metadata';
 
-const selectors = {};
-
-selectors.toObjectReducer = (acc, [key, configMap]) => {
+export const toObjectReducer = (acc, [key, configMap]) => {
   acc[key] = configMap;
   return acc;
 };
 
-selectors.resourcesBy = (
+export const resourcesBy = (
   resources = {},
   {namespace, names, nameLike, ownerUid, ownerUids, uids, uidsNotIn} = undefined
 ) =>
@@ -62,6 +60,4 @@ selectors.resourcesBy = (
       }
       return true;
     })
-    .reduce(selectors.toObjectReducer, {});
-
-export default selectors;
+    .reduce(toObjectReducer, {});

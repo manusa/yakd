@@ -44,9 +44,7 @@ const Rows = ({nodes}) => {
           className={
             selectors.isReady(node) ? 'text-green-500' : 'text-red-500'
           }
-          icon={
-            selectors.isReady(node) ? 'fa-check' : 'fa-exclamation-circle'
-          }
+          icon={selectors.isReady(node) ? 'fa-check' : 'fa-exclamation-circle'}
         />
       </Table.Cell>
       <Table.Cell className='text-nowrap'>

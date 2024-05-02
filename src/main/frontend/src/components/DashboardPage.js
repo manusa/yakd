@@ -16,7 +16,7 @@
  */
 import React, {useState} from 'react';
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
-import redux from '../redux';
+import {clearError} from '../redux';
 import * as apis from '../apis';
 import i from './icons';
 import metadata from '../metadata';
@@ -99,7 +99,7 @@ const Footer = () => (
 
 const DashboardPage = ({className, title, children}) => {
   const dispatch = useDispatch();
-  const clearError = () => dispatch(redux.actions.clearError());
+  const doClearError = () => dispatch(clearError());
   const [sideBarOpen, setSideBarOpen] = useState(false);
   const error = useSelector(({ui: {error}}) => error);
   return (
@@ -117,7 +117,7 @@ const DashboardPage = ({className, title, children}) => {
       <div className='flex-1 flex flex-col overflow-hidden'>
         <Header setSideBarOpen={setSideBarOpen} title={title} />
         <main className='flex-1 flex flex-col overflow-x-hidden overflow-y-auto bg-gray-200'>
-          <Alert clearError={clearError}>{error}</Alert>
+          <Alert clearError={doClearError}>{error}</Alert>
           <div className='flex-1 w-100 p-4 relative'>{children}</div>
           <Footer />
           <NewResource />

@@ -18,7 +18,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import metadata from '../metadata';
 import {api, selectors} from './';
-import redux from '../redux';
+import {resourcesBy} from '../redux';
 import Icon from '../components/Icon';
 import Link from '../components/Link';
 import ResourceList from '../components/ResourceList';
@@ -104,9 +104,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
   ...stateProps,
   ...dispatchProps,
   ...ownProps,
-  deployments: Object.values(
-    redux.selectors.resourcesBy(stateProps.deployments, ownProps)
-  )
+  deployments: Object.values(resourcesBy(stateProps.deployments, ownProps))
 });
 
 export const List = connect(

@@ -14,8 +14,8 @@
  * limitations under the License.
  *
  */
-import redux from '../redux';
+import {reducer as reduxReducer} from '../redux';
 
-const reducer = redux.reducer('CustomResourceDefinition');
+const reducer = reduxReducer('CustomResourceDefinition');
 
 export default reducer;

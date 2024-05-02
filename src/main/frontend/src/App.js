@@ -44,7 +44,7 @@ import pvc from './persistentvolumeclaims';
 import pv from './persistentvolumes';
 import pods from './pods';
 import rc from './replicationcontrollers';
-import redux from './redux';
+import {apiGroupsSet, setError, setOffline} from './redux';
 import roles from './roles';
 import routes from './routes';
 import * as search from './search';
@@ -64,16 +64,14 @@ const pollResources = dispatch => {
       await Promise.all([
         apis.api
           .listGroups()
-          .then(apiGroups => dispatch(redux.actions.apiGroupsSet(apiGroups)))
+          .then(apiGroups => dispatch(apiGroupsSet(apiGroups)))
       ]);
     } catch (e) {
-      dispatch(
-        redux.actions.setError('Error when polling resources (retrying)')
-      );
+      dispatch(setError('Error when polling resources (retrying)'));
     }
     if (eventSource.readyState === EventSource.CLOSED) {
       console.error('EventSource connection was lost, reconnecting');
-      redux.actions.setOffline(true);
+      dispatch(setOffline(true));
       eventSource.close();
       eventSource = watch.api.startEventSource({dispatch});
     }

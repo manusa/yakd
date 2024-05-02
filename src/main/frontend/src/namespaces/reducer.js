@@ -14,8 +14,8 @@
  * limitations under the License.
  *
  */
-import redux from '../redux';
+import {reducer as reduxReducer} from '../redux';
 
-const reducer = redux.reducer('Namespace');
+const reducer = reduxReducer('Namespace');
 
 export default reducer;

@@ -17,7 +17,7 @@
 import React, {useState, useEffect} from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import redux from '../../redux';
+import {uiSetCreatingNewResource} from '../../redux';
 import {createResource} from '../../fetch';
 import {ResourceEditModal} from '../';
 
@@ -27,7 +27,7 @@ const mapStateToProps = ({ui: {creatingNewResource}}) => ({
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
-    {closeModal: () => redux.actions.uiSetCreatingNewResource(false)},
+    {closeModal: () => uiSetCreatingNewResource(false)},
     dispatch
   );
 

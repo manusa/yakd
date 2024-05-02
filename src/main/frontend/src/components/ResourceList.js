@@ -17,7 +17,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import redux from '../redux';
+import {crudDelete, resourcesBy} from '../redux';
 import Table from './Table';
 
 const Content = ({headers, resources, loading, children}) => {
@@ -67,7 +67,7 @@ ResourceList.resourceListConnect = resource =>
     dispatch =>
       bindActionCreators(
         {
-          crudDelete: redux.actions.crudDelete
+          crudDelete
         },
         dispatch
       ),
@@ -75,9 +75,7 @@ ResourceList.resourceListConnect = resource =>
       ...stateProps,
       ...dispatchProps,
       ...ownProps,
-      resources: Object.values(
-        redux.selectors.resourcesBy(stateProps.resources, ownProps)
-      )
+      resources: Object.values(resourcesBy(stateProps.resources, ownProps))
     })
   );
 
