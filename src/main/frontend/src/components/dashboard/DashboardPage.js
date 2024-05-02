@@ -22,8 +22,7 @@ import i from '../icons';
 import metadata from '../../metadata';
 import {selectors as nodeSelectors} from '../../nodes';
 import sidebar from '../../sidebar';
-import {Alert, Tooltip} from '../';
-import Icon from '../Icon';
+import {Alert, Icon, Tooltip} from '../';
 import Link from '../Link';
 import {NewResource, NewResourceButton} from './';
 

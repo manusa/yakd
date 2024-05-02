@@ -17,11 +17,10 @@
 import React from 'react';
 import metadata from '../metadata';
 import {api} from './';
-import Icon from '../components/Icon';
 import Link from '../components/Link';
 import ResourceList from '../components/ResourceList';
 import Table from '../components/Table';
-import {Age} from '../components';
+import {Age, Icon} from '../components';
 
 const headers = [
   <span>

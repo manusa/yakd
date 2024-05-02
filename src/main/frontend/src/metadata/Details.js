@@ -16,9 +16,8 @@
  */
 import React from 'react';
 import metadata from './';
-import {Form} from '../components';
+import {Form, Icon} from '../components';
 import Link from '../components/Link';
-import Icon from '../components/Icon';
 
 const LabelsRow = ({labels}) =>
   labels &&

@@ -16,7 +16,7 @@
  */
 import React from 'react';
 import metadata from '../metadata';
-import Icon from '../components/Icon';
+import {Icon} from '../components';
 import Link from '../components/Link';
 import ResourceList from '../components/ResourceList';
 import Table from '../components/Table';

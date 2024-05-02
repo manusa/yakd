@@ -18,7 +18,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import metadata from '../metadata';
 import rc from './';
-import Icon from '../components/Icon';
+import {Icon} from '../components';
 import ResourceList from '../components/ResourceList';
 import Table from '../components/Table';
 import Link from '../components/Link';

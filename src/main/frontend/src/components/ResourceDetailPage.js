@@ -18,8 +18,7 @@ import React from 'react';
 import {useNavigate} from 'react-router-dom';
 import YAML from 'yaml';
 import metadata from '../metadata';
-import {Card, DashboardPage, PopupMenu} from './';
-import Icon from './Icon';
+import {Card, DashboardPage, Icon, PopupMenu} from './';
 import Link from './Link';
 
 const downloadResource = resource => {

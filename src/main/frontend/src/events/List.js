@@ -18,10 +18,9 @@ import React from 'react';
 import {connect} from 'react-redux';
 import metadata from '../metadata';
 import {selectors} from './';
-import {Age} from '../components';
+import {Age, Icon} from '../components';
 import Link from '../components/Link';
 import Table from '../components/Table';
-import Icon from '../components/Icon';
 import ResourceList from '../components/ResourceList';
 
 const headers = [

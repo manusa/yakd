@@ -17,8 +17,7 @@
 import React from 'react';
 import metadata from '../metadata';
 import {api} from './';
-import {Age} from '../components';
-import Icon from '../components/Icon';
+import {Age, Icon} from '../components';
 import Link from '../components/Link';
 import ResourceList from '../components/ResourceList';
 import Table from '../components/Table';

@@ -23,8 +23,7 @@ import {withParams} from '../router';
 import metadata from '../metadata';
 import {ContainerDropdown} from '../containers';
 import p from '../pods';
-import {Card, DashboardPage, Switch} from '../components';
-import Icon from '../components/Icon';
+import {Card, DashboardPage, Icon, Switch} from '../components';
 import Link from '../components/Link';
 
 import './PodsLogsPage.css';

@@ -15,8 +15,7 @@
  *
  */
 import React from 'react';
-import {Form} from '../components';
-import Icon from '../components/Icon';
+import {Form, Icon} from '../components';
 
 const ReplicasField = ({replicas, resource, updateReplicas}) => (
   <Form.Field label='Replicas'>

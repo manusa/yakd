@@ -19,9 +19,8 @@ import {connect} from 'react-redux';
 import {withParams} from '../router';
 import s from './';
 import metadata from '../metadata';
-import {Form} from '../components';
+import {Form, Icon} from '../components';
 import ResourceDetailPage from '../components/ResourceDetailPage';
-import Icon from '../components/Icon';
 
 const DataField = ({label, value}) => {
   const [hidden, setHidden] = useState(true);

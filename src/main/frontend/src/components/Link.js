@@ -17,7 +17,7 @@
 import React from 'react';
 import {Link as OriginalRouterLink} from 'react-router-dom';
 import metadata from '../metadata';
-import Icon from './Icon';
+import {Icon} from './';
 import i from './icons';
 
 const variants = {
