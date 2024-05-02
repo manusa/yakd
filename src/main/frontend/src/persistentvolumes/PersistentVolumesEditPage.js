@@ -16,7 +16,7 @@
  */
 import React from 'react';
 import {withParams} from '../router';
-import md from '../metadata';
+import {name} from '../metadata';
 import pv from './';
 import ResourceEditPage from '../components/ResourceEditPage';
 import Link from '../components/Link';
@@ -27,7 +27,7 @@ const PersistentVolumesEditPage = ({params: {uid}}) => (
     path='persistentvolumes'
     cardTitle={resource => (
       <Link.RouterLink to={`/persistentvolumes/${uid}`}>
-        {md.selectors.name(resource)}
+        {name(resource)}
       </Link.RouterLink>
     )}
     save={async resource => await pv.api.update(resource)}

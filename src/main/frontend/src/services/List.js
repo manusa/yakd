@@ -15,7 +15,7 @@
  *
  */
 import React from 'react';
-import metadata from '../metadata';
+import {name, namespace, sortByCreationTimeStamp, uid} from '../metadata';
 import svc from './';
 import {Icon} from '../components';
 import Link from '../components/Link';
@@ -34,34 +34,27 @@ const headers = [
 
 const Rows = ({services}) => {
   const deleteService = service => async () => await svc.api.delete(service);
-  return services
-    .sort(metadata.selectors.sortByCreationTimeStamp)
-    .map(service => (
-      <Table.ResourceRow
-        key={metadata.selectors.uid(service)}
-        resource={service}
-      >
-        <Table.Cell>
-          <Link.Service to={`/services/${metadata.selectors.uid(service)}`}>
-            {metadata.selectors.name(service)}
-          </Link.Service>
-        </Table.Cell>
-        <Table.Cell className='whitespace-nowrap'>
-          <Link.Namespace
-            to={`/namespaces/${metadata.selectors.namespace(service)}`}
-          >
-            {metadata.selectors.namespace(service)}
-          </Link.Namespace>
-        </Table.Cell>
-        <Table.Cell>
-          <svc.Type service={service} />
-        </Table.Cell>
-        <Table.Cell>{svc.selectors.specClusterIP(service)}</Table.Cell>
-        <Table.Cell>
-          <Table.DeleteButton onClick={deleteService(service)} />
-        </Table.Cell>
-      </Table.ResourceRow>
-    ));
+  return services.sort(sortByCreationTimeStamp).map(service => (
+    <Table.ResourceRow key={uid(service)} resource={service}>
+      <Table.Cell>
+        <Link.Service to={`/services/${uid(service)}`}>
+          {name(service)}
+        </Link.Service>
+      </Table.Cell>
+      <Table.Cell className='whitespace-nowrap'>
+        <Link.Namespace to={`/namespaces/${namespace(service)}`}>
+          {namespace(service)}
+        </Link.Namespace>
+      </Table.Cell>
+      <Table.Cell>
+        <svc.Type service={service} />
+      </Table.Cell>
+      <Table.Cell>{svc.selectors.specClusterIP(service)}</Table.Cell>
+      <Table.Cell>
+        <Table.DeleteButton onClick={deleteService(service)} />
+      </Table.Cell>
+    </Table.ResourceRow>
+  ));
 };
 
 const List = ({resources, loadedResources, crudDelete, ...properties}) => (

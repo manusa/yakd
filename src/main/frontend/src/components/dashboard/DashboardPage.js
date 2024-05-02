@@ -19,7 +19,7 @@ import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 import {clearError} from '../../redux';
 import * as apis from '../../apis';
 import i from '../icons';
-import metadata from '../../metadata';
+import {name as metadataName} from '../../metadata';
 import {selectors as nodeSelectors} from '../../nodes';
 import sidebar from '../../sidebar';
 import {Alert, Icon, Tooltip} from '../';
@@ -144,7 +144,7 @@ DashboardPage.Title = ({
     <Link.ResourceLink to={`/${path}`}>{kind}</Link.ResourceLink>
     {namespace && <>&nbsp;- {namespace}</>}
     {name && <>&nbsp;- {name}</>}
-    {!name && resource && <>&nbsp;- {metadata.selectors.name(resource)}</>}
+    {!name && resource && <>&nbsp;- {metadataName(resource)}</>}
     {isReadyFunction && (
       <Icon
         className={`ml-2 ${

@@ -17,7 +17,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {withParams} from '../router';
-import metadata from '../metadata';
+import {Details} from '../metadata';
 import {api, selectors} from './';
 import {Form} from '../components';
 import ResourceDetailPage from '../components/ResourceDetailPage';
@@ -48,7 +48,7 @@ export const HorizontalPodAutoscalersDetailPage = withParams(
       deleteFunction={api.deleteHpa}
       body={
         <Form>
-          <metadata.Details resource={horizontalPodAutoscaler} />
+          <Details resource={horizontalPodAutoscaler} />
           <Form.Field label='Scale Target'>
             {selectors.scaleTargetRefName(horizontalPodAutoscaler)}
           </Form.Field>

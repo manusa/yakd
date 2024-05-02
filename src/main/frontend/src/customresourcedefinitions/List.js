@@ -16,7 +16,7 @@
  */
 import React from 'react';
 import {connect} from 'react-redux';
-import metadata from '../metadata';
+import {name, sortByCreationTimeStamp, uid} from '../metadata';
 import crd from './';
 import {Icon} from '../components';
 import Link from '../components/Link';
@@ -38,19 +38,17 @@ const Rows = ({customResourceDefinitions}) => {
   const deleteCrd = customResourceDefinition => async () =>
     await crd.api.delete(customResourceDefinition);
   return customResourceDefinitions
-    .sort(metadata.selectors.sortByCreationTimeStamp)
+    .sort(sortByCreationTimeStamp)
     .map(customResourceDefinition => (
       <Table.ResourceRow
-        key={metadata.selectors.uid(customResourceDefinition)}
+        key={uid(customResourceDefinition)}
         resource={customResourceDefinition}
       >
         <Table.Cell>
           <Link.CustomResourceDefinition
-            to={`/customresourcedefinitions/${metadata.selectors.uid(
-              customResourceDefinition
-            )}`}
+            to={`/customresourcedefinitions/${uid(customResourceDefinition)}`}
           >
-            {metadata.selectors.name(customResourceDefinition)}
+            {name(customResourceDefinition)}
           </Link.CustomResourceDefinition>
         </Table.Cell>
         <Table.Cell>

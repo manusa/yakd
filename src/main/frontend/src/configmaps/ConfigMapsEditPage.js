@@ -17,14 +17,14 @@
 import React from 'react';
 import {withParams} from '../router';
 import {api} from './';
-import md from '../metadata';
+import {name} from '../metadata';
 import ResourceEditPage from '../components/ResourceEditPage';
 import Link from '../components/Link';
 
 export const ConfigMapsEditPage = withParams(({params: {uid}}) => {
   const cardTitle = resource => (
     <Link.RouterLink to={`/configmaps/${uid}`}>
-      {md.selectors.name(resource)}
+      {name(resource)}
     </Link.RouterLink>
   );
   return (

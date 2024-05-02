@@ -16,7 +16,7 @@
  */
 import React from 'react';
 import {DashboardPage} from '../components';
-import metadata from '../metadata';
+import {name} from '../metadata';
 import crd from './index';
 
 const DashboardPageTitle = ({customResourceDefinition, children}) => (
@@ -26,7 +26,7 @@ const DashboardPageTitle = ({customResourceDefinition, children}) => (
   >
     &nbsp;-&nbsp;
     <crd.GroupLink customResourceDefinition={customResourceDefinition} />
-    &nbsp;- {metadata.selectors.name(customResourceDefinition)}
+    &nbsp;- {name(customResourceDefinition)}
     {children}
   </DashboardPage.Title>
 );

@@ -17,7 +17,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {withParams} from '../router';
-import metadata from '../metadata';
+import {Details, uid} from '../metadata';
 import {ContainerList} from '../containers';
 import sts from './';
 import pods from '../pods';
@@ -47,7 +47,7 @@ const StatefulSetsDetailPage = ({statefulSet}) => (
     }
     body={
       <Form>
-        <metadata.Details resource={statefulSet} />
+        <Details resource={statefulSet} />
         <rs.ReplicasField
           resource={statefulSet}
           replicas={sts.selectors.specReplicas(statefulSet)}
@@ -66,7 +66,7 @@ const StatefulSetsDetailPage = ({statefulSet}) => (
       title='Pods'
       titleVariant={Card.titleVariants.medium}
       className='mt-2'
-      ownerUid={metadata.selectors.uid(statefulSet)}
+      ownerUid={uid(statefulSet)}
     />
   </ResourceDetailPage>
 );

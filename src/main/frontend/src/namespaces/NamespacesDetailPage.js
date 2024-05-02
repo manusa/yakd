@@ -17,7 +17,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {withParams} from '../router';
-import metadata from '../metadata';
+import {Details, byUidOrName} from '../metadata';
 import ns from './';
 import {Form} from '../components';
 import ResourceDetailPage from '../components/ResourceDetailPage';
@@ -32,7 +32,7 @@ const NamespacesDetailPage = ({namespace}) => (
     editable={false}
     body={
       <Form>
-        <metadata.Details resource={namespace} />
+        <Details resource={namespace} />
         <Form.Field label='Status'>
           {ns.selectors.statusPhase(namespace)}
         </Form.Field>
@@ -49,10 +49,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
   ...stateProps,
   ...dispatchProps,
   ...ownProps,
-  namespace: metadata.selectors.byUidOrName(
-    stateProps.namespaces,
-    ownProps.params.uidOrName
-  )
+  namespace: byUidOrName(stateProps.namespaces, ownProps.params.uidOrName)
 });
 
 export default withParams(

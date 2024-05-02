@@ -17,7 +17,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {withParams} from '../router';
-import metadata from '../metadata';
+import {Details} from '../metadata';
 import {api} from './';
 import {Form} from '../components';
 import ResourceDetailPage from '../components/ResourceDetailPage';
@@ -46,7 +46,7 @@ export const IngressesDetailPage = withParams(
       deleteFunction={api.deleteIng}
       body={
         <Form>
-          <metadata.Details resource={ingress} />
+          <Details resource={ingress} />
         </Form>
       }
     />

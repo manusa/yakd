@@ -17,7 +17,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {withParams} from '../router';
-import metadata from '../metadata';
+import {Details, namespace, uid} from '../metadata';
 import {api, selectors} from './';
 import {ContainerList} from '../containers';
 import pods from '../pods';
@@ -44,7 +44,7 @@ export const JobsDetailPage = withParams(
         <DashboardPage.Title
           path='jobs'
           kind='Jobs'
-          namespace={metadata.selectors.namespace(job)}
+          namespace={namespace(job)}
           resource={job}
           isReadyFunction={selectors.isComplete}
           notReadyClassName='text-gray-500'
@@ -55,7 +55,7 @@ export const JobsDetailPage = withParams(
       deleteFunction={api.deleteJob}
       body={
         <Form>
-          <metadata.Details resource={job} />
+          <Details resource={job} />
           <Form.Field label='Completions'>
             {selectors.specCompletions(job)}
           </Form.Field>
@@ -78,7 +78,7 @@ export const JobsDetailPage = withParams(
         title='Pods'
         titleVariant={Card.titleVariants.medium}
         className='mt-2'
-        ownerUid={metadata.selectors.uid(job)}
+        ownerUid={uid(job)}
       />
     </ResourceDetailPage>
   ))

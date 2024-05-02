@@ -17,7 +17,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import metadata from '../metadata';
+import {
+  creationTimestamp,
+  name,
+  sortByCreationTimeStamp,
+  uid
+} from '../metadata';
 import {api, selectors} from './';
 import {Age, Icon} from '../components';
 import Link from '../components/Link';
@@ -39,19 +44,17 @@ const Rows = ({clusterRoleBindings}) => {
   const deleteCrb = clusterRoleBinding => async () =>
     await api.deleteCrb(clusterRoleBinding);
   return clusterRoleBindings
-    .sort(metadata.selectors.sortByCreationTimeStamp)
+    .sort(sortByCreationTimeStamp)
     .map(clusterRoleBinding => (
       <Table.ResourceRow
-        key={metadata.selectors.uid(clusterRoleBinding)}
+        key={uid(clusterRoleBinding)}
         resource={clusterRoleBinding}
       >
         <Table.Cell>
           <Link.ClusterRoleBinding
-            to={`/clusterrolebindings/${metadata.selectors.uid(
-              clusterRoleBinding
-            )}`}
+            to={`/clusterrolebindings/${uid(clusterRoleBinding)}`}
           >
-            {metadata.selectors.name(clusterRoleBinding)}
+            {name(clusterRoleBinding)}
           </Link.ClusterRoleBinding>
         </Table.Cell>
         <Table.Cell>
@@ -62,9 +65,7 @@ const Rows = ({clusterRoleBindings}) => {
           </Link.ClusterRole>
         </Table.Cell>
         <Table.Cell>
-          <Age
-            date={metadata.selectors.creationTimestamp(clusterRoleBinding)}
-          />
+          <Age date={creationTimestamp(clusterRoleBinding)} />
         </Table.Cell>
         <Table.Cell>
           <Table.DeleteButton onClick={deleteCrb(clusterRoleBinding)} />

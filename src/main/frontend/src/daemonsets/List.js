@@ -15,7 +15,7 @@
  *
  */
 import React from 'react';
-import metadata from '../metadata';
+import {name, namespace, sortByCreationTimeStamp, uid} from '../metadata';
 import {api, selectors} from './';
 import {Icon} from '../components';
 import Link from '../components/Link';
@@ -37,56 +37,45 @@ const headers = [
 const Rows = ({daemonSets}) => {
   const deleteDS = daemonSet => () => api.deleteDs(daemonSet);
   const restart = daemonSet => () => api.restart(daemonSet);
-  return daemonSets
-    .sort(metadata.selectors.sortByCreationTimeStamp)
-    .map(daemonSet => (
-      <Table.ResourceRow
-        key={metadata.selectors.uid(daemonSet)}
-        resource={daemonSet}
-      >
-        <Table.Cell className='whitespace-nowrap w-3 text-center'>
-          <Icon
-            className={
-              selectors.isReady(daemonSet) ? 'text-green-500' : 'text-red-500'
-            }
-            icon={
-              selectors.isReady(daemonSet)
-                ? 'fa-check'
-                : 'fa-exclamation-circle'
-            }
-          />
-        </Table.Cell>
-        <Table.Cell className='whitespace-nowrap'>
-          <Link.DaemonSet
-            to={`/daemonsets/${metadata.selectors.uid(daemonSet)}`}
-          >
-            {metadata.selectors.name(daemonSet)}
-          </Link.DaemonSet>
-        </Table.Cell>
-        <Table.Cell className='whitespace-nowrap'>
-          <Link.Namespace
-            to={`/namespaces/${metadata.selectors.namespace(daemonSet)}`}
-          >
-            {metadata.selectors.namespace(daemonSet)}
-          </Link.Namespace>
-        </Table.Cell>
-        <Table.Cell className='break-all'>
-          {selectors.images(daemonSet).map((image, idx) => (
-            <div key={idx}>{image}</div>
-          ))}
-        </Table.Cell>
-        <Table.Cell className='whitespace-nowrap text-center'>
-          <Link
-            variant={Link.variants.outline}
-            onClick={restart(daemonSet)}
-            title='Restart'
-          >
-            <Icon stylePrefix='fas' icon='fa-redo-alt' />
-          </Link>
-          <Table.DeleteButton className='ml-1' onClick={deleteDS(daemonSet)} />
-        </Table.Cell>
-      </Table.ResourceRow>
-    ));
+  return daemonSets.sort(sortByCreationTimeStamp).map(daemonSet => (
+    <Table.ResourceRow key={uid(daemonSet)} resource={daemonSet}>
+      <Table.Cell className='whitespace-nowrap w-3 text-center'>
+        <Icon
+          className={
+            selectors.isReady(daemonSet) ? 'text-green-500' : 'text-red-500'
+          }
+          icon={
+            selectors.isReady(daemonSet) ? 'fa-check' : 'fa-exclamation-circle'
+          }
+        />
+      </Table.Cell>
+      <Table.Cell className='whitespace-nowrap'>
+        <Link.DaemonSet to={`/daemonsets/${uid(daemonSet)}`}>
+          {name(daemonSet)}
+        </Link.DaemonSet>
+      </Table.Cell>
+      <Table.Cell className='whitespace-nowrap'>
+        <Link.Namespace to={`/namespaces/${namespace(daemonSet)}`}>
+          {namespace(daemonSet)}
+        </Link.Namespace>
+      </Table.Cell>
+      <Table.Cell className='break-all'>
+        {selectors.images(daemonSet).map((image, idx) => (
+          <div key={idx}>{image}</div>
+        ))}
+      </Table.Cell>
+      <Table.Cell className='whitespace-nowrap text-center'>
+        <Link
+          variant={Link.variants.outline}
+          onClick={restart(daemonSet)}
+          title='Restart'
+        >
+          <Icon stylePrefix='fas' icon='fa-redo-alt' />
+        </Link>
+        <Table.DeleteButton className='ml-1' onClick={deleteDS(daemonSet)} />
+      </Table.Cell>
+    </Table.ResourceRow>
+  ));
 };
 
 export const List = ResourceList.resourceListConnect('daemonSets')(

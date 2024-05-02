@@ -15,10 +15,15 @@
  *
  */
 import React from 'react';
-import metadata from '../metadata';
+import {
+  creationTimestamp,
+  name,
+  namespace,
+  sortByCreationTimeStamp,
+  uid
+} from '../metadata';
 import r from './';
-import {Tooltip} from '../components';
-import {Icon} from '../components';
+import {Icon, Tooltip} from '../components';
 import Link from '../components/Link';
 import ResourceList from '../components/ResourceList';
 import Table from '../components/Table';
@@ -36,33 +41,23 @@ const headers = [
 
 const Rows = ({roles}) => {
   const deleteRole = role => async () => await r.api.delete(role);
-  return roles.sort(metadata.selectors.sortByCreationTimeStamp).map(role => (
-    <Table.ResourceRow key={metadata.selectors.uid(role)} resource={role}>
+  return roles.sort(sortByCreationTimeStamp).map(role => (
+    <Table.ResourceRow key={uid(role)} resource={role}>
       <Table.Cell>
-        <Link.Role to={`/roles/${metadata.selectors.uid(role)}`}>
-          {metadata.selectors.name(role)}
-        </Link.Role>
+        <Link.Role to={`/roles/${uid(role)}`}>{name(role)}</Link.Role>
       </Table.Cell>
       <Table.Cell className='whitespace-nowrap'>
-        <Link.Namespace
-          to={`/namespaces/${metadata.selectors.namespace(role)}`}
-        >
-          {metadata.selectors.namespace(role)}
+        <Link.Namespace to={`/namespaces/${namespace(role)}`}>
+          {namespace(role)}
         </Link.Namespace>
       </Table.Cell>
       <Table.Cell>
         <Tooltip
-          content={`${metadata.selectors
-            .creationTimestamp(role)
-            .toLocaleDateString()}
-                ${metadata.selectors
-                  .creationTimestamp(role)
-                  .toLocaleTimeString()}`}
+          content={`${creationTimestamp(role).toLocaleDateString()}
+                ${creationTimestamp(role).toLocaleTimeString()}`}
           className='cursor-default'
         >
-          <span>
-            {metadata.selectors.creationTimestamp(role).toLocaleDateString()}
-          </span>
+          <span>{creationTimestamp(role).toLocaleDateString()}</span>
         </Tooltip>
       </Table.Cell>
       <Table.Cell>

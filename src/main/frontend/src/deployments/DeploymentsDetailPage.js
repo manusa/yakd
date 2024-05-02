@@ -17,7 +17,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {withParams} from '../router';
-import metadata from '../metadata';
+import {Details, ownerReferencesUids, uid} from '../metadata';
 import {ContainerList} from '../containers';
 import {api, selectors} from './';
 import pods from '../pods';
@@ -38,13 +38,11 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
   deployment: stateProps.deployments[ownProps.params.uid],
   replicaSetsUids: Object.values(stateProps.replicaSets)
     .filter(replicaSet =>
-      metadata.selectors
-        .ownerReferencesUids(replicaSet)
-        .includes(
-          metadata.selectors.uid(stateProps.deployments[ownProps.params.uid])
-        )
+      ownerReferencesUids(replicaSet).includes(
+        uid(stateProps.deployments[ownProps.params.uid])
+      )
     )
-    .map(replicaSet => metadata.selectors.uid(replicaSet))
+    .map(replicaSet => uid(replicaSet))
 });
 
 export const DeploymentsDetailPage = withParams(
@@ -73,7 +71,7 @@ export const DeploymentsDetailPage = withParams(
       }
       body={
         <Form>
-          <metadata.Details resource={deployment} />
+          <Details resource={deployment} />
           <rs.ReplicasField
             resource={deployment}
             replicas={selectors.specReplicas(deployment)}
@@ -95,7 +93,7 @@ export const DeploymentsDetailPage = withParams(
         title='Replica Sets'
         titleVariant={Card.titleVariants.medium}
         className='mt-2'
-        ownerUid={metadata.selectors.uid(deployment)}
+        ownerUid={uid(deployment)}
       />
       <pods.List
         title='Pods'

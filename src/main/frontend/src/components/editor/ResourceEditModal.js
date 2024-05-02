@@ -16,7 +16,7 @@
  */
 import React from 'react';
 import YAML from 'yaml';
-import metadata from '../../metadata';
+import {name} from '../../metadata';
 import {Alert, Card, Icon, YamlEditor, useEditor, Spinner} from '../';
 import Modal from '../Modal';
 import Link from '../Link';
@@ -48,7 +48,7 @@ export const ResourceEditModal = ({
   save,
   close,
   preserveSideBar,
-  title = metadata.selectors.name(resource)
+  title = name(resource)
 }) => {
   const {
     resourceYaml,

@@ -17,7 +17,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {withParams} from '../router';
-import metadata from '../metadata';
+import {Details, name} from '../metadata';
 import metrics from '../metrics';
 import {selectors} from './';
 import p from '../pods';
@@ -56,7 +56,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
   ...ownProps,
   isMinikube: selectors.isMinikube(stateProps.nodes),
   node: Object.values(stateProps.nodes).find(
-    node => metadata.selectors.name(node) === ownProps.params.name
+    node => name(node) === ownProps.params.name
   )
 });
 
@@ -66,7 +66,7 @@ export const NodesDetailPage = withParams(
     null,
     mergeProps
   )(({node, isMinikube, pods}) => {
-    const nodeName = metadata.selectors.name(node);
+    const nodeName = name(node);
     const podsForNode = Object.values(p.selectors.podsBy(pods, {nodeName}));
     const requests = podsForNode
       .flatMap(p.selectors.containers)
@@ -117,7 +117,7 @@ export const NodesDetailPage = withParams(
               />
             </div>
 
-            <metadata.Details resource={node} />
+            <Details resource={node} />
             <Form.Field label='OS'>
               {selectors.statusNodeInfoOS(node)} (
               {selectors.statusNodeInfoArchitecture(node)})

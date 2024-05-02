@@ -16,7 +16,7 @@
  */
 import React from 'react';
 import {connect} from 'react-redux';
-import metadata from '../metadata';
+import {name, namespace, sortByCreationTimeStamp, uid} from '../metadata';
 import {api, selectors} from './';
 import {resourcesBy} from '../redux';
 import {Icon} from '../components';
@@ -41,59 +41,48 @@ const Rows = ({deployments}) => {
     await api.deleteDeployment(deployment);
   const restartDeployment = deployment => async () =>
     await api.restart(deployment);
-  return deployments
-    .sort(metadata.selectors.sortByCreationTimeStamp)
-    .map(deployment => (
-      <Table.ResourceRow
-        key={metadata.selectors.uid(deployment)}
-        resource={deployment}
-      >
-        <Table.Cell className='whitespace-nowrap w-3 text-center'>
-          <Icon
-            className={
-              selectors.isReady(deployment) ? 'text-green-500' : 'text-red-500'
-            }
-            icon={
-              selectors.isReady(deployment)
-                ? 'fa-check'
-                : 'fa-exclamation-circle'
-            }
-          />
-        </Table.Cell>
-        <Table.Cell className='whitespace-nowrap'>
-          <Link.Deployment
-            to={`/deployments/${metadata.selectors.uid(deployment)}`}
-          >
-            {metadata.selectors.name(deployment)}
-          </Link.Deployment>
-        </Table.Cell>
-        <Table.Cell className='whitespace-nowrap'>
-          <Link.Namespace
-            to={`/namespaces/${metadata.selectors.namespace(deployment)}`}
-          >
-            {metadata.selectors.namespace(deployment)}
-          </Link.Namespace>
-        </Table.Cell>
-        <Table.Cell className='break-all'>
-          {selectors.images(deployment).map((image, idx) => (
-            <div key={idx}>{image}</div>
-          ))}
-        </Table.Cell>
-        <Table.Cell className='whitespace-nowrap text-center'>
-          <Link
-            variant={Link.variants.outline}
-            onClick={restartDeployment(deployment)}
-            title='Restart'
-          >
-            <Icon stylePrefix='fas' icon='fa-redo-alt' />
-          </Link>
-          <Table.DeleteButton
-            className='ml-1'
-            onClick={deleteDeployment(deployment)}
-          />
-        </Table.Cell>
-      </Table.ResourceRow>
-    ));
+  return deployments.sort(sortByCreationTimeStamp).map(deployment => (
+    <Table.ResourceRow key={uid(deployment)} resource={deployment}>
+      <Table.Cell className='whitespace-nowrap w-3 text-center'>
+        <Icon
+          className={
+            selectors.isReady(deployment) ? 'text-green-500' : 'text-red-500'
+          }
+          icon={
+            selectors.isReady(deployment) ? 'fa-check' : 'fa-exclamation-circle'
+          }
+        />
+      </Table.Cell>
+      <Table.Cell className='whitespace-nowrap'>
+        <Link.Deployment to={`/deployments/${uid(deployment)}`}>
+          {name(deployment)}
+        </Link.Deployment>
+      </Table.Cell>
+      <Table.Cell className='whitespace-nowrap'>
+        <Link.Namespace to={`/namespaces/${namespace(deployment)}`}>
+          {namespace(deployment)}
+        </Link.Namespace>
+      </Table.Cell>
+      <Table.Cell className='break-all'>
+        {selectors.images(deployment).map((image, idx) => (
+          <div key={idx}>{image}</div>
+        ))}
+      </Table.Cell>
+      <Table.Cell className='whitespace-nowrap text-center'>
+        <Link
+          variant={Link.variants.outline}
+          onClick={restartDeployment(deployment)}
+          title='Restart'
+        >
+          <Icon stylePrefix='fas' icon='fa-redo-alt' />
+        </Link>
+        <Table.DeleteButton
+          className='ml-1'
+          onClick={deleteDeployment(deployment)}
+        />
+      </Table.Cell>
+    </Table.ResourceRow>
+  ));
 };
 
 const mapStateToProps = ({deployments}) => ({

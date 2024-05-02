@@ -15,7 +15,7 @@
  *
  */
 import React from 'react';
-import metadata from '../metadata';
+import {name, namespace, sortByCreationTimeStamp, uid} from '../metadata';
 import {api} from './';
 import {Icon} from '../components';
 import Link from '../components/Link';
@@ -33,32 +33,23 @@ const headers = [
 const Rows = ({configMaps}) => {
   const deleteConfigMap = configMap => async () =>
     await api.deleteCm(configMap);
-  return configMaps
-    .sort(metadata.selectors.sortByCreationTimeStamp)
-    .map(configMap => (
-      <Table.ResourceRow
-        key={metadata.selectors.uid(configMap)}
-        resource={configMap}
-      >
-        <Table.Cell>
-          <Link.ConfigMap
-            to={`/configmaps/${metadata.selectors.uid(configMap)}`}
-          >
-            {metadata.selectors.name(configMap)}
-          </Link.ConfigMap>
-        </Table.Cell>
-        <Table.Cell className='whitespace-nowrap'>
-          <Link.Namespace
-            to={`/namespaces/${metadata.selectors.namespace(configMap)}`}
-          >
-            {metadata.selectors.namespace(configMap)}
-          </Link.Namespace>
-        </Table.Cell>
-        <Table.Cell>
-          <Table.DeleteButton onClick={deleteConfigMap(configMap)} />
-        </Table.Cell>
-      </Table.ResourceRow>
-    ));
+  return configMaps.sort(sortByCreationTimeStamp).map(configMap => (
+    <Table.ResourceRow key={uid(configMap)} resource={configMap}>
+      <Table.Cell>
+        <Link.ConfigMap to={`/configmaps/${uid(configMap)}`}>
+          {name(configMap)}
+        </Link.ConfigMap>
+      </Table.Cell>
+      <Table.Cell className='whitespace-nowrap'>
+        <Link.Namespace to={`/namespaces/${namespace(configMap)}`}>
+          {namespace(configMap)}
+        </Link.Namespace>
+      </Table.Cell>
+      <Table.Cell>
+        <Table.DeleteButton onClick={deleteConfigMap(configMap)} />
+      </Table.Cell>
+    </Table.ResourceRow>
+  ));
 };
 
 export const List = ResourceList.resourceListConnect('configMaps')(

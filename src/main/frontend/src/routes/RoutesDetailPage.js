@@ -17,7 +17,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {withParams} from '../router';
-import metadata from '../metadata';
+import {Details} from '../metadata';
 import r from './';
 import {Form} from '../components';
 import ResourceDetailPage from '../components/ResourceDetailPage';
@@ -30,7 +30,7 @@ const RoutesDetailPage = ({route}) => (
     deleteFunction={r.api.delete}
     body={
       <Form>
-        <metadata.Details resource={route} />
+        <Details resource={route} />
         <Form.Field label='Host'>
           <r.Host route={route} />
         </Form.Field>

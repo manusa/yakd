@@ -15,7 +15,12 @@
  *
  */
 import React from 'react';
-import metadata from '../metadata';
+import {
+  creationTimestamp,
+  name,
+  sortByCreationTimeStamp,
+  uid
+} from '../metadata';
 import {api} from './';
 import {Age, Icon} from '../components';
 import Link from '../components/Link';
@@ -35,28 +40,21 @@ const headers = [
 const Rows = ({clusterRoles}) => {
   const deleteClusterRole = clusterRole => async () =>
     await api.deleteCr(clusterRole);
-  return clusterRoles
-    .sort(metadata.selectors.sortByCreationTimeStamp)
-    .map(clusterRole => (
-      <Table.ResourceRow
-        key={metadata.selectors.uid(clusterRole)}
-        resource={clusterRole}
-      >
-        <Table.Cell>
-          <Link.ClusterRole
-            to={`/clusterroles/${metadata.selectors.uid(clusterRole)}`}
-          >
-            {metadata.selectors.name(clusterRole)}
-          </Link.ClusterRole>
-        </Table.Cell>
-        <Table.Cell>
-          <Age date={metadata.selectors.creationTimestamp(clusterRole)} />
-        </Table.Cell>
-        <Table.Cell>
-          <Table.DeleteButton onClick={deleteClusterRole(clusterRole)} />
-        </Table.Cell>
-      </Table.ResourceRow>
-    ));
+  return clusterRoles.sort(sortByCreationTimeStamp).map(clusterRole => (
+    <Table.ResourceRow key={uid(clusterRole)} resource={clusterRole}>
+      <Table.Cell>
+        <Link.ClusterRole to={`/clusterroles/${uid(clusterRole)}`}>
+          {name(clusterRole)}
+        </Link.ClusterRole>
+      </Table.Cell>
+      <Table.Cell>
+        <Age date={creationTimestamp(clusterRole)} />
+      </Table.Cell>
+      <Table.Cell>
+        <Table.DeleteButton onClick={deleteClusterRole(clusterRole)} />
+      </Table.Cell>
+    </Table.ResourceRow>
+  ));
 };
 
 export const List = ResourceList.resourceListConnect('clusterRoles')(

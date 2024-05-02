@@ -15,7 +15,7 @@
  *
  */
 import React from 'react';
-import metadata from '../metadata';
+import {name, namespace, sortByCreationTimeStamp, uid} from '../metadata';
 import {api, selectors} from './';
 import {Icon} from '../components';
 import Link from '../components/Link';
@@ -36,43 +36,36 @@ const headers = [
 
 const Rows = ({cronJobs}) => {
   const deleteJob = cronJob => () => api.deleteCj(cronJob);
-  return cronJobs
-    .sort(metadata.selectors.sortByCreationTimeStamp)
-    .map(cronJob => (
-      <Table.ResourceRow
-        key={metadata.selectors.uid(cronJob)}
-        resource={cronJob}
-      >
-        <Table.Cell className='whitespace-nowrap w-3 text-center'>
-          <Icon
-            className={
-              selectors.isReady(cronJob) ? 'text-green-500' : 'text-red-500'
-            }
-            icon={
-              selectors.isReady(cronJob) ? 'fa-check' : 'fa-exclamation-circle'
-            }
-          />
-        </Table.Cell>
-        <Table.Cell className='whitespace-nowrap'>
-          <Link.CronJob to={`/cronjobs/${metadata.selectors.uid(cronJob)}`}>
-            {metadata.selectors.name(cronJob)}
-          </Link.CronJob>
-        </Table.Cell>
-        <Table.Cell className='whitespace-nowrap'>
-          <Link.Namespace
-            to={`/namespaces/${metadata.selectors.namespace(cronJob)}`}
-          >
-            {metadata.selectors.namespace(cronJob)}
-          </Link.Namespace>
-        </Table.Cell>
-        <Table.Cell>{selectors.specSchedule(cronJob)}</Table.Cell>
-        <Table.Cell>{selectors.specSuspend(cronJob).toString()}</Table.Cell>
-        <Table.Cell>{selectors.statusActive(cronJob).length}</Table.Cell>
-        <Table.Cell className='whitespace-nowrap text-center'>
-          <Table.DeleteButton onClick={deleteJob(cronJob)} />
-        </Table.Cell>
-      </Table.ResourceRow>
-    ));
+  return cronJobs.sort(sortByCreationTimeStamp).map(cronJob => (
+    <Table.ResourceRow key={uid(cronJob)} resource={cronJob}>
+      <Table.Cell className='whitespace-nowrap w-3 text-center'>
+        <Icon
+          className={
+            selectors.isReady(cronJob) ? 'text-green-500' : 'text-red-500'
+          }
+          icon={
+            selectors.isReady(cronJob) ? 'fa-check' : 'fa-exclamation-circle'
+          }
+        />
+      </Table.Cell>
+      <Table.Cell className='whitespace-nowrap'>
+        <Link.CronJob to={`/cronjobs/${uid(cronJob)}`}>
+          {name(cronJob)}
+        </Link.CronJob>
+      </Table.Cell>
+      <Table.Cell className='whitespace-nowrap'>
+        <Link.Namespace to={`/namespaces/${namespace(cronJob)}`}>
+          {namespace(cronJob)}
+        </Link.Namespace>
+      </Table.Cell>
+      <Table.Cell>{selectors.specSchedule(cronJob)}</Table.Cell>
+      <Table.Cell>{selectors.specSuspend(cronJob).toString()}</Table.Cell>
+      <Table.Cell>{selectors.statusActive(cronJob).length}</Table.Cell>
+      <Table.Cell className='whitespace-nowrap text-center'>
+        <Table.DeleteButton onClick={deleteJob(cronJob)} />
+      </Table.Cell>
+    </Table.ResourceRow>
+  ));
 };
 
 export const List = ResourceList.resourceListConnect('cronJobs')(

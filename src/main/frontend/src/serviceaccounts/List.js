@@ -15,7 +15,15 @@
  *
  */
 import React from 'react';
-import metadata from '../metadata';
+import {
+  KeyValueList,
+  creationTimestamp,
+  labels,
+  name,
+  namespace,
+  sortByCreationTimeStamp,
+  uid
+} from '../metadata';
 import {api} from './';
 import Link from '../components/Link';
 import ResourceList from '../components/ResourceList';
@@ -37,41 +45,29 @@ const headers = [
 const Rows = ({serviceAccounts}) => {
   const deleteSa = serviceAccount => async () =>
     await api.deleteSa(serviceAccount);
-  return serviceAccounts
-    .sort(metadata.selectors.sortByCreationTimeStamp)
-    .map(serviceAccount => (
-      <Table.ResourceRow
-        key={metadata.selectors.uid(serviceAccount)}
-        resource={serviceAccount}
-      >
-        <Table.Cell className='whitespace-nowrap'>
-          <Link.ServiceAccount
-            to={`/serviceaccounts/${metadata.selectors.uid(serviceAccount)}`}
-          >
-            {metadata.selectors.name(serviceAccount)}
-          </Link.ServiceAccount>
-        </Table.Cell>
-        <Table.Cell className='whitespace-nowrap'>
-          <Link.Namespace
-            to={`/namespaces/${metadata.selectors.namespace(serviceAccount)}`}
-          >
-            {metadata.selectors.namespace(serviceAccount)}
-          </Link.Namespace>
-        </Table.Cell>
-        <Table.Cell>
-          <metadata.KeyValueList
-            keyValues={metadata.selectors.labels(serviceAccount)}
-            maxEntries={2}
-          />
-        </Table.Cell>
-        <Table.Cell>
-          <Age date={metadata.selectors.creationTimestamp(serviceAccount)} />
-        </Table.Cell>
-        <Table.Cell>
-          <Table.DeleteButton onClick={deleteSa(serviceAccount)} />
-        </Table.Cell>
-      </Table.ResourceRow>
-    ));
+  return serviceAccounts.sort(sortByCreationTimeStamp).map(serviceAccount => (
+    <Table.ResourceRow key={uid(serviceAccount)} resource={serviceAccount}>
+      <Table.Cell className='whitespace-nowrap'>
+        <Link.ServiceAccount to={`/serviceaccounts/${uid(serviceAccount)}`}>
+          {name(serviceAccount)}
+        </Link.ServiceAccount>
+      </Table.Cell>
+      <Table.Cell className='whitespace-nowrap'>
+        <Link.Namespace to={`/namespaces/${namespace(serviceAccount)}`}>
+          {namespace(serviceAccount)}
+        </Link.Namespace>
+      </Table.Cell>
+      <Table.Cell>
+        <KeyValueList keyValues={labels(serviceAccount)} maxEntries={2} />
+      </Table.Cell>
+      <Table.Cell>
+        <Age date={creationTimestamp(serviceAccount)} />
+      </Table.Cell>
+      <Table.Cell>
+        <Table.DeleteButton onClick={deleteSa(serviceAccount)} />
+      </Table.Cell>
+    </Table.ResourceRow>
+  ));
 };
 
 export const List = ResourceList.resourceListConnect('serviceAccounts')(

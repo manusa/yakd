@@ -17,7 +17,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {withParams} from '../router';
-import metadata from '../metadata';
+import {Details} from '../metadata';
 import pvc from './';
 import {Form} from '../components';
 import ResourceDetailPage from '../components/ResourceDetailPage';
@@ -31,7 +31,7 @@ const PersistentVolumeClaimsDetailPage = ({persistentVolumeClaim}) => (
     body={
       <>
         <Form>
-          <metadata.Details resource={persistentVolumeClaim} />
+          <Details resource={persistentVolumeClaim} />
           <Form.Field label='Access Modes'>
             {pvc.selectors
               .specAccessModes(persistentVolumeClaim)

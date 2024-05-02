@@ -15,7 +15,7 @@
  *
  */
 import React from 'react';
-import metadata from '../metadata';
+import {name, sortByCreationTimeStamp, uid} from '../metadata';
 import pv from './';
 import {Icon} from '../components';
 import Link from '../components/Link';
@@ -38,19 +38,17 @@ const Rows = ({persistentVolumes, crudDelete}) => {
     crudDelete(persistentVolume);
   };
   return persistentVolumes
-    .sort(metadata.selectors.sortByCreationTimeStamp)
+    .sort(sortByCreationTimeStamp)
     .map(persistentVolume => (
       <Table.ResourceRow
-        key={metadata.selectors.uid(persistentVolume)}
+        key={uid(persistentVolume)}
         resource={persistentVolume}
       >
         <Table.Cell>
           <Link.PersistentVolume
-            to={`/persistentvolumes/${metadata.selectors.uid(
-              persistentVolume
-            )}`}
+            to={`/persistentvolumes/${uid(persistentVolume)}`}
           >
-            {metadata.selectors.name(persistentVolume)}
+            {name(persistentVolume)}
           </Link.PersistentVolume>
         </Table.Cell>
         <Table.Cell>

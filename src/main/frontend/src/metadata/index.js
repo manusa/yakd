@@ -14,14 +14,6 @@
  * limitations under the License.
  *
  */
-import selectors from './selectors';
-import KeyValueList from './KeyValueList';
-import Details from './Details';
-
-const metadata = {};
-
-metadata.selectors = selectors;
-metadata.KeyValueList = KeyValueList;
-metadata.Details = Details;
-
-export default metadata;
+export * from './selectors';
+export {KeyValueList} from './KeyValueList';
+export {Details} from './Details';

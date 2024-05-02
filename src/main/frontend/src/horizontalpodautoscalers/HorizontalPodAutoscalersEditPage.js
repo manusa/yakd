@@ -16,7 +16,7 @@
  */
 import React from 'react';
 import {withParams} from '../router';
-import md from '../metadata';
+import {name} from '../metadata';
 import {api} from './';
 import ResourceEditPage from '../components/ResourceEditPage';
 import Link from '../components/Link';
@@ -29,7 +29,7 @@ export const HorizontalPodAutoscalersEditPage = withParams(
       path='horizontalpodautoscalers'
       cardTitle={resource => (
         <Link.RouterLink to={`/horizontalpodautoscalers/${uid}`}>
-          {md.selectors.name(resource)}
+          {name(resource)}
         </Link.RouterLink>
       )}
       save={async resource => await api.update(resource)}

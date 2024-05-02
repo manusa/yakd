@@ -14,7 +14,12 @@
  * limitations under the License.
  *
  */
-import md from '../metadata';
+import {
+  name,
+  namespace as metadataNamespace,
+  ownerReferencesUids,
+  uid
+} from '../metadata';
 
 export const toObjectReducer = (acc, [key, configMap]) => {
   acc[key] = configMap;
@@ -27,22 +32,19 @@ export const resourcesBy = (
 ) =>
   Object.entries(resources)
     .filter(([, resource]) => {
-      if (namespace && md.selectors.namespace(resource) !== namespace) {
+      if (namespace && metadataNamespace(resource) !== namespace) {
         return false;
       }
-      if (names && !names.includes(md.selectors.name(resource))) {
+      if (names && !names.includes(name(resource))) {
         return false;
       }
       if (
         nameLike &&
-        !md.selectors
-          .name(resource)
-          .toUpperCase()
-          .includes(nameLike.toUpperCase())
+        !name(resource).toUpperCase().includes(nameLike.toUpperCase())
       ) {
         return false;
       }
-      const ownerRefs = md.selectors.ownerReferencesUids(resource);
+      const ownerRefs = ownerReferencesUids(resource);
       if (ownerUid && !ownerRefs.includes(ownerUid)) {
         return false;
       }
@@ -52,10 +54,10 @@ export const resourcesBy = (
       ) {
         return false;
       }
-      if (uids && !uids.includes(md.selectors.uid(resource))) {
+      if (uids && !uids.includes(uid(resource))) {
         return false;
       }
-      if (uidsNotIn?.includes(md.selectors.uid(resource))) {
+      if (uidsNotIn?.includes(uid(resource))) {
         return false;
       }
       return true;

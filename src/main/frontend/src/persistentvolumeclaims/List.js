@@ -15,7 +15,7 @@
  *
  */
 import React from 'react';
-import metadata from '../metadata';
+import {name, namespace, sortByCreationTimeStamp, uid} from '../metadata';
 import pvc from './';
 import {Icon} from '../components';
 import Link from '../components/Link';
@@ -39,28 +39,24 @@ const Rows = ({persistentVolumeClaims, crudDelete}) => {
     crudDelete(persistentVolumeClaim);
   };
   return persistentVolumeClaims
-    .sort(metadata.selectors.sortByCreationTimeStamp)
+    .sort(sortByCreationTimeStamp)
     .map(persistentVolumeClaim => (
       <Table.ResourceRow
-        key={metadata.selectors.uid(persistentVolumeClaim)}
+        key={uid(persistentVolumeClaim)}
         resource={persistentVolumeClaim}
       >
         <Table.Cell>
           <Link.PersistentVolumeClaim
-            to={`/persistentvolumeclaims/${metadata.selectors.uid(
-              persistentVolumeClaim
-            )}`}
+            to={`/persistentvolumeclaims/${uid(persistentVolumeClaim)}`}
           >
-            {metadata.selectors.name(persistentVolumeClaim)}
+            {name(persistentVolumeClaim)}
           </Link.PersistentVolumeClaim>
         </Table.Cell>
         <Table.Cell className='whitespace-nowrap'>
           <Link.Namespace
-            to={`/namespaces/${metadata.selectors.namespace(
-              persistentVolumeClaim
-            )}`}
+            to={`/namespaces/${namespace(persistentVolumeClaim)}`}
           >
-            {metadata.selectors.namespace(persistentVolumeClaim)}
+            {namespace(persistentVolumeClaim)}
           </Link.Namespace>
         </Table.Cell>
         <Table.Cell>

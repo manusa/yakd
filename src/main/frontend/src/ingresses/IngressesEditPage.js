@@ -16,7 +16,7 @@
  */
 import React from 'react';
 import {withParams} from '../router';
-import md from '../metadata';
+import {name} from '../metadata';
 import {api} from './';
 import ResourceEditPage from '../components/ResourceEditPage';
 import Link from '../components/Link';
@@ -27,7 +27,7 @@ export const IngressesEditPage = withParams(({params: {uid}}) => (
     path='ingresses'
     cardTitle={resource => (
       <Link.RouterLink to={`/ingresses/${uid}`}>
-        {md.selectors.name(resource)}
+        {name(resource)}
       </Link.RouterLink>
     )}
     save={async resource => await api.update(resource)}

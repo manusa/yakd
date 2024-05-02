@@ -17,7 +17,7 @@
 import React from 'react';
 import {withParams} from '../router';
 import {api} from './';
-import md from '../metadata';
+import {name} from '../metadata';
 import ResourceEditPage from '../components/ResourceEditPage';
 import Link from '../components/Link';
 
@@ -27,7 +27,7 @@ export const ClusterRolesEditPage = withParams(({params: {uid}}) => (
     path='clusterroles'
     cardTitle={resource => (
       <Link.RouterLink to={`/clusterroles/${uid}`}>
-        {md.selectors.name(resource)}
+        {name(resource)}
       </Link.RouterLink>
     )}
     save={async resource => await api.update(resource)}

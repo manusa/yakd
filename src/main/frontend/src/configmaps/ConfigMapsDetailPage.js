@@ -18,7 +18,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {withParams} from '../router';
 import {api, selectors} from './';
-import metadata from '../metadata';
+import {Details} from '../metadata';
 import {Form} from '../components';
 import ResourceDetailPage from '../components/ResourceDetailPage';
 
@@ -57,7 +57,7 @@ export const ConfigMapsDetailPage = withParams(
       deleteFunction={api.deleteCm}
       body={
         <Form>
-          <metadata.Details resource={configMap} />
+          <Details resource={configMap} />
           {Object.entries(selectors.data(configMap)).map(([key, value]) => (
             <DataField key={key} label={key} value={value} />
           ))}

@@ -16,7 +16,7 @@
  */
 import React from 'react';
 import {withParams} from '../router';
-import md from '../metadata';
+import {name} from '../metadata';
 import crd from './';
 import ResourceEditPage from '../components/ResourceEditPage';
 import Link from '../components/Link';
@@ -32,7 +32,7 @@ const CustomResourceDefinitionsEditPage = ({params: {uid}}) => (
     )}
     cardTitle={resource => (
       <Link.RouterLink to={`/customresourcedefinitions/${uid}`}>
-        {md.selectors.name(resource)}
+        {name(resource)}
       </Link.RouterLink>
     )}
     save={async resource => await crd.api.update(resource)}

@@ -16,7 +16,13 @@
  */
 import React from 'react';
 import {api, selectors} from './';
-import metadata from '../metadata';
+import {
+  creationTimestamp,
+  name,
+  namespace,
+  sortByCreationTimeStamp,
+  uid
+} from '../metadata';
 import {Age, Icon} from '../components';
 import Link from '../components/Link';
 import ResourceList from '../components/ResourceList';
@@ -35,34 +41,27 @@ const headers = [
 const Rows = ({endpoints}) => {
   const deleteEndpoint = endpoint => async () =>
     await api.deleteEndpoint(endpoint);
-  return endpoints
-    .sort(metadata.selectors.sortByCreationTimeStamp)
-    .map(endpoint => (
-      <Table.ResourceRow
-        key={metadata.selectors.uid(endpoint)}
-        resource={endpoint}
-      >
-        <Table.Cell>
-          <Link.Endpoints to={`/endpoints/${metadata.selectors.uid(endpoint)}`}>
-            {metadata.selectors.name(endpoint)}
-          </Link.Endpoints>
-        </Table.Cell>
-        <Table.Cell className='whitespace-nowrap'>
-          <Link.Namespace
-            to={`/namespaces/${metadata.selectors.namespace(endpoint)}`}
-          >
-            {metadata.selectors.namespace(endpoint)}
-          </Link.Namespace>
-        </Table.Cell>
-        <Table.Cell>{selectors.subsetsAsText(endpoint)}</Table.Cell>
-        <Table.Cell>
-          <Age date={metadata.selectors.creationTimestamp(endpoint)} />
-        </Table.Cell>
-        <Table.Cell>
-          <Table.DeleteButton onClick={deleteEndpoint(endpoint)} />
-        </Table.Cell>
-      </Table.ResourceRow>
-    ));
+  return endpoints.sort(sortByCreationTimeStamp).map(endpoint => (
+    <Table.ResourceRow key={uid(endpoint)} resource={endpoint}>
+      <Table.Cell>
+        <Link.Endpoints to={`/endpoints/${uid(endpoint)}`}>
+          {name(endpoint)}
+        </Link.Endpoints>
+      </Table.Cell>
+      <Table.Cell className='whitespace-nowrap'>
+        <Link.Namespace to={`/namespaces/${namespace(endpoint)}`}>
+          {namespace(endpoint)}
+        </Link.Namespace>
+      </Table.Cell>
+      <Table.Cell>{selectors.subsetsAsText(endpoint)}</Table.Cell>
+      <Table.Cell>
+        <Age date={creationTimestamp(endpoint)} />
+      </Table.Cell>
+      <Table.Cell>
+        <Table.DeleteButton onClick={deleteEndpoint(endpoint)} />
+      </Table.Cell>
+    </Table.ResourceRow>
+  ));
 };
 
 export const List = ResourceList.resourceListConnect('endpoints')(

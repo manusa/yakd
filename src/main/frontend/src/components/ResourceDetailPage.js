@@ -17,7 +17,7 @@
 import React from 'react';
 import {useNavigate} from 'react-router-dom';
 import YAML from 'yaml';
-import metadata from '../metadata';
+import {name, namespace} from '../metadata';
 import {Card, DashboardPage, Icon, PopupMenu} from './';
 import Link from './Link';
 
@@ -27,7 +27,7 @@ const downloadResource = resource => {
   const url = URL.createObjectURL(blob);
   const tempLink = document.createElement('a');
   tempLink.href = url;
-  tempLink.download = `${metadata.selectors.name(resource)}.yaml`;
+  tempLink.download = `${name(resource)}.yaml`;
   document.body.appendChild(tempLink);
   tempLink.dispatchEvent(
     new MouseEvent('click', {bubbles: true, cancelable: true, view: window})
@@ -48,7 +48,7 @@ const ResourceDetailPage = ({
   editable = true,
   children
 }) => {
-  const namespace = metadata.selectors.namespace(resource);
+  const ns = namespace(resource);
   const navigate = useNavigate();
   const deleteAction = () => {
     deleteFunction(resource);
@@ -61,7 +61,7 @@ const ResourceDetailPage = ({
           <DashboardPage.Title
             path={path}
             kind={kind}
-            namespace={namespace}
+            namespace={ns}
             resource={resource}
             isReadyFunction={isReadyFunction}
           />
@@ -71,8 +71,8 @@ const ResourceDetailPage = ({
       <Card>
         <Card.Title className='flex items-center'>
           <div className='flex-1'>
-            {namespace && <>{namespace} - </>}
-            {metadata.selectors.name(resource)}
+            {ns && <>{ns} - </>}
+            {name(resource)}
           </div>
           {editable && <Link.EditLink path={path} resource={resource} />}
           {actions}
