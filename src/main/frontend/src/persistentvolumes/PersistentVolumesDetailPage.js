@@ -17,7 +17,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {withParams} from '../router';
-import metadata from '../metadata';
+import {Details} from '../metadata';
 import pv from './';
 import {Card, Form} from '../components';
 import ResourceDetailPage from '../components/ResourceDetailPage';
@@ -32,7 +32,7 @@ const PersistentVolumesDetailPage = ({persistentVolume}) => (
     body={
       <>
         <Form>
-          <metadata.Details resource={persistentVolume} />
+          <Details resource={persistentVolume} />
           <Form.Field label='Storage Class'>
             {pv.selectors.specStorageClassName(persistentVolume)}
           </Form.Field>

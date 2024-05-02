@@ -17,7 +17,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {withParams} from '../router';
-import metadata from '../metadata';
+import {Details} from '../metadata';
 import {RuleList} from '../clusterroles';
 import r from './';
 import {Form} from '../components';
@@ -31,7 +31,7 @@ const RolesDetailPage = ({role}) => (
     deleteFunction={r.api.delete}
     body={
       <Form>
-        <metadata.Details resource={role} />
+        <Details resource={role} />
       </Form>
     }
   >

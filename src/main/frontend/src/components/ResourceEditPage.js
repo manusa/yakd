@@ -18,7 +18,10 @@ import React, {useState} from 'react';
 import {useStore} from 'react-redux';
 import cloneDeep from 'lodash/cloneDeep';
 import YAML from 'yaml';
-import md from '../metadata';
+import {
+  name as metadataName,
+  namespace as metadataNamespace
+} from '../metadata';
 import {
   useEditor,
   Alert,
@@ -58,8 +61,8 @@ const ResourceEditPage = ({
       setTimeout(() => setForceReload(currentAttempt + 1), 100);
     }
   }
-  const namespace = md.selectors.namespace(resource);
-  const name = md.selectors.name(resource);
+  const namespace = metadataNamespace(resource);
+  const name = metadataName(resource);
   return (
     <DashboardPage
       title={

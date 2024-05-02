@@ -15,7 +15,7 @@
  *
  */
 import React from 'react';
-import metadata from '../metadata';
+import {name, namespace, sortByCreationTimeStamp, uid} from '../metadata';
 import sts from './';
 import {Icon} from '../components';
 import Link from '../components/Link';
@@ -39,61 +39,52 @@ const Rows = ({statefulSets}) => {
     await sts.api.delete(statefulSet);
   const restartStatefulSet = statefulSet => async () =>
     await sts.api.restart(statefulSet);
-  return statefulSets
-    .sort(metadata.selectors.sortByCreationTimeStamp)
-    .map(statefulSet => (
-      <Table.ResourceRow
-        key={metadata.selectors.uid(statefulSet)}
-        resource={statefulSet}
-      >
-        <Table.Cell className='whitespace-nowrap w-3 text-center'>
-          <Icon
-            className={
-              sts.selectors.isReady(statefulSet)
-                ? 'text-green-500'
-                : 'text-red-500'
-            }
-            icon={
-              sts.selectors.isReady(statefulSet)
-                ? 'fa-check'
-                : 'fa-exclamation-circle'
-            }
-          />
-        </Table.Cell>
-        <Table.Cell className='whitespace-nowrap'>
-          <Link.StatefulSet
-            to={`/statefulsets/${metadata.selectors.uid(statefulSet)}`}
-          >
-            {metadata.selectors.name(statefulSet)}
-          </Link.StatefulSet>
-        </Table.Cell>
-        <Table.Cell className='whitespace-nowrap'>
-          <Link.Namespace
-            to={`/namespaces/${metadata.selectors.namespace(statefulSet)}`}
-          >
-            {metadata.selectors.namespace(statefulSet)}
-          </Link.Namespace>
-        </Table.Cell>
-        <Table.Cell className='break-all'>
-          {sts.selectors.images(statefulSet).map((image, idx) => (
-            <div key={idx}>{image}</div>
-          ))}
-        </Table.Cell>
-        <Table.Cell className='whitespace-nowrap text-center'>
-          <Link
-            variant={Link.variants.outline}
-            onClick={restartStatefulSet(statefulSet)}
-            title='Restart'
-          >
-            <Icon stylePrefix='fas' icon='fa-redo-alt' />
-          </Link>
-          <Table.DeleteButton
-            className='ml-1'
-            onClick={deleteStatefulSet(statefulSet)}
-          />
-        </Table.Cell>
-      </Table.ResourceRow>
-    ));
+  return statefulSets.sort(sortByCreationTimeStamp).map(statefulSet => (
+    <Table.ResourceRow key={uid(statefulSet)} resource={statefulSet}>
+      <Table.Cell className='whitespace-nowrap w-3 text-center'>
+        <Icon
+          className={
+            sts.selectors.isReady(statefulSet)
+              ? 'text-green-500'
+              : 'text-red-500'
+          }
+          icon={
+            sts.selectors.isReady(statefulSet)
+              ? 'fa-check'
+              : 'fa-exclamation-circle'
+          }
+        />
+      </Table.Cell>
+      <Table.Cell className='whitespace-nowrap'>
+        <Link.StatefulSet to={`/statefulsets/${uid(statefulSet)}`}>
+          {name(statefulSet)}
+        </Link.StatefulSet>
+      </Table.Cell>
+      <Table.Cell className='whitespace-nowrap'>
+        <Link.Namespace to={`/namespaces/${namespace(statefulSet)}`}>
+          {namespace(statefulSet)}
+        </Link.Namespace>
+      </Table.Cell>
+      <Table.Cell className='break-all'>
+        {sts.selectors.images(statefulSet).map((image, idx) => (
+          <div key={idx}>{image}</div>
+        ))}
+      </Table.Cell>
+      <Table.Cell className='whitespace-nowrap text-center'>
+        <Link
+          variant={Link.variants.outline}
+          onClick={restartStatefulSet(statefulSet)}
+          title='Restart'
+        >
+          <Icon stylePrefix='fas' icon='fa-redo-alt' />
+        </Link>
+        <Table.DeleteButton
+          className='ml-1'
+          onClick={deleteStatefulSet(statefulSet)}
+        />
+      </Table.Cell>
+    </Table.ResourceRow>
+  ));
 };
 
 const List = ({resources, crudDelete, loadedResources, ...properties}) => (

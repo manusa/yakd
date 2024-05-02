@@ -18,7 +18,7 @@ import React, {useState} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {crudDelete} from '../redux';
-import metadata from '../metadata';
+import {name, namespace, sortByCreationTimeStamp, uid} from '../metadata';
 import cr from './';
 import crd from '../customresourcedefinitions';
 import {Icon, ResourceEditModal} from '../components';
@@ -53,32 +53,25 @@ const Rows = ({
       deleteResourceCallback(customResource);
     };
   };
-  return customResources
-    .sort(metadata.selectors.sortByCreationTimeStamp)
-    .map(customResource => (
-      <Table.ResourceRow
-        key={metadata.selectors.uid(customResource)}
-        resource={customResource}
-      >
-        <Table.Cell>
-          <Link onClick={() => editResource(customResource)}>
-            {metadata.selectors.name(customResource)}
-          </Link>
+  return customResources.sort(sortByCreationTimeStamp).map(customResource => (
+    <Table.ResourceRow key={uid(customResource)} resource={customResource}>
+      <Table.Cell>
+        <Link onClick={() => editResource(customResource)}>
+          {name(customResource)}
+        </Link>
+      </Table.Cell>
+      {crd.selectors.isNamespaced(customResourceDefinition) && (
+        <Table.Cell className='whitespace-nowrap'>
+          <Link.Namespace to={`/namespaces/${namespace(customResource)}`}>
+            {namespace(customResource)}
+          </Link.Namespace>
         </Table.Cell>
-        {crd.selectors.isNamespaced(customResourceDefinition) && (
-          <Table.Cell className='whitespace-nowrap'>
-            <Link.Namespace
-              to={`/namespaces/${metadata.selectors.namespace(customResource)}`}
-            >
-              {metadata.selectors.namespace(customResource)}
-            </Link.Namespace>
-          </Table.Cell>
-        )}
-        <Table.Cell>
-          <Table.DeleteButton onClick={deleteCustomResource(customResource)} />
-        </Table.Cell>
-      </Table.ResourceRow>
-    ));
+      )}
+      <Table.Cell>
+        <Table.DeleteButton onClick={deleteCustomResource(customResource)} />
+      </Table.Cell>
+    </Table.ResourceRow>
+  ));
 };
 
 const List = ({
@@ -109,9 +102,9 @@ const List = ({
         resource={editedResource}
         title={`${cr.selectors.apiVersion(editedResource)} - ${
           crd.selectors.isNamespaced(customResourceDefinition)
-            ? `${metadata.selectors.namespace(editedResource)} - `
+            ? `${namespace(editedResource)} - `
             : ''
-        }${metadata.selectors.name(editedResource)}`}
+        }${name(editedResource)}`}
         save={toSave =>
           cr.api.update(customResourceDefinition, version)(toSave)
         }

@@ -17,7 +17,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {withParams} from '../router';
-import metadata from '../metadata';
+import {Details} from '../metadata';
 import svc from './';
 import {Card, Form} from '../components';
 import ResourceDetailPage from '../components/ResourceDetailPage';
@@ -46,7 +46,7 @@ const ServicesDetailPage = ({service}) => (
     deleteFunction={svc.api.delete}
     body={
       <Form>
-        <metadata.Details resource={service} />
+        <Details resource={service} />
         <Selectors selectors={svc.selectors.specSelector(service)} />
         <Form.Field label='Type'>
           <svc.Type service={service} />

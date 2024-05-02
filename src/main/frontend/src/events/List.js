@@ -16,7 +16,7 @@
  */
 import React from 'react';
 import {connect} from 'react-redux';
-import metadata from '../metadata';
+import {uid} from '../metadata';
 import {selectors} from './';
 import {Age, Icon} from '../components';
 import Link from '../components/Link';
@@ -105,7 +105,7 @@ const Rows = ({events}) => {
     .map(event => {
       const lastTimestamp = new Date(event.lastTimestamp);
       return (
-        <Table.ResourceRow key={metadata.selectors.uid(event)} resource={event}>
+        <Table.ResourceRow key={uid(event)} resource={event}>
           <Table.Cell className='whitespace-nowrap w-3 text-center'>
             <Icon
               className={

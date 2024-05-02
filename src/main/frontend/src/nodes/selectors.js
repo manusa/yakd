@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-import metadata from '../metadata';
+import {labels, name} from '../metadata';
 
 export const isReady = node => {
   const ready = (node?.status?.conditions ?? []).find(
@@ -55,7 +55,7 @@ export const statusAddressesFirstAddress = node =>
     .find(a => a) ?? '';
 
 export const roles = node =>
-  Object.keys(metadata.selectors.labels(node))
+  Object.keys(labels(node))
     .filter(key => key.indexOf('node-role.kubernetes.io/') === 0)
     .map(key => key.split('/')[1]);
 
@@ -67,11 +67,7 @@ export const readyCount = nodes =>
 export const isMinikube = nodes =>
   Object.values(nodes).length === 1 &&
   Object.values(nodes)
-    .filter(node => metadata.selectors.name(node) === 'minikube')
-    .filter(
-      node =>
-        metadata.selectors.labels(node)['minikube.k8s.io/name'] === 'minikube'
-    )
-    .filter(node =>
-      metadata.selectors.labels(node).hasOwnProperty('minikube.k8s.io/version')
-    ).length === 1;
+    .filter(node => name(node) === 'minikube')
+    .filter(node => labels(node)['minikube.k8s.io/name'] === 'minikube')
+    .filter(node => labels(node).hasOwnProperty('minikube.k8s.io/version'))
+    .length === 1;

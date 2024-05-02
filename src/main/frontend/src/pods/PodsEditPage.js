@@ -16,7 +16,7 @@
  */
 import React from 'react';
 import {withParams} from '../router';
-import md from '../metadata';
+import {name} from '../metadata';
 import p from './';
 import ResourceEditPage from '../components/ResourceEditPage';
 import Link from '../components/Link';
@@ -26,9 +26,7 @@ const PodsEditPage = ({params: {uid}}) => (
     kind='Pods'
     path='pods'
     cardTitle={resource => (
-      <Link.RouterLink to={`/pods/${uid}`}>
-        {md.selectors.name(resource)}
-      </Link.RouterLink>
+      <Link.RouterLink to={`/pods/${uid}`}>{name(resource)}</Link.RouterLink>
     )}
     save={async resource => await p.api.update(resource)}
     resourceFromState={state => state.pods[uid]}

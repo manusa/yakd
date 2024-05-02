@@ -16,7 +16,7 @@
  */
 import React from 'react';
 import {withParams} from '../router';
-import md from '../metadata';
+import {name} from '../metadata';
 import s from './';
 import ResourceEditPage from '../components/ResourceEditPage';
 import Link from '../components/Link';
@@ -27,7 +27,7 @@ const ServicesEditPage = ({params: {uid}}) => (
     path='services'
     cardTitle={resource => (
       <Link.RouterLink to={`/services/${uid}`}>
-        {md.selectors.name(resource)}
+        {name(resource)}
       </Link.RouterLink>
     )}
     save={async resource => await s.api.update(resource)}

@@ -16,7 +16,13 @@
  */
 import React from 'react';
 import {connect} from 'react-redux';
-import metadata from '../metadata';
+import {
+  KeyValueList,
+  labels,
+  name,
+  sortByCreationTimeStamp,
+  uid
+} from '../metadata';
 import {selectors} from './';
 import {Icon} from '../components';
 import Link from '../components/Link';
@@ -37,8 +43,8 @@ const headers = [
 ];
 
 const Rows = ({nodes}) => {
-  return nodes.sort(metadata.selectors.sortByCreationTimeStamp).map(node => (
-    <Table.ResourceRow key={metadata.selectors.uid(node)} resource={node}>
+  return nodes.sort(sortByCreationTimeStamp).map(node => (
+    <Table.ResourceRow key={uid(node)} resource={node}>
       <Table.Cell className='whitespace-nowrap w-3 text-center'>
         <Icon
           className={
@@ -48,9 +54,7 @@ const Rows = ({nodes}) => {
         />
       </Table.Cell>
       <Table.Cell className='text-nowrap'>
-        <Link.Node to={`/nodes/${metadata.selectors.name(node)}`}>
-          {metadata.selectors.name(node)}
-        </Link.Node>
+        <Link.Node to={`/nodes/${name(node)}`}>{name(node)}</Link.Node>
       </Table.Cell>
       <Table.Cell className='text-nowrap'>
         {(roles => {
@@ -61,10 +65,7 @@ const Rows = ({nodes}) => {
         })(selectors.roles(node))}
       </Table.Cell>
       <Table.Cell>
-        <metadata.KeyValueList
-          keyValues={metadata.selectors.labels(node)}
-          maxEntries={2}
-        />
+        <KeyValueList keyValues={labels(node)} maxEntries={2} />
       </Table.Cell>
     </Table.ResourceRow>
   ));

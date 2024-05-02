@@ -16,7 +16,7 @@
  */
 import React from 'react';
 import {withParams} from '../router';
-import md from '../metadata';
+import {name} from '../metadata';
 import s from './';
 import ResourceEditPage from '../components/ResourceEditPage';
 import Link from '../components/Link';
@@ -26,9 +26,7 @@ const SecretsEditPage = ({params: {uid}}) => (
     kind='Secrets'
     path='secrets'
     cardTitle={resource => (
-      <Link.RouterLink to={`/secrets/${uid}`}>
-        {md.selectors.name(resource)}
-      </Link.RouterLink>
+      <Link.RouterLink to={`/secrets/${uid}`}>{name(resource)}</Link.RouterLink>
     )}
     save={async resource => await s.api.update(resource)}
     resourceFromState={state => state.secrets[uid]}

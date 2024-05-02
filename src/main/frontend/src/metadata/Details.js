@@ -15,15 +15,22 @@
  *
  */
 import React from 'react';
-import metadata from './';
 import {Form, Icon} from '../components';
 import Link from '../components/Link';
+import {
+  KeyValueList,
+  annotations,
+  creationTimestamp,
+  labels,
+  name,
+  namespace
+} from './';
 
 const LabelsRow = ({labels}) =>
   labels &&
   Object.values(labels).length > 0 && (
     <Form.Field width={Form.widths.full}>
-      <metadata.KeyValueList maxEntries={4} keyValues={labels} />
+      <KeyValueList maxEntries={4} keyValues={labels} />
     </Form.Field>
   );
 
@@ -31,28 +38,23 @@ const AnnotationsRow = ({annotations}) =>
   annotations &&
   Object.values(annotations).length > 0 && (
     <Form.Field width={Form.widths.full} label='Annotations'>
-      <metadata.KeyValueList.Annotations
-        maxEntries={4}
-        keyValues={annotations}
-      />
+      <KeyValueList.Annotations maxEntries={4} keyValues={annotations} />
     </Form.Field>
   );
 
-const Details = ({resource}) => {
-  const namespace = metadata.selectors.namespace(resource);
-  const creationTimestamp = metadata.selectors.creationTimestamp(resource);
+export const Details = ({resource}) => {
+  const ns = namespace(resource);
+  const creation = creationTimestamp(resource);
   return (
     <>
-      <LabelsRow labels={metadata.selectors.labels(resource)} />
+      <LabelsRow labels={labels(resource)} />
       <Form.Field label='Name'>
         <Icon icon='fa-id-card' className='text-gray-600 mr-2' />
-        {metadata.selectors.name(resource)}
+        {name(resource)}
       </Form.Field>
-      {namespace && (
+      {ns && (
         <Form.Field label='Namespace'>
-          <Link.Namespace to={`/namespaces/${namespace}`}>
-            {namespace}
-          </Link.Namespace>
+          <Link.Namespace to={`/namespaces/${ns}`}>{ns}</Link.Namespace>
         </Form.Field>
       )}
       <Form.Field label='Creation timestamp'>
@@ -61,13 +63,11 @@ const Details = ({resource}) => {
           icon='fa-clock'
           className='text-gray-600 mr-2'
         />
-        {`${creationTimestamp?.toLocaleDateString() ?? ''} ${
-          creationTimestamp?.toLocaleTimeString() ?? ''
+        {`${creation?.toLocaleDateString() ?? ''} ${
+          creation?.toLocaleTimeString() ?? ''
         }`}
       </Form.Field>
-      <AnnotationsRow annotations={metadata.selectors.annotations(resource)} />
+      <AnnotationsRow annotations={annotations(resource)} />
     </>
   );
 };
-
-export default Details;

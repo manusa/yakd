@@ -15,7 +15,7 @@
  *
  */
 import React from 'react';
-import metadata from '../metadata';
+import {name, namespace, sortByCreationTimeStamp, uid} from '../metadata';
 import s from './';
 import {Icon} from '../components';
 import Link from '../components/Link';
@@ -33,28 +33,22 @@ const headers = [
 
 const Rows = ({secrets}) => {
   const deleteSecret = secret => async () => await s.api.delete(secret);
-  return secrets
-    .sort(metadata.selectors.sortByCreationTimeStamp)
-    .map(secret => (
-      <Table.ResourceRow key={metadata.selectors.uid(secret)} resource={secret}>
-        <Table.Cell>
-          <Link.Secret to={`/secrets/${metadata.selectors.uid(secret)}`}>
-            {metadata.selectors.name(secret)}
-          </Link.Secret>
-        </Table.Cell>
-        <Table.Cell className='whitespace-nowrap'>
-          <Link.Namespace
-            to={`/namespaces/${metadata.selectors.namespace(secret)}`}
-          >
-            {metadata.selectors.namespace(secret)}
-          </Link.Namespace>
-        </Table.Cell>
-        <Table.Cell>{s.selectors.type(secret)}</Table.Cell>
-        <Table.Cell>
-          <Table.DeleteButton onClick={deleteSecret(secret)} />
-        </Table.Cell>
-      </Table.ResourceRow>
-    ));
+  return secrets.sort(sortByCreationTimeStamp).map(secret => (
+    <Table.ResourceRow key={uid(secret)} resource={secret}>
+      <Table.Cell>
+        <Link.Secret to={`/secrets/${uid(secret)}`}>{name(secret)}</Link.Secret>
+      </Table.Cell>
+      <Table.Cell className='whitespace-nowrap'>
+        <Link.Namespace to={`/namespaces/${namespace(secret)}`}>
+          {namespace(secret)}
+        </Link.Namespace>
+      </Table.Cell>
+      <Table.Cell>{s.selectors.type(secret)}</Table.Cell>
+      <Table.Cell>
+        <Table.DeleteButton onClick={deleteSecret(secret)} />
+      </Table.Cell>
+    </Table.ResourceRow>
+  ));
 };
 
 const List = ({resources, loadedResources, crudDelete, ...properties}) => (

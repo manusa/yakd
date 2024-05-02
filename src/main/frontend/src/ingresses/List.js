@@ -15,7 +15,7 @@
  *
  */
 import React from 'react';
-import metadata from '../metadata';
+import {name, namespace, sortByCreationTimeStamp, uid} from '../metadata';
 import {api, selectors} from './';
 import {Icon} from '../components';
 import Link from '../components/Link';
@@ -37,44 +37,37 @@ const Rows = ({ingresses, crudDelete}) => {
     await api.deleteIng(ingress);
     crudDelete(ingress);
   };
-  return ingresses
-    .sort(metadata.selectors.sortByCreationTimeStamp)
-    .map(ingress => (
-      <Table.ResourceRow
-        key={metadata.selectors.uid(ingress)}
-        resource={ingress}
-      >
-        <Table.Cell>
-          <Link.Ingress to={`/ingresses/${metadata.selectors.uid(ingress)}`}>
-            {metadata.selectors.name(ingress)}
-          </Link.Ingress>
-        </Table.Cell>
-        <Table.Cell className='whitespace-nowrap'>
-          <Link.Namespace
-            to={`/namespaces/${metadata.selectors.namespace(ingress)}`}
-          >
-            {metadata.selectors.namespace(ingress)}
-          </Link.Namespace>
-        </Table.Cell>
-        <Table.Cell>
-          {selectors.allHosts(ingress).map((host, idx) => (
-            <div key={idx}>
-              <Link href={`http://${host}`} target='_blank'>
-                {host}
-              </Link>
-            </div>
-          ))}
-        </Table.Cell>
-        <Table.Cell>
-          {selectors.allPaths(ingress).map((path, idx) => (
-            <div key={idx}>{path}</div>
-          ))}
-        </Table.Cell>
-        <Table.Cell>
-          <Table.DeleteButton onClick={deleteIngress(ingress)} />
-        </Table.Cell>
-      </Table.ResourceRow>
-    ));
+  return ingresses.sort(sortByCreationTimeStamp).map(ingress => (
+    <Table.ResourceRow key={uid(ingress)} resource={ingress}>
+      <Table.Cell>
+        <Link.Ingress to={`/ingresses/${uid(ingress)}`}>
+          {name(ingress)}
+        </Link.Ingress>
+      </Table.Cell>
+      <Table.Cell className='whitespace-nowrap'>
+        <Link.Namespace to={`/namespaces/${namespace(ingress)}`}>
+          {namespace(ingress)}
+        </Link.Namespace>
+      </Table.Cell>
+      <Table.Cell>
+        {selectors.allHosts(ingress).map((host, idx) => (
+          <div key={idx}>
+            <Link href={`http://${host}`} target='_blank'>
+              {host}
+            </Link>
+          </div>
+        ))}
+      </Table.Cell>
+      <Table.Cell>
+        {selectors.allPaths(ingress).map((path, idx) => (
+          <div key={idx}>{path}</div>
+        ))}
+      </Table.Cell>
+      <Table.Cell>
+        <Table.DeleteButton onClick={deleteIngress(ingress)} />
+      </Table.Cell>
+    </Table.ResourceRow>
+  ));
 };
 
 export const List = ResourceList.resourceListConnect('ingresses')(

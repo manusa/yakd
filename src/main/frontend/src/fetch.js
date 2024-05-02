@@ -15,7 +15,7 @@
  *
  */
 import {getApiURL} from './env';
-import metadata from './metadata';
+import {name, namespace} from './metadata';
 
 const processErroredResponse = async response => {
   const responseBody = await response.text();
@@ -53,9 +53,7 @@ export const listResource = (path, kind) => async () => {
 const deleteRequest = async url => await fetch(url, {method: 'DELETE'});
 
 export const deleteResource = path => async resource => {
-  return deleteRequest(
-    `${getApiURL()}/${path}/${metadata.selectors.name(resource)}`
-  );
+  return deleteRequest(`${getApiURL()}/${path}/${name(resource)}`);
 };
 
 const createRequest = async (url, resource) => {
@@ -74,9 +72,7 @@ export const createResource = async resource =>
 
 export const deleteNamespacedResource = path => async resource => {
   await deleteRequest(
-    `${getApiURL()}/${path}/${metadata.selectors.namespace(
-      resource
-    )}/${metadata.selectors.name(resource)}`
+    `${getApiURL()}/${path}/${namespace(resource)}/${name(resource)}`
   );
 };
 
@@ -93,23 +89,16 @@ const updateRequest = async (url, resource) => {
 
 export const updateNamespacedResource = path => async resource =>
   updateRequest(
-    `${getApiURL()}/${path}/${metadata.selectors.namespace(
-      resource
-    )}/${metadata.selectors.name(resource)}`,
+    `${getApiURL()}/${path}/${namespace(resource)}/${name(resource)}`,
     resource
   );
 
 export const updateResource = path => async resource =>
-  updateRequest(
-    `${getApiURL()}/${path}/${metadata.selectors.name(resource)}`,
-    resource
-  );
+  updateRequest(`${getApiURL()}/${path}/${name(resource)}`, resource);
 
 export const restartNamespacedResource = path => async resource => {
   await fetch(
-    `${getApiURL()}/${path}/${metadata.selectors.namespace(
-      resource
-    )}/${metadata.selectors.name(resource)}/restart`,
+    `${getApiURL()}/${path}/${namespace(resource)}/${name(resource)}/restart`,
     {method: 'PUT'}
   );
 };
@@ -117,9 +106,9 @@ export const restartNamespacedResource = path => async resource => {
 export const updateReplicasInNamespacedResource =
   path => async (resource, replicas) => {
     await fetch(
-      `${getApiURL()}/${path}/${metadata.selectors.namespace(
+      `${getApiURL()}/${path}/${namespace(
         resource
-      )}/${metadata.selectors.name(resource)}/spec/replicas/${replicas}`,
+      )}/${name(resource)}/spec/replicas/${replicas}`,
       {method: 'PUT'}
     );
   };

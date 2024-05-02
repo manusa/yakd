@@ -16,7 +16,7 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import metadata from '../metadata';
+import {name, namespace, sortByCreationTimeStamp, uid} from '../metadata';
 import rc from './';
 import {Icon} from '../components';
 import ResourceList from '../components/ResourceList';
@@ -37,10 +37,10 @@ const Rows = ({replicationControllers}) => {
   const deleteReplicationController = replicationController => async () =>
     await rc.api.delete(replicationController);
   return replicationControllers
-    .sort(metadata.selectors.sortByCreationTimeStamp)
+    .sort(sortByCreationTimeStamp)
     .map(replicationController => (
       <Table.ResourceRow
-        key={metadata.selectors.uid(replicationController)}
+        key={uid(replicationController)}
         resource={replicationController}
       >
         <Table.Cell className='whitespace-nowrap w-3 text-center'>
@@ -59,15 +59,13 @@ const Rows = ({replicationControllers}) => {
         </Table.Cell>
         <Table.Cell className='whitespace-nowrap'>
           <Link.ReplicationController
-            to={`/replicationcontrollers/${metadata.selectors.uid(
-              replicationController
-            )}`}
+            to={`/replicationcontrollers/${uid(replicationController)}`}
           >
-            {metadata.selectors.name(replicationController)}
+            {name(replicationController)}
           </Link.ReplicationController>
         </Table.Cell>
         <Table.Cell className='whitespace-nowrap'>
-          {metadata.selectors.namespace(replicationController)}
+          {namespace(replicationController)}
         </Table.Cell>
         <Table.Cell className='whitespace-nowrap'>
           {rc.selectors.specReplicas(replicationController)}

@@ -14,43 +14,40 @@
  * limitations under the License.
  *
  */
-const selectors = {};
 
-const toDate = timestamp => {
+export const toDate = timestamp => {
   if (timestamp) {
     return new Date(timestamp);
   }
 };
-selectors.creationTimestamp = object =>
+export const creationTimestamp = object =>
   toDate(object?.metadata?.creationTimestamp);
-selectors.deletionTimestamp = object =>
+export const deletionTimestamp = object =>
   toDate(object?.metadata?.deletionTimestamp);
 
-selectors.annotations = object => object?.metadata?.annotations ?? {};
+export const annotations = object => object?.metadata?.annotations ?? {};
 
-selectors.labels = object => object?.metadata?.labels ?? {};
+export const labels = object => object?.metadata?.labels ?? {};
 
-selectors.name = object => object?.metadata?.name ?? '';
+export const name = object => object?.metadata?.name ?? '';
 
-selectors.namespace = object => object?.metadata?.namespace ?? '';
+export const namespace = object => object?.metadata?.namespace ?? '';
 
-selectors.uid = object => object?.metadata?.uid ?? '';
+export const uid = object => object?.metadata?.uid ?? '';
 
-selectors.ownerReferencesUids = object =>
+export const ownerReferencesUids = object =>
   (object?.metadata?.ownerReferences ?? []).map(or => or.uid);
 
-selectors.sortByCreationTimeStamp = (r1, r2) =>
-  selectors.creationTimestamp(r2) - selectors.creationTimestamp(r1);
+export const sortByCreationTimeStamp = (r1, r2) =>
+  creationTimestamp(r2) - creationTimestamp(r1);
 
 // Selectors for Map<uid, resource> of Metadata Resources
 
-selectors.byUidOrName = (metadataResources, uidOrName) => {
+export const byUidOrName = (metadataResources, uidOrName) => {
   if (metadataResources[uidOrName]) {
     return metadataResources[uidOrName];
   }
   return Object.values(metadataResources).find(
-    resource => selectors.name(resource) === uidOrName
+    resource => name(resource) === uidOrName
   );
 };
-
-export default selectors;

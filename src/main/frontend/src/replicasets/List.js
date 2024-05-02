@@ -16,7 +16,7 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import metadata from '../metadata';
+import {name, namespace, sortByCreationTimeStamp, uid} from '../metadata';
 import rs from './';
 import {Icon} from '../components';
 import ResourceList from '../components/ResourceList';
@@ -35,41 +35,32 @@ const headers = [
 const Rows = ({replicaSets}) => {
   const deleteReplicaSet = replicaSet => async () =>
     await rs.api.requestDelete(replicaSet);
-  return replicaSets
-    .sort(metadata.selectors.sortByCreationTimeStamp)
-    .map(replicaSet => (
-      <Table.ResourceRow
-        key={metadata.selectors.uid(replicaSet)}
-        resource={replicaSet}
-      >
-        <Table.Cell className='whitespace-nowrap w-3 text-center'>
-          <Icon
-            className={
-              rs.selectors.isReady(replicaSet)
-                ? 'text-green-500'
-                : 'text-red-500'
-            }
-            icon={
-              rs.selectors.isReady(replicaSet)
-                ? 'fa-check'
-                : 'fa-exclamation-circle'
-            }
-          />
-        </Table.Cell>
-        <Table.Cell className='whitespace-nowrap'>
-          {metadata.selectors.name(replicaSet)}
-        </Table.Cell>
-        <Table.Cell className='whitespace-nowrap'>
-          {metadata.selectors.namespace(replicaSet)}
-        </Table.Cell>
-        <Table.Cell className='whitespace-nowrap'>
-          {rs.selectors.specReplicas(replicaSet)}
-        </Table.Cell>
-        <Table.Cell className='whitespace-nowrap text-center'>
-          <Table.DeleteButton onClick={deleteReplicaSet(replicaSet)} />
-        </Table.Cell>
-      </Table.ResourceRow>
-    ));
+  return replicaSets.sort(sortByCreationTimeStamp).map(replicaSet => (
+    <Table.ResourceRow key={uid(replicaSet)} resource={replicaSet}>
+      <Table.Cell className='whitespace-nowrap w-3 text-center'>
+        <Icon
+          className={
+            rs.selectors.isReady(replicaSet) ? 'text-green-500' : 'text-red-500'
+          }
+          icon={
+            rs.selectors.isReady(replicaSet)
+              ? 'fa-check'
+              : 'fa-exclamation-circle'
+          }
+        />
+      </Table.Cell>
+      <Table.Cell className='whitespace-nowrap'>{name(replicaSet)}</Table.Cell>
+      <Table.Cell className='whitespace-nowrap'>
+        {namespace(replicaSet)}
+      </Table.Cell>
+      <Table.Cell className='whitespace-nowrap'>
+        {rs.selectors.specReplicas(replicaSet)}
+      </Table.Cell>
+      <Table.Cell className='whitespace-nowrap text-center'>
+        <Table.DeleteButton onClick={deleteReplicaSet(replicaSet)} />
+      </Table.Cell>
+    </Table.ResourceRow>
+  ));
 };
 
 const List = ({

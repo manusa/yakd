@@ -16,7 +16,7 @@
  */
 import React from 'react';
 import {withParams} from '../router';
-import md from '../metadata';
+import {name} from '../metadata';
 import rc from './';
 import ResourceEditPage from '../components/ResourceEditPage';
 import Link from '../components/Link';
@@ -27,7 +27,7 @@ const ReplicationControllersEditPage = ({params: {uid}}) => (
     path='replicationcontrollers'
     cardTitle={resource => (
       <Link.RouterLink to={`/replicationcontrollers/${uid}`}>
-        {md.selectors.name(resource)}
+        {name(resource)}
       </Link.RouterLink>
     )}
     save={async resource => await rc.api.update(resource)}

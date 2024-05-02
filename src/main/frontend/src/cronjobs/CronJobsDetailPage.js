@@ -18,7 +18,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {Card, DashboardPage, Form, Icon} from '../components';
 import {withParams} from '../router';
-import metadata from '../metadata';
+import {Details, namespace, uid} from '../metadata';
 import {api, selectors} from './';
 import {JobsList} from '../jobs';
 import Link from '../components/Link';
@@ -62,7 +62,7 @@ export const CronJobsDetailPage = withParams(
         <DashboardPage.Title
           path='cronjobs'
           kind='CronJobs'
-          namespace={metadata.selectors.namespace(cronJob)}
+          namespace={namespace(cronJob)}
           resource={cronJob}
           isReadyFunction={selectors.isReady}
         />
@@ -83,7 +83,7 @@ export const CronJobsDetailPage = withParams(
       }
       body={
         <Form>
-          <metadata.Details resource={cronJob} />
+          <Details resource={cronJob} />
           <Form.Field label='Schedule'>
             {selectors.specSchedule(cronJob)}
           </Form.Field>
@@ -117,7 +117,7 @@ export const CronJobsDetailPage = withParams(
         title='Inactive Jobs'
         titleVariant={Card.titleVariants.medium}
         className='mt-2'
-        ownerUid={metadata.selectors.uid(cronJob)}
+        ownerUid={uid(cronJob)}
         uidsNotIn={selectors.statusActiveUids(cronJob)}
       />
     </ResourceDetailPage>

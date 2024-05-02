@@ -18,7 +18,7 @@ import React, {useState} from 'react';
 import Link from '../components/Link';
 import Tag from '../components/Tag';
 
-const KeyValueList = ({
+export const KeyValueList = ({
   leftBg,
   leftTextColor,
   rightBg,
@@ -67,5 +67,3 @@ KeyValueList.Annotations = props => (
     {...props}
   />
 );
-
-export default KeyValueList;

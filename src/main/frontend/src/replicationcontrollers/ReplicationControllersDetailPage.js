@@ -17,7 +17,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {withParams} from '../router';
-import metadata from '../metadata';
+import {Details, uid} from '../metadata';
 import {ContainerList} from '../containers';
 import pods from '../pods';
 import rc from './';
@@ -33,7 +33,7 @@ const ReplicationControllersDetailPage = ({replicationController}) => (
     deleteFunction={rc.api.delete}
     body={
       <Form>
-        <metadata.Details resource={replicationController} />
+        <Details resource={replicationController} />
       </Form>
     }
   >
@@ -47,7 +47,7 @@ const ReplicationControllersDetailPage = ({replicationController}) => (
       title='Pods'
       titleVariant={Card.titleVariants.medium}
       className='mt-2'
-      ownerUid={metadata.selectors.uid(replicationController)}
+      ownerUid={uid(replicationController)}
     />
   </ResourceDetailPage>
 );

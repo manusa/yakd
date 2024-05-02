@@ -16,7 +16,7 @@
  */
 import React from 'react';
 import {withParams} from '../router';
-import md from '../metadata';
+import {name} from '../metadata';
 import {api} from './';
 import ResourceEditPage from '../components/ResourceEditPage';
 import Link from '../components/Link';
@@ -26,9 +26,7 @@ export const JobsEditPage = withParams(({params: {uid}}) => (
     kind='Jobs'
     path='jobs'
     cardTitle={resource => (
-      <Link.RouterLink to={`/jobs/${uid}`}>
-        {md.selectors.name(resource)}
-      </Link.RouterLink>
+      <Link.RouterLink to={`/jobs/${uid}`}>{name(resource)}</Link.RouterLink>
     )}
     save={async resource => await api.update(resource)}
     resourceFromState={state => state.jobs[uid]}

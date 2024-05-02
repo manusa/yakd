@@ -18,7 +18,7 @@ import React, {useState} from 'react';
 import {connect} from 'react-redux';
 import {withParams} from '../router';
 import s from './';
-import metadata from '../metadata';
+import {Details} from '../metadata';
 import {Form, Icon} from '../components';
 import ResourceDetailPage from '../components/ResourceDetailPage';
 
@@ -67,7 +67,7 @@ const SecretsDetailPage = ({secret}) => (
     deleteFunction={s.api.delete}
     body={
       <Form>
-        <metadata.Details resource={secret} />
+        <Details resource={secret} />
         <Form.Field label='Type'>x{s.selectors.type(secret)}</Form.Field>
         {Object.entries(s.selectors.data(secret)).map(([key, value]) => (
           <DataField key={key} label={key} value={value} />

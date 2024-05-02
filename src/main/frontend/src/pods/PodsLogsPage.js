@@ -20,7 +20,7 @@ import {AutoSizer, List} from 'react-virtualized';
 import Convert from 'ansi-to-html';
 import dompurify from 'dompurify';
 import {withParams} from '../router';
-import metadata from '../metadata';
+import {name, namespace} from '../metadata';
 import {ContainerDropdown} from '../containers';
 import p from '../pods';
 import {Card, DashboardPage, Icon, Switch} from '../components';
@@ -137,8 +137,8 @@ const mapStateToProps = ({pods}) => ({pods});
 const mergeProps = ({pods}, dispatchProps, {params: {uid}}) => ({
   ...dispatchProps,
   uid,
-  namespace: metadata.selectors.namespace(pods[uid]),
-  name: metadata.selectors.name(pods[uid]),
+  namespace: namespace(pods[uid]),
+  name: name(pods[uid]),
   containers: p.selectors.containers(pods[uid])
 });
 

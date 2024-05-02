@@ -17,7 +17,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {withParams} from '../router';
-import metadata from '../metadata';
+import {name, namespace} from '../metadata';
 import {ContainerDropdown} from '../containers';
 import p from './index';
 import {Card, DashboardPage} from '../components';
@@ -80,8 +80,8 @@ const mapStateToProps = ({pods}) => ({pods});
 const mergeProps = ({pods}, dispatchProps, {params: {uid}}) => ({
   ...dispatchProps,
   uid,
-  namespace: metadata.selectors.namespace(pods[uid]),
-  name: metadata.selectors.name(pods[uid]),
+  namespace: namespace(pods[uid]),
+  name: name(pods[uid]),
   containers: p.selectors.containers(pods[uid])
 });
 

@@ -17,7 +17,7 @@
 import React, {useState, useEffect} from 'react';
 import {connect} from 'react-redux';
 import {withParams} from '../router';
-import metadata from '../metadata';
+import {Details, uid} from '../metadata';
 import {ContainerList} from '../containers';
 import mts from '../metrics';
 import p from './';
@@ -77,13 +77,13 @@ const PodsDetailPage = ({pod}) => {
       actions={
         <>
           <ActionLink
-            to={`/pods/${metadata.selectors.uid(pod)}/logs`}
+            to={`/pods/${uid(pod)}/logs`}
             title='Logs'
             stylePrefix='far'
             icon='fa-file-alt'
           />
           <ActionLink
-            to={`/pods/${metadata.selectors.uid(pod)}/exec`}
+            to={`/pods/${uid(pod)}/exec`}
             title='Exec'
             stylePrefix='fas'
             icon='fa-terminal'
@@ -92,7 +92,7 @@ const PodsDetailPage = ({pod}) => {
       }
       body={
         <Form>
-          <metadata.Details resource={pod} />
+          <Details resource={pod} />
           <Form.Field label='Node'>
             <Link.Node to={`/nodes/${p.selectors.nodeName(pod)}`}>
               {p.selectors.nodeName(pod)}

@@ -16,22 +16,20 @@
  */
 import {deleteNamespacedResource, updateNamespacedResource} from '../fetch';
 import {getApiURL} from '../env';
-import metadata from '../metadata';
+import {name, namespace} from '../metadata';
 
 export const updateSuspend = async (resource, suspend) => {
   await fetch(
-    `${getApiURL()}/cronjobs/${metadata.selectors.namespace(
+    `${getApiURL()}/cronjobs/${namespace(
       resource
-    )}/${metadata.selectors.name(resource)}/spec/suspend/${suspend}`,
+    )}/${name(resource)}/spec/suspend/${suspend}`,
     {method: 'PUT'}
   );
 };
 
 export const trigger = async resource => {
   await fetch(
-    `${getApiURL()}/cronjobs/${metadata.selectors.namespace(
-      resource
-    )}/${metadata.selectors.name(resource)}/trigger`,
+    `${getApiURL()}/cronjobs/${namespace(resource)}/${name(resource)}/trigger`,
     {method: 'PUT'}
   );
 };

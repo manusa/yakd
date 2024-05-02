@@ -15,7 +15,7 @@
  *
  */
 import React from 'react';
-import metadata from '../metadata';
+import {name, namespace, sortByCreationTimeStamp, uid} from '../metadata';
 import r from './';
 import {Icon} from '../components';
 import Link from '../components/Link';
@@ -34,18 +34,14 @@ const headers = [
 
 const Rows = ({routes}) => {
   const deleteRoute = route => () => r.api.delete(route);
-  return routes.sort(metadata.selectors.sortByCreationTimeStamp).map(route => (
-    <Table.ResourceRow key={metadata.selectors.uid(route)} resource={route}>
+  return routes.sort(sortByCreationTimeStamp).map(route => (
+    <Table.ResourceRow key={uid(route)} resource={route}>
       <Table.Cell>
-        <Link.Route to={`/routes/${metadata.selectors.uid(route)}`}>
-          {metadata.selectors.name(route)}
-        </Link.Route>
+        <Link.Route to={`/routes/${uid(route)}`}>{name(route)}</Link.Route>
       </Table.Cell>
       <Table.Cell className='whitespace-nowrap'>
-        <Link.Namespace
-          to={`/namespaces/${metadata.selectors.namespace(route)}`}
-        >
-          {metadata.selectors.namespace(route)}
+        <Link.Namespace to={`/namespaces/${namespace(route)}`}>
+          {namespace(route)}
         </Link.Namespace>
       </Table.Cell>
       <Table.Cell>

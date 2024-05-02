@@ -20,16 +20,14 @@ import {
   toJson,
   updateNamespacedResource
 } from '../fetch';
-import metadata from '../metadata';
+import {name, namespace} from '../metadata';
 
 const logs = (namespace, name, container) =>
   new EventSource(`${getApiURL()}/pods/${namespace}/${name}/logs/${container}`);
 
 const metrics = async pod => {
   const response = await fetch(
-    `${getApiURL()}/pods/${metadata.selectors.namespace(
-      pod
-    )}/${metadata.selectors.name(pod)}/metrics`
+    `${getApiURL()}/pods/${namespace(pod)}/${name(pod)}/metrics`
   );
   return await toJson(response);
 };

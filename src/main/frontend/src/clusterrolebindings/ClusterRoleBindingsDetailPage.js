@@ -18,7 +18,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {api, selectors} from './';
 import {withParams} from '../router';
-import metadata from '../metadata';
+import {Details, byUidOrName} from '../metadata';
 import {Form} from '../components';
 import ResourceDetailPage from '../components/ResourceDetailPage';
 import Link from '../components/Link';
@@ -31,7 +31,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
   ...stateProps,
   ...dispatchProps,
   ...ownProps,
-  clusterRoleBinding: metadata.selectors.byUidOrName(
+  clusterRoleBinding: byUidOrName(
     stateProps.clusterRoleBindings,
     ownProps.params.uidOrName
   )
@@ -50,7 +50,7 @@ export const ClusterRoleBindingsDetailPage = withParams(
       deleteFunction={api.deleteCrb}
       body={
         <Form>
-          <metadata.Details resource={clusterRoleBinding} />
+          <Details resource={clusterRoleBinding} />
           <Form.Field label='Role'>
             <Link.ClusterRole
               to={`/clusterroles/${selectors.roleRefName(clusterRoleBinding)}`}

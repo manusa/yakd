@@ -15,7 +15,7 @@
  *
  */
 import React from 'react';
-import metadata from '../metadata';
+import {deletionTimestamp} from '../metadata';
 import {Card, Icon, Spinner} from './';
 import Link from './Link';
 
@@ -51,9 +51,7 @@ Table.Row = ({children, className = ''}) => (
 );
 Table.ResourceRow = ({resource, children, ...properties}) => (
   <Table.Row
-    className={
-      metadata.selectors.deletionTimestamp(resource) ? 'line-through' : ''
-    }
+    className={deletionTimestamp(resource) ? 'line-through' : ''}
     {...properties}
   >
     {children}

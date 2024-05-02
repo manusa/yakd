@@ -15,7 +15,7 @@
  *
  */
 import React from 'react';
-import metadata from '../metadata';
+import {name, namespace, sortByCreationTimeStamp, uid} from '../metadata';
 import {Icon} from '../components';
 import Link from '../components/Link';
 import ResourceList from '../components/ResourceList';
@@ -36,10 +36,10 @@ const Rows = ({horizontalPodAutoscalers}) => {
   const deleteAction = horizontalPodAutoscaler => () =>
     api.deleteHpa(horizontalPodAutoscaler);
   return horizontalPodAutoscalers
-    .sort(metadata.selectors.sortByCreationTimeStamp)
+    .sort(sortByCreationTimeStamp)
     .map(horizontalPodAutoscaler => (
       <Table.ResourceRow
-        key={metadata.selectors.uid(horizontalPodAutoscaler)}
+        key={uid(horizontalPodAutoscaler)}
         resource={horizontalPodAutoscaler}
       >
         <Table.Cell className='whitespace-nowrap w-3 text-center'>
@@ -58,20 +58,16 @@ const Rows = ({horizontalPodAutoscalers}) => {
         </Table.Cell>
         <Table.Cell className='whitespace-nowrap'>
           <Link.HorizontalPodAutoscaler
-            to={`/horizontalpodautoscalers/${metadata.selectors.uid(
-              horizontalPodAutoscaler
-            )}`}
+            to={`/horizontalpodautoscalers/${uid(horizontalPodAutoscaler)}`}
           >
-            {metadata.selectors.name(horizontalPodAutoscaler)}
+            {name(horizontalPodAutoscaler)}
           </Link.HorizontalPodAutoscaler>
         </Table.Cell>
         <Table.Cell className='whitespace-nowrap'>
           <Link.Namespace
-            to={`/namespaces/${metadata.selectors.namespace(
-              horizontalPodAutoscaler
-            )}`}
+            to={`/namespaces/${namespace(horizontalPodAutoscaler)}`}
           >
-            {metadata.selectors.namespace(horizontalPodAutoscaler)}
+            {namespace(horizontalPodAutoscaler)}
           </Link.Namespace>
         </Table.Cell>
         <Table.Cell>

@@ -17,7 +17,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {withParams} from '../router';
-import metadata from '../metadata';
+import {Details, uid} from '../metadata';
 import {ContainerList} from '../containers';
 import {api, selectors} from './';
 import pods from '../pods';
@@ -59,7 +59,7 @@ export const DaemonSetsDetailPage = withParams(
       }
       body={
         <Form>
-          <metadata.Details resource={daemonSet} />
+          <Details resource={daemonSet} />
           <Form.Field label='Update Strategy'>
             {selectors.specUpdateStrategyType(daemonSet)}
           </Form.Field>
@@ -76,7 +76,7 @@ export const DaemonSetsDetailPage = withParams(
         title='Pods'
         titleVariant={Card.titleVariants.medium}
         className='mt-2'
-        ownerUid={metadata.selectors.uid(daemonSet)}
+        ownerUid={uid(daemonSet)}
       />
     </ResourceDetailPage>
   ))

@@ -16,7 +16,7 @@
  */
 import React from 'react';
 import {Link as OriginalRouterLink} from 'react-router-dom';
-import metadata from '../metadata';
+import {uid} from '../metadata';
 import {Icon} from './';
 import i from './icons';
 
@@ -159,7 +159,7 @@ Link.EditLink = ({path, resource, ...props}) => (
   <Link.RouterLink
     size={Link.sizes.small}
     variant={Link.variants.outline}
-    to={`/${path}/${metadata.selectors.uid(resource)}/edit`}
+    to={`/${path}/${uid(resource)}/edit`}
     title='Edit'
     {...props}
   >

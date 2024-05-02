@@ -16,7 +16,7 @@
  */
 import React from 'react';
 import {connect} from 'react-redux';
-import metadata from '../metadata';
+import {name, namespace, sortByCreationTimeStamp, uid} from '../metadata';
 import dc from './';
 import {resourcesBy} from '../redux';
 import {Icon} from '../components';
@@ -40,10 +40,10 @@ const Rows = ({deploymentConfigs}) => {
   const deleteDC = deploymentConfig => () => dc.api.delete(deploymentConfig);
   const restartDC = deploymentConfig => () => dc.api.restart(deploymentConfig);
   return deploymentConfigs
-    .sort(metadata.selectors.sortByCreationTimeStamp)
+    .sort(sortByCreationTimeStamp)
     .map(deploymentConfig => (
       <Table.ResourceRow
-        key={metadata.selectors.uid(deploymentConfig)}
+        key={uid(deploymentConfig)}
         resource={deploymentConfig}
       >
         <Table.Cell className='whitespace-nowrap w-3 text-center'>
@@ -62,18 +62,14 @@ const Rows = ({deploymentConfigs}) => {
         </Table.Cell>
         <Table.Cell className='whitespace-nowrap'>
           <Link.DeploymentConfig
-            to={`/deploymentconfigs/${metadata.selectors.uid(
-              deploymentConfig
-            )}`}
+            to={`/deploymentconfigs/${uid(deploymentConfig)}`}
           >
-            {metadata.selectors.name(deploymentConfig)}
+            {name(deploymentConfig)}
           </Link.DeploymentConfig>
         </Table.Cell>
         <Table.Cell className='whitespace-nowrap'>
-          <Link.Namespace
-            to={`/namespaces/${metadata.selectors.namespace(deploymentConfig)}`}
-          >
-            {metadata.selectors.namespace(deploymentConfig)}
+          <Link.Namespace to={`/namespaces/${namespace(deploymentConfig)}`}>
+            {namespace(deploymentConfig)}
           </Link.Namespace>
         </Table.Cell>
         <Table.Cell className='break-all'>

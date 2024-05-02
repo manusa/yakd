@@ -18,7 +18,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {withParams} from '../router';
 import {api, selectors} from './';
-import metadata from '../metadata';
+import {Details, namespace} from '../metadata';
 import {Card, Form} from '../components';
 import ResourceDetailPage from '../components/ResourceDetailPage';
 import secrets from '../secrets';
@@ -47,7 +47,7 @@ export const ServiceAccountsDetailPage = withParams(
       deleteFunction={api.deleteSa}
       body={
         <Form>
-          <metadata.Details resource={serviceAccount} />
+          <Details resource={serviceAccount} />
         </Form>
       }
     >
@@ -55,14 +55,14 @@ export const ServiceAccountsDetailPage = withParams(
         title='Secrets'
         titleVariant={Card.titleVariants.medium}
         className='mt-2'
-        namespace={metadata.selectors.namespace(serviceAccount)}
+        namespace={namespace(serviceAccount)}
         names={selectors.secretsNames(serviceAccount)}
       />
       <secrets.List
         title='Image Pull Secrets'
         titleVariant={Card.titleVariants.medium}
         className='mt-2'
-        namespace={metadata.selectors.namespace(serviceAccount)}
+        namespace={namespace(serviceAccount)}
         names={selectors.imagePullSecretsNames(serviceAccount)}
       />
     </ResourceDetailPage>

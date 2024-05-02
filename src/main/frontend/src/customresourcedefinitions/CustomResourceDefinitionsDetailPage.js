@@ -17,7 +17,7 @@
 import React, {useEffect, useState} from 'react';
 import {connect} from 'react-redux';
 import {withParams} from '../router';
-import metadata from '../metadata';
+import {Details} from '../metadata';
 import crd from './';
 import cr from '../customresources';
 import {Card, Form} from '../components';
@@ -86,7 +86,7 @@ const CustomResourceDefinitionsDetailPage = ({customResourceDefinition}) => {
       deleteFunction={crd.api.delete}
       body={
         <Form>
-          <metadata.Details resource={customResourceDefinition} />
+          <Details resource={customResourceDefinition} />
           <Form.Field label='Group'>
             <crd.GroupLink
               customResourceDefinition={customResourceDefinition}

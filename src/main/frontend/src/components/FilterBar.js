@@ -18,7 +18,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 import {clearSelectedNamespace, selectNamespace} from '../redux';
-import metadata from '../metadata';
+import {name} from '../metadata';
 import {Dropdown} from './';
 
 const NamespaceDropdown = () => {
@@ -43,7 +43,7 @@ const NamespaceDropdown = () => {
         All namespaces
       </Dropdown.Item>
       {Object.values(namespaces)
-        .map(ns => metadata.selectors.name(ns))
+        .map(ns => name(ns))
         .map(namespace => (
           <Dropdown.Item
             key={namespace}

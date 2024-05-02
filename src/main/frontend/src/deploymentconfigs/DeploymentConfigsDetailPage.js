@@ -17,7 +17,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {withParams} from '../router';
-import metadata from '../metadata';
+import {Details, ownerReferencesUids, uid} from '../metadata';
 import {ContainerList} from '../containers';
 import dc from './';
 import pods from '../pods';
@@ -51,7 +51,7 @@ const DeploymentConfigsDetailPage = ({
     }
     body={
       <Form>
-        <metadata.Details resource={deploymentConfig} />
+        <Details resource={deploymentConfig} />
         <rs.ReplicasField
           resource={deploymentConfig}
           replicas={dc.selectors.specReplicas(deploymentConfig)}
@@ -73,7 +73,7 @@ const DeploymentConfigsDetailPage = ({
       title='Replication Controller'
       titleVariant={Card.titleVariants.medium}
       className='mt-2'
-      ownerUid={metadata.selectors.uid(deploymentConfig)}
+      ownerUid={uid(deploymentConfig)}
     />
     <pods.List
       title='Pods'
@@ -96,15 +96,11 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
   deploymentConfig: stateProps.deploymentConfigs[ownProps.params.uid],
   replicationControllersUids: Object.values(stateProps.replicationControllers)
     .filter(replicationController =>
-      metadata.selectors
-        .ownerReferencesUids(replicationController)
-        .includes(
-          metadata.selectors.uid(
-            stateProps.deploymentConfigs[ownProps.params.uid]
-          )
-        )
+      ownerReferencesUids(replicationController).includes(
+        uid(stateProps.deploymentConfigs[ownProps.params.uid])
+      )
     )
-    .map(replicationController => metadata.selectors.uid(replicationController))
+    .map(replicationController => uid(replicationController))
 });
 
 export default withParams(

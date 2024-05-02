@@ -17,7 +17,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import metadata from '../metadata';
+import {name, namespace, sortByCreationTimeStamp, uid} from '../metadata';
 import p from './';
 import {Icon} from '../components';
 import Link from '../components/Link';
@@ -37,8 +37,8 @@ const headers = [
 
 const Rows = ({pods}) => {
   const deletePod = pod => async () => await p.api.delete(pod);
-  return pods.sort(metadata.selectors.sortByCreationTimeStamp).map(pod => (
-    <Table.ResourceRow key={metadata.selectors.uid(pod)} resource={pod}>
+  return pods.sort(sortByCreationTimeStamp).map(pod => (
+    <Table.ResourceRow key={uid(pod)} resource={pod}>
       <Table.Cell className='whitespace-nowrap w-3 text-center'>
         <Icon
           className={
@@ -54,13 +54,11 @@ const Rows = ({pods}) => {
         />
       </Table.Cell>
       <Table.Cell>
-        <Link.Pod to={`/pods/${metadata.selectors.uid(pod)}`}>
-          {metadata.selectors.name(pod)}
-        </Link.Pod>
+        <Link.Pod to={`/pods/${uid(pod)}`}>{name(pod)}</Link.Pod>
       </Table.Cell>
       <Table.Cell className='whitespace-nowrap'>
-        <Link.Namespace to={`/namespaces/${metadata.selectors.namespace(pod)}`}>
-          {metadata.selectors.namespace(pod)}
+        <Link.Namespace to={`/namespaces/${namespace(pod)}`}>
+          {namespace(pod)}
         </Link.Namespace>
       </Table.Cell>
       <Table.Cell className='whitespace-nowrap'>
@@ -74,7 +72,7 @@ const Rows = ({pods}) => {
       <Table.Cell className='whitespace-nowrap text-center'>
         <Link.RouterLink
           variant={Link.variants.outline}
-          to={`/pods/${metadata.selectors.uid(pod)}/logs`}
+          to={`/pods/${uid(pod)}/logs`}
           title='Logs'
         >
           <Icon stylePrefix='far' icon='fa-file-alt' />
@@ -82,7 +80,7 @@ const Rows = ({pods}) => {
         <Link.RouterLink
           variant={Link.variants.outline}
           size={Link.sizes.small}
-          to={`/pods/${metadata.selectors.uid(pod)}/exec`}
+          to={`/pods/${uid(pod)}/exec`}
           title='Terminal'
           className='ml-1'
         >

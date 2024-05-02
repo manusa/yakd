@@ -18,7 +18,7 @@ import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
 import {withParams} from '../router';
 import {api, selectors} from './';
-import metadata from '../metadata';
+import {Details} from '../metadata';
 import {Card, Form} from '../components';
 import Link from '../components/Link';
 import ResourceDetailPage from '../components/ResourceDetailPage';
@@ -109,7 +109,7 @@ export const EndpointsDetailPage = withParams(
       editable={false}
       body={
         <Form>
-          <metadata.Details resource={endpoint} />
+          <Details resource={endpoint} />
         </Form>
       }
     >

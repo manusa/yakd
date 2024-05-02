@@ -15,7 +15,7 @@
  *
  */
 import React from 'react';
-import metadata from '../metadata';
+import {name, namespace, sortByCreationTimeStamp, uid} from '../metadata';
 import {api, selectors} from './';
 import {Icon} from '../components';
 import Link from '../components/Link';
@@ -34,8 +34,8 @@ const headers = [
 
 const Rows = ({jobs}) => {
   const deleteJob = job => () => api.deleteJob(job);
-  return jobs.sort(metadata.selectors.sortByCreationTimeStamp).map(job => (
-    <Table.ResourceRow key={metadata.selectors.uid(job)} resource={job}>
+  return jobs.sort(sortByCreationTimeStamp).map(job => (
+    <Table.ResourceRow key={uid(job)} resource={job}>
       <Table.Cell className='whitespace-nowrap w-3 text-center'>
         <Icon
           className={
@@ -45,13 +45,11 @@ const Rows = ({jobs}) => {
         />
       </Table.Cell>
       <Table.Cell className='whitespace-nowrap'>
-        <Link.Job to={`/jobs/${metadata.selectors.uid(job)}`}>
-          {metadata.selectors.name(job)}
-        </Link.Job>
+        <Link.Job to={`/jobs/${uid(job)}`}>{name(job)}</Link.Job>
       </Table.Cell>
       <Table.Cell className='whitespace-nowrap'>
-        <Link.Namespace to={`/namespaces/${metadata.selectors.namespace(job)}`}>
-          {metadata.selectors.namespace(job)}
+        <Link.Namespace to={`/namespaces/${namespace(job)}`}>
+          {namespace(job)}
         </Link.Namespace>
       </Table.Cell>
       <Table.Cell className=''>
