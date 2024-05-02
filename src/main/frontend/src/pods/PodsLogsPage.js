@@ -23,8 +23,7 @@ import {withParams} from '../router';
 import metadata from '../metadata';
 import {ContainerDropdown} from '../containers';
 import p from '../pods';
-import {Card, Switch} from '../components';
-import DashboardPage from '../components/DashboardPage';
+import {Card, DashboardPage, Switch} from '../components';
 import Icon from '../components/Icon';
 import Link from '../components/Link';
 

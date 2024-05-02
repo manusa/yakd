@@ -18,8 +18,7 @@ import React from 'react';
 import {useNavigate} from 'react-router-dom';
 import YAML from 'yaml';
 import metadata from '../metadata';
-import {Card, PopupMenu} from './';
-import DashboardPage from './DashboardPage';
+import {Card, DashboardPage, PopupMenu} from './';
 import Icon from './Icon';
 import Link from './Link';
 

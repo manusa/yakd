@@ -17,8 +17,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import r from './';
-import {FilterBar} from '../components';
-import DashboardPage from '../components/DashboardPage';
+import {DashboardPage, FilterBar} from '../components';
 
 const RoutesPage = ({selectedNamespace}) => (
   <DashboardPage title='Routes'>

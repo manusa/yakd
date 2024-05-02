@@ -16,12 +16,11 @@
  */
 import React from 'react';
 import {connect} from 'react-redux';
+import {Card, DashboardPage, Form} from '../components';
 import {withParams} from '../router';
 import metadata from '../metadata';
 import {api, selectors} from './';
 import {JobsList} from '../jobs';
-import {Card, Form} from '../components';
-import DashboardPage from '../components/DashboardPage';
 import Icon from '../components/Icon';
 import Link from '../components/Link';
 import ResourceDetailPage from '../components/ResourceDetailPage';

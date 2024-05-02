@@ -15,7 +15,7 @@
  *
  */
 import React from 'react';
-import DashboardPage from '../components/DashboardPage';
+import {DashboardPage} from '../components';
 import ns from './';
 
 const NamespacesPage = () => (

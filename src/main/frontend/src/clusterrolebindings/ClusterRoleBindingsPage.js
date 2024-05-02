@@ -15,8 +15,8 @@
  *
  */
 import React from 'react';
+import {DashboardPage} from '../components';
 import {List} from './';
-import DashboardPage from '../components/DashboardPage';
 
 export const ClusterRoleBindingsPage = () => (
   <DashboardPage title='ClusterRoleBindings'>

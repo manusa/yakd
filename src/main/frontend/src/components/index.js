@@ -15,7 +15,7 @@
  *
  */
 
-export * from './dashboard';
+export {DashboardPage} from './dashboard';
 export * from './editor';
 export * from './popup';
 export {Age} from './Age';

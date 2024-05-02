@@ -16,9 +16,8 @@
  */
 import React from 'react';
 import {connect} from 'react-redux';
+import {DashboardPage, FilterBar} from '../components';
 import pvc from './';
-import {FilterBar} from '../components';
-import DashboardPage from '../components/DashboardPage';
 
 const PersistentVolumeClaimsPage = ({selectedNamespace}) => (
   <DashboardPage title='PersistentVolumeClaims'>
