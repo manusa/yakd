@@ -15,7 +15,7 @@
  *
  */
 import _ from './index';
-import redux from '../redux';
+import {resourcesBy, toObjectReducer} from '../redux';
 
 const selectors = {};
 
@@ -37,14 +37,14 @@ selectors.specNamesPlural = crd => selectors.specNames(crd)?.plural ?? '';
 // Selectors for array of CRDs
 
 selectors.crdsBy = (crds = {}, {group, ...filters} = undefined) =>
-  Object.entries(redux.selectors.resourcesBy(crds, filters))
+  Object.entries(resourcesBy(crds, filters))
     .filter(([, crd]) => {
       if (group) {
         return selectors.specGroup(crd) === group;
       }
       return true;
     })
-    .reduce(redux.selectors.toObjectReducer, {});
+    .reduce(toObjectReducer, {});
 
 selectors.groups = (crds = {}) =>
   [...new Set(Object.values(crds).map(crd => selectors.specGroup(crd)))].sort();

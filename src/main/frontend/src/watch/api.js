@@ -16,14 +16,26 @@
  */
 import {getApiURL} from '../env';
 import {bindActionCreators} from 'redux';
-import redux from '../redux';
+import {
+  clear,
+  crudAddOrReplace,
+  crudClear,
+  crudDelete,
+  setError,
+  setOffline
+} from '../redux';
 
 const api = {};
 
 api.startEventSource = ({dispatch}) => {
   const actions = bindActionCreators(
     {
-      ...redux.actions
+      clear,
+      crudAddOrReplace,
+      crudClear,
+      crudDelete,
+      setError,
+      setOffline
     },
     dispatch
   );

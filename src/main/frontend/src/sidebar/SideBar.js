@@ -20,7 +20,7 @@ import {bindActionCreators} from 'redux';
 import {useMatch} from 'react-router-dom';
 import * as apis from '../apis';
 import i from '../components/icons';
-import redux from '../redux';
+import {sideBarToggleItem, sideBarScroll} from '../redux';
 import crd from '../customresourcedefinitions';
 import Icon from '../components/Icon';
 import Link from '../components/Link';
@@ -330,8 +330,8 @@ const mapStateToProps = ({
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      scroll: redux.actions.sideBarScroll,
-      toggleItem: redux.actions.sideBarToggleItem
+      scroll: sideBarScroll,
+      toggleItem: sideBarToggleItem
     },
     dispatch
   );

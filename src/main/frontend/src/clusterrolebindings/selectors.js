@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-import redux from '../redux';
+import {resourcesBy, toObjectReducer} from '../redux';
 
 export const roleRefName = crb => crb?.roleRef?.name ?? '';
 
@@ -23,11 +23,11 @@ export const crbsBy = (
   crbs = {},
   {roleRefName: roleRefNameProperty, ...filters} = undefined
 ) =>
-  Object.entries(redux.selectors.resourcesBy(crbs, filters))
+  Object.entries(resourcesBy(crbs, filters))
     .filter(([, crb]) => {
       if (roleRefNameProperty) {
         return roleRefName(crb) === roleRefNameProperty;
       }
       return true;
     })
-    .reduce(redux.selectors.toObjectReducer, {});
+    .reduce(toObjectReducer, {});

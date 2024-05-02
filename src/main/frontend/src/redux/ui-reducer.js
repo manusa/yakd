@@ -15,7 +15,7 @@
  *
  */
 
-import redux from './index';
+import {Types} from './index';
 
 const defaultState = {
   offline: false,
@@ -26,10 +26,7 @@ const defaultState = {
   query: ''
 };
 
-const uiReducer = (state = defaultState, action = {}) => {
-  const {
-    actions: {Types}
-  } = redux;
+export const uiReducer = (state = defaultState, action = {}) => {
   switch (action.type) {
     case Types.UI_SET_OFFLINE: {
       return {...state, offline: action.payload};
@@ -65,5 +62,3 @@ const uiReducer = (state = defaultState, action = {}) => {
       return {...state};
   }
 };
-
-export default uiReducer;

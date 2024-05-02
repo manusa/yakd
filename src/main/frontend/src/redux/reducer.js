@@ -14,17 +14,14 @@
  * limitations under the License.
  *
  */
-import redux from './';
+import {Types} from './';
 
 const belongsToThisReducer = (kind, action) =>
   (action.payload.kind ?? undefined) === kind;
 
-const reducer =
+export const reducer =
   kind =>
   (state = {}, action = {}) => {
-    const {
-      actions: {Types}
-    } = redux;
     switch (action.type) {
       case Types.CRUD_ADD_OR_REPLACE: {
         if (!belongsToThisReducer(kind, action)) {
@@ -65,5 +62,3 @@ const reducer =
     }
     return state;
   };
-
-export default reducer;

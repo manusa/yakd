@@ -15,7 +15,7 @@
  *
  */
 
-import redux from '../redux';
+import {Types} from '../redux';
 
 const defaultState = {
   expandedItems: [],
@@ -23,9 +23,6 @@ const defaultState = {
 };
 
 const reducer = (state = defaultState, action = {}) => {
-  const {
-    actions: {Types}
-  } = redux;
   switch (action.type) {
     case Types.SIDEBAR_SCROLL: {
       return {...state, scroll: action.payload};

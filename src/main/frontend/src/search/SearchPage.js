@@ -37,7 +37,7 @@ import s from '../secrets';
 import ss from '../statefulsets';
 import svc from '../services';
 import * as sa from '../serviceaccounts';
-import redux from '../redux';
+import {setQuery} from '../redux';
 import rs from '../replicasets';
 import rc from '../replicationcontrollers';
 import roles from '../roles';
@@ -212,7 +212,7 @@ const mapStateToProps = ({ui: {selectedNamespace, query}}) => ({
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      setQuery: redux.actions.setQuery
+      setQuery
     },
     dispatch
   );

@@ -14,6 +14,6 @@
  * limitations under the License.
  *
  */
-import redux from '../redux';
+import {reducer as reduxReducer} from '../redux';
 
-export const reducer = redux.reducer('ClusterRoleBinding');
+export const reducer = reduxReducer('ClusterRoleBinding');

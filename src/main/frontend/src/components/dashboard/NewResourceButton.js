@@ -17,13 +17,13 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import redux from '../../redux';
+import {uiSetCreatingNewResource} from '../../redux';
 import Link from '../Link';
 import Icon from '../Icon';
 
 export const NewResourceButton = connect(undefined, dispatch =>
   bindActionCreators(
-    {newResource: () => redux.actions.uiSetCreatingNewResource(true)},
+    {newResource: () => uiSetCreatingNewResource(true)},
     dispatch
   )
 )(({newResource, ...props}) => {

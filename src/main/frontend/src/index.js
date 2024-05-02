@@ -40,7 +40,7 @@ import pv from './persistentvolumes';
 import pods from './pods';
 import replicaSets from './replicasets';
 import rc from './replicationcontrollers';
-import redux from './redux';
+import {uiReducer} from './redux';
 import roles from './roles';
 import routes from './routes';
 import secrets from './secrets';
@@ -95,7 +95,7 @@ const store = createStore(
     serviceAccounts: sa.reducer,
     statefulSets: statefulSets.reducer,
     sidebar: sidebar.reducer,
-    ui: redux.uiReducer
+    ui: uiReducer
   }),
   storeEnhancer()
 );

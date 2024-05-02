@@ -14,8 +14,8 @@
  * limitations under the License.
  *
  */
-import redux from '../redux';
+import {reducer as reduxReducer} from '../redux';
 
-const reducer = redux.reducer('PersistentVolumeClaim');
+const reducer = reduxReducer('PersistentVolumeClaim');
 
 export default reducer;

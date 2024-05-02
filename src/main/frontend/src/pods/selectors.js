@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-import redux from '../redux';
+import {resourcesBy, toObjectReducer} from '../redux';
 
 const selectors = {};
 
@@ -60,13 +60,13 @@ selectors.readyCount = pods =>
   );
 
 selectors.podsBy = (pods = {}, {nodeName, ...filters} = undefined) =>
-  Object.entries(redux.selectors.resourcesBy(pods, filters))
+  Object.entries(resourcesBy(pods, filters))
     .filter(([, pod]) => {
       if (nodeName) {
         return selectors.nodeName(pod) === nodeName;
       }
       return true;
     })
-    .reduce(redux.selectors.toObjectReducer, {});
+    .reduce(toObjectReducer, {});
 
 export default selectors;

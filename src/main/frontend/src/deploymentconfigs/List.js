@@ -18,7 +18,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import metadata from '../metadata';
 import dc from './';
-import redux from '../redux';
+import {resourcesBy} from '../redux';
 import Icon from '../components/Icon';
 import Link from '../components/Link';
 import ResourceList from '../components/ResourceList';
@@ -113,7 +113,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
   ...dispatchProps,
   ...ownProps,
   deploymentConfigs: Object.values(
-    redux.selectors.resourcesBy(stateProps.deploymentConfigs, ownProps)
+    resourcesBy(stateProps.deploymentConfigs, ownProps)
   )
 });
 
