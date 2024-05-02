@@ -15,7 +15,6 @@
  *
  */
 import api from './api';
-import reducer from './reducer';
 import selectors from './selectors';
 import List from './List';
 import ReplicationControllersDetailPage from './ReplicationControllersDetailPage';
@@ -24,7 +23,6 @@ import ReplicationControllersPage from './ReplicationControllersPage';
 
 const index = {
   api,
-  reducer,
   selectors,
   List,
   ReplicationControllersDetailPage,

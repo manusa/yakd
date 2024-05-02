@@ -15,7 +15,6 @@
  *
  */
 import api from './api';
-import reducer from './reducer';
 import selectors from './selectors';
 import List from './List';
 import PersistentVolumesDetailPage from './PersistentVolumesDetailPage';
@@ -25,7 +24,6 @@ import PersistentVolumesPage from './PersistentVolumesPage';
 const pv = {};
 
 pv.api = api;
-pv.reducer = reducer;
 pv.selectors = selectors;
 pv.List = List;
 pv.PersistentVolumesDetailPage = PersistentVolumesDetailPage;

@@ -19,35 +19,8 @@ import {createRoot} from 'react-dom/client';
 import {Provider} from 'react-redux';
 import {combineReducers, createStore} from 'redux';
 import * as apis from './apis';
-import * as crb from './clusterrolebindings';
-import * as cr from './clusterroles';
-import * as cv from './clusterversions';
-import * as cm from './configmaps';
-import * as cj from './cronjobs';
-import crd from './customresourcedefinitions';
-import * as ds from './daemonsets';
-import dc from './deploymentconfigs';
-import * as deployments from './deployments';
-import * as ep from './endpoints';
-import * as events from './events';
-import * as hpa from './horizontalpodautoscalers';
-import * as ing from './ingresses';
-import * as job from './jobs';
-import ns from './namespaces';
-import * as nodes from './nodes';
-import pvc from './persistentvolumeclaims';
-import pv from './persistentvolumes';
-import pods from './pods';
-import replicaSets from './replicasets';
-import rc from './replicationcontrollers';
-import {uiReducer} from './redux';
-import roles from './roles';
-import routes from './routes';
-import secrets from './secrets';
-import services from './services';
-import * as sa from './serviceaccounts';
+import {reducer as reduxReducer, uiReducer} from './redux';
 import sidebar from './sidebar';
-import statefulSets from './statefulsets';
 import App from './App';
 
 import 'typeface-open-sans/index.css';
@@ -67,33 +40,33 @@ const storeEnhancer = () => {
 const store = createStore(
   combineReducers({
     apiGroups: apis.apiGroupsReducer,
-    clusterRoleBindings: crb.reducer,
-    clusterRoles: cr.reducer,
-    clusterVersions: cv.reducer,
-    configMaps: cm.reducer,
-    cronJobs: cj.reducer,
-    customResourceDefinitions: crd.reducer,
-    daemonSets: ds.reducer,
-    deploymentConfigs: dc.reducer,
-    deployments: deployments.reducer,
-    endpoints: ep.reducer,
-    events: events.reducer,
-    horizontalPodAutoscalers: hpa.reducer,
-    ingresses: ing.reducer,
-    jobs: job.reducer,
-    namespaces: ns.reducer,
-    nodes: nodes.reducer,
-    persistentVolumeClaims: pvc.reducer,
-    persistentVolumes: pv.reducer,
-    pods: pods.reducer,
-    replicaSets: replicaSets.reducer,
-    replicationControllers: rc.reducer,
-    roles: roles.reducer,
-    routes: routes.reducer,
-    secrets: secrets.reducer,
-    services: services.reducer,
-    serviceAccounts: sa.reducer,
-    statefulSets: statefulSets.reducer,
+    clusterRoleBindings: reduxReducer('ClusterRoleBinding'),
+    clusterRoles: reduxReducer('ClusterRole'),
+    clusterVersions: reduxReducer('ClusterVersion'),
+    configMaps: reduxReducer('ConfigMap'),
+    cronJobs: reduxReducer('CronJob'),
+    customResourceDefinitions: reduxReducer('CustomResourceDefinition'),
+    daemonSets: reduxReducer('DaemonSet'),
+    deploymentConfigs: reduxReducer('DeploymentConfig'),
+    deployments: reduxReducer('Deployment'),
+    endpoints: reduxReducer('Endpoints'),
+    events: reduxReducer('Event'),
+    horizontalPodAutoscalers: reduxReducer('HorizontalPodAutoscaler'),
+    ingresses: reduxReducer('Ingress'),
+    jobs: reduxReducer('Job'),
+    namespaces: reduxReducer('Namespace'),
+    nodes: reduxReducer('Node'),
+    persistentVolumeClaims: reduxReducer('PersistentVolumeClaim'),
+    persistentVolumes: reduxReducer('PersistentVolume'),
+    pods: reduxReducer('Pod'),
+    replicaSets: reduxReducer('ReplicaSet'),
+    replicationControllers: reduxReducer('ReplicationController'),
+    roles: reduxReducer('Role'),
+    routes: reduxReducer('Route'),
+    secrets: reduxReducer('Secret'),
+    services: reduxReducer('Service'),
+    serviceAccounts: reduxReducer('ServiceAccount'),
+    statefulSets: reduxReducer('StatefulSet'),
     sidebar: sidebar.reducer,
     ui: uiReducer
   }),

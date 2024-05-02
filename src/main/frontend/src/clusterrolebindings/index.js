@@ -15,7 +15,6 @@
  *
  */
 export * as api from './api';
-export {reducer} from './reducer';
 export * as selectors from './selectors';
 export {ClusterRoleBindingsDetailPage} from './ClusterRoleBindingsDetailPage';
 export {ClusterRoleBindingsEditPage} from './ClusterRoleBindingsEditPage';

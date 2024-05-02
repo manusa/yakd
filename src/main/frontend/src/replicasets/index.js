@@ -15,7 +15,6 @@
  *
  */
 import api from './api';
-import reducer from './reducer';
 import selectors from './selectors';
 import List from './List';
 import ReplicasField from './ReplicasField';
@@ -23,7 +22,6 @@ import ReplicasField from './ReplicasField';
 const replicaSets = {};
 
 replicaSets.api = api;
-replicaSets.reducer = reducer;
 replicaSets.selectors = selectors;
 replicaSets.List = List;
 replicaSets.ReplicasField = ReplicasField;

@@ -15,7 +15,6 @@
  *
  */
 import api from './api';
-import reducer from './reducer';
 import selectors from './selectors';
 import List from './List';
 import NamespacesDetailPage from './NamespacesDetailPage';
@@ -24,7 +23,6 @@ import NamespacesPage from './NamespacesPage';
 const namespaces = {};
 
 namespaces.api = api;
-namespaces.reducer = reducer;
 namespaces.selectors = selectors;
 namespaces.List = List;
 namespaces.NamespacesDetailPage = NamespacesDetailPage;

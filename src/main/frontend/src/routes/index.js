@@ -15,7 +15,6 @@
  *
  */
 import api from './api';
-import reducer from './reducer';
 import selectors from './selectors';
 import Host from './Host';
 import List from './List';
@@ -25,7 +24,6 @@ import RoutesPage from './RoutesPage';
 
 const index = {
   api,
-  reducer,
   selectors,
   Host,
   List,
