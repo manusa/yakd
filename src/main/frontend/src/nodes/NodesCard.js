@@ -18,11 +18,15 @@ import React from 'react';
 import {connect} from 'react-redux';
 import StatusCard from '../components/StatusCard';
 import icons from '../components/icons';
-import nodesModule from './';
+import {selectors} from './';
 
-const NodesCard = ({nodes, ...properties}) => {
+const mapStateToProps = ({nodes}) => ({
+  nodes
+});
+
+export const NodesCard = connect(mapStateToProps)(({nodes, ...properties}) => {
   const nodeObjects = Object.values(nodes);
-  const ready = nodesModule.selectors.readyCount(nodeObjects);
+  const ready = selectors.readyCount(nodeObjects);
   const total = nodeObjects.length;
   return (
     <StatusCard
@@ -35,10 +39,4 @@ const NodesCard = ({nodes, ...properties}) => {
       {...properties}
     />
   );
-};
-
-const mapStateToProps = ({nodes}) => ({
-  nodes
 });
-
-export default connect(mapStateToProps)(NodesCard);

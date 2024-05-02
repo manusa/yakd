@@ -18,11 +18,11 @@ import React from 'react';
 import {connect} from 'react-redux';
 import svc from './index';
 import Link from '../components/Link';
-import n from '../nodes';
+import {selectors as nodeSelectors} from '../nodes';
 
 const Type = ({service, firstNode}) => {
   const type = svc.selectors.specType(service);
-  const nodeExternalIP = n.selectors.statusAddressExternalIPOrFirst(firstNode);
+  const nodeExternalIP = nodeSelectors.statusAddressExternalIPOrFirst(firstNode);
   const nodePort = svc.selectors.specPortsFirstNodePort(service);
   if (type !== 'NodePort') {
     return <>{type}</>;

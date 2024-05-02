@@ -34,7 +34,7 @@ import * as hpa from './horizontalpodautoscalers';
 import * as ing from './ingresses';
 import * as job from './jobs';
 import ns from './namespaces';
-import nodes from './nodes';
+import * as nodes from './nodes';
 import pvc from './persistentvolumeclaims';
 import pv from './persistentvolumes';
 import pods from './pods';

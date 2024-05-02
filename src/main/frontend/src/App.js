@@ -38,7 +38,7 @@ import {
 } from './horizontalpodautoscalers';
 import * as ingresses from './ingresses';
 import {JobsPage, JobsEditPage, JobsDetailPage} from './jobs';
-import nodes from './nodes';
+import {NodesPage, NodesDetailPage, NodesEditPage} from './nodes';
 import ns from './namespaces';
 import pvc from './persistentvolumeclaims';
 import pv from './persistentvolumes';
@@ -244,13 +244,9 @@ const App = ({dispatch}) => {
           path='/namespaces/:uidOrName'
           element={<ns.NamespacesDetailPage />}
         />
-        <Route exact path='/nodes' element={<nodes.NodesPage />} />
-        <Route exact path='/nodes/:name' element={<nodes.NodesDetailPage />} />
-        <Route
-          exact
-          path='/nodes/:uid/edit'
-          element={<nodes.NodesEditPage />}
-        />
+        <Route exact path='/nodes' element={<NodesPage />} />
+        <Route exact path='/nodes/:name' element={<NodesDetailPage />} />
+        <Route exact path='/nodes/:uid/edit' element={<NodesEditPage />} />
         <Route
           exact
           path='/persistentvolumeclaims'
