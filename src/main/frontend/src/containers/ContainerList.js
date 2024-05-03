@@ -15,7 +15,7 @@
  *
  */
 import React from 'react';
-import metrics from '../metrics';
+import {bytesToHumanReadable} from '../metrics';
 import {Icon} from '../components';
 import Table from '../components/Table';
 
@@ -57,9 +57,7 @@ export const ContainerList = ({containers, podMetrics, ...properties}) => (
           </Table.Cell>
           <Table.Cell>
             {podMetrics &&
-              metrics.selectors.bytesToHumanReadable(
-                podMetrics.containerMemory(c.name)
-              )}
+              bytesToHumanReadable(podMetrics.containerMemory(c.name))}
           </Table.Cell>
         </Table.Row>
       ))}

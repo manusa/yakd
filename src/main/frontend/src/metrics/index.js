@@ -14,10 +14,4 @@
  * limitations under the License.
  *
  */
-import selectors from './selectors';
-
-const metrics = {};
-
-metrics.selectors = selectors;
-
-export default metrics;
+export {bytesToHumanReadable, podMetrics, quantityToScalar} from './selectors';
