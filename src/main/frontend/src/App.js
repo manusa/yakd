@@ -59,7 +59,7 @@ import {
 } from './ingresses';
 import {JobsPage, JobsEditPage, JobsDetailPage} from './jobs';
 import {NodesPage, NodesDetailPage, NodesEditPage} from './nodes';
-import ns from './namespaces';
+import {NamespacesPage, NamespacesDetailPage} from './namespaces';
 import pvc from './persistentvolumeclaims';
 import pv from './persistentvolumes';
 import pods from './pods';
@@ -249,11 +249,11 @@ export const App = () => {
         <Route exact path='/jobs' element={<JobsPage />} />
         <Route exact path='/jobs/:uid' element={<JobsDetailPage />} />
         <Route exact path='/jobs/:uid/edit' element={<JobsEditPage />} />
-        <Route exact path='/namespaces' element={<ns.NamespacesPage />} />
+        <Route exact path='/namespaces' element={<NamespacesPage />} />
         <Route
           exact
           path='/namespaces/:uidOrName'
-          element={<ns.NamespacesDetailPage />}
+          element={<NamespacesDetailPage />}
         />
         <Route exact path='/nodes' element={<NodesPage />} />
         <Route exact path='/nodes/:name' element={<NodesDetailPage />} />

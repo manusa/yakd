@@ -16,12 +16,10 @@
  */
 import React from 'react';
 import {DashboardPage} from '../components';
-import ns from './';
+import {NamespacesList} from './';
 
-const NamespacesPage = () => (
+export const NamespacesPage = () => (
   <DashboardPage title='Namespaces'>
-    <ns.List />
+    <NamespacesList />
   </DashboardPage>
 );
-
-export default NamespacesPage;

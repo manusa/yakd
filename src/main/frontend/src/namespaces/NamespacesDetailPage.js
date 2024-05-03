@@ -18,28 +18,9 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {withParams} from '../router';
 import {Details, byUidOrName} from '../metadata';
-import ns from './';
+import {api, selectors} from './';
 import {Form} from '../components';
 import ResourceDetailPage from '../components/ResourceDetailPage';
-
-const NamespacesDetailPage = ({namespace}) => (
-  <ResourceDetailPage
-    kind='Namespaces'
-    path='namespaces'
-    resource={namespace}
-    isReadyFunction={ns.selectors.isReady}
-    deleteFunction={ns.api.delete}
-    editable={false}
-    body={
-      <Form>
-        <Details resource={namespace} />
-        <Form.Field label='Status'>
-          {ns.selectors.statusPhase(namespace)}
-        </Form.Field>
-      </Form>
-    }
-  />
-);
 
 const mapStateToProps = ({namespaces}) => ({
   namespaces
@@ -52,6 +33,27 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
   namespace: byUidOrName(stateProps.namespaces, ownProps.params.uidOrName)
 });
 
-export default withParams(
-  connect(mapStateToProps, null, mergeProps)(NamespacesDetailPage)
+export const NamespacesDetailPage = withParams(
+  connect(
+    mapStateToProps,
+    null,
+    mergeProps
+  )(({namespace}) => (
+    <ResourceDetailPage
+      kind='Namespaces'
+      path='namespaces'
+      resource={namespace}
+      isReadyFunction={selectors.isReady}
+      deleteFunction={api.deleteNs}
+      editable={false}
+      body={
+        <Form>
+          <Details resource={namespace} />
+          <Form.Field label='Status'>
+            {selectors.statusPhase(namespace)}
+          </Form.Field>
+        </Form>
+      }
+    />
+  ))
 );

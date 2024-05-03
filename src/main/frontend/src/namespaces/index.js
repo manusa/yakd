@@ -14,18 +14,8 @@
  * limitations under the License.
  *
  */
-import api from './api';
-import selectors from './selectors';
-import List from './List';
-import NamespacesDetailPage from './NamespacesDetailPage';
-import NamespacesPage from './NamespacesPage';
-
-const namespaces = {};
-
-namespaces.api = api;
-namespaces.selectors = selectors;
-namespaces.List = List;
-namespaces.NamespacesDetailPage = NamespacesDetailPage;
-namespaces.NamespacesPage = NamespacesPage;
-
-export default namespaces;
+export * as api from './api';
+export * as selectors from './selectors';
+export {List as NamespacesList} from './List';
+export {NamespacesDetailPage} from './NamespacesDetailPage';
+export {NamespacesPage} from './NamespacesPage';

@@ -29,7 +29,7 @@ import * as ep from '../endpoints';
 import {HorizontalPodAutoscalersList} from '../horizontalpodautoscalers';
 import {IngressesList} from '../ingresses';
 import {JobsList} from '../jobs';
-import ns from '../namespaces';
+import {NamespacesList} from '../namespaces';
 import p from '../pods';
 import pvc from '../persistentvolumeclaims';
 import pv from '../persistentvolumes';
@@ -144,7 +144,7 @@ const Results = ({query, selectedNamespace}) => {
         nameLike={query}
         namespace={selectedNamespace}
       />
-      <ns.List
+      <NamespacesList
         {...commonProps}
         title='Namespaces'
         nameLike={query}
