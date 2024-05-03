@@ -19,7 +19,7 @@ import {connect} from 'react-redux';
 import {withParams} from '../router';
 import {Details, uid} from '../metadata';
 import {ContainerList} from '../containers';
-import mts from '../metrics';
+import {bytesToHumanReadable, podMetrics} from '../metrics';
 import p from './';
 import {Card, Form, Icon} from '../components';
 import Link from '../components/Link';
@@ -66,7 +66,7 @@ const ActionLink = ({to, title, stylePrefix, icon}) => (
 
 const PodsDetailPage = ({pod}) => {
   const metrics = useMetrics(pod);
-  const podMetrics = metrics && mts.selectors.podMetrics(metrics);
+  const currentPodMetrics = metrics && podMetrics(metrics);
   return (
     <ResourceDetailPage
       kind='Pods'
@@ -109,15 +109,15 @@ const PodsDetailPage = ({pod}) => {
             {p.selectors.restartPolicy(pod)}
           </Form.Field>
           <Form.Field label='Pod IP'>{p.selectors.statusPodIP(pod)}</Form.Field>
-          {podMetrics && (
+          {currentPodMetrics && (
             <>
               <Form.Field label='Used CPU'>
                 <Icon icon='fa-microchip' className='text-gray-600 mr-2' />
-                {podMetrics.totalCpu().toFixed(3)}
+                {currentPodMetrics.totalCpu().toFixed(3)}
               </Form.Field>
               <Form.Field label='Used Memory'>
                 <Icon icon='fa-memory' className='text-gray-600 mr-2' />
-                {mts.selectors.bytesToHumanReadable(podMetrics.totalMemory())}
+                {bytesToHumanReadable(currentPodMetrics.totalMemory())}
               </Form.Field>
             </>
           )}
@@ -129,7 +129,7 @@ const PodsDetailPage = ({pod}) => {
         titleVariant={Card.titleVariants.medium}
         className='mt-2'
         containers={p.selectors.containers(pod)}
-        podMetrics={podMetrics}
+        podMetrics={currentPodMetrics}
       />
     </ResourceDetailPage>
   );

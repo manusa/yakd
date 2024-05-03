@@ -14,9 +14,7 @@
  * limitations under the License.
  *
  */
-const selectors = {};
-
-selectors.bytesToHumanReadable = (bytes = 0) => {
+export const bytesToHumanReadable = (bytes = 0) => {
   if (bytes > Math.pow(1024, 3)) {
     return `${(bytes / Math.pow(1024, 3)).toFixed(3)} GiB`;
   } else if (bytes > Math.pow(1024, 2)) {
@@ -27,7 +25,7 @@ selectors.bytesToHumanReadable = (bytes = 0) => {
   return bytes;
 };
 
-selectors.quantityToScalar = (quantity = 0) => {
+export const quantityToScalar = (quantity = 0) => {
   const quantityString = quantity.toString();
   if (quantityString.endsWith('n')) {
     return (
@@ -48,25 +46,23 @@ selectors.quantityToScalar = (quantity = 0) => {
   return parseFloat(quantityString);
 };
 
-selectors.podMetrics = (podMetrics = {containers: []}) => {
+export const podMetrics = (podMetrics = {containers: []}) => {
   const ret = {};
   ret.totalCpu = () =>
     podMetrics.containers?.reduce(
-      (total, c) => total + selectors.quantityToScalar(c.usage?.cpu),
+      (total, c) => total + quantityToScalar(c.usage?.cpu),
       0
     );
   ret.totalMemory = () =>
     podMetrics.containers?.reduce(
-      (total, c) => total + selectors.quantityToScalar(c.usage?.memory),
+      (total, c) => total + quantityToScalar(c.usage?.memory),
       0
     );
   ret.container = containerName =>
     podMetrics.containers?.find(c => c.name === containerName) ?? {};
   ret.containerCpu = containerName =>
-    selectors.quantityToScalar(ret.container(containerName)?.usage?.cpu);
+    quantityToScalar(ret.container(containerName)?.usage?.cpu);
   ret.containerMemory = containerName =>
-    selectors.quantityToScalar(ret.container(containerName)?.usage?.memory);
+    quantityToScalar(ret.container(containerName)?.usage?.memory);
   return ret;
 };
-
-export default selectors;
