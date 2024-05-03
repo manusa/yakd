@@ -16,7 +16,7 @@
  */
 import React from 'react';
 import {shallowEqual, useSelector} from 'react-redux';
-import StatusCard from '../components/StatusCard';
+import {StatusCard} from '../components';
 import icons from '../components/icons';
 import {selectors} from './';
 

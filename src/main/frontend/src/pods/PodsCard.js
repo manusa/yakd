@@ -16,7 +16,7 @@
  */
 import React from 'react';
 import {connect} from 'react-redux';
-import StatusCard from '../components/StatusCard';
+import {StatusCard} from '../components';
 import icons from '../components/icons';
 import podsModule from './';
 

@@ -48,7 +48,7 @@ const Progress = ({
   </div>
 );
 
-const StatusCard = ({
+export const StatusCard = ({
   header,
   Icon = icons.k8s,
   ready = 0,
@@ -93,5 +93,3 @@ const StatusCard = ({
     </div>
   );
 };
-
-export default StatusCard;
