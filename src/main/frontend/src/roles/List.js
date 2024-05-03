@@ -23,8 +23,7 @@ import {
   uid
 } from '../metadata';
 import r from './';
-import {Icon, Tooltip} from '../components';
-import Link from '../components/Link';
+import {Icon, Link, Tooltip} from '../components';
 import ResourceList from '../components/ResourceList';
 import Table from '../components/Table';
 

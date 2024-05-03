@@ -20,9 +20,8 @@ import {withParams} from '../router';
 import {name, namespace} from '../metadata';
 import {ContainerDropdown} from '../containers';
 import p from './index';
-import {Card, DashboardPage} from '../components';
+import {Card, DashboardPage, Link} from '../components';
 
-import Link from '../components/Link';
 import 'xterm/css/xterm.css';
 
 const PodsExecPage = ({uid, namespace, name, containers}) => {

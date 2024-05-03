@@ -19,9 +19,8 @@ import {connect} from 'react-redux';
 import {withParams} from '../router';
 import {Details} from '../metadata';
 import pv from './';
-import {Card, Form} from '../components';
+import {Card, Form, Link} from '../components';
 import ResourceDetailPage from '../components/ResourceDetailPage';
-import Link from '../components/Link';
 
 const PersistentVolumesDetailPage = ({persistentVolume}) => (
   <ResourceDetailPage

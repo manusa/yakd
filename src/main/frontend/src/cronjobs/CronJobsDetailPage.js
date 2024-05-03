@@ -16,12 +16,11 @@
  */
 import React from 'react';
 import {connect} from 'react-redux';
-import {Card, DashboardPage, Form, Icon} from '../components';
+import {Card, DashboardPage, Form, Icon, Link} from '../components';
 import {withParams} from '../router';
 import {Details, namespace, uid} from '../metadata';
 import {api, selectors} from './';
 import {JobsList} from '../jobs';
-import Link from '../components/Link';
 import ResourceDetailPage from '../components/ResourceDetailPage';
 
 const SuspendField = ({cronJob}) => {

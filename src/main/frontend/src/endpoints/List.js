@@ -23,8 +23,7 @@ import {
   sortByCreationTimeStamp,
   uid
 } from '../metadata';
-import {Age, Icon} from '../components';
-import Link from '../components/Link';
+import {Age, Icon, Link} from '../components';
 import ResourceList from '../components/ResourceList';
 import Table from '../components/Table';
 

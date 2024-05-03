@@ -17,8 +17,7 @@
 import React from 'react';
 import {name, sortByCreationTimeStamp, uid} from '../metadata';
 import pv from './';
-import {Icon} from '../components';
-import Link from '../components/Link';
+import {Icon, Link} from '../components';
 import ResourceList from '../components/ResourceList';
 import Table from '../components/Table';
 

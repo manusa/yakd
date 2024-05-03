@@ -21,8 +21,7 @@ import {Details, uid} from '../metadata';
 import {ContainerList} from '../containers';
 import {bytesToHumanReadable, podMetrics} from '../metrics';
 import p from './';
-import {Card, Form, Icon} from '../components';
-import Link from '../components/Link';
+import {Card, Form, Icon, Link} from '../components';
 import ResourceDetailPage from '../components/ResourceDetailPage';
 
 const useMetrics = pod => {

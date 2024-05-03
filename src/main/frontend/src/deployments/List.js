@@ -19,8 +19,7 @@ import {connect} from 'react-redux';
 import {name, namespace, sortByCreationTimeStamp, uid} from '../metadata';
 import {api, selectors} from './';
 import {resourcesBy} from '../redux';
-import {Icon} from '../components';
-import Link from '../components/Link';
+import {Icon, Link} from '../components';
 import ResourceList from '../components/ResourceList';
 import Table from '../components/Table';
 

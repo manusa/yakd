@@ -23,8 +23,7 @@ import {
   uid
 } from '../metadata';
 import ns from './';
-import {Icon} from '../components';
-import Link from '../components/Link';
+import {Icon, Link} from '../components';
 import ResourceList from '../components/ResourceList';
 import Table from '../components/Table';
 

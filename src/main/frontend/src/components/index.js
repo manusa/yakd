@@ -25,6 +25,7 @@ export {Dropdown} from './Dropdown';
 export {FilterBar} from './FilterBar';
 export {Form} from './Form';
 export {Icon} from './Icon';
+export {Link} from './Link';
 export {PopupMenu} from './PopupMenu';
 export {Spinner} from './Spinner';
 export {StatusCard} from './StatusCard';

@@ -15,7 +15,7 @@
  *
  */
 import React from 'react';
-import Link from '../components/Link';
+import {Link} from '../components';
 import crd from './index';
 
 const GroupLink = ({customResourceDefinition}) => (
