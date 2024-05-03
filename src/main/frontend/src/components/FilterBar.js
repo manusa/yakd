@@ -31,7 +31,7 @@ const NamespaceDropdown = () => {
   );
   const dispatch = useDispatch();
   const doSelectNamespace = namespace => dispatch(selectNamespace(namespace));
-  const doClearSelectedNamespace = () => dispatch(clearSelectedNamespace);
+  const doClearSelectedNamespace = () => dispatch(clearSelectedNamespace());
   return (
     <Dropdown
       closeOnPanelClick={true}
