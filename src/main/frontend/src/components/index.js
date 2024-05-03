@@ -28,5 +28,6 @@ export {Icon} from './Icon';
 export {PopupMenu} from './PopupMenu';
 export {Spinner} from './Spinner';
 export {Switch} from './Switch';
+export {Textfield} from './Textfield';
 export {Tooltip} from './Tooltip';
 export {DashboardPage} from './dashboard';
