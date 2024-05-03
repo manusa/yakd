@@ -15,19 +15,15 @@
  *
  */
 import React from 'react';
-import {connect} from 'react-redux';
+import {shallowEqual, useSelector} from 'react-redux';
 import StatusCard from '../components/StatusCard';
 import icons from '../components/icons';
 import {selectors} from './';
 
-const mapStateToProps = ({nodes}) => ({
-  nodes
-});
-
-export const NodesCard = connect(mapStateToProps)(({nodes, ...properties}) => {
-  const nodeObjects = Object.values(nodes);
-  const ready = selectors.readyCount(nodeObjects);
-  const total = nodeObjects.length;
+export const NodesCard = ({...properties}) => {
+  const nodes = useSelector(({nodes}) => Object.values(nodes), shallowEqual);
+  const ready = selectors.readyCount(nodes);
+  const total = nodes.length;
   return (
     <StatusCard
       header='Nodes'
@@ -39,4 +35,4 @@ export const NodesCard = connect(mapStateToProps)(({nodes, ...properties}) => {
       {...properties}
     />
   );
-});
+};
