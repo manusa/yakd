@@ -29,6 +29,7 @@ export {PopupMenu} from './PopupMenu';
 export {Spinner} from './Spinner';
 export {StatusCard} from './StatusCard';
 export {Switch} from './Switch';
+export {Tag} from './Tag';
 export {Textfield} from './Textfield';
 export {Tooltip} from './Tooltip';
 export {DashboardPage} from './dashboard';

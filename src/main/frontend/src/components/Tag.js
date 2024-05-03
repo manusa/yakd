@@ -21,7 +21,12 @@ const variants = {
     'text-white text-xs font-medium bg-blue-600 py-1 px-2 rounded-full align-middle'
 };
 
-const Tag = ({className, children, variant = variants.default, ...props}) => (
+export const Tag = ({
+  className,
+  children,
+  variant = variants.default,
+  ...props
+}) => (
   <span className={`${variant} ${className ?? ''}`} {...props}>
     {children}
   </span>
@@ -58,5 +63,3 @@ Tag.Double = ({
     </span>
   </div>
 );
-
-export default Tag;
