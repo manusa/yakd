@@ -42,8 +42,7 @@ import rs from '../replicasets';
 import rc from '../replicationcontrollers';
 import roles from '../roles';
 import routes from '../routes';
-import {Card, DashboardPage, FilterBar} from '../components';
-import Textfield from '../components/Textfield';
+import {Card, DashboardPage, FilterBar, Textfield} from '../components';
 
 const Instructions = () => (
   <Card>

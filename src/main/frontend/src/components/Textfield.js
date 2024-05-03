@@ -17,7 +17,7 @@
 import React from 'react';
 import {Icon} from './';
 
-const Textfield = ({
+export const Textfield = ({
   className,
   value,
   onChange,
@@ -45,5 +45,3 @@ const Textfield = ({
     />
   </div>
 );
-
-export default Textfield;
