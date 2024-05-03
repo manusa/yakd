@@ -15,28 +15,48 @@
  *
  */
 import React, {useEffect} from 'react';
-import {connect} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import * as apis from './apis';
-import * as crb from './clusterrolebindings';
-import * as cr from './clusterroles';
-import * as cm from './configmaps';
-import * as cj from './cronjobs';
+import {
+  ClusterRoleBindingsPage,
+  ClusterRoleBindingsDetailPage,
+  ClusterRoleBindingsEditPage
+} from './clusterrolebindings';
+import {
+  ClusterRolesPage,
+  ClusterRolesDetailPage,
+  ClusterRolesEditPage
+} from './clusterroles';
+import {
+  ConfigMapsPage,
+  ConfigMapsDetailPage,
+  ConfigMapsEditPage
+} from './configmaps';
+import {CronJobsPage, CronJobsDetailPage, CronJobsEditPage} from './cronjobs';
 import crd from './customresourcedefinitions';
 import dc from './deploymentconfigs';
-import * as ds from './daemonsets';
+import {
+  DaemonSetsPage,
+  DaemonSetsDetailPage,
+  DaemonSetsEditPage
+} from './daemonsets';
 import {
   DeploymentsPage,
   DeploymentsEditPage,
   DeploymentsDetailPage
 } from './deployments';
-import * as ep from './endpoints';
+import {EndpointsPage, EndpointsDetailPage} from './endpoints';
 import {
   HorizontalPodAutoscalersPage,
   HorizontalPodAutoscalersDetailPage,
   HorizontalPodAutoscalersEditPage
 } from './horizontalpodautoscalers';
-import * as ingresses from './ingresses';
+import {
+  IngressesPage,
+  IngressesDetailPage,
+  IngressesEditPage
+} from './ingresses';
 import {JobsPage, JobsEditPage, JobsDetailPage} from './jobs';
 import {NodesPage, NodesDetailPage, NodesEditPage} from './nodes';
 import ns from './namespaces';
@@ -47,10 +67,14 @@ import rc from './replicationcontrollers';
 import {apiGroupsSet, setError, setOffline} from './redux';
 import roles from './roles';
 import routes from './routes';
-import * as search from './search';
+import {SearchPage} from './search';
 import secrets from './secrets';
 import services from './services';
-import * as sa from './serviceaccounts';
+import {
+  ServiceAccountsPage,
+  ServiceAccountsDetailPage,
+  ServiceAccountsEditPage
+} from './serviceaccounts';
 import sts from './statefulsets';
 import watch from './watch';
 import Home from './Home';
@@ -92,7 +116,8 @@ const onUnmount = () => {
   }
 };
 
-const App = ({dispatch}) => {
+export const App = () => {
+  const dispatch = useDispatch();
   useEffect(() => {
     onMount({dispatch});
     return onUnmount;
@@ -104,50 +129,46 @@ const App = ({dispatch}) => {
         <Route
           exact
           path='/clusterrolebindings'
-          element={<crb.ClusterRoleBindingsPage />}
+          element={<ClusterRoleBindingsPage />}
         />
         <Route
           exact
           path='/clusterrolebindings/:uidOrName'
-          element={<crb.ClusterRoleBindingsDetailPage />}
+          element={<ClusterRoleBindingsDetailPage />}
         />
         <Route
           exact
           path='/clusterrolebindings/:uid/edit'
-          element={<crb.ClusterRoleBindingsEditPage />}
+          element={<ClusterRoleBindingsEditPage />}
         />
-        <Route exact path='/clusterroles' element={<cr.ClusterRolesPage />} />
+        <Route exact path='/clusterroles' element={<ClusterRolesPage />} />
         <Route
           exact
           path='/clusterroles/:uidOrName'
-          element={<cr.ClusterRolesDetailPage />}
+          element={<ClusterRolesDetailPage />}
         />
         <Route
           exact
           path='/clusterroles/:uid/edit'
-          element={<cr.ClusterRolesEditPage />}
+          element={<ClusterRolesEditPage />}
         />
-        <Route exact path='/configmaps' element={<cm.ConfigMapsPage />} />
+        <Route exact path='/configmaps' element={<ConfigMapsPage />} />
         <Route
           exact
           path='/configmaps/:uid'
-          element={<cm.ConfigMapsDetailPage />}
+          element={<ConfigMapsDetailPage />}
         />
         <Route
           exact
           path='/configmaps/:uid/edit'
-          element={<cm.ConfigMapsEditPage />}
+          element={<ConfigMapsEditPage />}
         />
-        <Route exact path='/cronjobs' element={<cj.CronJobsPage />} />
-        <Route
-          exact
-          path='/cronjobs/:uid'
-          element={<cj.CronJobsDetailPage />}
-        />
+        <Route exact path='/cronjobs' element={<CronJobsPage />} />
+        <Route exact path='/cronjobs/:uid' element={<CronJobsDetailPage />} />
         <Route
           exact
           path='/cronjobs/:uid/edit'
-          element={<cj.CronJobsEditPage />}
+          element={<CronJobsEditPage />}
         />
         <Route
           exact
@@ -164,16 +185,16 @@ const App = ({dispatch}) => {
           path='/customresourcedefinitions/:uid/edit'
           element={<crd.CustomResourceDefinitionsEditPage />}
         />
-        <Route exact path='/daemonsets' element={<ds.DaemonSetsPage />} />
+        <Route exact path='/daemonsets' element={<DaemonSetsPage />} />
         <Route
           exact
           path='/daemonsets/:uid'
-          element={<ds.DaemonSetsDetailPage />}
+          element={<DaemonSetsDetailPage />}
         />
         <Route
           exact
           path='/daemonsets/:uid/edit'
-          element={<ds.DaemonSetsEditPage />}
+          element={<DaemonSetsEditPage />}
         />
         <Route
           exact
@@ -201,12 +222,8 @@ const App = ({dispatch}) => {
           path='/deployments/:uid/edit'
           element={<DeploymentsEditPage />}
         />
-        <Route exact path='/endpoints' element={<ep.EndpointsPage />} />
-        <Route
-          exact
-          path='/endpoints/:uid'
-          element={<ep.EndpointsDetailPage />}
-        />
+        <Route exact path='/endpoints' element={<EndpointsPage />} />
+        <Route exact path='/endpoints/:uid' element={<EndpointsDetailPage />} />
         <Route
           exact
           path='/horizontalpodautoscalers'
@@ -222,16 +239,12 @@ const App = ({dispatch}) => {
           path='/horizontalpodautoscalers/:uid/edit'
           element={<HorizontalPodAutoscalersEditPage />}
         />
-        <Route exact path='/ingresses' element={<ingresses.IngressesPage />} />
-        <Route
-          exact
-          path='/ingresses/:uid'
-          element={<ingresses.IngressesDetailPage />}
-        />
+        <Route exact path='/ingresses' element={<IngressesPage />} />
+        <Route exact path='/ingresses/:uid' element={<IngressesDetailPage />} />
         <Route
           exact
           path='/ingresses/:uid/edit'
-          element={<ingresses.IngressesEditPage />}
+          element={<IngressesEditPage />}
         />
         <Route exact path='/jobs' element={<JobsPage />} />
         <Route exact path='/jobs/:uid' element={<JobsDetailPage />} />
@@ -313,7 +326,7 @@ const App = ({dispatch}) => {
           path='/routes/:uid/edit'
           element={<routes.RoutesEditPage />}
         />
-        <Route exact path='/search' element={<search.SearchPage />} />
+        <Route exact path='/search' element={<SearchPage />} />
         <Route exact path='/secrets' element={<secrets.SecretsPage />} />
         <Route
           exact
@@ -339,17 +352,17 @@ const App = ({dispatch}) => {
         <Route
           exact
           path='/serviceaccounts'
-          element={<sa.ServiceAccountsPage />}
+          element={<ServiceAccountsPage />}
         />
         <Route
           exact
           path='/serviceaccounts/:uid'
-          element={<sa.ServiceAccountsDetailPage />}
+          element={<ServiceAccountsDetailPage />}
         />
         <Route
           exact
           path='/serviceaccounts/:uid/edit'
-          element={<sa.ServiceAccountsEditPage />}
+          element={<ServiceAccountsEditPage />}
         />
         <Route exact path='/statefulsets' element={<sts.StatefulSetsPage />} />
         <Route
@@ -367,9 +380,3 @@ const App = ({dispatch}) => {
     </Router>
   );
 };
-
-const mapStateToProps = () => ({});
-
-const mapDispatchToProps = dispatch => ({dispatch});
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
