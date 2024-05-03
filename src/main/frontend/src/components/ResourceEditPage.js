@@ -28,10 +28,10 @@ import {
   Card,
   DashboardPage,
   Icon,
+  Link,
   YamlEditor,
   Spinner
 } from './';
-import Link from './Link';
 
 const ResourceEditPage = ({
   kind,

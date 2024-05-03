@@ -35,7 +35,7 @@ const sizes = {
   small: 'text-sm font-normal'
 };
 
-const Link = ({
+export const Link = ({
   className,
   children,
   href = '#',
@@ -167,5 +167,3 @@ Link.EditLink = ({path, resource, ...props}) => (
     Edit
   </Link.RouterLink>
 );
-
-export default Link;

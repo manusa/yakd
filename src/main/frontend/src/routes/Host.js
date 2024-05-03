@@ -16,8 +16,7 @@
  */
 import React from 'react';
 import r from './';
-import {Icon} from '../components';
-import Link from '../components/Link';
+import {Icon, Link} from '../components';
 
 const Host = ({route}) => {
   const url = `http${

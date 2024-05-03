@@ -19,7 +19,7 @@ import {withParams} from '../router';
 import {api} from './';
 import {name} from '../metadata';
 import ResourceEditPage from '../components/ResourceEditPage';
-import Link from '../components/Link';
+import {Link} from '../components';
 
 export const ClusterRolesEditPage = withParams(({params: {uid}}) => (
   <ResourceEditPage

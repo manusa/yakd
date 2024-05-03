@@ -22,8 +22,7 @@ import * as apis from '../apis';
 import i from '../components/icons';
 import {sideBarToggleItem, sideBarScroll} from '../redux';
 import crd from '../customresourcedefinitions';
-import {Icon} from '../components';
-import Link from '../components/Link';
+import {Icon, Link} from '../components';
 
 import './SideBar.css';
 

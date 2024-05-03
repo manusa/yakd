@@ -19,7 +19,7 @@ import {withParams} from '../router';
 import {name} from '../metadata';
 import s from './';
 import ResourceEditPage from '../components/ResourceEditPage';
-import Link from '../components/Link';
+import {Link} from '../components';
 
 const SecretsEditPage = ({params: {uid}}) => (
   <ResourceEditPage

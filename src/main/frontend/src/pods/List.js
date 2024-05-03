@@ -19,8 +19,7 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {name, namespace, sortByCreationTimeStamp, uid} from '../metadata';
 import p from './';
-import {Icon} from '../components';
-import Link from '../components/Link';
+import {Icon, Link} from '../components';
 import ResourceList from '../components/ResourceList';
 import Table from '../components/Table';
 

@@ -21,8 +21,7 @@ import {crudDelete} from '../redux';
 import {name, namespace, sortByCreationTimeStamp, uid} from '../metadata';
 import cr from './';
 import crd from '../customresourcedefinitions';
-import {Icon, ResourceEditModal} from '../components';
-import Link from '../components/Link';
+import {Icon, Link, ResourceEditModal} from '../components';
 import ResourceList from '../components/ResourceList';
 import Table from '../components/Table';
 

@@ -16,8 +16,7 @@
  */
 import React from 'react';
 import {useLocation} from 'react-router-dom';
-import {DashboardPage} from '../components';
-import Link from '../components/Link';
+import {DashboardPage, Link} from '../components';
 import crd from './';
 
 const CustomResourceDefinitionsPage = () => {

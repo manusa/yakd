@@ -15,8 +15,7 @@
  *
  */
 import React from 'react';
-import {Form, Icon} from '../components';
-import Link from '../components/Link';
+import {Form, Icon, Link} from '../components';
 import {
   KeyValueList,
   annotations,

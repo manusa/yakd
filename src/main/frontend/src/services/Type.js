@@ -17,7 +17,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import svc from './index';
-import Link from '../components/Link';
+import {Link} from '../components';
 import {selectors as nodeSelectors} from '../nodes';
 
 const Type = ({service, firstNode}) => {

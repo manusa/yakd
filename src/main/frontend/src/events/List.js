@@ -18,8 +18,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {uid} from '../metadata';
 import {selectors} from './';
-import {Age, Icon} from '../components';
-import Link from '../components/Link';
+import {Age, Icon, Link} from '../components';
 import Table from '../components/Table';
 import ResourceList from '../components/ResourceList';
 

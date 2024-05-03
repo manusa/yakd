@@ -15,8 +15,7 @@
  *
  */
 import React, {useState} from 'react';
-import Link from '../components/Link';
-import {Tag} from '../components';
+import {Link, Tag} from '../components';
 
 export const KeyValueList = ({
   leftBg,

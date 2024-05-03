@@ -25,10 +25,9 @@ import {
   uid
 } from '../metadata';
 import {api} from './';
-import Link from '../components/Link';
 import ResourceList from '../components/ResourceList';
 import Table from '../components/Table';
-import {Age, Icon} from '../components';
+import {Age, Icon, Link} from '../components';
 
 const headers = [
   <span>

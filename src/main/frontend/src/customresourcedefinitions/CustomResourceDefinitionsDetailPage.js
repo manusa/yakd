@@ -20,8 +20,7 @@ import {withParams} from '../router';
 import {Details} from '../metadata';
 import crd from './';
 import cr from '../customresources';
-import {Card, Form} from '../components';
-import Link from '../components/Link';
+import {Card, Form, Link} from '../components';
 import ResourceDetailPage from '../components/ResourceDetailPage';
 
 const useCustomResourceList = customResourceDefinition => {

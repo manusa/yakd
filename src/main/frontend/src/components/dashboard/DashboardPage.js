@@ -22,8 +22,7 @@ import i from '../icons';
 import {name as metadataName} from '../../metadata';
 import {selectors as nodeSelectors} from '../../nodes';
 import sidebar from '../../sidebar';
-import {Alert, Icon, Tooltip} from '../';
-import Link from '../Link';
+import {Alert, Icon, Link, Tooltip} from '../';
 import {NewResource, NewResourceButton} from './';
 
 const OfflineIcon = () => (

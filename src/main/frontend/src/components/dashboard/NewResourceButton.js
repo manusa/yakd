@@ -18,8 +18,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {uiSetCreatingNewResource} from '../../redux';
-import {Icon} from '../';
-import Link from '../Link';
+import {Icon, Link} from '../';
 
 export const NewResourceButton = connect(undefined, dispatch =>
   bindActionCreators(

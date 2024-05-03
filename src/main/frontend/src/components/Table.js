@@ -16,8 +16,7 @@
  */
 import React from 'react';
 import {deletionTimestamp} from '../metadata';
-import {Card, Icon, Spinner} from './';
-import Link from './Link';
+import {Card, Icon, Link, Spinner} from './';
 
 const Table = ({title, titleVariant, className, children, ...props}) => (
   <Card className={className} {...props}>

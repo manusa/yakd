@@ -18,10 +18,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {name, namespace, sortByCreationTimeStamp, uid} from '../metadata';
 import rc from './';
-import {Icon} from '../components';
+import {Icon, Link} from '../components';
 import ResourceList from '../components/ResourceList';
 import Table from '../components/Table';
-import Link from '../components/Link';
 
 const headers = [
   '',
