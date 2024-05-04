@@ -16,10 +16,6 @@
  */
 import {deleteResource, listResource} from '../fetch';
 
-const api = {};
+export const list = listResource('namespaces', 'Namespace');
 
-api.list = listResource('namespaces', 'Namespace');
-
-api.delete = deleteResource('namespaces');
-
-export default api;
+export const deleteNs = deleteResource('namespaces');

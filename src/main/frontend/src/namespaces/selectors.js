@@ -14,10 +14,7 @@
  * limitations under the License.
  *
  */
-const selectors = {};
 
-selectors.statusPhase = namespace => namespace?.status?.phase ?? '';
+export const statusPhase = namespace => namespace?.status?.phase ?? '';
 
-selectors.isReady = namespace => selectors.statusPhase(namespace) === 'Active';
-
-export default selectors;
+export const isReady = namespace => statusPhase(namespace) === 'Active';

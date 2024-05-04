@@ -22,7 +22,7 @@ import {
   sortByCreationTimeStamp,
   uid
 } from '../metadata';
-import ns from './';
+import {api, selectors} from './';
 import {Icon, Link} from '../components';
 import ResourceList from '../components/ResourceList';
 import Table from '../components/Table';
@@ -40,18 +40,16 @@ const headers = [
 ];
 
 const Rows = ({namespaces}) => {
-  const deleteNamespace = namespace => () => ns.api.delete(namespace);
+  const deleteNamespace = namespace => () => api.deleteNs(namespace);
   return namespaces.sort(sortByCreationTimeStamp).map(namespace => (
     <Table.ResourceRow key={uid(namespace)} resource={namespace}>
       <Table.Cell className='whitespace-nowrap w-3 text-center'>
         <Icon
           className={
-            ns.selectors.isReady(namespace) ? 'text-green-500' : 'text-red-500'
+            selectors.isReady(namespace) ? 'text-green-500' : 'text-red-500'
           }
           icon={
-            ns.selectors.isReady(namespace)
-              ? 'fa-check'
-              : 'fa-exclamation-circle'
+            selectors.isReady(namespace) ? 'fa-check' : 'fa-exclamation-circle'
           }
         />
       </Table.Cell>
@@ -61,7 +59,7 @@ const Rows = ({namespaces}) => {
         </Link.Namespace>
       </Table.Cell>
       <Table.Cell className='text-nowrap'>
-        {ns.selectors.statusPhase(namespace)}
+        {selectors.statusPhase(namespace)}
       </Table.Cell>
       <Table.Cell>
         <KeyValueList keyValues={labels(namespace)} maxEntries={2} />
@@ -73,10 +71,10 @@ const Rows = ({namespaces}) => {
   ));
 };
 
-const List = ({resources, crudDelete, loadedResources, ...properties}) => (
-  <ResourceList headers={headers} resources={resources} {...properties}>
-    <Rows namespaces={resources} loadedResources={loadedResources} />
-  </ResourceList>
+export const List = ResourceList.resourceListConnect('namespaces')(
+  ({resources, crudDelete, loadedResources, ...properties}) => (
+    <ResourceList headers={headers} resources={resources} {...properties}>
+      <Rows namespaces={resources} loadedResources={loadedResources} />
+    </ResourceList>
+  )
 );
-
-export default ResourceList.resourceListConnect('namespaces')(List);
