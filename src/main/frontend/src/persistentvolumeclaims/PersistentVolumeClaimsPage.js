@@ -15,19 +15,18 @@
  *
  */
 import React from 'react';
-import {connect} from 'react-redux';
 import {DashboardPage, FilterBar} from '../components';
+import {useUiNamespace} from '../redux';
 import pvc from './';
 
-const PersistentVolumeClaimsPage = ({selectedNamespace}) => (
-  <DashboardPage title='PersistentVolumeClaims'>
-    <FilterBar />
-    <pvc.List className='mt-4' namespace={selectedNamespace} />
-  </DashboardPage>
-);
+const PersistentVolumeClaimsPage = () => {
+  const {selectedNamespace} = useUiNamespace();
+  return (
+    <DashboardPage title='PersistentVolumeClaims'>
+      <FilterBar />
+      <pvc.List className='mt-4' namespace={selectedNamespace} />
+    </DashboardPage>
+  );
+};
 
-const mapStateToProps = ({ui: {selectedNamespace}}) => ({
-  selectedNamespace
-});
-
-export default connect(mapStateToProps)(PersistentVolumeClaimsPage);
+export default PersistentVolumeClaimsPage;

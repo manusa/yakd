@@ -81,11 +81,6 @@ export const setResourceLoaded = ({kind, loaded = false}) => ({
   payload: {kind, loaded}
 });
 
-export const selectNamespace = namespace => ({
-  type: Types.UI_SELECT_NAMESPACE,
-  payload: namespace
-});
-
 export const setQuery = query => ({
   type: Types.UI_SET_QUERY,
   payload: query
@@ -95,8 +90,6 @@ export const uiSetCreatingNewResource = creatingNewResource => ({
   type: Types.UI_SET_CREATING_NEW_RESOURCE,
   payload: creatingNewResource
 });
-
-export const clearSelectedNamespace = () => selectNamespace(null);
 
 export const sideBarScroll = ({scrollTop = 0, scrollLeft = 0}) => ({
   type: Types.SIDEBAR_SCROLL,

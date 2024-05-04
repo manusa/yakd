@@ -15,16 +15,13 @@
  *
  */
 import React from 'react';
-import {connect} from 'react-redux';
 import {DashboardPage, FilterBar} from '../components';
 import {HorizontalPodAutoscalersList} from './';
+import {useUiNamespace} from '../redux';
 
-const mapStateToProps = ({ui: {selectedNamespace}}) => ({
-  selectedNamespace
-});
-
-export const HorizontalPodAutoscalersPage = connect(mapStateToProps)(
-  ({selectedNamespace}) => (
+export const HorizontalPodAutoscalersPage = () => {
+  const {selectedNamespace} = useUiNamespace();
+  return (
     <DashboardPage title='HorizontalPodAutoscalers'>
       <FilterBar />
       <HorizontalPodAutoscalersList
@@ -32,5 +29,5 @@ export const HorizontalPodAutoscalersPage = connect(mapStateToProps)(
         namespace={selectedNamespace}
       />
     </DashboardPage>
-  )
-);
+  );
+};

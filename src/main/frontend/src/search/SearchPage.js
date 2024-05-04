@@ -19,7 +19,7 @@ import {bindActionCreators} from 'redux';
 import {useSearchParams} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as cr from '../clusterroles';
-import * as cm from '../configmaps';
+import {ConfigMapsList} from '../configmaps';
 import * as cj from '../cronjobs';
 import crd from '../customresourcedefinitions';
 import {DeploymentsList} from '../deployments';
@@ -150,7 +150,7 @@ const Results = ({query, selectedNamespace}) => {
         nameLike={query}
         namespace={selectedNamespace}
       />
-      <cm.List
+      <ConfigMapsList
         {...commonProps}
         title='ConfigMaps'
         nameLike={query}

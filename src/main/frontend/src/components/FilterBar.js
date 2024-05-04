@@ -16,22 +16,17 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import {shallowEqual, useDispatch, useSelector} from 'react-redux';
-import {clearSelectedNamespace, selectNamespace} from '../redux';
+import {useUiNamespace} from '../redux';
 import {name} from '../metadata';
 import {Dropdown} from './';
 
 const NamespaceDropdown = () => {
-  const {namespaces, selectedNamespace} = useSelector(
-    ({namespaces, ui: {selectedNamespace}}) => ({
-      namespaces,
-      selectedNamespace
-    }),
-    shallowEqual
-  );
-  const dispatch = useDispatch();
-  const doSelectNamespace = namespace => dispatch(selectNamespace(namespace));
-  const doClearSelectedNamespace = () => dispatch(clearSelectedNamespace());
+  const {
+    namespaces,
+    selectedNamespace,
+    selectNamespace,
+    clearSelectedNamespace
+  } = useUiNamespace();
   return (
     <Dropdown
       closeOnPanelClick={true}
@@ -39,7 +34,7 @@ const NamespaceDropdown = () => {
       textColor={selectedNamespace ? 'text-blue-700' : 'text-gray-500'}
       textColorActive={selectedNamespace ? 'text-blue-800' : null}
     >
-      <Dropdown.Item onClick={doClearSelectedNamespace}>
+      <Dropdown.Item onClick={clearSelectedNamespace}>
         All namespaces
       </Dropdown.Item>
       {Object.values(namespaces)
@@ -47,7 +42,7 @@ const NamespaceDropdown = () => {
         .map(namespace => (
           <Dropdown.Item
             key={namespace}
-            onClick={() => doSelectNamespace(namespace)}
+            onClick={() => selectNamespace(namespace)}
           >
             {namespace}
           </Dropdown.Item>

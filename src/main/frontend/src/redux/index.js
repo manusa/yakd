@@ -17,5 +17,5 @@
 export * from './actions';
 export {reducer} from './reducer';
 export {toObjectReducer, resourcesBy} from './selectors';
-export {uiReducer} from './ui-reducer';
+export {uiReducer, useUiNamespace} from './ui-reducer';
 export {store} from './store';

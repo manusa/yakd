@@ -16,7 +16,7 @@
  */
 export * as api from './api';
 export * as selectors from './selectors';
-export {List} from './List';
+export {List as ConfigMapsList} from './List';
 export {ConfigMapsDetailPage} from './ConfigMapsDetailPage';
 export {ConfigMapsEditPage} from './ConfigMapsEditPage';
 export {ConfigMapsPage} from './ConfigMapsPage';
