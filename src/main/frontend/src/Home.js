@@ -25,7 +25,7 @@ import {useUiNamespace} from './redux';
 const cardResponsiveClass = 'w-full sm:w-1/2 md:w-1/3';
 const cardClass = 'm-2';
 
-const Home = () => {
+export const Home = () => {
   const {selectedNamespace} = useUiNamespace();
   return (
     <DashboardPage title='Kubernetes Dashboard'>
@@ -48,5 +48,3 @@ const Home = () => {
     </DashboardPage>
   );
 };
-
-export default Home;

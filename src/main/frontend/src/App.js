@@ -77,7 +77,7 @@ import {
 } from './serviceaccounts';
 import sts from './statefulsets';
 import watch from './watch';
-import Home from './Home';
+import {Home} from './Home';
 
 let eventSource;
 let pollResourcesTimeout;
