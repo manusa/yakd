@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-
+import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 import {Types} from './';
 
 const defaultState = {
@@ -61,4 +61,33 @@ export const uiReducer = (state = defaultState, action = {}) => {
     default:
       return {...state};
   }
+};
+
+// Actions
+const actionSelectNamespace = namespace => ({
+  type: Types.UI_SELECT_NAMESPACE,
+  payload: namespace
+});
+
+export const actionClearSelectedNamespace = () => actionSelectNamespace(null);
+
+// Hooks
+export const useUiNamespace = () => {
+  const dispatch = useDispatch();
+  const selectNamespace = namespace =>
+    dispatch(actionSelectNamespace(namespace));
+  const clearSelectedNamespace = () => dispatch(actionClearSelectedNamespace());
+  const {namespaces, selectedNamespace} = useSelector(
+    ({namespaces, ui: {selectedNamespace}}) => ({
+      namespaces,
+      selectedNamespace
+    }),
+    shallowEqual
+  );
+  return {
+    namespaces,
+    selectedNamespace,
+    selectNamespace,
+    clearSelectedNamespace
+  };
 };

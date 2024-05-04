@@ -15,19 +15,16 @@
  *
  */
 import React from 'react';
-import {connect} from 'react-redux';
 import {DashboardPage, FilterBar} from '../components';
-import {List} from './';
+import {useUiNamespace} from '../redux';
+import {ConfigMapsList} from './';
 
-const mapStateToProps = ({ui: {selectedNamespace}}) => ({
-  selectedNamespace
-});
-
-export const ConfigMapsPage = connect(mapStateToProps)(
-  ({selectedNamespace}) => (
+export const ConfigMapsPage = () => {
+  const {selectedNamespace} = useUiNamespace();
+  return (
     <DashboardPage title='ConfigMaps'>
       <FilterBar />
-      <List className='mt-4' namespace={selectedNamespace} />
+      <ConfigMapsList className='mt-4' namespace={selectedNamespace} />
     </DashboardPage>
-  )
-);
+  );
+};
