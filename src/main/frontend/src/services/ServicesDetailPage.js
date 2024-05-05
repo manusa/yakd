@@ -19,8 +19,7 @@ import {connect} from 'react-redux';
 import {withParams} from '../router';
 import {Details} from '../metadata';
 import svc from './';
-import {Card, Form} from '../components';
-import ResourceDetailPage from '../components/ResourceDetailPage';
+import {Card, Form, ResourceDetailPage} from '../components';
 
 const Selectors = ({selectors}) => (
   <Form.Field label='Selectors' width={Form.widths.full}>

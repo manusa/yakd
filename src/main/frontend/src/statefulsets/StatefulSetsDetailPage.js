@@ -22,8 +22,7 @@ import {ContainerList} from '../containers';
 import sts from './';
 import pods from '../pods';
 import rs from '../replicasets';
-import {Card, Form, Icon, Link} from '../components';
-import ResourceDetailPage from '../components/ResourceDetailPage';
+import {Card, Form, Icon, Link, ResourceDetailPage} from '../components';
 
 const StatefulSetsDetailPage = ({statefulSet}) => (
   <ResourceDetailPage

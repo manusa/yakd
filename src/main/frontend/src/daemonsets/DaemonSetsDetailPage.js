@@ -21,8 +21,7 @@ import {Details, uid} from '../metadata';
 import {ContainerList} from '../containers';
 import {api, selectors} from './';
 import pods from '../pods';
-import {Card, Form, Icon, Link} from '../components';
-import ResourceDetailPage from '../components/ResourceDetailPage';
+import {Card, Form, Icon, Link, ResourceDetailPage} from '../components';
 
 const mapStateToProps = ({daemonSets}) => ({
   daemonSets

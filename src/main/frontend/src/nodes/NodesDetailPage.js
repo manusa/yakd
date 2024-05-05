@@ -21,9 +21,8 @@ import {Details, name} from '../metadata';
 import {bytesToHumanReadable, quantityToScalar} from '../metrics';
 import {selectors} from './';
 import p from '../pods';
-import {Card, DonutChart, Form} from '../components';
+import {Card, DonutChart, Form, ResourceDetailPage} from '../components';
 import Minikube from '../components/icons/Minikube';
-import ResourceDetailPage from '../components/ResourceDetailPage';
 
 const Dial = ({
   title,

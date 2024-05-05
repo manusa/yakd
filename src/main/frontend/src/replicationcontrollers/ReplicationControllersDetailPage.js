@@ -21,8 +21,7 @@ import {Details, uid} from '../metadata';
 import {ContainerList} from '../containers';
 import pods from '../pods';
 import rc from './';
-import {Card, Form} from '../components';
-import ResourceDetailPage from '../components/ResourceDetailPage';
+import {Card, Form, ResourceDetailPage} from '../components';
 
 const ReplicationControllersDetailPage = ({replicationController}) => (
   <ResourceDetailPage
