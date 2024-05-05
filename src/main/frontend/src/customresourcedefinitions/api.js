@@ -16,9 +16,5 @@
  */
 import {deleteResource, updateResource} from '../fetch';
 
-const api = {
-  delete: deleteResource('customresourcedefinitions'),
-  update: updateResource('customresourcedefinitions')
-};
-
-export default api;
+export const deleteCrd = deleteResource('customresourcedefinitions');
+export const update = updateResource('customresourcedefinitions');

@@ -17,27 +17,27 @@
 import React from 'react';
 import {withParams} from '../router';
 import {name} from '../metadata';
-import crd from './';
+import {api, DashboardPageTitle} from './';
 import ResourceEditPage from '../components/ResourceEditPage';
 import {Link} from '../components';
 
-const CustomResourceDefinitionsEditPage = ({params: {uid}}) => (
-  <ResourceEditPage
-    kind='CustomResourceDefinitions'
-    path='customresourcedefinitions'
-    dashboardPageTitle={resource => (
-      <crd.DashboardPageTitle customResourceDefinition={resource}>
-        &nbsp;- Edit
-      </crd.DashboardPageTitle>
-    )}
-    cardTitle={resource => (
-      <Link.RouterLink to={`/customresourcedefinitions/${uid}`}>
-        {name(resource)}
-      </Link.RouterLink>
-    )}
-    save={async resource => await crd.api.update(resource)}
-    resourceFromState={state => state.customResourceDefinitions[uid]}
-  />
+export const CustomResourceDefinitionsEditPage = withParams(
+  ({params: {uid}}) => (
+    <ResourceEditPage
+      kind='CustomResourceDefinitions'
+      path='customresourcedefinitions'
+      dashboardPageTitle={resource => (
+        <DashboardPageTitle customResourceDefinition={resource}>
+          &nbsp;- Edit
+        </DashboardPageTitle>
+      )}
+      cardTitle={resource => (
+        <Link.RouterLink to={`/customresourcedefinitions/${uid}`}>
+          {name(resource)}
+        </Link.RouterLink>
+      )}
+      save={async resource => await api.update(resource)}
+      resourceFromState={state => state.customResourceDefinitions[uid]}
+    />
+  )
 );
-
-export default withParams(CustomResourceDefinitionsEditPage);

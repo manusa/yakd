@@ -19,8 +19,8 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {crudDelete} from '../redux';
 import {name, namespace, sortByCreationTimeStamp, uid} from '../metadata';
-import cr from './';
-import crd from '../customresourcedefinitions';
+import {api, selectors} from './';
+import {selectors as crdSelectors} from '../customresourcedefinitions';
 import {Icon, Link, ResourceEditModal} from '../components';
 import ResourceList from '../components/ResourceList';
 import Table from '../components/Table';
@@ -31,7 +31,7 @@ const headers = customResourceDefinition => {
       <Icon className='fa-id-card' /> Name
     </span>
   ];
-  if (crd.selectors.isNamespaced(customResourceDefinition)) {
+  if (crdSelectors.isNamespaced(customResourceDefinition)) {
     ret.push('Namespace');
   }
   ret.push('');
@@ -46,7 +46,7 @@ const Rows = ({
   deleteResourceCallback
 }) => {
   const deleteCustomResource = customResource => {
-    const deleteFunc = cr.api.delete(customResourceDefinition, version);
+    const deleteFunc = api.deleteCr(customResourceDefinition, version);
     return async () => {
       await deleteFunc(customResource);
       deleteResourceCallback(customResource);
@@ -59,7 +59,7 @@ const Rows = ({
           {name(customResource)}
         </Link>
       </Table.Cell>
-      {crd.selectors.isNamespaced(customResourceDefinition) && (
+      {crdSelectors.isNamespaced(customResourceDefinition) && (
         <Table.Cell className='whitespace-nowrap'>
           <Link.Namespace to={`/namespaces/${namespace(customResource)}`}>
             {namespace(customResource)}
@@ -73,7 +73,18 @@ const Rows = ({
   ));
 };
 
-const List = ({
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(
+    {
+      crudDelete
+    },
+    dispatch
+  );
+
+export const List = connect(
+  null,
+  mapDispatchToProps
+)(({
   customResources,
   customResourceDefinition,
   version,
@@ -99,26 +110,14 @@ const List = ({
       </ResourceList>
       <ResourceEditModal
         resource={editedResource}
-        title={`${cr.selectors.apiVersion(editedResource)} - ${
-          crd.selectors.isNamespaced(customResourceDefinition)
+        title={`${selectors.apiVersion(editedResource)} - ${
+          crdSelectors.isNamespaced(customResourceDefinition)
             ? `${namespace(editedResource)} - `
             : ''
         }${name(editedResource)}`}
-        save={toSave =>
-          cr.api.update(customResourceDefinition, version)(toSave)
-        }
+        save={toSave => api.update(customResourceDefinition, version)(toSave)}
         close={() => editResource(null)}
       />
     </>
   );
-};
-
-const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      crudDelete
-    },
-    dispatch
-  );
-
-export default connect(null, mapDispatchToProps)(List);
+});

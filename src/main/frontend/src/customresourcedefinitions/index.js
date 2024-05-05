@@ -14,24 +14,11 @@
  * limitations under the License.
  *
  */
-import api from './api';
-import selectors from './selectors';
-import List from './List';
-import DashboardPageTitle from './DashboardPageTitle';
-import CustomResourceDefinitionsDetailPage from './CustomResourceDefinitionsDetailPage';
-import CustomResourceDefinitionsEditPage from './CustomResourceDefinitionsEditPage';
-import CustomResourceDefinitionsPage from './CustomResourceDefinitionsPage';
-import GroupLink from './GroupLink';
-
-const index = {
-  api,
-  selectors,
-  List,
-  CustomResourceDefinitionsDetailPage,
-  CustomResourceDefinitionsEditPage,
-  CustomResourceDefinitionsPage,
-  DashboardPageTitle,
-  GroupLink
-};
-
-export default index;
+export * as api from './api';
+export * as selectors from './selectors';
+export {List as CustomResourceDefinitionsList} from './List';
+export {DashboardPageTitle} from './DashboardPageTitle';
+export {CustomResourceDefinitionsDetailPage} from './CustomResourceDefinitionsDetailPage';
+export {CustomResourceDefinitionsEditPage} from './CustomResourceDefinitionsEditPage';
+export {CustomResourceDefinitionsPage} from './CustomResourceDefinitionsPage';
+export {GroupLink} from './GroupLink';

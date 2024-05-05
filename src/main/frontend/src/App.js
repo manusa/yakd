@@ -34,7 +34,11 @@ import {
   ConfigMapsEditPage
 } from './configmaps';
 import {CronJobsPage, CronJobsDetailPage, CronJobsEditPage} from './cronjobs';
-import crd from './customresourcedefinitions';
+import {
+  CustomResourceDefinitionsPage,
+  CustomResourceDefinitionsEditPage,
+  CustomResourceDefinitionsDetailPage
+} from './customresourcedefinitions';
 import dc from './deploymentconfigs';
 import {
   DaemonSetsPage,
@@ -177,17 +181,17 @@ export const App = () => {
         <Route
           exact
           path='/customresourcedefinitions'
-          element={<crd.CustomResourceDefinitionsPage />}
+          element={<CustomResourceDefinitionsPage />}
         />
         <Route
           exact
           path='/customresourcedefinitions/:uid'
-          element={<crd.CustomResourceDefinitionsDetailPage />}
+          element={<CustomResourceDefinitionsDetailPage />}
         />
         <Route
           exact
           path='/customresourcedefinitions/:uid/edit'
-          element={<crd.CustomResourceDefinitionsEditPage />}
+          element={<CustomResourceDefinitionsEditPage />}
         />
         <Route exact path='/daemonsets' element={<DaemonSetsPage />} />
         <Route

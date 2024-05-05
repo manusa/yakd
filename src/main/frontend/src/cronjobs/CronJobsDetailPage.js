@@ -122,7 +122,3 @@ export const CronJobsDetailPage = withParams(
     </ResourceDetailPage>
   ))
 );
-
-export default withParams(
-  connect(mapStateToProps, null, mergeProps)(CronJobsDetailPage)
-);

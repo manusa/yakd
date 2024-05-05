@@ -14,8 +14,4 @@
  * limitations under the License.
  *
  */
-const selectors = {};
-
-selectors.apiVersion = cr => cr?.apiVersion ?? '';
-
-export default selectors;
+export const apiVersion = cr => cr?.apiVersion ?? '';

@@ -17,7 +17,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {name, sortByCreationTimeStamp, uid} from '../metadata';
-import crd from './';
+import {api, selectors, GroupLink} from './';
 import {Icon, Link} from '../components';
 import ResourceList from '../components/ResourceList';
 import Table from '../components/Table';
@@ -35,7 +35,7 @@ const headers = [
 
 const Rows = ({customResourceDefinitions}) => {
   const deleteCrd = customResourceDefinition => async () =>
-    await crd.api.delete(customResourceDefinition);
+    await api.deleteCrd(customResourceDefinition);
   return customResourceDefinitions
     .sort(sortByCreationTimeStamp)
     .map(customResourceDefinition => (
@@ -51,18 +51,16 @@ const Rows = ({customResourceDefinitions}) => {
           </Link.CustomResourceDefinition>
         </Table.Cell>
         <Table.Cell>
-          <crd.GroupLink customResourceDefinition={customResourceDefinition} />
+          <GroupLink customResourceDefinition={customResourceDefinition} />
         </Table.Cell>
         <Table.Cell>
-          {crd.selectors.specVersions(customResourceDefinition).map(v => (
+          {selectors.specVersions(customResourceDefinition).map(v => (
             <div key={v}>{v}</div>
           ))}
         </Table.Cell>
+        <Table.Cell>{selectors.specScope(customResourceDefinition)}</Table.Cell>
         <Table.Cell>
-          {crd.selectors.specScope(customResourceDefinition)}
-        </Table.Cell>
-        <Table.Cell>
-          {crd.selectors.specNamesKind(customResourceDefinition)}
+          {selectors.specNamesKind(customResourceDefinition)}
         </Table.Cell>
         <Table.Cell>
           <Table.DeleteButton onClick={deleteCrd(customResourceDefinition)} />
@@ -71,15 +69,6 @@ const Rows = ({customResourceDefinitions}) => {
     ));
 };
 
-const List = ({customResourceDefinitions, group, ...properties}) => (
-  <ResourceList
-    headers={headers}
-    resources={customResourceDefinitions}
-    {...properties}
-  >
-    <Rows customResourceDefinitions={customResourceDefinitions} />
-  </ResourceList>
-);
 const mapStateToProps = ({customResourceDefinitions}) => ({
   customResourceDefinitions
 });
@@ -89,8 +78,20 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
   ...dispatchProps,
   ...ownProps,
   customResourceDefinitions: Object.values(
-    crd.selectors.crdsBy(stateProps.customResourceDefinitions, ownProps)
+    selectors.crdsBy(stateProps.customResourceDefinitions, ownProps)
   )
 });
 
-export default connect(mapStateToProps, null, mergeProps)(List);
+export const List = connect(
+  mapStateToProps,
+  null,
+  mergeProps
+)(({customResourceDefinitions, group, ...properties}) => (
+  <ResourceList
+    headers={headers}
+    resources={customResourceDefinitions}
+    {...properties}
+  >
+    <Rows customResourceDefinitions={customResourceDefinitions} />
+  </ResourceList>
+));
