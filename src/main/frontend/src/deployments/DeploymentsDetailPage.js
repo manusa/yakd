@@ -22,8 +22,7 @@ import {ContainerList} from '../containers';
 import {api, selectors} from './';
 import pods from '../pods';
 import rs from '../replicasets';
-import {Card, Form, Icon, Link} from '../components';
-import ResourceDetailPage from '../components/ResourceDetailPage';
+import {Card, Form, Icon, Link, ResourceDetailPage} from '../components';
 
 const mapStateToProps = ({deployments, replicaSets}) => ({
   deployments,

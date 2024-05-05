@@ -21,8 +21,7 @@ import {Details, uid} from '../metadata';
 import {ContainerList} from '../containers';
 import {bytesToHumanReadable, podMetrics} from '../metrics';
 import p from './';
-import {Card, Form, Icon, Link} from '../components';
-import ResourceDetailPage from '../components/ResourceDetailPage';
+import {Card, Form, Icon, Link, ResourceDetailPage} from '../components';
 
 const useMetrics = pod => {
   const [metrics, setMetrics] = useState(null);

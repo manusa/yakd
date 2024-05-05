@@ -23,8 +23,7 @@ import dc from './';
 import pods from '../pods';
 import rs from '../replicasets';
 import rc from '../replicationcontrollers';
-import {Card, Form, Icon, Link} from '../components';
-import ResourceDetailPage from '../components/ResourceDetailPage';
+import {Card, Form, Icon, Link, ResourceDetailPage} from '../components';
 
 const DeploymentConfigsDetailPage = ({
   deploymentConfig,

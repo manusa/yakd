@@ -20,8 +20,7 @@ import {withParams} from '../router';
 import {Details} from '../metadata';
 import {api as crApi, CustomResourceList} from '../customresources';
 import {api, selectors, DashboardPageTitle, GroupLink} from './';
-import {Card, Form, Link} from '../components';
-import ResourceDetailPage from '../components/ResourceDetailPage';
+import {Card, Form, Link, ResourceDetailPage} from '../components';
 
 const useCustomResourceList = customResourceDefinition => {
   const [customResourceList, setCustomResourceList] = useState([]);

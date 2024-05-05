@@ -19,8 +19,7 @@ import {connect} from 'react-redux';
 import {withParams} from '../router';
 import {api, selectors} from './';
 import {Details, namespace} from '../metadata';
-import {Card, Form} from '../components';
-import ResourceDetailPage from '../components/ResourceDetailPage';
+import {Card, Form, ResourceDetailPage} from '../components';
 import secrets from '../secrets';
 
 const mapStateToProps = ({serviceAccounts}) => ({

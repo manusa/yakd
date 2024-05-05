@@ -73,5 +73,3 @@ PopupMenu.Item = ({children, ...props}) => (
     {children}
   </a>
 );
-
-export default PopupMenu;

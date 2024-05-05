@@ -20,8 +20,7 @@ import {withParams} from '../router';
 import {Details} from '../metadata';
 import {RuleList} from '../clusterroles';
 import r from './';
-import {Form} from '../components';
-import ResourceDetailPage from '../components/ResourceDetailPage';
+import {Form, ResourceDetailPage} from '../components';
 
 const RolesDetailPage = ({role}) => (
   <ResourceDetailPage

@@ -19,8 +19,7 @@ import {connect} from 'react-redux';
 import {withParams} from '../router';
 import {Details} from '../metadata';
 import {api, selectors} from './';
-import {Form} from '../components';
-import ResourceDetailPage from '../components/ResourceDetailPage';
+import {Form, ResourceDetailPage} from '../components';
 
 const mapStateToProps = ({horizontalPodAutoscalers}) => ({
   horizontalPodAutoscalers

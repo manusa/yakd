@@ -35,7 +35,7 @@ const downloadResource = resource => {
   URL.revokeObjectURL(url);
 };
 
-const ResourceDetailPage = ({
+export const ResourceDetailPage = ({
   kind,
   path,
   resource,
@@ -93,5 +93,3 @@ const ResourceDetailPage = ({
     </DashboardPage>
   );
 };
-
-export default ResourceDetailPage;

@@ -27,6 +27,7 @@ export {Form} from './Form';
 export {Icon} from './Icon';
 export {Link} from './Link';
 export {PopupMenu} from './PopupMenu';
+export {ResourceDetailPage} from './ResourceDetailPage';
 export {Spinner} from './Spinner';
 export {StatusCard} from './StatusCard';
 export {Switch} from './Switch';
