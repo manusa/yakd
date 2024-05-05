@@ -18,8 +18,7 @@ import React from 'react';
 import {withParams} from '../router';
 import {name} from '../metadata';
 import r from './';
-import ResourceEditPage from '../components/ResourceEditPage';
-import {Link} from '../components';
+import {Link, ResourceEditPage} from '../components';
 
 const RolesEditPage = ({params: {uid}}) => (
   <ResourceEditPage

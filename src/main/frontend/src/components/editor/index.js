@@ -16,4 +16,5 @@
  */
 export {useEditor} from './useEditor';
 export {ResourceEditModal} from './ResourceEditModal';
+export {ResourceEditPage} from './ResourceEditPage';
 export {YamlEditor} from './YamlEditor';
