@@ -21,7 +21,7 @@ import {connect} from 'react-redux';
 import * as cr from '../clusterroles';
 import {ConfigMapsList} from '../configmaps';
 import * as cj from '../cronjobs';
-import crd from '../customresourcedefinitions';
+import {CustomResourceDefinitionsList} from '../customresourcedefinitions';
 import {DeploymentsList} from '../deployments';
 import dc from '../deploymentconfigs';
 import * as ds from '../daemonsets';
@@ -180,7 +180,7 @@ const Results = ({query, selectedNamespace}) => {
         nameLike={query}
         namespace={selectedNamespace}
       />
-      <crd.List
+      <CustomResourceDefinitionsList
         {...commonProps}
         title='CustomResourceDefinitions'
         nameLike={query}

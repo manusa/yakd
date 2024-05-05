@@ -14,14 +14,6 @@
  * limitations under the License.
  *
  */
-import api from './api';
-import selectors from './selectors';
-import List from './List';
-
-const index = {
-  api,
-  selectors,
-  List
-};
-
-export default index;
+export * as api from './api';
+export * as selectors from './selectors';
+export {List as CustomResourceList} from './List';

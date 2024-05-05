@@ -21,7 +21,7 @@ import {useMatch} from 'react-router-dom';
 import * as apis from '../apis';
 import i from '../components/icons';
 import {sideBarToggleItem, sideBarScroll} from '../redux';
-import crd from '../customresourcedefinitions';
+import * as crd from '../customresourcedefinitions';
 import {Icon, Link} from '../components';
 
 import './SideBar.css';

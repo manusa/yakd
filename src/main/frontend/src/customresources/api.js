@@ -21,35 +21,31 @@ import {
   updateNamespacedResource,
   updateResource
 } from '../fetch';
-import crds from '../customresourcedefinitions';
+import {selectors as crdSelectors} from '../customresourcedefinitions';
 
-const basePath = (crd, version = crds.selectors.specVersionsLatest(crd)) =>
-  `customresources/${crds.selectors.specGroup(
+const basePath = (crd, version = crdSelectors.specVersionsLatest(crd)) =>
+  `customresources/${crdSelectors.specGroup(
     crd
-  )}/${version}/${crds.selectors.specNamesPlural(crd)}`;
+  )}/${version}/${crdSelectors.specNamesPlural(crd)}`;
 
-const api = {
-  list: (crd, version) =>
-    listResource(
-      `customresources/${crds.selectors.specGroup(crd)}/${
-        version ? version : crds.selectors.specVersionsLatest(crd)
-      }/${crds.selectors.specNamesPlural(crd)}`,
-      crds.selectors.specNamesKind(crd)
-    ),
-  delete: (crd, version) => {
-    const path = basePath(crd, version);
-    if (crds.selectors.isNamespaced(crd)) {
-      return deleteNamespacedResource(`${path}/namespaces`);
-    }
-    return deleteResource(path);
-  },
-  update: (crd, version) => {
-    const path = basePath(crd, version);
-    if (crds.selectors.isNamespaced(crd)) {
-      return updateNamespacedResource(`${path}/namespaces`);
-    }
-    return updateResource(path);
+export const list = (crd, version) =>
+  listResource(
+    `customresources/${crdSelectors.specGroup(crd)}/${
+      version ? version : crdSelectors.specVersionsLatest(crd)
+    }/${crdSelectors.specNamesPlural(crd)}`,
+    crdSelectors.specNamesKind(crd)
+  );
+export const deleteCr = (crd, version) => {
+  const path = basePath(crd, version);
+  if (crdSelectors.isNamespaced(crd)) {
+    return deleteNamespacedResource(`${path}/namespaces`);
   }
+  return deleteResource(path);
 };
-
-export default api;
+export const update = (crd, version) => {
+  const path = basePath(crd, version);
+  if (crdSelectors.isNamespaced(crd)) {
+    return updateNamespacedResource(`${path}/namespaces`);
+  }
+  return updateResource(path);
+};

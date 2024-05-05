@@ -17,9 +17,9 @@
 import React from 'react';
 import {useLocation} from 'react-router-dom';
 import {DashboardPage, Link} from '../components';
-import crd from './';
+import {CustomResourceDefinitionsList} from './';
 
-const CustomResourceDefinitionsPage = () => {
+export const CustomResourceDefinitionsPage = () => {
   const queryParams = new URLSearchParams(useLocation().search);
   const group = queryParams.get('group');
   return (
@@ -33,9 +33,7 @@ const CustomResourceDefinitionsPage = () => {
         </>
       }
     >
-      <crd.List className='mt-4' group={group} />
+      <CustomResourceDefinitionsList className='mt-4' group={group} />
     </DashboardPage>
   );
 };
-
-export default CustomResourceDefinitionsPage;

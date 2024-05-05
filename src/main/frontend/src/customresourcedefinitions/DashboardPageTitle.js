@@ -17,18 +17,16 @@
 import React from 'react';
 import {DashboardPage} from '../components';
 import {name} from '../metadata';
-import crd from './index';
+import {GroupLink} from './';
 
-const DashboardPageTitle = ({customResourceDefinition, children}) => (
+export const DashboardPageTitle = ({customResourceDefinition, children}) => (
   <DashboardPage.Title
     path='customresourcedefinitions'
     kind='CustomResourceDefinitions'
   >
     &nbsp;-&nbsp;
-    <crd.GroupLink customResourceDefinition={customResourceDefinition} />
+    <GroupLink customResourceDefinition={customResourceDefinition} />
     &nbsp;- {name(customResourceDefinition)}
     {children}
   </DashboardPage.Title>
 );
-
-export default DashboardPageTitle;

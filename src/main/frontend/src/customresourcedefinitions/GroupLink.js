@@ -16,16 +16,14 @@
  */
 import React from 'react';
 import {Link} from '../components';
-import crd from './index';
+import {selectors} from './index';
 
-const GroupLink = ({customResourceDefinition}) => (
+export const GroupLink = ({customResourceDefinition}) => (
   <Link.ResourceLink
-    to={`/customresourcedefinitions?group=${crd.selectors.specGroup(
+    to={`/customresourcedefinitions?group=${selectors.specGroup(
       customResourceDefinition
     )}`}
   >
-    {crd.selectors.specGroup(customResourceDefinition)}
+    {selectors.specGroup(customResourceDefinition)}
   </Link.ResourceLink>
 );
-
-export default GroupLink;

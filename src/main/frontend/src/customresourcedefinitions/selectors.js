@@ -14,39 +14,34 @@
  * limitations under the License.
  *
  */
-import _ from './index';
 import {resourcesBy, toObjectReducer} from '../redux';
 
-const selectors = {};
+export const specScope = crd => crd?.spec?.scope ?? '';
+export const isNamespaced = crd => specScope(crd) === 'Namespaced';
 
-selectors.specScope = crd => crd?.spec?.scope ?? '';
-selectors.isNamespaced = crd => _.selectors.specScope(crd) === 'Namespaced';
+export const specGroup = crd => crd?.spec?.group ?? '';
 
-selectors.specGroup = crd => crd?.spec?.group ?? '';
-
-selectors.specVersions = crd => (crd?.spec?.versions ?? []).map(v => v.name);
-selectors.specVersionsLatest = crd => {
-  const sorted = selectors.specVersions(crd).sort((a, b) => b.localeCompare(a));
+export const specVersions = crd => (crd?.spec?.versions ?? []).map(v => v.name);
+export const specVersionsLatest = crd => {
+  const sorted = specVersions(crd).sort((a, b) => b.localeCompare(a));
   return sorted.length > 0 ? sorted[0] : '';
 };
 
-selectors.specNames = crd => crd?.spec?.names ?? {};
-selectors.specNamesKind = crd => selectors.specNames(crd)?.kind ?? '';
-selectors.specNamesPlural = crd => selectors.specNames(crd)?.plural ?? '';
+export const specNames = crd => crd?.spec?.names ?? {};
+export const specNamesKind = crd => specNames(crd)?.kind ?? '';
+export const specNamesPlural = crd => specNames(crd)?.plural ?? '';
 
 // Selectors for array of CRDs
 
-selectors.crdsBy = (crds = {}, {group, ...filters} = undefined) =>
+export const crdsBy = (crds = {}, {group, ...filters} = undefined) =>
   Object.entries(resourcesBy(crds, filters))
     .filter(([, crd]) => {
       if (group) {
-        return selectors.specGroup(crd) === group;
+        return specGroup(crd) === group;
       }
       return true;
     })
     .reduce(toObjectReducer, {});
 
-selectors.groups = (crds = {}) =>
-  [...new Set(Object.values(crds).map(crd => selectors.specGroup(crd)))].sort();
-
-export default selectors;
+export const groups = (crds = {}) =>
+  [...new Set(Object.values(crds).map(crd => specGroup(crd)))].sort();
