@@ -21,7 +21,7 @@ import YAML from 'yaml';
 import {
   name as metadataName,
   namespace as metadataNamespace
-} from '../metadata';
+} from '../../metadata';
 import {
   useEditor,
   Alert,
@@ -31,9 +31,9 @@ import {
   Link,
   YamlEditor,
   Spinner
-} from './';
+} from '../';
 
-const ResourceEditPage = ({
+export const ResourceEditPage = ({
   kind,
   path,
   dashboardPageTitle,
@@ -126,5 +126,3 @@ const ResourceEditPage = ({
     </DashboardPage>
   );
 };
-
-export default ResourceEditPage;

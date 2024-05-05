@@ -119,5 +119,3 @@ export const ResourceEditModal = ({
     </Modal>
   );
 };
-
-export default ResourceEditModal;

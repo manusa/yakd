@@ -18,8 +18,7 @@ import React from 'react';
 import {withParams} from '../router';
 import {name} from '../metadata';
 import {api, DashboardPageTitle} from './';
-import ResourceEditPage from '../components/ResourceEditPage';
-import {Link} from '../components';
+import {Link, ResourceEditPage} from '../components';
 
 export const CustomResourceDefinitionsEditPage = withParams(
   ({params: {uid}}) => (
