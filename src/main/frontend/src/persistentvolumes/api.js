@@ -16,10 +16,6 @@
  */
 import {deleteResource, updateResource} from '../fetch';
 
-const api = {};
+export const deletePv = deleteResource('persistentvolumes');
 
-api.delete = deleteResource('persistentvolumes');
-
-api.update = updateResource('persistentvolumes');
-
-export default api;
+export const update = updateResource('persistentvolumes');

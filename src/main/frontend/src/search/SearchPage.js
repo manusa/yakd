@@ -32,7 +32,7 @@ import {JobsList} from '../jobs';
 import {NamespacesList} from '../namespaces';
 import p from '../pods';
 import pvc from '../persistentvolumeclaims';
-import pv from '../persistentvolumes';
+import {PersistentVolumesList} from '../persistentvolumes';
 import s from '../secrets';
 import ss from '../statefulsets';
 import svc from '../services';
@@ -168,7 +168,7 @@ const Results = ({query, selectedNamespace}) => {
         nameLike={query}
         namespace={selectedNamespace}
       />
-      <pv.List
+      <PersistentVolumesList
         {...commonProps}
         title='PersistentVolumes'
         nameLike={query}

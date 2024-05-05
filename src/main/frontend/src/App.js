@@ -61,7 +61,11 @@ import {JobsPage, JobsEditPage, JobsDetailPage} from './jobs';
 import {NodesPage, NodesDetailPage, NodesEditPage} from './nodes';
 import {NamespacesPage, NamespacesDetailPage} from './namespaces';
 import pvc from './persistentvolumeclaims';
-import pv from './persistentvolumes';
+import {
+  PersistentVolumesPage,
+  PersistentVolumesEditPage,
+  PersistentVolumesDetailPage
+} from './persistentvolumes';
 import pods from './pods';
 import rc from './replicationcontrollers';
 import {apiGroupsSet, setError, setOffline} from './redux';
@@ -276,17 +280,17 @@ export const App = () => {
         <Route
           exact
           path='/persistentvolumes'
-          element={<pv.PersistentVolumesPage />}
+          element={<PersistentVolumesPage />}
         />
         <Route
           exact
           path='/persistentvolumes/:uid'
-          element={<pv.PersistentVolumesDetailPage />}
+          element={<PersistentVolumesDetailPage />}
         />
         <Route
           exact
           path='/persistentvolumes/:uid/edit'
-          element={<pv.PersistentVolumesEditPage />}
+          element={<PersistentVolumesEditPage />}
         />
         <Route exact path='/pods' element={<pods.PodsPage />} />
         <Route exact path='/pods/:uid' element={<pods.PodsDetailPage />} />
