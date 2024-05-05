@@ -14,20 +14,9 @@
  * limitations under the License.
  *
  */
-import api from './api';
-import selectors from './selectors';
-import List from './List';
-import PersistentVolumesDetailPage from './PersistentVolumesDetailPage';
-import PersistentVolumesEditPage from './PersistentVolumesEditPage';
-import PersistentVolumesPage from './PersistentVolumesPage';
-
-const pv = {};
-
-pv.api = api;
-pv.selectors = selectors;
-pv.List = List;
-pv.PersistentVolumesDetailPage = PersistentVolumesDetailPage;
-pv.PersistentVolumesEditPage = PersistentVolumesEditPage;
-pv.PersistentVolumesPage = PersistentVolumesPage;
-
-export default pv;
+export * as api from './api';
+export * as selectors from './selectors';
+export {List as PersistentVolumesList} from './List';
+export {PersistentVolumesDetailPage} from './PersistentVolumesDetailPage';
+export {PersistentVolumesEditPage} from './PersistentVolumesEditPage';
+export {PersistentVolumesPage} from './PersistentVolumesPage';

@@ -14,32 +14,28 @@
  * limitations under the License.
  *
  */
-const selectors = {};
-
-selectors.specStorageClassName = persistentVolume =>
+export const specStorageClassName = persistentVolume =>
   persistentVolume?.spec?.storageClassName ?? '';
 
-selectors.specCapacityStorage = persistentVolume =>
+export const specCapacityStorage = persistentVolume =>
   persistentVolume?.spec?.capacity?.storage ?? '';
 
-selectors.specClaim = persistentVolume =>
+export const specClaim = persistentVolume =>
   persistentVolume?.spec?.claimRef ?? {};
-selectors.specClaimKind = persistentVolume =>
-  selectors.specClaim(persistentVolume).kind ?? '';
-selectors.specClaimUid = persistentVolume =>
-  selectors.specClaim(persistentVolume).uid ?? '';
-selectors.specClaimName = persistentVolume =>
-  selectors.specClaim(persistentVolume).name ?? '';
-selectors.specClaimNamespace = persistentVolume =>
-  selectors.specClaim(persistentVolume).namespace ?? '';
+export const specClaimKind = persistentVolume =>
+  specClaim(persistentVolume).kind ?? '';
+export const specClaimUid = persistentVolume =>
+  specClaim(persistentVolume).uid ?? '';
+export const specClaimName = persistentVolume =>
+  specClaim(persistentVolume).name ?? '';
+export const specClaimNamespace = persistentVolume =>
+  specClaim(persistentVolume).namespace ?? '';
 
-selectors.specReclaimPolicy = persistentVolume =>
+export const specReclaimPolicy = persistentVolume =>
   persistentVolume?.spec?.persistentVolumeReclaimPolicy ?? '';
 
-selectors.specVolumeMode = persistentVolume =>
+export const specVolumeMode = persistentVolume =>
   persistentVolume?.spec?.volumeMode ?? '';
 
-selectors.statusPhase = persistentVolume =>
+export const statusPhase = persistentVolume =>
   persistentVolume?.status?.phase ?? '';
-
-export default selectors;

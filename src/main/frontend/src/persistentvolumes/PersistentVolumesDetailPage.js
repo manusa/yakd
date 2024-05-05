@@ -18,66 +18,9 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {withParams} from '../router';
 import {Details} from '../metadata';
-import pv from './';
+import {api, selectors} from './';
 import {Card, Form, Link} from '../components';
 import ResourceDetailPage from '../components/ResourceDetailPage';
-
-const PersistentVolumesDetailPage = ({persistentVolume}) => (
-  <ResourceDetailPage
-    kind='PersistentVolumes'
-    path='persistentvolumes'
-    resource={persistentVolume}
-    deleteFunction={pv.api.delete}
-    body={
-      <>
-        <Form>
-          <Details resource={persistentVolume} />
-          <Form.Field label='Storage Class'>
-            {pv.selectors.specStorageClassName(persistentVolume)}
-          </Form.Field>
-          <Form.Field label='Capacity'>
-            {pv.selectors.specCapacityStorage(persistentVolume)}
-          </Form.Field>
-          <Form.Field label='Status'>
-            {pv.selectors.statusPhase(persistentVolume)}
-          </Form.Field>
-          <Form.Field label='Reclaim Policy'>
-            {pv.selectors.specReclaimPolicy(persistentVolume)}
-          </Form.Field>
-          <Form.Field label='Volume Mode'>
-            {pv.selectors.specVolumeMode(persistentVolume)}
-          </Form.Field>
-        </Form>
-        <Card.Title className='-mx-3' titleVariant={Card.titleVariants.medium}>
-          Claim
-        </Card.Title>
-        <Form>
-          <Form.Field label='Kind'>
-            {pv.selectors.specClaimKind(persistentVolume)}
-          </Form.Field>
-          <Form.Field label='Name'>
-            <Link.PersistentVolume
-              to={`/persistentvolumeclaims/${pv.selectors.specClaimUid(
-                persistentVolume
-              )}`}
-            >
-              {pv.selectors.specClaimName(persistentVolume)}
-            </Link.PersistentVolume>
-          </Form.Field>
-          <Form.Field label='Namespace'>
-            <Link.Namespace
-              to={`/namespaces/${pv.selectors.specClaimNamespace(
-                persistentVolume
-              )}`}
-            >
-              {pv.selectors.specClaimNamespace(persistentVolume)}
-            </Link.Namespace>
-          </Form.Field>
-        </Form>
-      </>
-    }
-  />
-);
 
 const mapStateToProps = ({persistentVolumes}) => ({
   persistentVolumes
@@ -90,6 +33,68 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
   persistentVolume: stateProps.persistentVolumes[ownProps.params.uid]
 });
 
-export default withParams(
-  connect(mapStateToProps, null, mergeProps)(PersistentVolumesDetailPage)
+export const PersistentVolumesDetailPage = withParams(
+  connect(
+    mapStateToProps,
+    null,
+    mergeProps
+  )(({persistentVolume}) => (
+    <ResourceDetailPage
+      kind='PersistentVolumes'
+      path='persistentvolumes'
+      resource={persistentVolume}
+      deleteFunction={api.deletePv()}
+      body={
+        <>
+          <Form>
+            <Details resource={persistentVolume} />
+            <Form.Field label='Storage Class'>
+              {selectors.specStorageClassName(persistentVolume)}
+            </Form.Field>
+            <Form.Field label='Capacity'>
+              {selectors.specCapacityStorage(persistentVolume)}
+            </Form.Field>
+            <Form.Field label='Status'>
+              {selectors.statusPhase(persistentVolume)}
+            </Form.Field>
+            <Form.Field label='Reclaim Policy'>
+              {selectors.specReclaimPolicy(persistentVolume)}
+            </Form.Field>
+            <Form.Field label='Volume Mode'>
+              {selectors.specVolumeMode(persistentVolume)}
+            </Form.Field>
+          </Form>
+          <Card.Title
+            className='-mx-3'
+            titleVariant={Card.titleVariants.medium}
+          >
+            Claim
+          </Card.Title>
+          <Form>
+            <Form.Field label='Kind'>
+              {selectors.specClaimKind(persistentVolume)}
+            </Form.Field>
+            <Form.Field label='Name'>
+              <Link.PersistentVolume
+                to={`/persistentvolumeclaims/${selectors.specClaimUid(
+                  persistentVolume
+                )}`}
+              >
+                {selectors.specClaimName(persistentVolume)}
+              </Link.PersistentVolume>
+            </Form.Field>
+            <Form.Field label='Namespace'>
+              <Link.Namespace
+                to={`/namespaces/${selectors.specClaimNamespace(
+                  persistentVolume
+                )}`}
+              >
+                {selectors.specClaimNamespace(persistentVolume)}
+              </Link.Namespace>
+            </Form.Field>
+          </Form>
+        </>
+      }
+    />
+  ))
 );

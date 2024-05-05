@@ -16,12 +16,10 @@
  */
 import React from 'react';
 import {DashboardPage} from '../components';
-import pv from './';
+import {PersistentVolumesList} from './';
 
-const PersistentVolumesPage = () => (
+export const PersistentVolumesPage = () => (
   <DashboardPage title='PersistentVolumes'>
-    <pv.List className='mt-4' />
+    <PersistentVolumesList className='mt-4' />
   </DashboardPage>
 );
-
-export default PersistentVolumesPage;

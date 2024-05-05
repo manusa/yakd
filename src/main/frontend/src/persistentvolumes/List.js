@@ -16,7 +16,7 @@
  */
 import React from 'react';
 import {name, sortByCreationTimeStamp, uid} from '../metadata';
-import pv from './';
+import {api, selectors} from './';
 import {Icon, Link} from '../components';
 import ResourceList from '../components/ResourceList';
 import Table from '../components/Table';
@@ -33,7 +33,7 @@ const headers = [
 
 const Rows = ({persistentVolumes, crudDelete}) => {
   const deletePersistentVolume = persistentVolume => async () => {
-    await pv.api.delete(persistentVolume);
+    await api.deletePv(persistentVolume);
     crudDelete(persistentVolume);
   };
   return persistentVolumes
@@ -51,12 +51,12 @@ const Rows = ({persistentVolumes, crudDelete}) => {
           </Link.PersistentVolume>
         </Table.Cell>
         <Table.Cell>
-          {pv.selectors.specStorageClassName(persistentVolume)}
+          {selectors.specStorageClassName(persistentVolume)}
         </Table.Cell>
         <Table.Cell>
-          {pv.selectors.specCapacityStorage(persistentVolume)}
+          {selectors.specCapacityStorage(persistentVolume)}
         </Table.Cell>
-        <Table.Cell>{pv.selectors.statusPhase(persistentVolume)}</Table.Cell>
+        <Table.Cell>{selectors.statusPhase(persistentVolume)}</Table.Cell>
         <Table.Cell>
           <Table.DeleteButton
             onClick={deletePersistentVolume(persistentVolume)}
@@ -66,15 +66,15 @@ const Rows = ({persistentVolumes, crudDelete}) => {
     ));
 };
 
-const List = ({resources, loadedResources, crudDelete, ...properties}) => (
-  <ResourceList
-    headers={headers}
-    resources={resources}
-    loading={!loadedResources['PersistentVolume']}
-    {...properties}
-  >
-    <Rows persistentVolumes={resources} crudDelete={crudDelete} />
-  </ResourceList>
+export const List = ResourceList.resourceListConnect('persistentVolumes')(
+  ({resources, loadedResources, crudDelete, ...properties}) => (
+    <ResourceList
+      headers={headers}
+      resources={resources}
+      loading={!loadedResources['PersistentVolume']}
+      {...properties}
+    >
+      <Rows persistentVolumes={resources} crudDelete={crudDelete} />
+    </ResourceList>
+  )
 );
-
-export default ResourceList.resourceListConnect('persistentVolumes')(List);

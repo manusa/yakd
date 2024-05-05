@@ -17,11 +17,11 @@
 import React from 'react';
 import {withParams} from '../router';
 import {name} from '../metadata';
-import pv from './';
+import {api} from './';
 import ResourceEditPage from '../components/ResourceEditPage';
 import {Link} from '../components';
 
-const PersistentVolumesEditPage = ({params: {uid}}) => (
+export const PersistentVolumesEditPage = withParams(({params: {uid}}) => (
   <ResourceEditPage
     kind='PersistentVolumes'
     path='persistentvolumes'
@@ -30,9 +30,7 @@ const PersistentVolumesEditPage = ({params: {uid}}) => (
         {name(resource)}
       </Link.RouterLink>
     )}
-    save={async resource => await pv.api.update(resource)}
+    save={async resource => await api.update(resource)}
     resourceFromState={state => state.persistentVolumes[uid]}
   />
-);
-
-export default withParams(PersistentVolumesEditPage);
+));
