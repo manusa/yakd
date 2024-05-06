@@ -17,10 +17,10 @@
 import React from 'react';
 import {withParams} from '../router';
 import {name} from '../metadata';
-import pvc from './';
+import {api} from './';
 import {Link, ResourceEditPage} from '../components';
 
-const PersistentVolumeClaimsEditPage = ({params: {uid}}) => (
+export const PersistentVolumeClaimsEditPage = withParams(({params: {uid}}) => (
   <ResourceEditPage
     kind='PersistentVolumeClaims'
     path='persistentvolumeclaims'
@@ -29,9 +29,7 @@ const PersistentVolumeClaimsEditPage = ({params: {uid}}) => (
         {name(resource)}
       </Link.RouterLink>
     )}
-    save={async resource => await pvc.api.update(resource)}
+    save={async resource => await api.update(resource)}
     resourceFromState={state => state.persistentVolumeClaims[uid]}
   />
-);
-
-export default withParams(PersistentVolumeClaimsEditPage);
+));

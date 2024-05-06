@@ -14,20 +14,9 @@
  * limitations under the License.
  *
  */
-import api from './api';
-import selectors from './selectors';
-import List from './List';
-import PersistentVolumeClaimsDetailPage from './PersistentVolumeClaimsDetailPage';
-import PersistentVolumeClaimsEditPage from './PersistentVolumeClaimsEditPage';
-import PersistentVolumeClaimsPage from './PersistentVolumeClaimsPage';
-
-const pvc = {};
-
-pvc.api = api;
-pvc.selectors = selectors;
-pvc.List = List;
-pvc.PersistentVolumeClaimsDetailPage = PersistentVolumeClaimsDetailPage;
-pvc.PersistentVolumeClaimsEditPage = PersistentVolumeClaimsEditPage;
-pvc.PersistentVolumeClaimsPage = PersistentVolumeClaimsPage;
-
-export default pvc;
+export * as api from './api';
+export * as selectors from './selectors';
+export {List as PersistentVolumeClaimsList} from './List';
+export {PersistentVolumeClaimsDetailPage} from './PersistentVolumeClaimsDetailPage';
+export {PersistentVolumeClaimsEditPage} from './PersistentVolumeClaimsEditPage';
+export {PersistentVolumeClaimsPage} from './PersistentVolumeClaimsPage';

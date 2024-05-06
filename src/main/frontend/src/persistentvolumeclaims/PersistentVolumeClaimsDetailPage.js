@@ -18,40 +18,8 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {withParams} from '../router';
 import {Details} from '../metadata';
-import pvc from './';
+import {api, selectors} from './';
 import {Form, ResourceDetailPage} from '../components';
-
-const PersistentVolumeClaimsDetailPage = ({persistentVolumeClaim}) => (
-  <ResourceDetailPage
-    kind='PersistentVolumeClaims'
-    path='persistentvolumeclaims'
-    resource={persistentVolumeClaim}
-    deleteFunction={pvc.api.delete}
-    body={
-      <>
-        <Form>
-          <Details resource={persistentVolumeClaim} />
-          <Form.Field label='Access Modes'>
-            {pvc.selectors
-              .specAccessModes(persistentVolumeClaim)
-              .map((am, idx) => (
-                <p key={idx}>{am}</p>
-              ))}
-          </Form.Field>
-          <Form.Field label='Storage Class'>
-            {pvc.selectors.specStorageClassName(persistentVolumeClaim)}
-          </Form.Field>
-          <Form.Field label='Capacity'>
-            {pvc.selectors.statusCapacityStorage(persistentVolumeClaim)}
-          </Form.Field>
-          <Form.Field label='Status'>
-            {pvc.selectors.statusPhase(persistentVolumeClaim)}
-          </Form.Field>
-        </Form>
-      </>
-    }
-  />
-);
 
 const mapStateToProps = ({persistentVolumeClaims}) => ({
   persistentVolumeClaims
@@ -64,6 +32,40 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
   persistentVolumeClaim: stateProps.persistentVolumeClaims[ownProps.params.uid]
 });
 
-export default withParams(
-  connect(mapStateToProps, null, mergeProps)(PersistentVolumeClaimsDetailPage)
+export const PersistentVolumeClaimsDetailPage = withParams(
+  connect(
+    mapStateToProps,
+    null,
+    mergeProps
+  )(({persistentVolumeClaim}) => (
+    <ResourceDetailPage
+      kind='PersistentVolumeClaims'
+      path='persistentvolumeclaims'
+      resource={persistentVolumeClaim}
+      deleteFunction={api.deletePvc}
+      body={
+        <>
+          <Form>
+            <Details resource={persistentVolumeClaim} />
+            <Form.Field label='Access Modes'>
+              {selectors
+                .specAccessModes(persistentVolumeClaim)
+                .map((am, idx) => (
+                  <p key={idx}>{am}</p>
+                ))}
+            </Form.Field>
+            <Form.Field label='Storage Class'>
+              {selectors.specStorageClassName(persistentVolumeClaim)}
+            </Form.Field>
+            <Form.Field label='Capacity'>
+              {selectors.statusCapacityStorage(persistentVolumeClaim)}
+            </Form.Field>
+            <Form.Field label='Status'>
+              {selectors.statusPhase(persistentVolumeClaim)}
+            </Form.Field>
+          </Form>
+        </>
+      }
+    />
+  ))
 );

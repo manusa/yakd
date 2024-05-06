@@ -16,7 +16,7 @@
  */
 import React from 'react';
 import {name, namespace, sortByCreationTimeStamp, uid} from '../metadata';
-import pvc from './';
+import {api, selectors} from './';
 import {Icon, Link, Table} from '../components';
 import ResourceList from '../components/ResourceList';
 
@@ -33,7 +33,7 @@ const headers = [
 
 const Rows = ({persistentVolumeClaims, crudDelete}) => {
   const deletePersistentVolumeClaim = persistentVolumeClaim => async () => {
-    await pvc.api.delete(persistentVolumeClaim);
+    await api.deletePvc(persistentVolumeClaim);
     crudDelete(persistentVolumeClaim);
   };
   return persistentVolumeClaims
@@ -58,14 +58,12 @@ const Rows = ({persistentVolumeClaims, crudDelete}) => {
           </Link.Namespace>
         </Table.Cell>
         <Table.Cell>
-          {pvc.selectors.specStorageClassName(persistentVolumeClaim)}
+          {selectors.specStorageClassName(persistentVolumeClaim)}
         </Table.Cell>
         <Table.Cell>
-          {pvc.selectors.statusCapacityStorage(persistentVolumeClaim)}
+          {selectors.statusCapacityStorage(persistentVolumeClaim)}
         </Table.Cell>
-        <Table.Cell>
-          {pvc.selectors.statusPhase(persistentVolumeClaim)}
-        </Table.Cell>
+        <Table.Cell>{selectors.statusPhase(persistentVolumeClaim)}</Table.Cell>
         <Table.Cell>
           <Table.DeleteButton
             onClick={deletePersistentVolumeClaim(persistentVolumeClaim)}
@@ -75,15 +73,15 @@ const Rows = ({persistentVolumeClaims, crudDelete}) => {
     ));
 };
 
-const List = ({resources, loadedResources, crudDelete, ...properties}) => (
-  <ResourceList
-    headers={headers}
-    resources={resources}
-    loading={!loadedResources['PersistentVolumeClaim']}
-    {...properties}
-  >
-    <Rows persistentVolumeClaims={resources} crudDelete={crudDelete} />
-  </ResourceList>
+export const List = ResourceList.resourceListConnect('persistentVolumeClaims')(
+  ({resources, loadedResources, crudDelete, ...properties}) => (
+    <ResourceList
+      headers={headers}
+      resources={resources}
+      loading={!loadedResources['PersistentVolumeClaim']}
+      {...properties}
+    >
+      <Rows persistentVolumeClaims={resources} crudDelete={crudDelete} />
+    </ResourceList>
+  )
 );
-
-export default ResourceList.resourceListConnect('persistentVolumeClaims')(List);

@@ -14,13 +14,10 @@
  * limitations under the License.
  *
  */
-const selectors = {};
+export const specAccessModes = pvc => pvc?.spec?.accessModes ?? [];
+export const specStorageClassName = pvc => pvc?.spec?.storageClassName ?? '';
 
-selectors.specAccessModes = pvc => pvc?.spec?.accessModes ?? [];
-selectors.specStorageClassName = pvc => pvc?.spec?.storageClassName ?? '';
+export const statusPhase = pvc => pvc?.status?.phase ?? '';
 
-selectors.statusPhase = pvc => pvc?.status?.phase ?? '';
-
-selectors.statusCapacityStorage = pvc => pvc?.status?.capacity?.storage ?? '';
-
-export default selectors;
+export const statusCapacityStorage = pvc =>
+  pvc?.status?.capacity?.storage ?? '';
