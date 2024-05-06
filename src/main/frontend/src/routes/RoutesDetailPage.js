@@ -18,26 +18,8 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {withParams} from '../router';
 import {Details} from '../metadata';
-import r from './';
+import {Host, api, selectors} from './';
 import {Form, ResourceDetailPage} from '../components';
-
-const RoutesDetailPage = ({route}) => (
-  <ResourceDetailPage
-    kind='Routes'
-    path='routes'
-    resource={route}
-    deleteFunction={r.api.delete}
-    body={
-      <Form>
-        <Details resource={route} />
-        <Form.Field label='Host'>
-          <r.Host route={route} />
-        </Form.Field>
-        <Form.Field label='Path'>{r.selectors.specPath(route)}</Form.Field>
-      </Form>
-    }
-  />
-);
 
 const mapStateToProps = ({routes}) => ({
   routes
@@ -50,6 +32,26 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
   route: stateProps.routes[ownProps.params.uid]
 });
 
-export default withParams(
-  connect(mapStateToProps, null, mergeProps)(RoutesDetailPage)
+export const RoutesDetailPage = withParams(
+  connect(
+    mapStateToProps,
+    null,
+    mergeProps
+  )(({route}) => (
+    <ResourceDetailPage
+      kind='Routes'
+      path='routes'
+      resource={route}
+      deleteFunction={api.deleteRoute}
+      body={
+        <Form>
+          <Details resource={route} />
+          <Form.Field label='Host'>
+            <Host route={route} />
+          </Form.Field>
+          <Form.Field label='Path'>{selectors.specPath(route)}</Form.Field>
+        </Form>
+      }
+    />
+  ))
 );
