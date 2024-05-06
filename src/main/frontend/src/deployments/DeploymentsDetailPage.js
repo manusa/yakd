@@ -21,7 +21,7 @@ import {Details, ownerReferencesUids, uid} from '../metadata';
 import {ContainerList} from '../containers';
 import {api, selectors} from './';
 import pods from '../pods';
-import rs from '../replicasets';
+import {ReplicasField, ReplicaSetsList} from '../replicasets';
 import {Card, Form, Icon, Link, ResourceDetailPage} from '../components';
 
 const mapStateToProps = ({deployments, replicaSets}) => ({
@@ -70,7 +70,7 @@ export const DeploymentsDetailPage = withParams(
       body={
         <Form>
           <Details resource={deployment} />
-          <rs.ReplicasField
+          <ReplicasField
             resource={deployment}
             replicas={selectors.specReplicas(deployment)}
             updateReplicas={api.updateReplicas}
@@ -87,7 +87,7 @@ export const DeploymentsDetailPage = withParams(
         className='mt-2'
         containers={selectors.containers(deployment)}
       />
-      <rs.List
+      <ReplicaSetsList
         title='Replica Sets'
         titleVariant={Card.titleVariants.medium}
         className='mt-2'

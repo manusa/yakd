@@ -19,5 +19,5 @@ export * as selectors from './selectors';
 export {ClusterRolesDetailPage} from './ClusterRolesDetailPage';
 export {ClusterRolesEditPage} from './ClusterRolesEditPage';
 export {ClusterRolesPage} from './ClusterRolesPage';
-export {List} from './List';
+export {List as ClusterRolesList} from './List';
 export {RuleList} from './RuleList';

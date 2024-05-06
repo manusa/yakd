@@ -16,10 +16,10 @@
  */
 import React from 'react';
 import {DashboardPage} from '../components';
-import {List} from './';
+import {ClusterRolesList} from './';
 
 export const ClusterRolesPage = () => (
   <DashboardPage title='ClusterRoles'>
-    <List className='mt-4' />
+    <ClusterRolesList className='mt-4' />
   </DashboardPage>
 );

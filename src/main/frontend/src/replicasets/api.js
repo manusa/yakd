@@ -16,8 +16,4 @@
  */
 import {deleteNamespacedResource} from '../fetch';
 
-const api = {};
-
-api.requestDelete = deleteNamespacedResource('replicasets');
-
-export default api;
+export const requestDelete = deleteNamespacedResource('replicasets');

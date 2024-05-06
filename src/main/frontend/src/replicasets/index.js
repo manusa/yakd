@@ -14,16 +14,7 @@
  * limitations under the License.
  *
  */
-import api from './api';
-import selectors from './selectors';
-import List from './List';
-import ReplicasField from './ReplicasField';
-
-const replicaSets = {};
-
-replicaSets.api = api;
-replicaSets.selectors = selectors;
-replicaSets.List = List;
-replicaSets.ReplicasField = ReplicasField;
-
-export default replicaSets;
+export * as api from './api';
+export * as selectors from './selectors';
+export {List as ReplicaSetsList} from './List';
+export {ReplicasField} from './ReplicasField';
