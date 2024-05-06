@@ -16,7 +16,7 @@
  */
 import React from 'react';
 import {name, namespace, sortByCreationTimeStamp, uid} from '../metadata';
-import r from './';
+import {Host, api, selectors} from './';
 import {Icon, Link, Table} from '../components';
 import ResourceList from '../components/ResourceList';
 
@@ -31,7 +31,7 @@ const headers = [
 ];
 
 const Rows = ({routes}) => {
-  const deleteRoute = route => () => r.api.delete(route);
+  const deleteRoute = route => () => api.deleteRoute(route);
   return routes.sort(sortByCreationTimeStamp).map(route => (
     <Table.ResourceRow key={uid(route)} resource={route}>
       <Table.Cell>
@@ -43,9 +43,9 @@ const Rows = ({routes}) => {
         </Link.Namespace>
       </Table.Cell>
       <Table.Cell>
-        <r.Host route={route} />
+        <Host route={route} />
       </Table.Cell>
-      <Table.Cell>{r.selectors.specPath(route)}</Table.Cell>
+      <Table.Cell>{selectors.specPath(route)}</Table.Cell>
       <Table.Cell>
         <Table.DeleteButton onClick={deleteRoute(route)} />
       </Table.Cell>
@@ -53,10 +53,10 @@ const Rows = ({routes}) => {
   ));
 };
 
-const List = ({resources, crudDelete, loadedResources, ...properties}) => (
-  <ResourceList headers={headers} resources={resources} {...properties}>
-    <Rows routes={resources} />
-  </ResourceList>
+export const List = ResourceList.resourceListConnect('routes')(
+  ({resources, crudDelete, loadedResources, ...properties}) => (
+    <ResourceList headers={headers} resources={resources} {...properties}>
+      <Rows routes={resources} />
+    </ResourceList>
+  )
 );
-
-export default ResourceList.resourceListConnect('routes')(List);

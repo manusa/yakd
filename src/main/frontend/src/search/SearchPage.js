@@ -41,7 +41,7 @@ import {setQuery} from '../redux';
 import rs from '../replicasets';
 import rc from '../replicationcontrollers';
 import roles from '../roles';
-import routes from '../routes';
+import {RoutesList} from '../routes';
 import {Card, DashboardPage, FilterBar, Textfield} from '../components';
 
 const Instructions = () => (
@@ -138,7 +138,7 @@ const Results = ({query, selectedNamespace}) => {
         nameLike={query}
         namespace={selectedNamespace}
       />
-      <routes.List
+      <RoutesList
         {...commonProps}
         title='Routes'
         nameLike={query}

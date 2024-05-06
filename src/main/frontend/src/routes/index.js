@@ -14,22 +14,10 @@
  * limitations under the License.
  *
  */
-import api from './api';
-import selectors from './selectors';
-import Host from './Host';
-import List from './List';
-import RoutesDetailPage from './RoutesDetailPage';
-import RoutesEditPage from './RoutesEditPage';
-import RoutesPage from './RoutesPage';
-
-const index = {
-  api,
-  selectors,
-  Host,
-  List,
-  RoutesDetailPage,
-  RoutesEditPage,
-  RoutesPage
-};
-
-export default index;
+export * as api from './api';
+export * as selectors from './selectors';
+export {Host} from './Host';
+export {List as RoutesList} from './List';
+export {RoutesDetailPage} from './RoutesDetailPage';
+export {RoutesEditPage} from './RoutesEditPage';
+export {RoutesPage} from './RoutesPage';

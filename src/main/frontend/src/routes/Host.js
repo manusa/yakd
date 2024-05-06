@@ -15,16 +15,16 @@
  *
  */
 import React from 'react';
-import r from './';
+import {selectors} from './';
 import {Icon, Link} from '../components';
 
-const Host = ({route}) => {
+export const Host = ({route}) => {
   const url = `http${
-    r.selectors.specTls(route) ? 's' : ''
-  }://${r.selectors.specHost(route)}${r.selectors.specPath(route)}`;
+    selectors.specTls(route) ? 's' : ''
+  }://${selectors.specHost(route)}${selectors.specPath(route)}`;
   return (
     <Link href={url} target='_blank'>
-      {r.selectors.specHost(route)}
+      {selectors.specHost(route)}
       <Icon
         className='ml-1 text-xs'
         icon='fa-external-link-alt'
@@ -33,5 +33,3 @@ const Host = ({route}) => {
     </Link>
   );
 };
-
-export default Host;

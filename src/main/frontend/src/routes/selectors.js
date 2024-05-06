@@ -14,12 +14,8 @@
  * limitations under the License.
  *
  */
-const selectors = {};
+export const specHost = route => route?.spec?.host ?? '';
 
-selectors.specHost = route => route?.spec?.host ?? '';
+export const specPath = route => route?.spec?.path ?? '';
 
-selectors.specPath = route => route?.spec?.path ?? '';
-
-selectors.specTls = route => route?.spec?.tls;
-
-export default selectors;
+export const specTls = route => route?.spec?.tls;

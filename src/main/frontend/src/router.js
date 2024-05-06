@@ -17,6 +17,11 @@
 import React from 'react';
 import {useParams} from 'react-router-dom';
 
+/**
+ * HOC that injects the current route params into the wrapped component
+ * @param {React.Component} Component - Component to wrap
+ * @returns {React.Component} - Wrapped Component with route params injected as props
+ */
 export const withParams = Component => props => {
   const params = useParams();
   return <Component params={params} {...props} />;
