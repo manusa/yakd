@@ -18,7 +18,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {crudDelete, resourcesBy} from '../redux';
-import Table from './Table';
+import {Table} from './';
 
 const Content = ({headers, resources, loading, children}) => {
   if (resources?.length > 0) {

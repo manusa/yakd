@@ -18,7 +18,7 @@ import React from 'react';
 import {deletionTimestamp} from '../metadata';
 import {Card, Icon, Link, Spinner} from './';
 
-const Table = ({title, titleVariant, className, children, ...props}) => (
+export const Table = ({title, titleVariant, className, children, ...props}) => (
   <Card className={className} {...props}>
     {title && <Card.Title titleVariant={titleVariant}>{title}</Card.Title>}
     <table className='min-w-full'>{children}</table>
@@ -108,5 +108,3 @@ Table.DeleteButton = ({...props}) => (
     {...props}
   />
 );
-
-export default Table;

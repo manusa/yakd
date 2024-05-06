@@ -31,6 +31,7 @@ export {ResourceDetailPage} from './ResourceDetailPage';
 export {Spinner} from './Spinner';
 export {StatusCard} from './StatusCard';
 export {Switch} from './Switch';
+export {Table} from './Table';
 export {Tag} from './Tag';
 export {Textfield} from './Textfield';
 export {Tooltip} from './Tooltip';

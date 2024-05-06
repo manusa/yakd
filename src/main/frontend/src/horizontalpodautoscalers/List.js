@@ -16,9 +16,8 @@
  */
 import React from 'react';
 import {name, namespace, sortByCreationTimeStamp, uid} from '../metadata';
-import {Icon, Link} from '../components';
+import {Icon, Link, Table} from '../components';
 import ResourceList from '../components/ResourceList';
-import Table from '../components/Table';
 import {api, selectors} from './';
 
 const headers = [

@@ -18,9 +18,8 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {name, sortByCreationTimeStamp, uid} from '../metadata';
 import {api, selectors, GroupLink} from './';
-import {Icon, Link} from '../components';
+import {Icon, Link, Table} from '../components';
 import ResourceList from '../components/ResourceList';
-import Table from '../components/Table';
 
 const headers = [
   <span>

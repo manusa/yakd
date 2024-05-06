@@ -19,8 +19,7 @@ import {connect} from 'react-redux';
 import {withParams} from '../router';
 import {api, selectors} from './';
 import {Details} from '../metadata';
-import {Card, Form, Link, ResourceDetailPage} from '../components';
-import Table from '../components/Table';
+import {Card, Form, Link, ResourceDetailPage, Table} from '../components';
 
 const mapStateToProps = ({endpoints}) => ({
   endpoints

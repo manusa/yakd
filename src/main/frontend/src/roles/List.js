@@ -23,9 +23,8 @@ import {
   uid
 } from '../metadata';
 import r from './';
-import {Icon, Link, Tooltip} from '../components';
+import {Icon, Link, Tooltip, Table} from '../components';
 import ResourceList from '../components/ResourceList';
-import Table from '../components/Table';
 
 const headers = [
   <span>

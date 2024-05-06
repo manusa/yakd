@@ -24,9 +24,8 @@ import {
   uid
 } from '../metadata';
 import {api, selectors} from './';
-import {Age, Icon, Link} from '../components';
+import {Age, Icon, Link, Table} from '../components';
 import ResourceList from '../components/ResourceList';
-import Table from '../components/Table';
 
 const headers = [
   <span key='name'>
