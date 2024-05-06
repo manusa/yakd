@@ -16,7 +16,7 @@
  */
 import React from 'react';
 
-const Modal = ({
+export const Modal = ({
   visible,
   // Adds padding to keep sidebar visible when modal is open
   preserveSideBar = true,
@@ -48,5 +48,3 @@ const Modal = ({
     </div>
   );
 };
-
-export default Modal;

@@ -26,6 +26,7 @@ export {FilterBar} from './FilterBar';
 export {Form} from './Form';
 export {Icon} from './Icon';
 export {Link} from './Link';
+export {Modal} from './Modal';
 export {PopupMenu} from './PopupMenu';
 export {ResourceDetailPage} from './ResourceDetailPage';
 export {Spinner} from './Spinner';
