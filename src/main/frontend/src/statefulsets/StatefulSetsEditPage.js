@@ -17,10 +17,10 @@
 import React from 'react';
 import {withParams} from '../router';
 import {name} from '../metadata';
-import sts from './';
+import {api} from './';
 import {Link, ResourceEditPage} from '../components';
 
-const StatefulSetsEditPage = ({params: {uid}}) => (
+export const StatefulSetsEditPage = withParams(({params: {uid}}) => (
   <ResourceEditPage
     kind='StatefulSets'
     path='statefulsets'
@@ -29,9 +29,7 @@ const StatefulSetsEditPage = ({params: {uid}}) => (
         {name(resource)}
       </Link.RouterLink>
     )}
-    save={async resource => await sts.api.update(resource)}
+    save={async resource => await api.update(resource)}
     resourceFromState={state => state.statefulSets[uid]}
   />
-);
-
-export default withParams(StatefulSetsEditPage);
+));

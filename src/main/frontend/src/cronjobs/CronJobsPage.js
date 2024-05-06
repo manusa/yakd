@@ -16,7 +16,7 @@
  */
 import React from 'react';
 import {DashboardPage, FilterBar} from '../components';
-import {List} from './';
+import {CronJobsList} from './';
 import {useUiNamespace} from '../redux';
 
 export const CronJobsPage = () => {
@@ -24,7 +24,7 @@ export const CronJobsPage = () => {
   return (
     <DashboardPage title='CronJobs'>
       <FilterBar />
-      <List className='mt-4' namespace={selectedNamespace} />
+      <CronJobsList className='mt-4' namespace={selectedNamespace} />
     </DashboardPage>
   );
 };

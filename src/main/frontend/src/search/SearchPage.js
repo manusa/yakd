@@ -20,7 +20,7 @@ import {useSearchParams} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as cr from '../clusterroles';
 import {ConfigMapsList} from '../configmaps';
-import * as cj from '../cronjobs';
+import {CronJobsList} from '../cronjobs';
 import {CustomResourceDefinitionsList} from '../customresourcedefinitions';
 import {DeploymentsList} from '../deployments';
 import {DeploymentConfigsList} from '../deploymentconfigs';
@@ -34,7 +34,7 @@ import p from '../pods';
 import {PersistentVolumeClaimsList} from '../persistentvolumeclaims';
 import {PersistentVolumesList} from '../persistentvolumes';
 import s from '../secrets';
-import ss from '../statefulsets';
+import {StatefulSetsList} from '../statefulsets';
 import svc from '../services';
 import * as sa from '../serviceaccounts';
 import {setQuery} from '../redux';
@@ -84,7 +84,7 @@ const Results = ({query, selectedNamespace}) => {
         nameLike={query}
         namespace={selectedNamespace}
       />
-      <cj.List
+      <CronJobsList
         {...commonProps}
         title='CronJobs'
         nameLike={query}
@@ -96,7 +96,7 @@ const Results = ({query, selectedNamespace}) => {
         nameLike={query}
         namespace={selectedNamespace}
       />
-      <ss.List
+      <StatefulSetsList
         {...commonProps}
         title='StatefulSets'
         nameLike={query}

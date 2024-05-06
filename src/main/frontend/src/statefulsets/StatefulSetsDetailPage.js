@@ -19,55 +19,10 @@ import {connect} from 'react-redux';
 import {withParams} from '../router';
 import {Details, uid} from '../metadata';
 import {ContainerList} from '../containers';
-import sts from './';
+import {api, selectors} from './';
 import pods from '../pods';
 import rs from '../replicasets';
 import {Card, Form, Icon, Link, ResourceDetailPage} from '../components';
-
-const StatefulSetsDetailPage = ({statefulSet}) => (
-  <ResourceDetailPage
-    kind='StatefulSets'
-    path='statefulsets'
-    resource={statefulSet}
-    isReadyFunction={sts.selectors.isReady}
-    deleteFunction={sts.api.delete}
-    actions={
-      <Link
-        className='ml-2'
-        size={Link.sizes.small}
-        variant={Link.variants.outline}
-        onClick={() => sts.api.restart(statefulSet)}
-        title='Restart'
-      >
-        <Icon stylePrefix='fas' icon='fa-redo-alt' className='mr-2' />
-        Restart
-      </Link>
-    }
-    body={
-      <Form>
-        <Details resource={statefulSet} />
-        <rs.ReplicasField
-          resource={statefulSet}
-          replicas={sts.selectors.specReplicas(statefulSet)}
-          updateReplicas={sts.api.updateReplicas}
-        />
-      </Form>
-    }
-  >
-    <ContainerList
-      title='Containers'
-      titleVariant={Card.titleVariants.medium}
-      className='mt-2'
-      containers={sts.selectors.containers(statefulSet)}
-    />
-    <pods.List
-      title='Pods'
-      titleVariant={Card.titleVariants.medium}
-      className='mt-2'
-      ownerUid={uid(statefulSet)}
-    />
-  </ResourceDetailPage>
-);
 
 const mapStateToProps = ({statefulSets}) => ({
   statefulSets
@@ -77,6 +32,53 @@ const mergeProps = ({statefulSets}, dispatchProps, ownProps) => ({
   statefulSet: statefulSets[ownProps.params.uid]
 });
 
-export default withParams(
-  connect(mapStateToProps, null, mergeProps)(StatefulSetsDetailPage)
+export const StatefulSetsDetailPage = withParams(
+  connect(
+    mapStateToProps,
+    null,
+    mergeProps
+  )(({statefulSet}) => (
+    <ResourceDetailPage
+      kind='StatefulSets'
+      path='statefulsets'
+      resource={statefulSet}
+      isReadyFunction={selectors.isReady}
+      deleteFunction={api.deleteSts}
+      actions={
+        <Link
+          className='ml-2'
+          size={Link.sizes.small}
+          variant={Link.variants.outline}
+          onClick={() => api.restart(statefulSet)}
+          title='Restart'
+        >
+          <Icon stylePrefix='fas' icon='fa-redo-alt' className='mr-2' />
+          Restart
+        </Link>
+      }
+      body={
+        <Form>
+          <Details resource={statefulSet} />
+          <rs.ReplicasField
+            resource={statefulSet}
+            replicas={selectors.specReplicas(statefulSet)}
+            updateReplicas={api.updateReplicas}
+          />
+        </Form>
+      }
+    >
+      <ContainerList
+        title='Containers'
+        titleVariant={Card.titleVariants.medium}
+        className='mt-2'
+        containers={selectors.containers(statefulSet)}
+      />
+      <pods.List
+        title='Pods'
+        titleVariant={Card.titleVariants.medium}
+        className='mt-2'
+        ownerUid={uid(statefulSet)}
+      />
+    </ResourceDetailPage>
+  ))
 );

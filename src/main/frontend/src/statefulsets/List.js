@@ -16,7 +16,7 @@
  */
 import React from 'react';
 import {name, namespace, sortByCreationTimeStamp, uid} from '../metadata';
-import sts from './';
+import {api, selectors} from './';
 import {Icon, Link, Table} from '../components';
 import ResourceList from '../components/ResourceList';
 
@@ -34,20 +34,18 @@ const headers = [
 
 const Rows = ({statefulSets}) => {
   const deleteStatefulSet = statefulSet => async () =>
-    await sts.api.delete(statefulSet);
+    await api.deleteSts(statefulSet);
   const restartStatefulSet = statefulSet => async () =>
-    await sts.api.restart(statefulSet);
+    await api.restart(statefulSet);
   return statefulSets.sort(sortByCreationTimeStamp).map(statefulSet => (
     <Table.ResourceRow key={uid(statefulSet)} resource={statefulSet}>
       <Table.Cell className='whitespace-nowrap w-3 text-center'>
         <Icon
           className={
-            sts.selectors.isReady(statefulSet)
-              ? 'text-green-500'
-              : 'text-red-500'
+            selectors.isReady(statefulSet) ? 'text-green-500' : 'text-red-500'
           }
           icon={
-            sts.selectors.isReady(statefulSet)
+            selectors.isReady(statefulSet)
               ? 'fa-check'
               : 'fa-exclamation-circle'
           }
@@ -64,7 +62,7 @@ const Rows = ({statefulSets}) => {
         </Link.Namespace>
       </Table.Cell>
       <Table.Cell className='break-all'>
-        {sts.selectors.images(statefulSet).map((image, idx) => (
+        {selectors.images(statefulSet).map((image, idx) => (
           <div key={idx}>{image}</div>
         ))}
       </Table.Cell>
@@ -85,10 +83,10 @@ const Rows = ({statefulSets}) => {
   ));
 };
 
-const List = ({resources, crudDelete, loadedResources, ...properties}) => (
-  <ResourceList headers={headers} resources={resources} {...properties}>
-    <Rows statefulSets={resources} loadedResources={loadedResources} />
-  </ResourceList>
+export const List = ResourceList.resourceListConnect('statefulSets')(
+  ({resources, crudDelete, loadedResources, ...properties}) => (
+    <ResourceList headers={headers} resources={resources} {...properties}>
+      <Rows statefulSets={resources} loadedResources={loadedResources} />
+    </ResourceList>
+  )
 );
-
-export default ResourceList.resourceListConnect('statefulSets')(List);
