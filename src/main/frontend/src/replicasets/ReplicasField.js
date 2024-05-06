@@ -17,7 +17,7 @@
 import React from 'react';
 import {Form, Icon} from '../components';
 
-const ReplicasField = ({replicas, resource, updateReplicas}) => (
+export const ReplicasField = ({replicas, resource, updateReplicas}) => (
   <Form.Field label='Replicas'>
     <div className='flex items-center'>
       <Icon stylePrefix='far' icon='fa-copy' className='text-gray-600 mr-2' />
@@ -41,5 +41,3 @@ const ReplicasField = ({replicas, resource, updateReplicas}) => (
     </div>
   </Form.Field>
 );
-
-export default ReplicasField;

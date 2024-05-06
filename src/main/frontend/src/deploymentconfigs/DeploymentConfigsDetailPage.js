@@ -21,7 +21,7 @@ import {Details, ownerReferencesUids, uid} from '../metadata';
 import {ContainerList} from '../containers';
 import {api, selectors} from './';
 import pods from '../pods';
-import rs from '../replicasets';
+import {ReplicasField} from '../replicasets';
 import rc from '../replicationcontrollers';
 import {Card, Form, Icon, Link, ResourceDetailPage} from '../components';
 
@@ -71,7 +71,7 @@ export const DeploymentConfigsDetailPage = withParams(
       body={
         <Form>
           <Details resource={deploymentConfig} />
-          <rs.ReplicasField
+          <ReplicasField
             resource={deploymentConfig}
             replicas={selectors.specReplicas(deploymentConfig)}
             updateReplicas={api.updateReplicas}

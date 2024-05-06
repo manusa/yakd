@@ -18,7 +18,7 @@ import React, {useEffect, useLayoutEffect, useRef} from 'react';
 import {bindActionCreators} from 'redux';
 import {useSearchParams} from 'react-router-dom';
 import {connect} from 'react-redux';
-import * as cr from '../clusterroles';
+import {ClusterRolesList} from '../clusterroles';
 import {ConfigMapsList} from '../configmaps';
 import {CronJobsList} from '../cronjobs';
 import {CustomResourceDefinitionsList} from '../customresourcedefinitions';
@@ -38,7 +38,7 @@ import {StatefulSetsList} from '../statefulsets';
 import svc from '../services';
 import * as sa from '../serviceaccounts';
 import {setQuery} from '../redux';
-import rs from '../replicasets';
+import {ReplicaSetsList} from '../replicasets';
 import rc from '../replicationcontrollers';
 import {RolesList} from '../roles';
 import {RoutesList} from '../routes';
@@ -102,7 +102,7 @@ const Results = ({query, selectedNamespace}) => {
         nameLike={query}
         namespace={selectedNamespace}
       />
-      <rs.List
+      <ReplicaSetsList
         {...commonProps}
         title='ReplicaSets'
         nameLike={query}
@@ -186,7 +186,7 @@ const Results = ({query, selectedNamespace}) => {
         nameLike={query}
         namespace={selectedNamespace}
       />
-      <cr.List
+      <ClusterRolesList
         {...commonProps}
         title='ClusterRoles'
         nameLike={query}

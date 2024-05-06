@@ -17,7 +17,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {name, namespace, sortByCreationTimeStamp, uid} from '../metadata';
-import rs from './';
+import {api, selectors} from './';
 import {Icon, Table} from '../components';
 import ResourceList from '../components/ResourceList';
 
@@ -33,18 +33,16 @@ const headers = [
 
 const Rows = ({replicaSets}) => {
   const deleteReplicaSet = replicaSet => async () =>
-    await rs.api.requestDelete(replicaSet);
+    await api.requestDelete(replicaSet);
   return replicaSets.sort(sortByCreationTimeStamp).map(replicaSet => (
     <Table.ResourceRow key={uid(replicaSet)} resource={replicaSet}>
       <Table.Cell className='whitespace-nowrap w-3 text-center'>
         <Icon
           className={
-            rs.selectors.isReady(replicaSet) ? 'text-green-500' : 'text-red-500'
+            selectors.isReady(replicaSet) ? 'text-green-500' : 'text-red-500'
           }
           icon={
-            rs.selectors.isReady(replicaSet)
-              ? 'fa-check'
-              : 'fa-exclamation-circle'
+            selectors.isReady(replicaSet) ? 'fa-check' : 'fa-exclamation-circle'
           }
         />
       </Table.Cell>
@@ -53,7 +51,7 @@ const Rows = ({replicaSets}) => {
         {namespace(replicaSet)}
       </Table.Cell>
       <Table.Cell className='whitespace-nowrap'>
-        {rs.selectors.specReplicas(replicaSet)}
+        {selectors.specReplicas(replicaSet)}
       </Table.Cell>
       <Table.Cell className='whitespace-nowrap text-center'>
         <Table.DeleteButton onClick={deleteReplicaSet(replicaSet)} />
@@ -62,20 +60,14 @@ const Rows = ({replicaSets}) => {
   ));
 };
 
-const List = ({
-  resources,
-  ownerUid,
-  crudDelete,
-  loadedResources,
-  ...properties
-}) => (
-  <ResourceList headers={headers} resources={resources} {...properties}>
-    <Rows replicaSets={resources} />
-  </ResourceList>
+export const List = ResourceList.resourceListConnect('replicaSets')(
+  ({resources, ownerUid, crudDelete, loadedResources, ...properties}) => (
+    <ResourceList headers={headers} resources={resources} {...properties}>
+      <Rows replicaSets={resources} />
+    </ResourceList>
+  )
 );
 
 List.propTypes = {
   ownerUid: PropTypes.string
 };
-
-export default ResourceList.resourceListConnect('replicaSets')(List);

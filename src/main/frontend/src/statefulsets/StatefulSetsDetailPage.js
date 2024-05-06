@@ -21,7 +21,7 @@ import {Details, uid} from '../metadata';
 import {ContainerList} from '../containers';
 import {api, selectors} from './';
 import pods from '../pods';
-import rs from '../replicasets';
+import {ReplicasField} from '../replicasets';
 import {Card, Form, Icon, Link, ResourceDetailPage} from '../components';
 
 const mapStateToProps = ({statefulSets}) => ({
@@ -59,7 +59,7 @@ export const StatefulSetsDetailPage = withParams(
       body={
         <Form>
           <Details resource={statefulSet} />
-          <rs.ReplicasField
+          <ReplicasField
             resource={statefulSet}
             replicas={selectors.specReplicas(statefulSet)}
             updateReplicas={api.updateReplicas}
