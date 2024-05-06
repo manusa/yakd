@@ -15,18 +15,16 @@
  *
  */
 import React from 'react';
-import r from './';
 import {DashboardPage, FilterBar} from '../components';
 import {useUiNamespace} from '../redux';
+import {RolesList} from './';
 
-const RolesPage = () => {
+export const RolesPage = () => {
   const {selectedNamespace} = useUiNamespace();
   return (
     <DashboardPage title='Roles'>
       <FilterBar />
-      <r.List className='mt-4' namespace={selectedNamespace} />
+      <RolesList className='mt-4' namespace={selectedNamespace} />
     </DashboardPage>
   );
 };
-
-export default RolesPage;

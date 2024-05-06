@@ -40,7 +40,7 @@ import * as sa from '../serviceaccounts';
 import {setQuery} from '../redux';
 import rs from '../replicasets';
 import rc from '../replicationcontrollers';
-import roles from '../roles';
+import {RolesList} from '../roles';
 import {RoutesList} from '../routes';
 import {Card, DashboardPage, FilterBar, Textfield} from '../components';
 
@@ -192,7 +192,7 @@ const Results = ({query, selectedNamespace}) => {
         nameLike={query}
         namespace={selectedNamespace}
       />
-      <roles.List
+      <RolesList
         {...commonProps}
         title='Roles'
         nameLike={query}

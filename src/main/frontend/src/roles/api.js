@@ -16,10 +16,6 @@
  */
 import {deleteNamespacedResource, updateNamespacedResource} from '../fetch';
 
-const api = {};
+export const deleteRole = deleteNamespacedResource('roles');
 
-api.delete = deleteNamespacedResource('roles');
-
-api.update = updateNamespacedResource('roles');
-
-export default api;
+export const update = updateNamespacedResource('roles');

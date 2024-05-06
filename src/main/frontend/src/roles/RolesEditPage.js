@@ -17,19 +17,17 @@
 import React from 'react';
 import {withParams} from '../router';
 import {name} from '../metadata';
-import r from './';
+import {api} from './';
 import {Link, ResourceEditPage} from '../components';
 
-const RolesEditPage = ({params: {uid}}) => (
+export const RolesEditPage = withParams(({params: {uid}}) => (
   <ResourceEditPage
     kind='Roles'
     path='roles'
     cardTitle={resource => (
       <Link.RouterLink to={`/roles/${uid}`}>{name(resource)}</Link.RouterLink>
     )}
-    save={async resource => await r.api.update(resource)}
+    save={async resource => await api.update(resource)}
     resourceFromState={state => state.roles[uid]}
   />
-);
-
-export default withParams(RolesEditPage);
+));

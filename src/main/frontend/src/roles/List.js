@@ -22,7 +22,7 @@ import {
   sortByCreationTimeStamp,
   uid
 } from '../metadata';
-import r from './';
+import {api} from './';
 import {Icon, Link, Tooltip, Table} from '../components';
 import ResourceList from '../components/ResourceList';
 
@@ -38,7 +38,7 @@ const headers = [
 ];
 
 const Rows = ({roles}) => {
-  const deleteRole = role => async () => await r.api.delete(role);
+  const deleteRole = role => async () => await api.deleteRole(role);
   return roles.sort(sortByCreationTimeStamp).map(role => (
     <Table.ResourceRow key={uid(role)} resource={role}>
       <Table.Cell>
@@ -65,10 +65,10 @@ const Rows = ({roles}) => {
   ));
 };
 
-const List = ({resources, loadedResources, crudDelete, ...properties}) => (
-  <ResourceList headers={headers} resources={resources} {...properties}>
-    <Rows roles={resources} />
-  </ResourceList>
+export const List = ResourceList.resourceListConnect('roles')(
+  ({resources, loadedResources, crudDelete, ...properties}) => (
+    <ResourceList headers={headers} resources={resources} {...properties}>
+      <Rows roles={resources} />
+    </ResourceList>
+  )
 );
-
-export default ResourceList.resourceListConnect('roles')(List);

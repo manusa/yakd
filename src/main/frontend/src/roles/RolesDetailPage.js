@@ -19,24 +19,8 @@ import {connect} from 'react-redux';
 import {withParams} from '../router';
 import {Details} from '../metadata';
 import {RuleList} from '../clusterroles';
-import r from './';
+import {api, selectors} from './';
 import {Form, ResourceDetailPage} from '../components';
-
-const RolesDetailPage = ({role}) => (
-  <ResourceDetailPage
-    kind='Roles'
-    path='roles'
-    resource={role}
-    deleteFunction={r.api.delete}
-    body={
-      <Form>
-        <Details resource={role} />
-      </Form>
-    }
-  >
-    <RuleList className='mt-2' rules={r.selectors.rules(role)} />
-  </ResourceDetailPage>
-);
 
 const mapStateToProps = ({roles}) => ({
   roles
@@ -49,6 +33,24 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
   role: stateProps.roles[ownProps.params.uid]
 });
 
-export default withParams(
-  connect(mapStateToProps, null, mergeProps)(RolesDetailPage)
+export const RolesDetailPage = withParams(
+  connect(
+    mapStateToProps,
+    null,
+    mergeProps
+  )(({role}) => (
+    <ResourceDetailPage
+      kind='Roles'
+      path='roles'
+      resource={role}
+      deleteFunction={api.deleteRole}
+      body={
+        <Form>
+          <Details resource={role} />
+        </Form>
+      }
+    >
+      <RuleList className='mt-2' rules={selectors.rules(role)} />
+    </ResourceDetailPage>
+  ))
 );
