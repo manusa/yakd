@@ -17,9 +17,8 @@
 import React from 'react';
 import {name, namespace, sortByCreationTimeStamp, uid} from '../metadata';
 import r from './';
-import {Icon, Link} from '../components';
+import {Icon, Link, Table} from '../components';
 import ResourceList from '../components/ResourceList';
-import Table from '../components/Table';
 
 const headers = [
   <span>

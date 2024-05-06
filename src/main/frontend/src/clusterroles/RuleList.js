@@ -16,7 +16,7 @@
  */
 import React from 'react';
 import {selectors} from './';
-import Table from '../components/Table';
+import {Table} from '../components';
 
 const headers = [
   'Resources',

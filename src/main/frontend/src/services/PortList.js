@@ -15,8 +15,7 @@
  *
  */
 import React from 'react';
-import {Icon} from '../components';
-import Table from '../components/Table';
+import {Icon, Table} from '../components';
 
 const headers = [
   <span>

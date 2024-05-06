@@ -16,8 +16,7 @@
  */
 import React from 'react';
 import {bytesToHumanReadable} from '../metrics';
-import {Icon} from '../components';
-import Table from '../components/Table';
+import {Icon, Table} from '../components';
 
 const containerHeaders = [
   <span key='name'>

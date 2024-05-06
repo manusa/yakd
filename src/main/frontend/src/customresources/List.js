@@ -21,9 +21,8 @@ import {crudDelete} from '../redux';
 import {name, namespace, sortByCreationTimeStamp, uid} from '../metadata';
 import {api, selectors} from './';
 import {selectors as crdSelectors} from '../customresourcedefinitions';
-import {Icon, Link, ResourceEditModal} from '../components';
+import {Icon, Link, ResourceEditModal, Table} from '../components';
 import ResourceList from '../components/ResourceList';
-import Table from '../components/Table';
 
 const headers = customResourceDefinition => {
   const ret = [
