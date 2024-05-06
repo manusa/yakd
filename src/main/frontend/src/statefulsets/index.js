@@ -14,20 +14,9 @@
  * limitations under the License.
  *
  */
-import api from './api';
-import selectors from './selectors';
-import List from './List';
-import StatefulSetsDetailPage from './StatefulSetsDetailPage';
-import StatefulSetsEditPage from './StatefulSetsEditPage';
-import StatefulSetsPage from './StatefulSetsPage';
-
-const statefulSets = {};
-
-statefulSets.api = api;
-statefulSets.selectors = selectors;
-statefulSets.List = List;
-statefulSets.StatefulSetsDetailPage = StatefulSetsDetailPage;
-statefulSets.StatefulSetsEditPage = StatefulSetsEditPage;
-statefulSets.StatefulSetsPage = StatefulSetsPage;
-
-export default statefulSets;
+export * as api from './api';
+export * as selectors from './selectors';
+export {List as StatefulSetsList} from './List';
+export {StatefulSetsDetailPage} from './StatefulSetsDetailPage';
+export {StatefulSetsEditPage} from './StatefulSetsEditPage';
+export {StatefulSetsPage} from './StatefulSetsPage';

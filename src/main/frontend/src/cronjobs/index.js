@@ -17,7 +17,7 @@
 
 export * as api from './api';
 export * as selectors from './selectors';
-export {List} from './List';
+export {List as CronJobsList} from './List';
 export {CronJobsDetailPage} from './CronJobsDetailPage';
 export {CronJobsEditPage} from './CronJobsEditPage';
 export {CronJobsPage} from './CronJobsPage';

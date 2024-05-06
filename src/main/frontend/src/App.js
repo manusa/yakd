@@ -91,7 +91,11 @@ import {
   ServiceAccountsDetailPage,
   ServiceAccountsEditPage
 } from './serviceaccounts';
-import sts from './statefulsets';
+import {
+  StatefulSetsPage,
+  StatefulSetsDetailPage,
+  StatefulSetsEditPage
+} from './statefulsets';
 import watch from './watch';
 import {Home} from './Home';
 
@@ -368,16 +372,16 @@ export const App = () => {
           path='/serviceaccounts/:uid/edit'
           element={<ServiceAccountsEditPage />}
         />
-        <Route exact path='/statefulsets' element={<sts.StatefulSetsPage />} />
+        <Route exact path='/statefulsets' element={<StatefulSetsPage />} />
         <Route
           exact
           path='/statefulsets/:uid'
-          element={<sts.StatefulSetsDetailPage />}
+          element={<StatefulSetsDetailPage />}
         />
         <Route
           exact
           path='/statefulsets/:uid/edit'
-          element={<sts.StatefulSetsEditPage />}
+          element={<StatefulSetsEditPage />}
         />
         {/*<Route element={<Error404Page/>} />*/}
       </Routes>

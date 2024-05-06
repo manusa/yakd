@@ -16,17 +16,15 @@
  */
 import React from 'react';
 import {DashboardPage, FilterBar} from '../components';
-import sts from './';
+import {StatefulSetsList} from './';
 import {useUiNamespace} from '../redux';
 
-const StatefulSetsPage = () => {
+export const StatefulSetsPage = () => {
   const {selectedNamespace} = useUiNamespace();
   return (
     <DashboardPage title='StatefulSets'>
       <FilterBar />
-      <sts.List className='mt-4' namespace={selectedNamespace} />
+      <StatefulSetsList className='mt-4' namespace={selectedNamespace} />
     </DashboardPage>
   );
 };
-
-export default StatefulSetsPage;

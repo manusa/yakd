@@ -14,32 +14,25 @@
  * limitations under the License.
  *
  */
-const selectors = {};
+export const statusReplicas = statefulSet => statefulSet?.status?.replicas ?? 0;
 
-selectors.statusReplicas = statefulSet => statefulSet?.status?.replicas ?? 0;
-
-selectors.statusReadyReplicas = statefulSet =>
+export const statusReadyReplicas = statefulSet =>
   statefulSet?.status?.readyReplicas ?? 0;
 
-selectors.isReady = statefulSet =>
-  selectors.statusReplicas(statefulSet) ===
-  selectors.statusReadyReplicas(statefulSet);
+export const isReady = statefulSet =>
+  statusReplicas(statefulSet) === statusReadyReplicas(statefulSet);
 
-selectors.containers = statefulSet =>
+export const containers = statefulSet =>
   statefulSet?.spec?.template?.spec?.containers ?? [];
 
-selectors.images = statefulSet =>
-  selectors.containers(statefulSet).map(c => c.image);
+export const images = statefulSet => containers(statefulSet).map(c => c.image);
 
-selectors.specReplicas = statefulSet => statefulSet?.spec?.replicas ?? 0;
+export const specReplicas = statefulSet => statefulSet?.spec?.replicas ?? 0;
 
 // Selectors for array of StatefulSets
 
-selectors.readyCount = statefulSets =>
+export const readyCount = statefulSets =>
   statefulSets.reduce(
-    (count, statefulSet) =>
-      selectors.isReady(statefulSet) ? count + 1 : count,
+    (count, statefulSet) => (isReady(statefulSet) ? count + 1 : count),
     0
   );
-
-export default selectors;
