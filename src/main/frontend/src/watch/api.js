@@ -25,9 +25,7 @@ import {
   setOffline
 } from '../redux';
 
-const api = {};
-
-api.startEventSource = ({dispatch}) => {
+export const startEventSource = ({dispatch}) => {
   const actions = bindActionCreators(
     {
       clear,
@@ -76,5 +74,3 @@ api.startEventSource = ({dispatch}) => {
   };
   return eventSource;
 };
-
-export default api;
