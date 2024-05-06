@@ -14,8 +14,4 @@
  * limitations under the License.
  *
  */
-const selectors = {};
-
-selectors.rules = role => role?.rules ?? [];
-
-export default selectors;
+export const rules = role => role?.rules ?? [];

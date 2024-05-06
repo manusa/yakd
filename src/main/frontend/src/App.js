@@ -81,7 +81,7 @@ import {
 import pods from './pods';
 import rc from './replicationcontrollers';
 import {apiGroupsSet, setError, setOffline} from './redux';
-import roles from './roles';
+import {RolesPage, RolesDetailPage, RolesEditPage} from './roles';
 import {RoutesPage, RoutesDetailPage, RoutesEditPage} from './routes';
 import {SearchPage} from './search';
 import secrets from './secrets';
@@ -324,13 +324,9 @@ export const App = () => {
           path='/replicationcontrollers/:uid/edit'
           element={<rc.ReplicationControllersEditPage />}
         />
-        <Route exact path='/roles' element={<roles.RolesPage />} />
-        <Route exact path='/roles/:uid' element={<roles.RolesDetailPage />} />
-        <Route
-          exact
-          path='/roles/:uid/edit'
-          element={<roles.RolesEditPage />}
-        />
+        <Route exact path='/roles' element={<RolesPage />} />
+        <Route exact path='/roles/:uid' element={<RolesDetailPage />} />
+        <Route exact path='/roles/:uid/edit' element={<RolesEditPage />} />
         <Route exact path='/routes' element={<RoutesPage />} />
         <Route exact path='/routes/:uid' element={<RoutesDetailPage />} />
         <Route exact path='/routes/:uid/edit' element={<RoutesEditPage />} />

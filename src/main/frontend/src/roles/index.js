@@ -14,20 +14,9 @@
  * limitations under the License.
  *
  */
-import api from './api';
-import selectors from './selectors';
-import List from './List';
-import RolesDetailPage from './RolesDetailPage';
-import RolesEditPage from './RolesEditPage';
-import RolesPage from './RolesPage';
-
-const roles = {};
-
-roles.api = api;
-roles.selectors = selectors;
-roles.List = List;
-roles.RolesDetailPage = RolesDetailPage;
-roles.RolesEditPage = RolesEditPage;
-roles.RolesPage = RolesPage;
-
-export default roles;
+export * as api from './api';
+export * as selectors from './selectors';
+export {List as RolesList} from './List';
+export {RolesDetailPage} from './RolesDetailPage';
+export {RolesEditPage} from './RolesEditPage';
+export {RolesPage} from './RolesPage';
