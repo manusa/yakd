@@ -39,7 +39,11 @@ import {
   CustomResourceDefinitionsEditPage,
   CustomResourceDefinitionsDetailPage
 } from './customresourcedefinitions';
-import dc from './deploymentconfigs';
+import {
+  DeploymentConfigsPage,
+  DeploymentConfigsDetailPage,
+  DeploymentConfigsEditPage
+} from './deploymentconfigs';
 import {
   DaemonSetsPage,
   DaemonSetsDetailPage,
@@ -211,17 +215,17 @@ export const App = () => {
         <Route
           exact
           path='/deploymentconfigs'
-          element={<dc.DeploymentConfigsPage />}
+          element={<DeploymentConfigsPage />}
         />
         <Route
           exact
           path='/deploymentconfigs/:uid'
-          element={<dc.DeploymentConfigsDetailPage />}
+          element={<DeploymentConfigsDetailPage />}
         />
         <Route
           exact
           path='/deploymentconfigs/:uid/edit'
-          element={<dc.DeploymentConfigsEditPage />}
+          element={<DeploymentConfigsEditPage />}
         />
         <Route exact path='/deployments' element={<DeploymentsPage />} />
         <Route

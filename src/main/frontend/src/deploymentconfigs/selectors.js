@@ -14,37 +14,29 @@
  * limitations under the License.
  *
  */
-const selectors = {};
-
-selectors.specReplicas = deploymentConfig =>
+export const specReplicas = deploymentConfig =>
   deploymentConfig?.spec?.replicas ?? 0;
 
-selectors.statusReadyReplicas = deploymentConfig =>
+export const statusReadyReplicas = deploymentConfig =>
   deploymentConfig?.status?.readyReplicas ?? 0;
 
-selectors.isReady = deploymentConfig =>
-  selectors.specReplicas(deploymentConfig) ===
-  selectors.statusReadyReplicas(deploymentConfig);
+export const isReady = deploymentConfig =>
+  specReplicas(deploymentConfig) === statusReadyReplicas(deploymentConfig);
 
-selectors.containers = deploymentConfig =>
+export const containers = deploymentConfig =>
   deploymentConfig?.spec?.template?.spec?.containers ?? [];
 
-selectors.images = deploymentConfig =>
-  selectors.containers(deploymentConfig).map(c => c.image);
+export const images = deploymentConfig =>
+  containers(deploymentConfig).map(c => c.image);
 
-selectors.specReplicas = deploymentConfig =>
-  deploymentConfig?.spec?.replicas ?? 0;
-
-selectors.specStrategyType = deploymentConfig =>
+export const specStrategyType = deploymentConfig =>
   deploymentConfig?.spec?.strategy?.type ?? '';
 
 // Selectors for array of deploymentConfigs
 
-selectors.readyCount = deploymentConfigs =>
+export const readyCount = deploymentConfigs =>
   deploymentConfigs.reduce(
     (count, deploymentConfig) =>
-      selectors.isReady(deploymentConfig) ? count + 1 : count,
+      isReady(deploymentConfig) ? count + 1 : count,
     0
   );
-
-export default selectors;

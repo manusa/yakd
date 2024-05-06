@@ -23,7 +23,7 @@ import {ConfigMapsList} from '../configmaps';
 import * as cj from '../cronjobs';
 import {CustomResourceDefinitionsList} from '../customresourcedefinitions';
 import {DeploymentsList} from '../deployments';
-import dc from '../deploymentconfigs';
+import {DeploymentConfigsList} from '../deploymentconfigs';
 import * as ds from '../daemonsets';
 import * as ep from '../endpoints';
 import {HorizontalPodAutoscalersList} from '../horizontalpodautoscalers';
@@ -72,7 +72,7 @@ const Results = ({query, selectedNamespace}) => {
         nameLike={query}
         namespace={selectedNamespace}
       />
-      <dc.List
+      <DeploymentConfigsList
         {...commonProps}
         title='DeploymentConfigs'
         nameLike={query}

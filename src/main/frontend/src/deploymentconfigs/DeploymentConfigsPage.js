@@ -15,18 +15,16 @@
  *
  */
 import React from 'react';
-import dc from './';
+import {DeploymentConfigsList} from './';
 import {DashboardPage, FilterBar} from '../components';
 import {useUiNamespace} from '../redux';
 
-const DeploymentConfigsPage = () => {
+export const DeploymentConfigsPage = () => {
   const {selectedNamespace} = useUiNamespace();
   return (
     <DashboardPage title='DeploymentConfigs'>
       <FilterBar />
-      <dc.List className='mt-4' namespace={selectedNamespace} />
+      <DeploymentConfigsList className='mt-4' namespace={selectedNamespace} />
     </DashboardPage>
   );
 };
-
-export default DeploymentConfigsPage;

@@ -14,20 +14,9 @@
  * limitations under the License.
  *
  */
-import api from './api';
-import selectors from './selectors';
-import List from './List';
-import DeploymentConfigsDetailPage from './DeploymentConfigsDetailPage';
-import DeploymentConfigsEditPage from './DeploymentConfigsEditPage';
-import DeploymentConfigsPage from './DeploymentConfigsPage';
-
-const deploymentConfigs = {};
-
-deploymentConfigs.api = api;
-deploymentConfigs.selectors = selectors;
-deploymentConfigs.List = List;
-deploymentConfigs.DeploymentConfigsDetailPage = DeploymentConfigsDetailPage;
-deploymentConfigs.DeploymentConfigsEditPage = DeploymentConfigsEditPage;
-deploymentConfigs.DeploymentConfigsPage = DeploymentConfigsPage;
-
-export default deploymentConfigs;
+export * as api from './api';
+export * as selectors from './selectors';
+export {List as DeploymentConfigsList} from './List';
+export {DeploymentConfigsDetailPage} from './DeploymentConfigsDetailPage';
+export {DeploymentConfigsEditPage} from './DeploymentConfigsEditPage';
+export {DeploymentConfigsPage} from './DeploymentConfigsPage';
