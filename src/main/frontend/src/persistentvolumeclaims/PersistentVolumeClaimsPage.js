@@ -17,16 +17,17 @@
 import React from 'react';
 import {DashboardPage, FilterBar} from '../components';
 import {useUiNamespace} from '../redux';
-import pvc from './';
+import {PersistentVolumeClaimsList} from './';
 
-const PersistentVolumeClaimsPage = () => {
+export const PersistentVolumeClaimsPage = () => {
   const {selectedNamespace} = useUiNamespace();
   return (
     <DashboardPage title='PersistentVolumeClaims'>
       <FilterBar />
-      <pvc.List className='mt-4' namespace={selectedNamespace} />
+      <PersistentVolumeClaimsList
+        className='mt-4'
+        namespace={selectedNamespace}
+      />
     </DashboardPage>
   );
 };
-
-export default PersistentVolumeClaimsPage;

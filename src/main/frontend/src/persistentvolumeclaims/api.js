@@ -16,10 +16,6 @@
  */
 import {deleteNamespacedResource, updateNamespacedResource} from '../fetch';
 
-const api = {};
+export const deletePvc = deleteNamespacedResource('persistentvolumeclaims');
 
-api.delete = deleteNamespacedResource('persistentvolumeclaims');
-
-api.update = updateNamespacedResource('persistentvolumeclaims');
-
-export default api;
+export const update = updateNamespacedResource('persistentvolumeclaims');

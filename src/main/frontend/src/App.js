@@ -64,7 +64,11 @@ import {
 import {JobsPage, JobsEditPage, JobsDetailPage} from './jobs';
 import {NodesPage, NodesDetailPage, NodesEditPage} from './nodes';
 import {NamespacesPage, NamespacesDetailPage} from './namespaces';
-import pvc from './persistentvolumeclaims';
+import {
+  PersistentVolumeClaimsPage,
+  PersistentVolumeClaimsEditPage,
+  PersistentVolumeClaimsDetailPage
+} from './persistentvolumeclaims';
 import {
   PersistentVolumesPage,
   PersistentVolumesEditPage,
@@ -269,17 +273,17 @@ export const App = () => {
         <Route
           exact
           path='/persistentvolumeclaims'
-          element={<pvc.PersistentVolumeClaimsPage />}
+          element={<PersistentVolumeClaimsPage />}
         />
         <Route
           exact
           path='/persistentvolumeclaims/:uid'
-          element={<pvc.PersistentVolumeClaimsDetailPage />}
+          element={<PersistentVolumeClaimsDetailPage />}
         />
         <Route
           exact
           path='/persistentvolumeclaims/:uid/edit'
-          element={<pvc.PersistentVolumeClaimsEditPage />}
+          element={<PersistentVolumeClaimsEditPage />}
         />
         <Route
           exact
