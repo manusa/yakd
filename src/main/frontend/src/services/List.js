@@ -16,7 +16,7 @@
  */
 import React from 'react';
 import {name, namespace, sortByCreationTimeStamp, uid} from '../metadata';
-import svc from './';
+import {Type, api, selectors} from './';
 import {Icon, Link, Table} from '../components';
 import ResourceList from '../components/ResourceList';
 
@@ -31,7 +31,7 @@ const headers = [
 ];
 
 const Rows = ({services}) => {
-  const deleteService = service => async () => await svc.api.delete(service);
+  const deleteService = service => async () => await api.deleteService(service);
   return services.sort(sortByCreationTimeStamp).map(service => (
     <Table.ResourceRow key={uid(service)} resource={service}>
       <Table.Cell>
@@ -45,9 +45,9 @@ const Rows = ({services}) => {
         </Link.Namespace>
       </Table.Cell>
       <Table.Cell>
-        <svc.Type service={service} />
+        <Type service={service} />
       </Table.Cell>
-      <Table.Cell>{svc.selectors.specClusterIP(service)}</Table.Cell>
+      <Table.Cell>{selectors.specClusterIP(service)}</Table.Cell>
       <Table.Cell>
         <Table.DeleteButton onClick={deleteService(service)} />
       </Table.Cell>
@@ -55,10 +55,10 @@ const Rows = ({services}) => {
   ));
 };
 
-const List = ({resources, loadedResources, crudDelete, ...properties}) => (
-  <ResourceList headers={headers} resources={resources} {...properties}>
-    <Rows services={resources} />
-  </ResourceList>
+export const List = ResourceList.resourceListConnect('services')(
+  ({resources, loadedResources, crudDelete, ...properties}) => (
+    <ResourceList headers={headers} resources={resources} {...properties}>
+      <Rows services={resources} />
+    </ResourceList>
+  )
 );
-
-export default ResourceList.resourceListConnect('services')(List);

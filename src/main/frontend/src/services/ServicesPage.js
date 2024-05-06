@@ -16,17 +16,15 @@
  */
 import React from 'react';
 import {DashboardPage, FilterBar} from '../components';
-import services from './';
+import {ServicesList} from './';
 import {useUiNamespace} from '../redux';
 
-const ServicesPage = () => {
+export const ServicesPage = () => {
   const {selectedNamespace} = useUiNamespace();
   return (
     <DashboardPage title='Services'>
       <FilterBar />
-      <services.List className='mt-4' namespace={selectedNamespace} />
+      <ServicesList className='mt-4' namespace={selectedNamespace} />
     </DashboardPage>
   );
 };
-
-export default ServicesPage;

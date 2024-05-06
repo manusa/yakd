@@ -18,7 +18,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {withParams} from '../router';
 import {Details} from '../metadata';
-import svc from './';
+import {PortList, Type, api, selectors} from './';
 import {Card, Form, ResourceDetailPage} from '../components';
 
 const Selectors = ({selectors}) => (
@@ -37,35 +37,6 @@ const ExternalIps = ({ips}) => (
   </Form.Field>
 );
 
-const ServicesDetailPage = ({service}) => (
-  <ResourceDetailPage
-    kind='Services'
-    path='services'
-    resource={service}
-    deleteFunction={svc.api.delete}
-    body={
-      <Form>
-        <Details resource={service} />
-        <Selectors selectors={svc.selectors.specSelector(service)} />
-        <Form.Field label='Type'>
-          <svc.Type service={service} />
-        </Form.Field>
-        <Form.Field label='Cluster IP'>
-          {svc.selectors.specClusterIP(service)}
-        </Form.Field>
-        <ExternalIps ips={svc.selectors.specExternalIPs(service)} />
-      </Form>
-    }
-  >
-    <svc.PortList
-      title='Service Ports'
-      titleVariant={Card.titleVariants.medium}
-      className='mt-2'
-      ports={svc.selectors.specPorts(service)}
-    />
-  </ResourceDetailPage>
-);
-
 const mapStateToProps = ({services}) => ({
   services
 });
@@ -77,6 +48,37 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
   service: stateProps.services[ownProps.params.uid]
 });
 
-export default withParams(
-  connect(mapStateToProps, null, mergeProps)(ServicesDetailPage)
+export const ServicesDetailPage = withParams(
+  connect(
+    mapStateToProps,
+    null,
+    mergeProps
+  )(({service}) => (
+    <ResourceDetailPage
+      kind='Services'
+      path='services'
+      resource={service}
+      deleteFunction={api.deleteService}
+      body={
+        <Form>
+          <Details resource={service} />
+          <Selectors selectors={selectors.specSelector(service)} />
+          <Form.Field label='Type'>
+            <Type service={service} />
+          </Form.Field>
+          <Form.Field label='Cluster IP'>
+            {selectors.specClusterIP(service)}
+          </Form.Field>
+          <ExternalIps ips={selectors.specExternalIPs(service)} />
+        </Form>
+      }
+    >
+      <PortList
+        title='Service Ports'
+        titleVariant={Card.titleVariants.medium}
+        className='mt-2'
+        ports={selectors.specPorts(service)}
+      />
+    </ResourceDetailPage>
+  ))
 );

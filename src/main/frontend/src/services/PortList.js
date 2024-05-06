@@ -40,7 +40,7 @@ const Rows = ({ports}) =>
     </Table.Row>
   ));
 
-const PortList = ({ports, ...properties}) => (
+export const PortList = ({ports, ...properties}) => (
   <Table {...properties}>
     <Table.Head columns={headers} />
     <Table.Body>
@@ -48,5 +48,3 @@ const PortList = ({ports, ...properties}) => (
     </Table.Body>
   </Table>
 );
-
-export default PortList;

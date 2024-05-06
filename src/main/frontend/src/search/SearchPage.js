@@ -35,7 +35,7 @@ import {PersistentVolumeClaimsList} from '../persistentvolumeclaims';
 import {PersistentVolumesList} from '../persistentvolumes';
 import s from '../secrets';
 import {StatefulSetsList} from '../statefulsets';
-import svc from '../services';
+import {ServicesList} from '../services';
 import * as sa from '../serviceaccounts';
 import {setQuery} from '../redux';
 import {ReplicaSetsList} from '../replicasets';
@@ -120,7 +120,7 @@ const Results = ({query, selectedNamespace}) => {
         nameLike={query}
         namespace={selectedNamespace}
       />
-      <svc.List
+      <ServicesList
         {...commonProps}
         title='Services'
         nameLike={query}

@@ -14,26 +14,11 @@
  * limitations under the License.
  *
  */
-import api from './api';
-import reducer from './reducer';
-import selectors from './selectors';
-import List from './List';
-import PortList from './PortList';
-import ServicesDetailPage from './ServicesDetailPage';
-import ServicesEditPage from './ServicesEditPage';
-import ServicesPage from './ServicesPage';
-import Type from './Type';
-
-const services = {};
-
-services.api = api;
-services.reducer = reducer;
-services.selectors = selectors;
-services.List = List;
-services.PortList = PortList;
-services.ServicesDetailPage = ServicesDetailPage;
-services.ServicesEditPage = ServicesEditPage;
-services.ServicesPage = ServicesPage;
-services.Type = Type;
-
-export default services;
+export * as api from './api';
+export * as selectors from './selectors';
+export {List as ServicesList} from './List';
+export {PortList} from './PortList';
+export {ServicesDetailPage} from './ServicesDetailPage';
+export {ServicesEditPage} from './ServicesEditPage';
+export {ServicesPage} from './ServicesPage';
+export {Type} from './Type';

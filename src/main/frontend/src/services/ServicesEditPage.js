@@ -17,10 +17,10 @@
 import React from 'react';
 import {withParams} from '../router';
 import {name} from '../metadata';
-import s from './';
+import {api} from './';
 import {Link, ResourceEditPage} from '../components';
 
-const ServicesEditPage = ({params: {uid}}) => (
+export const ServicesEditPage = withParams(({params: {uid}}) => (
   <ResourceEditPage
     kind='Services'
     path='services'
@@ -29,9 +29,7 @@ const ServicesEditPage = ({params: {uid}}) => (
         {name(resource)}
       </Link.RouterLink>
     )}
-    save={async resource => await s.api.update(resource)}
+    save={async resource => await api.update(resource)}
     resourceFromState={state => state.services[uid]}
   />
-);
-
-export default withParams(ServicesEditPage);
+));

@@ -16,15 +16,19 @@
  */
 import React from 'react';
 import {connect} from 'react-redux';
-import svc from './index';
+import {selectors} from './index';
 import {Link} from '../components';
 import {selectors as nodeSelectors} from '../nodes';
 
-const Type = ({service, firstNode}) => {
-  const type = svc.selectors.specType(service);
+const mapStateToProps = ({nodes}) => ({
+  firstNode: Object.values(nodes)[0]
+});
+
+export const Type = connect(mapStateToProps)(({service, firstNode}) => {
+  const type = selectors.specType(service);
   const nodeExternalIP =
     nodeSelectors.statusAddressExternalIPOrFirst(firstNode);
-  const nodePort = svc.selectors.specPortsFirstNodePort(service);
+  const nodePort = selectors.specPortsFirstNodePort(service);
   if (type !== 'NodePort') {
     return <>{type}</>;
   }
@@ -33,10 +37,4 @@ const Type = ({service, firstNode}) => {
       {type}
     </Link>
   );
-};
-
-const mapStateToProps = ({nodes}) => ({
-  firstNode: Object.values(nodes)[0]
 });
-
-export default connect(mapStateToProps)(Type);

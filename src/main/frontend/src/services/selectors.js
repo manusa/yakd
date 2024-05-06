@@ -14,22 +14,17 @@
  * limitations under the License.
  *
  */
-const selectors = {};
+export const specClusterIP = service => service?.spec?.clusterIP ?? '';
 
-selectors.specClusterIP = service => service?.spec?.clusterIP ?? '';
+export const specExternalIPs = service => service?.spec?.externalIPs ?? [];
 
-selectors.specExternalIPs = service => service?.spec?.externalIPs ?? [];
+export const specSelector = service => service?.spec?.selector ?? {};
 
-selectors.specSelector = service => service?.spec?.selector ?? {};
+export const specPorts = service => service?.spec?.ports ?? [];
 
-selectors.specPorts = service => service?.spec?.ports ?? [];
-
-selectors.specPortsFirstNodePort = service =>
-  selectors
-    .specPorts(service)
+export const specPortsFirstNodePort = service =>
+  specPorts(service)
     .map(p => p.nodePort)
     .find(np => np) ?? 0;
 
-selectors.specType = service => service?.spec?.type ?? '';
-
-export default selectors;
+export const specType = service => service?.spec?.type ?? '';

@@ -85,7 +85,7 @@ import {RolesPage, RolesDetailPage, RolesEditPage} from './roles';
 import {RoutesPage, RoutesDetailPage, RoutesEditPage} from './routes';
 import {SearchPage} from './search';
 import secrets from './secrets';
-import services from './services';
+import {ServicesPage, ServicesDetailPage, ServicesEditPage} from './services';
 import {
   ServiceAccountsPage,
   ServiceAccountsDetailPage,
@@ -346,16 +346,12 @@ export const App = () => {
           path='/secrets/:uid/edit'
           element={<secrets.SecretsEditPage />}
         />
-        <Route exact path='/services' element={<services.ServicesPage />} />
-        <Route
-          exact
-          path='/services/:uid'
-          element={<services.ServicesDetailPage />}
-        />
+        <Route exact path='/services' element={<ServicesPage />} />
+        <Route exact path='/services/:uid' element={<ServicesDetailPage />} />
         <Route
           exact
           path='/services/:uid/edit'
-          element={<services.ServicesEditPage />}
+          element={<ServicesEditPage />}
         />
         <Route
           exact
