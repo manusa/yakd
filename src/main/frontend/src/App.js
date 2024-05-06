@@ -96,7 +96,7 @@ import {
   StatefulSetsDetailPage,
   StatefulSetsEditPage
 } from './statefulsets';
-import watch from './watch';
+import {startEventSource} from './watch';
 import {Home} from './Home';
 
 let eventSource;
@@ -117,7 +117,7 @@ const pollResources = dispatch => {
       console.error('EventSource connection was lost, reconnecting');
       dispatch(setOffline(true));
       eventSource.close();
-      eventSource = watch.api.startEventSource({dispatch});
+      eventSource = startEventSource({dispatch});
     }
     pollResourcesTimeout = setTimeout(dispatchedPoll, 3000);
   };
@@ -125,7 +125,7 @@ const pollResources = dispatch => {
 };
 
 const onMount = ({dispatch}) => {
-  eventSource = watch.api.startEventSource({dispatch});
+  eventSource = startEventSource({dispatch});
   pollResources(dispatch)();
 };
 

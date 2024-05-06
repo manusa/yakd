@@ -14,10 +14,4 @@
  * limitations under the License.
  *
  */
-import api from './api';
-
-const watch = {};
-
-watch.api = api;
-
-export default watch;
+export {startEventSource} from './api';
