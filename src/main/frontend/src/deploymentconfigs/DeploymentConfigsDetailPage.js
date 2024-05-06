@@ -19,68 +19,11 @@ import {connect} from 'react-redux';
 import {withParams} from '../router';
 import {Details, ownerReferencesUids, uid} from '../metadata';
 import {ContainerList} from '../containers';
-import dc from './';
+import {api, selectors} from './';
 import pods from '../pods';
 import rs from '../replicasets';
 import rc from '../replicationcontrollers';
 import {Card, Form, Icon, Link, ResourceDetailPage} from '../components';
-
-const DeploymentConfigsDetailPage = ({
-  deploymentConfig,
-  replicationControllersUids
-}) => (
-  <ResourceDetailPage
-    kind='DeploymentConfigs'
-    path='deploymentconfigs'
-    resource={deploymentConfig}
-    isReadyFunction={dc.selectors.isReady}
-    deleteFunction={dc.api.delete}
-    actions={
-      <Link
-        className='ml-2'
-        size={Link.sizes.small}
-        variant={Link.variants.outline}
-        onClick={() => dc.api.restart(deploymentConfig)}
-        title='Restart'
-      >
-        <Icon stylePrefix='fas' icon='fa-redo-alt' className='mr-2' />
-        Restart
-      </Link>
-    }
-    body={
-      <Form>
-        <Details resource={deploymentConfig} />
-        <rs.ReplicasField
-          resource={deploymentConfig}
-          replicas={dc.selectors.specReplicas(deploymentConfig)}
-          updateReplicas={dc.api.updateReplicas}
-        />
-        <Form.Field label='Strategy'>
-          {dc.selectors.specStrategyType(deploymentConfig)}
-        </Form.Field>
-      </Form>
-    }
-  >
-    <ContainerList
-      title='Containers'
-      titleVariant={Card.titleVariants.medium}
-      className='mt-2'
-      containers={dc.selectors.containers(deploymentConfig)}
-    />
-    <rc.List
-      title='Replication Controller'
-      titleVariant={Card.titleVariants.medium}
-      className='mt-2'
-      ownerUid={uid(deploymentConfig)}
-    />
-    <pods.List
-      title='Pods'
-      titleVariant={Card.titleVariants.medium}
-      className='mt-2'
-      ownerUids={replicationControllersUids}
-    />
-  </ResourceDetailPage>
-);
 
 const mapStateToProps = ({deploymentConfigs, replicationControllers}) => ({
   deploymentConfigs,
@@ -101,6 +44,62 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
     .map(replicationController => uid(replicationController))
 });
 
-export default withParams(
-  connect(mapStateToProps, null, mergeProps)(DeploymentConfigsDetailPage)
+export const DeploymentConfigsDetailPage = withParams(
+  connect(
+    mapStateToProps,
+    null,
+    mergeProps
+  )(({deploymentConfig, replicationControllersUids}) => (
+    <ResourceDetailPage
+      kind='DeploymentConfigs'
+      path='deploymentconfigs'
+      resource={deploymentConfig}
+      isReadyFunction={selectors.isReady}
+      deleteFunction={api.deleteDc}
+      actions={
+        <Link
+          className='ml-2'
+          size={Link.sizes.small}
+          variant={Link.variants.outline}
+          onClick={() => api.restart(deploymentConfig)}
+          title='Restart'
+        >
+          <Icon stylePrefix='fas' icon='fa-redo-alt' className='mr-2' />
+          Restart
+        </Link>
+      }
+      body={
+        <Form>
+          <Details resource={deploymentConfig} />
+          <rs.ReplicasField
+            resource={deploymentConfig}
+            replicas={selectors.specReplicas(deploymentConfig)}
+            updateReplicas={api.updateReplicas}
+          />
+          <Form.Field label='Strategy'>
+            {selectors.specStrategyType(deploymentConfig)}
+          </Form.Field>
+        </Form>
+      }
+    >
+      <ContainerList
+        title='Containers'
+        titleVariant={Card.titleVariants.medium}
+        className='mt-2'
+        containers={selectors.containers(deploymentConfig)}
+      />
+      <rc.List
+        title='Replication Controller'
+        titleVariant={Card.titleVariants.medium}
+        className='mt-2'
+        ownerUid={uid(deploymentConfig)}
+      />
+      <pods.List
+        title='Pods'
+        titleVariant={Card.titleVariants.medium}
+        className='mt-2'
+        ownerUids={replicationControllersUids}
+      />
+    </ResourceDetailPage>
+  ))
 );

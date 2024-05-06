@@ -17,7 +17,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {name, namespace, sortByCreationTimeStamp, uid} from '../metadata';
-import dc from './';
+import {api, selectors} from './';
 import {resourcesBy} from '../redux';
 import {Icon, Link, Table} from '../components';
 import ResourceList from '../components/ResourceList';
@@ -35,8 +35,8 @@ const headers = [
 ];
 
 const Rows = ({deploymentConfigs}) => {
-  const deleteDC = deploymentConfig => () => dc.api.delete(deploymentConfig);
-  const restartDC = deploymentConfig => () => dc.api.restart(deploymentConfig);
+  const deleteDC = deploymentConfig => () => api.deleteDc(deploymentConfig);
+  const restartDC = deploymentConfig => () => api.restart(deploymentConfig);
   return deploymentConfigs
     .sort(sortByCreationTimeStamp)
     .map(deploymentConfig => (
@@ -47,12 +47,12 @@ const Rows = ({deploymentConfigs}) => {
         <Table.Cell className='whitespace-nowrap w-3 text-center'>
           <Icon
             className={
-              dc.selectors.isReady(deploymentConfig)
+              selectors.isReady(deploymentConfig)
                 ? 'text-green-500'
                 : 'text-red-500'
             }
             icon={
-              dc.selectors.isReady(deploymentConfig)
+              selectors.isReady(deploymentConfig)
                 ? 'fa-check'
                 : 'fa-exclamation-circle'
             }
@@ -71,7 +71,7 @@ const Rows = ({deploymentConfigs}) => {
           </Link.Namespace>
         </Table.Cell>
         <Table.Cell className='break-all'>
-          {dc.selectors.images(deploymentConfig).map((image, idx) => (
+          {selectors.images(deploymentConfig).map((image, idx) => (
             <div key={idx}>{image}</div>
           ))}
         </Table.Cell>
@@ -92,12 +92,6 @@ const Rows = ({deploymentConfigs}) => {
     ));
 };
 
-const List = ({deploymentConfigs, ...properties}) => (
-  <ResourceList headers={headers} resources={deploymentConfigs} {...properties}>
-    <Rows deploymentConfigs={deploymentConfigs} />
-  </ResourceList>
-);
-
 const mapStateToProps = ({deploymentConfigs}) => ({
   deploymentConfigs
 });
@@ -111,4 +105,12 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
   )
 });
 
-export default connect(mapStateToProps, null, mergeProps)(List);
+export const List = connect(
+  mapStateToProps,
+  null,
+  mergeProps
+)(({deploymentConfigs, ...properties}) => (
+  <ResourceList headers={headers} resources={deploymentConfigs} {...properties}>
+    <Rows deploymentConfigs={deploymentConfigs} />
+  </ResourceList>
+));

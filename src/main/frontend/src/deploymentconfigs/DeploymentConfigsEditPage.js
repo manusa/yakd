@@ -17,10 +17,10 @@
 import React from 'react';
 import {withParams} from '../router';
 import {name} from '../metadata';
-import dc from './';
+import {api} from './';
 import {Link, ResourceEditPage} from '../components';
 
-const DeploymentConfigsEditPage = ({params: {uid}}) => (
+export const DeploymentConfigsEditPage = withParams(({params: {uid}}) => (
   <ResourceEditPage
     kind='DeploymentConfigs'
     path='deploymentconfigs'
@@ -29,9 +29,7 @@ const DeploymentConfigsEditPage = ({params: {uid}}) => (
         {name(resource)}
       </Link.RouterLink>
     )}
-    save={async resource => await dc.api.update(resource)}
+    save={async resource => await api.update(resource)}
     resourceFromState={state => state.deploymentConfigs[uid]}
   />
-);
-
-export default withParams(DeploymentConfigsEditPage);
+));
