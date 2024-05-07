@@ -16,9 +16,10 @@
  */
 import React from 'react';
 import {withParams} from '../router';
-import {api} from './';
 import {name} from '../metadata';
-import {Link, ResourceEditPage} from '../components';
+import {Link} from '../components';
+import {ResourceEditPage} from '../editor';
+import {api} from './';
 
 export const ConfigMapsEditPage = withParams(({params: {uid}}) => {
   const cardTitle = resource => (

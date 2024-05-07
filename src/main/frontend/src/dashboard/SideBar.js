@@ -17,11 +17,11 @@
 import React, {useRef, useLayoutEffect} from 'react';
 import {connect} from 'react-redux';
 import {useMatch} from 'react-router-dom';
-import * as apis from '../../apis';
-import i from '../../components/icons';
-import {useUiSidebar} from '../../redux';
-import * as crd from '../../customresourcedefinitions';
-import {Icon, Link} from '../../components';
+import * as apis from '../apis';
+import i from '../components/icons';
+import {useUiSidebar} from '../redux';
+import * as crd from '../customresourcedefinitions';
+import {Icon, Link} from '../components';
 
 import './SideBar.css';
 

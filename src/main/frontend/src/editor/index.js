@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Marc Nuri
+ * Copyright 2020 Marc Nuri
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,5 @@
  * limitations under the License.
  *
  */
-import React from 'react';
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
-import {uiSetCreatingNewResource} from '../../redux';
-import {Icon, Link} from '../';
-
-export const NewResourceButton = connect(undefined, dispatch =>
-  bindActionCreators(
-    {newResource: () => uiSetCreatingNewResource(true)},
-    dispatch
-  )
-)(({newResource, ...props}) => {
-  return (
-    <Link title='Create new resource' onClick={newResource} {...props}>
-      <Icon icon='fa-plus' />
-    </Link>
-  );
-});
+export {ResourceEditModal} from './ResourceEditModal';
+export {ResourceEditPage} from './ResourceEditPage';

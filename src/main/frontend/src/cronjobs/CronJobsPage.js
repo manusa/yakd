@@ -15,7 +15,8 @@
  *
  */
 import React from 'react';
-import {DashboardPage, FilterBar} from '../components';
+import {FilterBar} from '../components';
+import {DashboardPage} from '../dashboard';
 import {CronJobsList} from './';
 import {useUiNamespace} from '../redux';
 

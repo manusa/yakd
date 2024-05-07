@@ -18,8 +18,9 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {withParams} from '../router';
 import {Details} from '../metadata';
+import {Card, Form, Link} from '../components';
+import {ResourceDetailPage} from '../dashboard';
 import {api, selectors} from './';
-import {Card, Form, Link, ResourceDetailPage} from '../components';
 
 const mapStateToProps = ({persistentVolumes}) => ({
   persistentVolumes

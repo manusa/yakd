@@ -16,13 +16,15 @@
  */
 import React, {useState} from 'react';
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
-import {clearError} from '../../redux';
-import * as apis from '../../apis';
-import i from '../icons';
-import {name as metadataName} from '../../metadata';
-import {selectors as nodeSelectors} from '../../nodes';
-import {Alert, Icon, Link, Tooltip} from '../';
-import {NewResource, NewResourceButton, SideBar} from './';
+import {clearError} from '../redux';
+import * as apis from '../apis';
+import i from '../components/icons';
+import {name as metadataName} from '../metadata';
+import {selectors as nodeSelectors} from '../nodes';
+import {Alert, Icon, Link, Tooltip} from '../components';
+import {NewResource} from './NewResource';
+import {NewResourceButton} from './NewResourceButton';
+import {SideBar} from './SideBar';
 
 const OfflineIcon = () => (
   <div className='fa-stack text-red-700' title='Watchers stopped (No network)'>

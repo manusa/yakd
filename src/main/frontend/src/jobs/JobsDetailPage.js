@@ -21,7 +21,8 @@ import {Details, namespace, uid} from '../metadata';
 import {api, selectors} from './';
 import {ContainerList} from '../containers';
 import pods from '../pods';
-import {Card, DashboardPage, Form, ResourceDetailPage} from '../components';
+import {Card, Form} from '../components';
+import {DashboardPage, ResourceDetailPage} from '../dashboard';
 
 const mapStateToProps = ({jobs}) => ({
   jobs

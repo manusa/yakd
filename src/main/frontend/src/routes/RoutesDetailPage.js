@@ -18,8 +18,9 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {withParams} from '../router';
 import {Details} from '../metadata';
+import {Form} from '../components';
+import {ResourceDetailPage} from '../dashboard';
 import {Host, api, selectors} from './';
-import {Form, ResourceDetailPage} from '../components';
 
 const mapStateToProps = ({routes}) => ({
   routes

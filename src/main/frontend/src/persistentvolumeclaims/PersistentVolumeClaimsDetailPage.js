@@ -19,7 +19,8 @@ import {connect} from 'react-redux';
 import {withParams} from '../router';
 import {Details} from '../metadata';
 import {api, selectors} from './';
-import {Form, ResourceDetailPage} from '../components';
+import {Form} from '../components';
+import {ResourceDetailPage} from '../dashboard';
 
 const mapStateToProps = ({persistentVolumeClaims}) => ({
   persistentVolumeClaims

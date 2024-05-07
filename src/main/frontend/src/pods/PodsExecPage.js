@@ -20,7 +20,8 @@ import {withParams} from '../router';
 import {name, namespace} from '../metadata';
 import {ContainerDropdown} from '../containers';
 import p from './index';
-import {Card, DashboardPage, Link} from '../components';
+import {Card, Link} from '../components';
+import {DashboardPage} from '../dashboard';
 
 import 'xterm/css/xterm.css';
 
