@@ -14,9 +14,5 @@
  * limitations under the License.
  *
  */
-const selectors = {};
-
-selectors.type = secret => secret?.type ?? '';
-selectors.data = secret => secret?.data ?? {};
-
-export default selectors;
+export const type = secret => secret?.type ?? '';
+export const data = secret => secret?.data ?? {};

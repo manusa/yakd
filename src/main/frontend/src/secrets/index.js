@@ -14,20 +14,9 @@
  * limitations under the License.
  *
  */
-import api from './api';
-import selectors from './selectors';
-import List from './List';
-import SecretsDetailPage from './SecretsDetailPage';
-import SecretsEditPage from './SecretsEditPage';
-import SecretsPage from './SecretsPage';
-
-const secrets = {};
-
-secrets.api = api;
-secrets.selectors = selectors;
-secrets.List = List;
-secrets.SecretsDetailPage = SecretsDetailPage;
-secrets.SecretsEditPage = SecretsEditPage;
-secrets.SecretsPage = SecretsPage;
-
-export default secrets;
+export * as api from './api';
+export * as selectors from './selectors';
+export {List as SecretsList} from './List';
+export {SecretsDetailPage} from './SecretsDetailPage';
+export {SecretsEditPage} from './SecretsEditPage';
+export {SecretsPage} from './SecretsPage';

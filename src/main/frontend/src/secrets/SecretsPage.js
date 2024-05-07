@@ -15,18 +15,16 @@
  *
  */
 import React from 'react';
-import s from './';
+import {SecretsList} from './';
 import {DashboardPage, FilterBar} from '../components';
 import {useUiNamespace} from '../redux';
 
-const SecretsPage = () => {
+export const SecretsPage = () => {
   const {selectedNamespace} = useUiNamespace();
   return (
     <DashboardPage title='Secrets'>
       <FilterBar />
-      <s.List className='mt-4' namespace={selectedNamespace} />
+      <SecretsList className='mt-4' namespace={selectedNamespace} />
     </DashboardPage>
   );
 };
-
-export default SecretsPage;

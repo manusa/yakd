@@ -84,7 +84,7 @@ import {apiGroupsSet, setError, setOffline} from './redux';
 import {RolesPage, RolesDetailPage, RolesEditPage} from './roles';
 import {RoutesPage, RoutesDetailPage, RoutesEditPage} from './routes';
 import {SearchPage} from './search';
-import secrets from './secrets';
+import {SecretsPage, SecretsDetailPage, SecretsEditPage} from './secrets';
 import {ServicesPage, ServicesDetailPage, ServicesEditPage} from './services';
 import {
   ServiceAccountsPage,
@@ -335,17 +335,9 @@ export const App = () => {
         <Route exact path='/routes/:uid' element={<RoutesDetailPage />} />
         <Route exact path='/routes/:uid/edit' element={<RoutesEditPage />} />
         <Route exact path='/search' element={<SearchPage />} />
-        <Route exact path='/secrets' element={<secrets.SecretsPage />} />
-        <Route
-          exact
-          path='/secrets/:uid'
-          element={<secrets.SecretsDetailPage />}
-        />
-        <Route
-          exact
-          path='/secrets/:uid/edit'
-          element={<secrets.SecretsEditPage />}
-        />
+        <Route exact path='/secrets' element={<SecretsPage />} />
+        <Route exact path='/secrets/:uid' element={<SecretsDetailPage />} />
+        <Route exact path='/secrets/:uid/edit' element={<SecretsEditPage />} />
         <Route exact path='/services' element={<ServicesPage />} />
         <Route exact path='/services/:uid' element={<ServicesDetailPage />} />
         <Route

@@ -16,7 +16,7 @@
  */
 export * as api from './api';
 export * as selectors from './selectors';
-export {List} from './List';
+export {List as DaemonSetsList} from './List';
 export {DaemonSetsDetailPage} from './DaemonSetsDetailPage';
 export {DaemonSetsEditPage} from './DaemonSetsEditPage';
 export {DaemonSetsPage} from './DaemonSetsPage';

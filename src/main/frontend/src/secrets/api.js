@@ -20,12 +20,8 @@ import {
   updateNamespacedResource
 } from '../fetch';
 
-const api = {};
+export const list = listResource('secrets', 'Secret');
 
-api.list = listResource('secrets', 'Secret');
+export const deleteSecret = deleteNamespacedResource('secrets');
 
-api.delete = deleteNamespacedResource('secrets');
-
-api.update = updateNamespacedResource('secrets');
-
-export default api;
+export const update = updateNamespacedResource('secrets');
