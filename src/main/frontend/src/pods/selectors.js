@@ -16,57 +16,51 @@
  */
 import {resourcesBy, toObjectReducer} from '../redux';
 
-const selectors = {};
+export const statusPhase = pod => pod?.status?.phase ?? '';
 
-selectors.statusPhase = pod => pod?.status?.phase ?? '';
+export const statusPodIP = pod => pod?.status?.podIP ?? '';
 
-selectors.statusPodIP = pod => pod?.status?.podIP ?? '';
+export const nodeName = pod => pod?.spec?.nodeName ?? '';
 
-selectors.nodeName = pod => pod?.spec?.nodeName ?? '';
+export const restartPolicy = pod => pod?.spec?.restartPolicy ?? '';
 
-selectors.restartPolicy = pod => pod?.spec?.restartPolicy ?? '';
+export const containers = pod => pod?.spec?.containers ?? [];
 
-selectors.containers = pod => pod?.spec?.containers ?? [];
+export const containerStatuses = pod => pod?.status?.containerStatuses ?? [];
 
-selectors.containerStatuses = pod => pod?.status?.containerStatuses ?? [];
-
-selectors.containersReady = pod => {
-  const css = selectors.containerStatuses(pod);
+export const containersReady = pod => {
+  const css = containerStatuses(pod);
   return css.length > 0 && css.every(cs => cs.ready);
 };
 
-selectors.isSucceded = pod => selectors.statusPhase(pod) === 'Succeeded';
+export const isSucceded = pod => statusPhase(pod) === 'Succeeded';
 
-selectors.succeededOrContainersReady = pod =>
-  selectors.isSucceded(pod) || selectors.containersReady(pod);
+export const succeededOrContainersReady = pod =>
+  isSucceded(pod) || containersReady(pod);
 
-selectors.restartCount = pod =>
-  selectors
-    .containerStatuses(pod)
-    .reduce((acc, containerStatus) => acc + containerStatus.restartCount, 0);
+export const restartCount = pod =>
+  containerStatuses(pod).reduce(
+    (acc, containerStatus) => acc + containerStatus.restartCount,
+    0
+  );
 
 // Selectors for array of Pods
 
-selectors.succeededCount = pods =>
-  pods.reduce(
-    (count, pod) => (selectors.isSucceded(pod) ? count + 1 : count),
-    0
-  );
+export const succeededCount = pods =>
+  pods.reduce((count, pod) => (isSucceded(pod) ? count + 1 : count), 0);
 
-selectors.readyCount = pods =>
-  pods.reduce(
-    (count, pod) => (selectors.containersReady(pod) ? count + 1 : count),
-    0
-  );
+export const readyCount = pods =>
+  pods.reduce((count, pod) => (containersReady(pod) ? count + 1 : count), 0);
 
-selectors.podsBy = (pods = {}, {nodeName, ...filters} = undefined) =>
+export const podsBy = (
+  pods = {},
+  {nodeName: filterNodeName, ...filters} = undefined
+) =>
   Object.entries(resourcesBy(pods, filters))
     .filter(([, pod]) => {
-      if (nodeName) {
-        return selectors.nodeName(pod) === nodeName;
+      if (filterNodeName) {
+        return nodeName(pod) === filterNodeName;
       }
       return true;
     })
     .reduce(toObjectReducer, {});
-
-export default selectors;

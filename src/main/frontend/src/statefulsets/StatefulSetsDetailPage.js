@@ -19,7 +19,7 @@ import {connect} from 'react-redux';
 import {withParams} from '../router';
 import {Details, uid} from '../metadata';
 import {ContainerList} from '../containers';
-import pods from '../pods';
+import {PodsList} from '../pods';
 import {ReplicasField} from '../replicasets';
 import {Card, Form, Icon, Link} from '../components';
 import {ResourceDetailPage} from '../dashboard';
@@ -74,7 +74,7 @@ export const StatefulSetsDetailPage = withParams(
         className='mt-2'
         containers={selectors.containers(statefulSet)}
       />
-      <pods.List
+      <PodsList
         title='Pods'
         titleVariant={Card.titleVariants.medium}
         className='mt-2'

@@ -20,7 +20,7 @@ import {withParams} from '../router';
 import {Details, ownerReferencesUids, uid} from '../metadata';
 import {ContainerList} from '../containers';
 import {api, selectors} from './';
-import pods from '../pods';
+import {PodsList} from '../pods';
 import {ReplicasField, ReplicaSetsList} from '../replicasets';
 import {Card, Form, Icon, Link} from '../components';
 import {ResourceDetailPage} from '../dashboard';
@@ -94,7 +94,7 @@ export const DeploymentsDetailPage = withParams(
         className='mt-2'
         ownerUid={uid(deployment)}
       />
-      <pods.List
+      <PodsList
         title='Pods'
         titleVariant={Card.titleVariants.medium}
         className='mt-2'

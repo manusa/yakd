@@ -18,4 +18,4 @@ export * as api from './api';
 export * as selectors from './selectors';
 export {EndpointsDetailPage} from './EndpointsDetailPage';
 export {EndpointsPage} from './EndpointsPage';
-export {List} from './List';
+export {List as EndpointsList} from './List';

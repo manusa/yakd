@@ -25,12 +25,12 @@ import {CustomResourceDefinitionsList} from '../customresourcedefinitions';
 import {DeploymentsList} from '../deployments';
 import {DeploymentConfigsList} from '../deploymentconfigs';
 import {DaemonSetsList} from '../daemonsets';
-import * as ep from '../endpoints';
+import {EndpointsList} from '../endpoints';
 import {HorizontalPodAutoscalersList} from '../horizontalpodautoscalers';
 import {IngressesList} from '../ingresses';
 import {JobsList} from '../jobs';
 import {NamespacesList} from '../namespaces';
-import p from '../pods';
+import {PodsList} from '../pods';
 import {PersistentVolumeClaimsList} from '../persistentvolumeclaims';
 import {PersistentVolumesList} from '../persistentvolumes';
 import {SecretsList} from '../secrets';
@@ -61,7 +61,7 @@ const Results = ({query, selectedNamespace}) => {
   };
   return (
     <>
-      <p.List
+      <PodsList
         {...commonProps}
         title='Pods'
         nameLike={query}
@@ -127,7 +127,7 @@ const Results = ({query, selectedNamespace}) => {
         nameLike={query}
         namespace={selectedNamespace}
       />
-      <ep.List
+      <EndpointsList
         {...commonProps}
         title='Endpoints'
         nameLike={query}

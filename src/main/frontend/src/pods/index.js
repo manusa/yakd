@@ -14,34 +14,16 @@
  * limitations under the License.
  *
  */
-import api from './api';
-import selectors from './selectors';
-import useContainers from './useContainers';
-import useExec from './useExec';
-import useLogs from './useLogs';
-import List from './List';
-import PodsCard from './PodsCard';
-import PodsDetailPage from './PodsDetailPage';
-import PodsEditPage from './PodsEditPage';
-import PodsExecPage from './PodsExecPage';
-import PodsLogsPage from './PodsLogsPage';
-import PodsPage from './PodsPage';
-import StatusIcon from './StatusIcon';
-
-const pods = {};
-
-pods.api = api;
-pods.selectors = selectors;
-pods.useContainers = useContainers;
-pods.useExec = useExec;
-pods.useLogs = useLogs;
-pods.List = List;
-pods.PodsCard = PodsCard;
-pods.PodsDetailPage = PodsDetailPage;
-pods.PodsEditPage = PodsEditPage;
-pods.PodsExecPage = PodsExecPage;
-pods.PodsLogsPage = PodsLogsPage;
-pods.PodsPage = PodsPage;
-pods.StatusIcon = StatusIcon;
-
-export default pods;
+export * as api from './api';
+export * as selectors from './selectors';
+export {useContainers} from './useContainers';
+export {useExec} from './useExec';
+export {useLogs} from './useLogs';
+export {List as PodsList} from './List';
+export {PodsCard} from './PodsCard';
+export {PodsDetailPage} from './PodsDetailPage';
+export {PodsEditPage} from './PodsEditPage';
+export {PodsExecPage} from './PodsExecPage';
+export {PodsLogsPage} from './PodsLogsPage';
+export {PodsPage} from './PodsPage';
+export {StatusIcon} from './StatusIcon';

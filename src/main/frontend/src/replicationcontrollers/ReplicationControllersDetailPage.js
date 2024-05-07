@@ -19,7 +19,7 @@ import {connect} from 'react-redux';
 import {withParams} from '../router';
 import {Details, uid} from '../metadata';
 import {ContainerList} from '../containers';
-import pods from '../pods';
+import {PodsList} from '../pods';
 import {Card, Form} from '../components';
 import {ResourceDetailPage} from '../dashboard';
 import {api, selectors} from './';
@@ -60,7 +60,7 @@ export const ReplicationControllersDetailPage = withParams(
         className='mt-2'
         containers={selectors.containers(replicationController)}
       />
-      <pods.List
+      <PodsList
         title='Pods'
         titleVariant={Card.titleVariants.medium}
         className='mt-2'

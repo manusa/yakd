@@ -20,7 +20,7 @@ import {withParams} from '../router';
 import {Details, namespace, uid} from '../metadata';
 import {api, selectors} from './';
 import {ContainerList} from '../containers';
-import pods from '../pods';
+import {PodsList} from '../pods';
 import {Card, Form} from '../components';
 import {DashboardPage, ResourceDetailPage} from '../dashboard';
 
@@ -74,7 +74,7 @@ export const JobsDetailPage = withParams(
         className='mt-2'
         containers={selectors.containers(job)}
       />
-      <pods.List
+      <PodsList
         title='Pods'
         titleVariant={Card.titleVariants.medium}
         className='mt-2'

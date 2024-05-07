@@ -24,11 +24,9 @@ const iconMap = {
   Terminated: 'fa-ban'
 };
 
-const StatusIcon = ({statusPhase, className}) => (
+export const StatusIcon = ({statusPhase, className}) => (
   <Icon
     icon={iconMap[statusPhase] ?? 'fa-question-circle'}
     className={className}
   />
 );
-
-export default StatusIcon;

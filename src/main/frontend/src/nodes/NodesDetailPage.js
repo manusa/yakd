@@ -20,7 +20,7 @@ import {withParams} from '../router';
 import {Details, name} from '../metadata';
 import {bytesToHumanReadable, quantityToScalar} from '../metrics';
 import {selectors} from './';
-import p from '../pods';
+import {PodsList, selectors as podSelectors} from '../pods';
 import {Card, DonutChart, Form} from '../components';
 import Minikube from '../components/icons/Minikube';
 import {ResourceDetailPage} from '../dashboard';
@@ -67,9 +67,9 @@ export const NodesDetailPage = withParams(
     mergeProps
   )(({node, isMinikube, pods}) => {
     const nodeName = name(node);
-    const podsForNode = Object.values(p.selectors.podsBy(pods, {nodeName}));
+    const podsForNode = Object.values(podSelectors.podsBy(pods, {nodeName}));
     const requests = podsForNode
-      .flatMap(p.selectors.containers)
+      .flatMap(podSelectors.containers)
       .map(c => c.resources.requests ?? {});
     const requestedCpu = requests
       .map(r => r.cpu ?? 0)
@@ -130,7 +130,7 @@ export const NodesDetailPage = withParams(
           </Form>
         }
       >
-        <p.List
+        <PodsList
           title='Pods'
           titleVariant={Card.titleVariants.medium}
           className='mt-2'

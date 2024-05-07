@@ -18,7 +18,7 @@ import React from 'react';
 import {DeploymentsCard} from './deployments';
 import {EventsList} from './events';
 import {NodesCard} from './nodes';
-import pods from './pods';
+import {PodsCard} from './pods';
 import {FilterBar} from './components';
 import {DashboardPage} from './dashboard';
 import {useUiNamespace} from './redux';
@@ -39,7 +39,7 @@ export const Home = () => {
           responsiveClassName={cardResponsiveClass}
           className={cardClass}
         />
-        <pods.PodsCard
+        <PodsCard
           responsiveClassName={cardResponsiveClass}
           className={cardClass}
         />
