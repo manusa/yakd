@@ -23,7 +23,9 @@ const defaultState = {
   loadedResources: {},
   creatingNewResource: false,
   selectedNamespace: null,
-  query: ''
+  query: '',
+  sidebarExpandedItems: [],
+  sidebarScroll: {scrollTop: 0, scrollLeft: 0}
 };
 
 export const uiReducer = (state = defaultState, action = {}) => {
@@ -58,6 +60,21 @@ export const uiReducer = (state = defaultState, action = {}) => {
     case Types.UI_SET_CREATING_NEW_RESOURCE: {
       return {...state, creatingNewResource: action.payload};
     }
+    case Types.UI_SIDEBAR_SCROLL: {
+      return {...state, sidebarScroll: action.payload};
+    }
+    case Types.UI_SIDEBAR_TOGGLE_ITEM: {
+      const newState = {...state};
+      const item = action.payload;
+      if (state.sidebarExpandedItems.includes(item)) {
+        newState.sidebarExpandedItems = state.sidebarExpandedItems.filter(
+          i => i !== item
+        );
+      } else {
+        newState.sidebarExpandedItems = [...state.sidebarExpandedItems, item];
+      }
+      return newState;
+    }
     default:
       return {...state};
   }
@@ -68,8 +85,16 @@ const actionSelectNamespace = namespace => ({
   type: Types.UI_SELECT_NAMESPACE,
   payload: namespace
 });
+const actionClearSelectedNamespace = () => actionSelectNamespace(null);
 
-export const actionClearSelectedNamespace = () => actionSelectNamespace(null);
+const actionSidebarScroll = ({scrollTop = 0, scrollLeft = 0}) => ({
+  type: Types.UI_SIDEBAR_SCROLL,
+  payload: {scrollTop, scrollLeft}
+});
+const actionSidebarToggleItem = item => ({
+  type: Types.UI_SIDEBAR_TOGGLE_ITEM,
+  payload: item
+});
 
 // Hooks
 export const useUiNamespace = () => {
@@ -89,5 +114,29 @@ export const useUiNamespace = () => {
     selectedNamespace,
     selectNamespace,
     clearSelectedNamespace
+  };
+};
+
+export const useUiSidebar = () => {
+  const dispatch = useDispatch();
+  const sidebarScroll = ({scrollTop, scrollLeft}) =>
+    dispatch(actionSidebarScroll({scrollTop, scrollLeft}));
+  const sidebarToggleItem = item => dispatch(actionSidebarToggleItem(item));
+  const {
+    sidebarExpandedItems,
+    sidebarScroll: {scrollTop: sidebarScrollTop, scrollLeft: sidebarScrollLeft}
+  } = useSelector(
+    ({ui: {sidebarExpandedItems, sidebarScroll}}) => ({
+      sidebarExpandedItems,
+      sidebarScroll
+    }),
+    shallowEqual
+  );
+  return {
+    sidebarExpandedItems,
+    sidebarScrollTop,
+    sidebarScrollLeft,
+    sidebarScroll,
+    sidebarToggleItem
   };
 };

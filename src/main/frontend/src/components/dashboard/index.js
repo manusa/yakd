@@ -17,3 +17,4 @@
 export {DashboardPage} from './DashboardPage';
 export {NewResource} from './NewResource';
 export {NewResourceButton} from './NewResourceButton';
+export {SideBar} from './SideBar';
