@@ -20,8 +20,9 @@ import {withParams} from '../router';
 import {Details, uid} from '../metadata';
 import {ContainerList} from '../containers';
 import pods from '../pods';
+import {Card, Form} from '../components';
+import {ResourceDetailPage} from '../dashboard';
 import {api, selectors} from './';
-import {Card, Form, ResourceDetailPage} from '../components';
 
 const mapStateToProps = ({replicationControllers}) => ({
   replicationControllers

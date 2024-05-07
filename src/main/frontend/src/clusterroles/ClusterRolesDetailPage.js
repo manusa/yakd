@@ -20,7 +20,8 @@ import {withParams} from '../router';
 import {Details, byUidOrName, name} from '../metadata';
 import {api, selectors, RuleList} from './';
 import {List as CrbList} from '../clusterrolebindings';
-import {Card, Form, ResourceDetailPage} from '../components';
+import {Card, Form} from '../components';
+import {ResourceDetailPage} from '../dashboard';
 
 const mapStateToProps = ({clusterRoles}) => ({
   clusterRoles

@@ -17,8 +17,9 @@
 import React from 'react';
 import {withParams} from '../router';
 import {name} from '../metadata';
+import {Link} from '../components';
+import {ResourceEditPage} from '../editor';
 import {api} from './';
-import {Link, ResourceEditPage} from '../components';
 
 export const ServiceAccountsEditPage = withParams(({params: {uid}}) => (
   <ResourceEditPage

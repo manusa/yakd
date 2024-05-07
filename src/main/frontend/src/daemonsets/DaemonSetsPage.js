@@ -16,7 +16,8 @@
  */
 import React from 'react';
 import {DaemonSetsList} from './';
-import {DashboardPage, FilterBar} from '../components';
+import {FilterBar} from '../components';
+import {DashboardPage} from '../dashboard';
 import {useUiNamespace} from '../redux';
 
 export const DaemonSetsPage = () => {

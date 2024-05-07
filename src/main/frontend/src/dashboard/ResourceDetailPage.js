@@ -18,7 +18,8 @@ import React from 'react';
 import {useNavigate} from 'react-router-dom';
 import YAML from 'yaml';
 import {name, namespace} from '../metadata';
-import {Card, DashboardPage, Icon, Link, PopupMenu} from './';
+import {Card, Icon, Link, PopupMenu} from '../components';
+import {DashboardPage} from './';
 
 const downloadResource = resource => {
   const mimeType = 'text/yaml';

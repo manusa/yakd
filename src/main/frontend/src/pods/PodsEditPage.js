@@ -18,7 +18,8 @@ import React from 'react';
 import {withParams} from '../router';
 import {name} from '../metadata';
 import p from './';
-import {Link, ResourceEditPage} from '../components';
+import {Link} from '../components';
+import {ResourceEditPage} from '../editor';
 
 const PodsEditPage = ({params: {uid}}) => (
   <ResourceEditPage

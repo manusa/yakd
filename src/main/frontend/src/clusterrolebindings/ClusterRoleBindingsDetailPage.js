@@ -19,7 +19,8 @@ import {connect} from 'react-redux';
 import {api, selectors} from './';
 import {withParams} from '../router';
 import {Details, byUidOrName} from '../metadata';
-import {Form, Link, ResourceDetailPage} from '../components';
+import {Form, Link} from '../components';
+import {ResourceDetailPage} from '../dashboard';
 
 const mapStateToProps = ({clusterRoleBindings}) => ({
   clusterRoleBindings

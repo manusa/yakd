@@ -14,7 +14,21 @@
  * limitations under the License.
  *
  */
-export {DashboardPage} from './DashboardPage';
-export {NewResource} from './NewResource';
-export {NewResourceButton} from './NewResourceButton';
-export {SideBar} from './SideBar';
+import React from 'react';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {uiSetCreatingNewResource} from '../redux';
+import {Icon, Link} from '../components';
+
+export const NewResourceButton = connect(undefined, dispatch =>
+  bindActionCreators(
+    {newResource: () => uiSetCreatingNewResource(true)},
+    dispatch
+  )
+)(({newResource, ...props}) => {
+  return (
+    <Link title='Create new resource' onClick={newResource} {...props}>
+      <Icon icon='fa-plus' />
+    </Link>
+  );
+});

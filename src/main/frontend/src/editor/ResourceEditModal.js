@@ -16,17 +16,10 @@
  */
 import React from 'react';
 import YAML from 'yaml';
-import {name} from '../../metadata';
-import {
-  Alert,
-  Card,
-  Icon,
-  Link,
-  Modal,
-  YamlEditor,
-  useEditor,
-  Spinner
-} from '../';
+import {name} from '../metadata';
+import {Alert, Card, Icon, Link, Modal, Spinner} from '../components';
+import {YamlEditor} from './YamlEditor';
+import {useEditor} from './useEditor';
 
 const ToolbarButton = ({
   title,

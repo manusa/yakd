@@ -19,10 +19,11 @@ import {connect} from 'react-redux';
 import {withParams} from '../router';
 import {Details, uid} from '../metadata';
 import {ContainerList} from '../containers';
-import {api, selectors} from './';
 import pods from '../pods';
 import {ReplicasField} from '../replicasets';
-import {Card, Form, Icon, Link, ResourceDetailPage} from '../components';
+import {Card, Form, Icon, Link} from '../components';
+import {ResourceDetailPage} from '../dashboard';
+import {api, selectors} from './';
 
 const mapStateToProps = ({statefulSets}) => ({
   statefulSets

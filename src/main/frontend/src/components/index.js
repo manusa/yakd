@@ -15,7 +15,6 @@
  *
  */
 
-export * from './editor';
 export * from './popup';
 export {Age} from './Age';
 export {Alert} from './Alert';
@@ -28,7 +27,6 @@ export {Icon} from './Icon';
 export {Link} from './Link';
 export {Modal} from './Modal';
 export {PopupMenu} from './PopupMenu';
-export {ResourceDetailPage} from './ResourceDetailPage';
 export {Spinner} from './Spinner';
 export {StatusCard} from './StatusCard';
 export {Switch} from './Switch';
@@ -36,4 +34,3 @@ export {Table} from './Table';
 export {Tag} from './Tag';
 export {Textfield} from './Textfield';
 export {Tooltip} from './Tooltip';
-export {DashboardPage} from './dashboard';

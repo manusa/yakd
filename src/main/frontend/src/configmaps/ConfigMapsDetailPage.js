@@ -19,7 +19,8 @@ import {connect} from 'react-redux';
 import {withParams} from '../router';
 import {api, selectors} from './';
 import {Details} from '../metadata';
-import {Form, ResourceDetailPage} from '../components';
+import {Form} from '../components';
+import {ResourceDetailPage} from '../dashboard';
 
 const DataField = ({label, value}) => (
   <Form.Field width={Form.widths.full} label={label}>

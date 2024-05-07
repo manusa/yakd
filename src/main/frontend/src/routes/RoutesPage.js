@@ -16,7 +16,8 @@
  */
 import React from 'react';
 import {useUiNamespace} from '../redux';
-import {DashboardPage, FilterBar} from '../components';
+import {FilterBar} from '../components';
+import {DashboardPage} from '../dashboard';
 import {RoutesList} from './';
 
 export const RoutesPage = () => {

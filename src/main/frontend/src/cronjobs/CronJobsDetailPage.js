@@ -16,14 +16,8 @@
  */
 import React from 'react';
 import {connect} from 'react-redux';
-import {
-  Card,
-  DashboardPage,
-  Form,
-  Icon,
-  Link,
-  ResourceDetailPage
-} from '../components';
+import {Card, Form, Icon, Link} from '../components';
+import {DashboardPage, ResourceDetailPage} from '../dashboard';
 import {withParams} from '../router';
 import {Details, namespace, uid} from '../metadata';
 import {api, selectors} from './';

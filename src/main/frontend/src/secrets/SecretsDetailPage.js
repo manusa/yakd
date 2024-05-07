@@ -17,9 +17,10 @@
 import React, {useState} from 'react';
 import {connect} from 'react-redux';
 import {withParams} from '../router';
-import {api, selectors} from './';
 import {Details} from '../metadata';
-import {Form, Icon, ResourceDetailPage} from '../components';
+import {Form, Icon} from '../components';
+import {ResourceDetailPage} from '../dashboard';
+import {api, selectors} from './';
 
 const DataField = ({label, value}) => {
   const [hidden, setHidden] = useState(true);

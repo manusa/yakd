@@ -23,7 +23,8 @@ import {api, selectors} from './';
 import pods from '../pods';
 import {ReplicasField} from '../replicasets';
 import {ReplicationControllersList} from '../replicationcontrollers';
-import {Card, Form, Icon, Link, ResourceDetailPage} from '../components';
+import {Card, Form, Icon, Link} from '../components';
+import {ResourceDetailPage} from '../dashboard';
 
 const mapStateToProps = ({deploymentConfigs, replicationControllers}) => ({
   deploymentConfigs,

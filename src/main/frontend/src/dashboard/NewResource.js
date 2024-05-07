@@ -17,9 +17,9 @@
 import React, {useState, useEffect} from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {uiSetCreatingNewResource} from '../../redux';
-import {createResource} from '../../fetch';
-import {ResourceEditModal} from '../';
+import {uiSetCreatingNewResource} from '../redux';
+import {createResource} from '../fetch';
+import {ResourceEditModal} from '../editor';
 
 const mapStateToProps = ({ui: {creatingNewResource}}) => ({
   creatingNewResource

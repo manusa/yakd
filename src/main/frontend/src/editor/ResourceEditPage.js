@@ -21,17 +21,11 @@ import YAML from 'yaml';
 import {
   name as metadataName,
   namespace as metadataNamespace
-} from '../../metadata';
-import {
-  useEditor,
-  Alert,
-  Card,
-  DashboardPage,
-  Icon,
-  Link,
-  YamlEditor,
-  Spinner
-} from '../';
+} from '../metadata';
+import {Alert, Card, Icon, Link, Spinner} from '../components';
+import {DashboardPage} from '../dashboard';
+import {YamlEditor} from './YamlEditor';
+import {useEditor} from './useEditor';
 
 export const ResourceEditPage = ({
   kind,

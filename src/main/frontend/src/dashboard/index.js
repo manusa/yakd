@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Marc Nuri
+ * Copyright 2023 Marc Nuri
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,5 @@
  * limitations under the License.
  *
  */
-export {useEditor} from './useEditor';
-export {ResourceEditModal} from './ResourceEditModal';
-export {ResourceEditPage} from './ResourceEditPage';
-export {YamlEditor} from './YamlEditor';
+export {DashboardPage} from './DashboardPage';
+export {ResourceDetailPage} from './ResourceDetailPage';

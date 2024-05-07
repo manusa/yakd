@@ -19,8 +19,9 @@ import {connect} from 'react-redux';
 import {withParams} from '../router';
 import {Details} from '../metadata';
 import {RuleList} from '../clusterroles';
+import {Form} from '../components';
+import {ResourceDetailPage} from '../dashboard';
 import {api, selectors} from './';
-import {Form, ResourceDetailPage} from '../components';
 
 const mapStateToProps = ({roles}) => ({
   roles
