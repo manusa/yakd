@@ -185,13 +185,11 @@ const Results = ({query, selectedNamespace}) => {
         {...commonProps}
         title='CustomResourceDefinitions'
         nameLike={query}
-        namespace={selectedNamespace}
       />
       <ClusterRolesList
         {...commonProps}
         title='ClusterRoles'
         nameLike={query}
-        namespace={selectedNamespace}
       />
       <RolesList
         {...commonProps}
