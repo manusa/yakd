@@ -14,10 +14,8 @@
  * limitations under the License.
  *
  */
+import PropTypes from 'prop-types';
 import React from 'react';
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
-import {crudDelete, resourcesBy} from '../redux';
 import {Table} from './';
 
 const Content = ({headers, resources, loading, children}) => {
@@ -30,12 +28,13 @@ const Content = ({headers, resources, loading, children}) => {
   return <Table.NoResultsRow colSpan={headers.length} />;
 };
 
-export const ResourceList = ({
+export const ResourceListV2 = ({
+  resources,
   headers,
   title,
-  resources,
+  titleVariant,
+  className,
   children,
-  nameLike /* don't propagate */,
   loading = false,
   hideWhenNoResults = false,
   ...properties
@@ -44,7 +43,7 @@ export const ResourceList = ({
     return null;
   }
   return (
-    <Table title={title} {...properties}>
+    <Table title={title} titleVariant={titleVariant} className={className}>
       <Table.Head columns={headers} />
       <Table.Body>
         <Content headers={headers} resources={resources} loading={loading}>
@@ -55,28 +54,8 @@ export const ResourceList = ({
   );
 };
 
-ResourceList.mapStateToProps =
-  resource =>
-  ({ui: {loadedResources}, ...state}) => {
-    return {resources: state[resource], loadedResources};
-  };
-
-ResourceList.resourceListConnect = resource =>
-  connect(
-    ResourceList.mapStateToProps(resource),
-    dispatch =>
-      bindActionCreators(
-        {
-          crudDelete
-        },
-        dispatch
-      ),
-    (stateProps, dispatchProps, ownProps) => ({
-      ...stateProps,
-      ...dispatchProps,
-      ...ownProps,
-      resources: Object.values(resourcesBy(stateProps.resources, ownProps))
-    })
-  );
-
-export default ResourceList;
+ResourceListV2.propTypes = {
+  resources: PropTypes.arrayOf(PropTypes.object).isRequired,
+  children: PropTypes.node.isRequired,
+  title: PropTypes.string
+};

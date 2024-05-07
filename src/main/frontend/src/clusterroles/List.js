@@ -21,9 +21,9 @@ import {
   sortByCreationTimeStamp,
   uid
 } from '../metadata';
+import {useFilteredResources} from '../redux';
+import {Age, Icon, Link, ResourceListV2, Table} from '../components';
 import {api} from './';
-import {Age, Icon, Link, Table} from '../components';
-import ResourceList from '../components/ResourceList';
 
 const headers = [
   <span key='name'>
@@ -55,10 +55,14 @@ const Rows = ({clusterRoles}) => {
   ));
 };
 
-export const List = ResourceList.resourceListConnect('clusterRoles')(
-  ({resources, loadedResources, crudDelete, ...properties}) => (
-    <ResourceList headers={headers} resources={resources} {...properties}>
+export const List = ({...properties}) => {
+  const resources = useFilteredResources({
+    resource: 'clusterRoles',
+    filters: {...properties}
+  });
+  return (
+    <ResourceListV2 headers={headers} resources={resources} {...properties}>
       <Rows clusterRoles={resources} />
-    </ResourceList>
-  )
-);
+    </ResourceListV2>
+  );
+};

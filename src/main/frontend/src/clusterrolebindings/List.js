@@ -16,7 +16,6 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import {connect} from 'react-redux';
 import {
   creationTimestamp,
   name,
@@ -24,8 +23,8 @@ import {
   uid
 } from '../metadata';
 import {api, selectors} from './';
-import {Age, Icon, Link, Table} from '../components';
-import ResourceList from '../components/ResourceList';
+import {useFilteredResources} from '../redux';
+import {Age, Icon, Link, ResourceListV2, Table} from '../components';
 
 const headers = [
   <span key='name'>
@@ -72,22 +71,20 @@ const Rows = ({clusterRoleBindings}) => {
     ));
 };
 
-const mergeProps = (stateProps, dispatchProps, ownProps) => ({
-  ...stateProps,
-  ...dispatchProps,
-  ...ownProps,
-  resources: Object.values(selectors.crbsBy(stateProps.resources, ownProps))
-});
-
-export const List = connect(
-  ResourceList.mapStateToProps('clusterRoleBindings'),
-  null,
-  mergeProps
-)(({resources, roleRefName, loadedResources, crudDelete, ...properties}) => (
-  <ResourceList headers={headers} resources={resources} {...properties}>
-    <Rows clusterRoleBindings={resources} />
-  </ResourceList>
-));
+export const List = ({...properties}) => {
+  const filteredResources = useFilteredResources({
+    resource: 'clusterRoleBindings',
+    filters: {...properties}
+  });
+  const resources = Object.values(
+    selectors.crbsBy(filteredResources, properties)
+  );
+  return (
+    <ResourceListV2 headers={headers} resources={resources} {...properties}>
+      <Rows clusterRoleBindings={resources} />
+    </ResourceListV2>
+  );
+};
 
 List.propTypes = {
   nodeName: PropTypes.string,
