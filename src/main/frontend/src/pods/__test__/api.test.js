@@ -26,7 +26,7 @@ describe('API test suite', () => {
     }));
     WebSocket = jest.fn();
     global.WebSocket = WebSocket;
-    api = require('../api').default;
+    api = require('../api');
   });
   describe('exec', () => {
     describe('With absolute API url', () => {

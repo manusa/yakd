@@ -19,61 +19,11 @@ import {connect} from 'react-redux';
 import {withParams} from '../router';
 import {name, namespace} from '../metadata';
 import {ContainerDropdown} from '../containers';
-import p from './index';
 import {Card, Link} from '../components';
 import {DashboardPage} from '../dashboard';
+import {selectors, useExec} from './';
 
 import 'xterm/css/xterm.css';
-
-const PodsExecPage = ({uid, namespace, name, containers}) => {
-  const {ref, selectedContainer, setSelectedContainer} = p.useExec(
-    namespace,
-    name,
-    containers
-  );
-  return (
-    <DashboardPage
-      title={
-        <DashboardPage.Title
-          path='pods'
-          kind='Pods'
-          namespace={namespace}
-          name={name}
-        >
-          &nbsp;- Terminal
-        </DashboardPage.Title>
-      }
-      className='pods-logs-page'
-    >
-      <div className='absolute inset-0 md:p-4 flex flex-col'>
-        <Card className='flex-1 flex flex-col'>
-          <Card.Title className='flex items-center'>
-            <div className='flex-1 flex items-center flex-wrap'>
-              <span className='mr-2'>
-                Terminal
-                <Link.RouterLink className='ml-2' to={`/pods/${uid}`}>
-                  {name}
-                </Link.RouterLink>
-              </span>
-              <ContainerDropdown
-                containers={containers}
-                onContainerSelect={setSelectedContainer}
-                selectedContainer={selectedContainer}
-              />
-            </div>
-          </Card.Title>
-          <Card.Body padding='p-0' className='relative flex-1 bg-black'>
-            <div
-              ref={ref}
-              className='absolute'
-              style={{top: '1rem', bottom: '1rem', left: '1rem', right: '1rem'}}
-            />
-          </Card.Body>
-        </Card>
-      </div>
-    </DashboardPage>
-  );
-};
 
 const mapStateToProps = ({pods}) => ({pods});
 
@@ -82,9 +32,66 @@ const mergeProps = ({pods}, dispatchProps, {params: {uid}}) => ({
   uid,
   namespace: namespace(pods[uid]),
   name: name(pods[uid]),
-  containers: p.selectors.containers(pods[uid])
+  containers: selectors.containers(pods[uid])
 });
 
-export default withParams(
-  connect(mapStateToProps, null, mergeProps)(PodsExecPage)
+export const PodsExecPage = withParams(
+  connect(
+    mapStateToProps,
+    null,
+    mergeProps
+  )(({uid, namespace, name, containers}) => {
+    const {ref, selectedContainer, setSelectedContainer} = useExec(
+      namespace,
+      name,
+      containers
+    );
+    return (
+      <DashboardPage
+        title={
+          <DashboardPage.Title
+            path='pods'
+            kind='Pods'
+            namespace={namespace}
+            name={name}
+          >
+            &nbsp;- Terminal
+          </DashboardPage.Title>
+        }
+        className='pods-logs-page'
+      >
+        <div className='absolute inset-0 md:p-4 flex flex-col'>
+          <Card className='flex-1 flex flex-col'>
+            <Card.Title className='flex items-center'>
+              <div className='flex-1 flex items-center flex-wrap'>
+                <span className='mr-2'>
+                  Terminal
+                  <Link.RouterLink className='ml-2' to={`/pods/${uid}`}>
+                    {name}
+                  </Link.RouterLink>
+                </span>
+                <ContainerDropdown
+                  containers={containers}
+                  onContainerSelect={setSelectedContainer}
+                  selectedContainer={selectedContainer}
+                />
+              </div>
+            </Card.Title>
+            <Card.Body padding='p-0' className='relative flex-1 bg-black'>
+              <div
+                ref={ref}
+                className='absolute'
+                style={{
+                  top: '1rem',
+                  bottom: '1rem',
+                  left: '1rem',
+                  right: '1rem'
+                }}
+              />
+            </Card.Body>
+          </Card>
+        </div>
+      </DashboardPage>
+    );
+  })
 );

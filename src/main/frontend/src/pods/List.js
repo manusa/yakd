@@ -18,9 +18,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {name, namespace, sortByCreationTimeStamp, uid} from '../metadata';
-import p from './';
 import {Icon, Link, Table} from '../components';
 import ResourceList from '../components/ResourceList';
+import {api, selectors, StatusIcon} from './';
 
 const headers = [
   '',
@@ -34,18 +34,18 @@ const headers = [
 ];
 
 const Rows = ({pods}) => {
-  const deletePod = pod => async () => await p.api.delete(pod);
+  const deletePod = pod => async () => await api.deletePod(pod);
   return pods.sort(sortByCreationTimeStamp).map(pod => (
     <Table.ResourceRow key={uid(pod)} resource={pod}>
       <Table.Cell className='whitespace-nowrap w-3 text-center'>
         <Icon
           className={
-            p.selectors.succeededOrContainersReady(pod)
+            selectors.succeededOrContainersReady(pod)
               ? 'text-green-500'
               : 'text-red-500'
           }
           icon={
-            p.selectors.succeededOrContainersReady(pod)
+            selectors.succeededOrContainersReady(pod)
               ? 'fa-check'
               : 'fa-exclamation-circle'
           }
@@ -60,13 +60,10 @@ const Rows = ({pods}) => {
         </Link.Namespace>
       </Table.Cell>
       <Table.Cell className='whitespace-nowrap'>
-        <p.StatusIcon
-          className='mr-1'
-          statusPhase={p.selectors.statusPhase(pod)}
-        />
-        {p.selectors.statusPhase(pod)}
+        <StatusIcon className='mr-1' statusPhase={selectors.statusPhase(pod)} />
+        {selectors.statusPhase(pod)}
       </Table.Cell>
-      <Table.Cell>{p.selectors.restartCount(pod)}</Table.Cell>
+      <Table.Cell>{selectors.restartCount(pod)}</Table.Cell>
       <Table.Cell className='whitespace-nowrap text-center'>
         <Link.RouterLink
           variant={Link.variants.outline}
@@ -90,18 +87,31 @@ const Rows = ({pods}) => {
   ));
 };
 
-const List = ({
-  resources,
-  nodeName,
-  ownerUids,
-  ownerUid,
-  crudDelete,
-  loadedResources,
-  ...properties
-}) => (
-  <ResourceList headers={headers} resources={resources} {...properties}>
-    <Rows pods={resources} />
-  </ResourceList>
+const mergeProps = (stateProps, dispatchProps, ownProps) => ({
+  ...stateProps,
+  ...dispatchProps,
+  ...ownProps,
+  resources: Object.values(selectors.podsBy(stateProps.resources, ownProps))
+});
+
+export const List = connect(
+  ResourceList.mapStateToProps('pods'),
+  null,
+  mergeProps
+)(
+  ({
+    resources,
+    nodeName,
+    ownerUids,
+    ownerUid,
+    crudDelete,
+    loadedResources,
+    ...properties
+  }) => (
+    <ResourceList headers={headers} resources={resources} {...properties}>
+      <Rows pods={resources} />
+    </ResourceList>
+  )
 );
 
 List.propTypes = {
@@ -109,16 +119,3 @@ List.propTypes = {
   ownerUids: PropTypes.arrayOf(PropTypes.string),
   namespace: PropTypes.string
 };
-
-const mergeProps = (stateProps, dispatchProps, ownProps) => ({
-  ...stateProps,
-  ...dispatchProps,
-  ...ownProps,
-  resources: Object.values(p.selectors.podsBy(stateProps.resources, ownProps))
-});
-
-export default connect(
-  ResourceList.mapStateToProps('pods'),
-  null,
-  mergeProps
-)(List);

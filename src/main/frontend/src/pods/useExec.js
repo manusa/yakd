@@ -19,7 +19,7 @@ import {Terminal} from 'xterm';
 import {AttachAddon} from 'xterm-addon-attach';
 import {FitAddon} from 'xterm-addon-fit';
 import {WebLinksAddon} from 'xterm-addon-web-links';
-import p from './index';
+import {api, useContainers} from './';
 
 const startTerminal = (ref, namespace, name, selectedContainer) => {
   const xterm = new Terminal();
@@ -28,7 +28,7 @@ const startTerminal = (ref, namespace, name, selectedContainer) => {
   xterm.loadAddon(new WebLinksAddon());
   xterm.open(ref.current);
   fitAddon.fit();
-  xterm.webSocket = p.api.exec(namespace, name, selectedContainer?.name);
+  xterm.webSocket = api.exec(namespace, name, selectedContainer?.name);
   const attachAddon = new AttachAddon(xterm.webSocket);
   xterm.loadAddon(attachAddon);
   xterm.focus();
@@ -40,9 +40,9 @@ const startTerminal = (ref, namespace, name, selectedContainer) => {
   return xterm;
 };
 
-const useExec = (namespace, name, containers) => {
+export const useExec = (namespace, name, containers) => {
   const ref = useRef(null);
-  const {selectedContainer, setSelectedContainer} = p.useContainers(containers);
+  const {selectedContainer, setSelectedContainer} = useContainers(containers);
   const [terminal, setTerminal] = useState(null);
   useEffect(() => {
     if (!terminal && ref.current && namespace && name && selectedContainer) {
@@ -68,5 +68,3 @@ const useExec = (namespace, name, containers) => {
   );
   return {ref, selectedContainer, setSelectedContainer};
 };
-
-export default useExec;

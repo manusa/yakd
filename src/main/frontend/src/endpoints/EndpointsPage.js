@@ -17,7 +17,7 @@
 import React from 'react';
 import {FilterBar} from '../components';
 import {DashboardPage} from '../dashboard';
-import {List} from './';
+import {EndpointsList} from './';
 import {useUiNamespace} from '../redux';
 
 export const EndpointsPage = () => {
@@ -25,7 +25,7 @@ export const EndpointsPage = () => {
   return (
     <DashboardPage title='Endpoints'>
       <FilterBar />
-      <List className='mt-4' namespace={selectedNamespace} />
+      <EndpointsList className='mt-4' namespace={selectedNamespace} />
     </DashboardPage>
   );
 };

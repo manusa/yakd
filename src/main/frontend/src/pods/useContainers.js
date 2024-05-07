@@ -16,7 +16,7 @@
  */
 import {useEffect, useState} from 'react';
 
-const useContainers = containers => {
+export const useContainers = containers => {
   const [selectedContainer, setSelectedContainer] = useState(null);
   useEffect(() => {
     if (selectedContainer === null && containers && containers.length > 0) {
@@ -25,5 +25,3 @@ const useContainers = containers => {
   }, [containers, selectedContainer, setSelectedContainer]);
   return {selectedContainer, setSelectedContainer};
 };
-
-export default useContainers;

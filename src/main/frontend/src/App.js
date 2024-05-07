@@ -78,7 +78,13 @@ import {
   PersistentVolumesEditPage,
   PersistentVolumesDetailPage
 } from './persistentvolumes';
-import pods from './pods';
+import {
+  PodsPage,
+  PodsDetailPage,
+  PodsEditPage,
+  PodsExecPage,
+  PodsLogsPage
+} from './pods';
 import {
   ReplicationControllersPage,
   ReplicationControllersDetailPage,
@@ -312,11 +318,11 @@ export const App = () => {
           path='/persistentvolumes/:uid/edit'
           element={<PersistentVolumesEditPage />}
         />
-        <Route exact path='/pods' element={<pods.PodsPage />} />
-        <Route exact path='/pods/:uid' element={<pods.PodsDetailPage />} />
-        <Route exact path='/pods/:uid/edit' element={<pods.PodsEditPage />} />
-        <Route exact path='/pods/:uid/exec' element={<pods.PodsExecPage />} />
-        <Route exact path='/pods/:uid/logs' element={<pods.PodsLogsPage />} />
+        <Route exact path='/pods' element={<PodsPage />} />
+        <Route exact path='/pods/:uid' element={<PodsDetailPage />} />
+        <Route exact path='/pods/:uid/edit' element={<PodsEditPage />} />
+        <Route exact path='/pods/:uid/exec' element={<PodsExecPage />} />
+        <Route exact path='/pods/:uid/logs' element={<PodsLogsPage />} />
         <Route
           exact
           path='/replicationcontrollers'

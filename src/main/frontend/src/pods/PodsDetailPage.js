@@ -22,7 +22,7 @@ import {ContainerList} from '../containers';
 import {bytesToHumanReadable, podMetrics} from '../metrics';
 import {Card, Form, Icon, Link} from '../components';
 import {ResourceDetailPage} from '../dashboard';
-import p from './';
+import {api, selectors, StatusIcon} from './';
 
 const useMetrics = pod => {
   const [metrics, setMetrics] = useState(null);
@@ -31,7 +31,7 @@ const useMetrics = pod => {
     if (!timeoutHandle && pod) {
       const updateMetrics = async () => {
         try {
-          const metrics = await p.api.metrics(pod);
+          const metrics = await api.metrics(pod);
           setMetrics(metrics);
         } catch (e) {
           setMetrics(null);
@@ -63,77 +63,6 @@ const ActionLink = ({to, title, stylePrefix, icon}) => (
   </Link.RouterLink>
 );
 
-const PodsDetailPage = ({pod}) => {
-  const metrics = useMetrics(pod);
-  const currentPodMetrics = metrics && podMetrics(metrics);
-  return (
-    <ResourceDetailPage
-      kind='Pods'
-      path='pods'
-      resource={pod}
-      isReadyFunction={p.selectors.succeededOrContainersReady}
-      deleteFunction={p.api.delete}
-      actions={
-        <>
-          <ActionLink
-            to={`/pods/${uid(pod)}/logs`}
-            title='Logs'
-            stylePrefix='far'
-            icon='fa-file-alt'
-          />
-          <ActionLink
-            to={`/pods/${uid(pod)}/exec`}
-            title='Exec'
-            stylePrefix='fas'
-            icon='fa-terminal'
-          />
-        </>
-      }
-      body={
-        <Form>
-          <Details resource={pod} />
-          <Form.Field label='Node'>
-            <Link.Node to={`/nodes/${p.selectors.nodeName(pod)}`}>
-              {p.selectors.nodeName(pod)}
-            </Link.Node>
-          </Form.Field>
-          <Form.Field label='Phase'>
-            <p.StatusIcon
-              className='text-gray-700 mr-1'
-              statusPhase={p.selectors.statusPhase(pod)}
-            />
-            {p.selectors.statusPhase(pod)}
-          </Form.Field>
-          <Form.Field label='Restart Policy'>
-            {p.selectors.restartPolicy(pod)}
-          </Form.Field>
-          <Form.Field label='Pod IP'>{p.selectors.statusPodIP(pod)}</Form.Field>
-          {currentPodMetrics && (
-            <>
-              <Form.Field label='Used CPU'>
-                <Icon icon='fa-microchip' className='text-gray-600 mr-2' />
-                {currentPodMetrics.totalCpu().toFixed(3)}
-              </Form.Field>
-              <Form.Field label='Used Memory'>
-                <Icon icon='fa-memory' className='text-gray-600 mr-2' />
-                {bytesToHumanReadable(currentPodMetrics.totalMemory())}
-              </Form.Field>
-            </>
-          )}
-        </Form>
-      }
-    >
-      <ContainerList
-        title='Containers'
-        titleVariant={Card.titleVariants.medium}
-        className='mt-2'
-        containers={p.selectors.containers(pod)}
-        podMetrics={currentPodMetrics}
-      />
-    </ResourceDetailPage>
-  );
-};
-
 const mapStateToProps = ({pods}) => ({
   pods
 });
@@ -145,6 +74,79 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
   pod: stateProps.pods[ownProps.params.uid]
 });
 
-export default withParams(
-  connect(mapStateToProps, null, mergeProps)(PodsDetailPage)
+export const PodsDetailPage = withParams(
+  connect(
+    mapStateToProps,
+    null,
+    mergeProps
+  )(({pod}) => {
+    const metrics = useMetrics(pod);
+    const currentPodMetrics = metrics && podMetrics(metrics);
+    return (
+      <ResourceDetailPage
+        kind='Pods'
+        path='pods'
+        resource={pod}
+        isReadyFunction={selectors.succeededOrContainersReady}
+        deleteFunction={api.deletePod}
+        actions={
+          <>
+            <ActionLink
+              to={`/pods/${uid(pod)}/logs`}
+              title='Logs'
+              stylePrefix='far'
+              icon='fa-file-alt'
+            />
+            <ActionLink
+              to={`/pods/${uid(pod)}/exec`}
+              title='Exec'
+              stylePrefix='fas'
+              icon='fa-terminal'
+            />
+          </>
+        }
+        body={
+          <Form>
+            <Details resource={pod} />
+            <Form.Field label='Node'>
+              <Link.Node to={`/nodes/${selectors.nodeName(pod)}`}>
+                {selectors.nodeName(pod)}
+              </Link.Node>
+            </Form.Field>
+            <Form.Field label='Phase'>
+              <StatusIcon
+                className='text-gray-700 mr-1'
+                statusPhase={selectors.statusPhase(pod)}
+              />
+              {selectors.statusPhase(pod)}
+            </Form.Field>
+            <Form.Field label='Restart Policy'>
+              {selectors.restartPolicy(pod)}
+            </Form.Field>
+            <Form.Field label='Pod IP'>{selectors.statusPodIP(pod)}</Form.Field>
+            {currentPodMetrics && (
+              <>
+                <Form.Field label='Used CPU'>
+                  <Icon icon='fa-microchip' className='text-gray-600 mr-2' />
+                  {currentPodMetrics.totalCpu().toFixed(3)}
+                </Form.Field>
+                <Form.Field label='Used Memory'>
+                  <Icon icon='fa-memory' className='text-gray-600 mr-2' />
+                  {bytesToHumanReadable(currentPodMetrics.totalMemory())}
+                </Form.Field>
+              </>
+            )}
+          </Form>
+        }
+      >
+        <ContainerList
+          title='Containers'
+          titleVariant={Card.titleVariants.medium}
+          className='mt-2'
+          containers={selectors.containers(pod)}
+          podMetrics={currentPodMetrics}
+        />
+      </ResourceDetailPage>
+    );
+  })
 );

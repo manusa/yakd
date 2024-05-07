@@ -17,18 +17,16 @@
 import React from 'react';
 import {FilterBar} from '../components';
 import {DashboardPage} from '../dashboard';
-import pods from './';
 import {useUiNamespace} from '../redux';
+import {PodsCard, PodsList} from './';
 
-const PodsPage = () => {
+export const PodsPage = () => {
   const {selectedNamespace} = useUiNamespace();
   return (
     <DashboardPage title='Pods'>
-      <pods.PodsCard className='w-full' />
+      <PodsCard className='w-full' />
       <FilterBar className='mt-4' />
-      <pods.List className='mt-4' namespace={selectedNamespace} />
+      <PodsList className='mt-4' namespace={selectedNamespace} />
     </DashboardPage>
   );
 };
-
-export default PodsPage;

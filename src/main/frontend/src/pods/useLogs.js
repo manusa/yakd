@@ -16,7 +16,7 @@
  */
 import {useEffect, useRef, useState} from 'react';
 import throttle from 'lodash/throttle';
-import p from './index';
+import {api, useContainers} from './';
 
 const LOADING_MESSAGE = 'Loading logs...';
 
@@ -26,7 +26,7 @@ const initEventSource = (
   selectedContainer,
   throttledSetLog
 ) => {
-  const es = p.api.logs(namespace, name, selectedContainer.name);
+  const es = api.logs(namespace, name, selectedContainer.name);
   es.onopen = () => {
     es.currentLog = [];
     throttledSetLog(['Waiting for container to log messages...']);
@@ -42,9 +42,9 @@ const initEventSource = (
   return es;
 };
 
-const useLogs = (namespace, name, containers) => {
+export const useLogs = (namespace, name, containers) => {
   const listRef = useRef();
-  const {selectedContainer, setSelectedContainer} = p.useContainers(containers);
+  const {selectedContainer, setSelectedContainer} = useContainers(containers);
   const [log, setLog] = useState([LOADING_MESSAGE]);
   const [follow, setFollow] = useState(true);
   const throttledSetLog = throttle(setLog, 100, {trailing: true});
@@ -81,5 +81,3 @@ const useLogs = (namespace, name, containers) => {
     setSelectedContainer
   };
 };
-
-export default useLogs;

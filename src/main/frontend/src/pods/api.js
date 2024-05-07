@@ -22,10 +22,10 @@ import {
 } from '../fetch';
 import {name, namespace} from '../metadata';
 
-const logs = (namespace, name, container) =>
+export const logs = (namespace, name, container) =>
   new EventSource(`${getApiURL()}/pods/${namespace}/${name}/logs/${container}`);
 
-const metrics = async pod => {
+export const metrics = async pod => {
   const response = await fetch(
     `${getApiURL()}/pods/${namespace(pod)}/${name(pod)}/metrics`
   );
@@ -41,15 +41,8 @@ const getWsUrl = () => {
   const wsOrigin = window.location.origin.replace(/^http/i, 'ws');
   return `${wsOrigin}/${apiURL.replace(/^\//, '')}`;
 };
-const exec = (namespace, name, container) =>
+export const exec = (namespace, name, container) =>
   new WebSocket(`${getWsUrl()}/pods/${namespace}/${name}/exec/${container}`);
 
-const api = {
-  exec,
-  logs,
-  metrics,
-  delete: deleteNamespacedResource('pods'),
-  update: updateNamespacedResource('pods')
-};
-
-export default api;
+export const deletePod = deleteNamespacedResource('pods');
+export const update = updateNamespacedResource('pods');
