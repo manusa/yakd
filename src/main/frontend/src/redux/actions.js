@@ -22,8 +22,8 @@ export const Types = {
   CRUD_DELETE: 'CRUD_DELETE',
   CRUD_SET_ALL: 'CRUD_SET_ALL',
   API_GROUPS_SET: 'API_GROUPS_SET',
-  SIDEBAR_SCROLL: 'SIDEBAR_SCROLL',
-  SIDEBAR_TOGGLE_ITEM: 'SIDEBAR_TOGGLE_ITEM',
+  UI_SIDEBAR_SCROLL: 'UI_SIDEBAR_SCROLL',
+  UI_SIDEBAR_TOGGLE_ITEM: 'UI_SIDEBAR_TOGGLE_ITEM',
   UI_SET_OFFLINE: 'UI_SET_OFFLINE',
   UI_SET_ERROR: 'UI_SET_ERROR',
   UI_CLEAR_ERROR: 'UI_CLEAR_ERROR',
@@ -89,14 +89,4 @@ export const setQuery = query => ({
 export const uiSetCreatingNewResource = creatingNewResource => ({
   type: Types.UI_SET_CREATING_NEW_RESOURCE,
   payload: creatingNewResource
-});
-
-export const sideBarScroll = ({scrollTop = 0, scrollLeft = 0}) => ({
-  type: Types.SIDEBAR_SCROLL,
-  payload: {scrollTop, scrollLeft}
-});
-
-export const sideBarToggleItem = item => ({
-  type: Types.SIDEBAR_TOGGLE_ITEM,
-  payload: item
 });

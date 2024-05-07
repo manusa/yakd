@@ -21,9 +21,8 @@ import * as apis from '../../apis';
 import i from '../icons';
 import {name as metadataName} from '../../metadata';
 import {selectors as nodeSelectors} from '../../nodes';
-import sidebar from '../../sidebar';
 import {Alert, Icon, Link, Tooltip} from '../';
-import {NewResource, NewResourceButton} from './';
+import {NewResource, NewResourceButton, SideBar} from './';
 
 const OfflineIcon = () => (
   <div className='fa-stack text-red-700' title='Watchers stopped (No network)'>
@@ -112,7 +111,7 @@ export const DashboardPage = ({className, title, children}) => {
         className={`${sideBarOpen ? 'visible opacity-50' : 'invisible'}
           fixed z-20 inset-0 bg-black opacity-0 transition-all duration-300 lg:hidden`}
       />
-      <sidebar.SideBar sideBarOpen={sideBarOpen} />
+      <SideBar sideBarOpen={sideBarOpen} />
       <div className='flex-1 flex flex-col overflow-hidden'>
         <Header setSideBarOpen={setSideBarOpen} title={title} />
         <main className='flex-1 flex flex-col overflow-x-hidden overflow-y-auto bg-gray-200'>

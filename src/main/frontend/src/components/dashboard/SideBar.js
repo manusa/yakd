@@ -16,13 +16,12 @@
  */
 import React, {useRef, useLayoutEffect} from 'react';
 import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
 import {useMatch} from 'react-router-dom';
-import * as apis from '../apis';
-import i from '../components/icons';
-import {sideBarToggleItem, sideBarScroll} from '../redux';
-import * as crd from '../customresourcedefinitions';
-import {Icon, Link} from '../components';
+import * as apis from '../../apis';
+import i from '../../components/icons';
+import {useUiSidebar} from '../../redux';
+import * as crd from '../../customresourcedefinitions';
+import {Icon, Link} from '../../components';
 
 import './SideBar.css';
 
@@ -270,15 +269,22 @@ const NavSection = ({
   );
 };
 
-const SideBar = ({
+const mapStateToProps = ({apiGroups, customResourceDefinitions}) => ({
+  isOpenShift: apis.selectors.isOpenShift(apiGroups),
+  crdGroups: crd.selectors.groups(customResourceDefinitions)
+});
+
+export const SideBar = connect(mapStateToProps)(({
   sideBarOpen,
-  scroll,
-  currentScrollTop,
-  expandedItems,
-  toggleItem,
   isOpenShift,
   crdGroups
 }) => {
+  const {
+    sidebarExpandedItems,
+    sidebarScrollTop,
+    sidebarScroll,
+    sidebarToggleItem
+  } = useUiSidebar();
   return (
     <div
       className={`${
@@ -301,38 +307,13 @@ const SideBar = ({
         </Link.RouterLink>
       </div>
       <NavSection
-        currentScrollTop={currentScrollTop}
-        scroll={scroll}
-        expandedItems={expandedItems}
-        toggleItem={toggleItem}
+        currentScrollTop={sidebarScrollTop}
+        scroll={sidebarScroll}
+        expandedItems={sidebarExpandedItems}
+        toggleItem={sidebarToggleItem}
         isOpenShift={isOpenShift}
         crdGroups={crdGroups}
       />
     </div>
   );
-};
-
-const mapStateToProps = ({
-  apiGroups,
-  sidebar: {
-    expandedItems,
-    scroll: {scrollTop: currentScrollTop}
-  },
-  customResourceDefinitions
-}) => ({
-  expandedItems,
-  currentScrollTop,
-  isOpenShift: apis.selectors.isOpenShift(apiGroups),
-  crdGroups: crd.selectors.groups(customResourceDefinitions)
 });
-
-const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      scroll: sideBarScroll,
-      toggleItem: sideBarToggleItem
-    },
-    dispatch
-  );
-
-export default connect(mapStateToProps, mapDispatchToProps)(SideBar);

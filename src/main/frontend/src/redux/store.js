@@ -16,7 +16,6 @@
  */
 import {combineReducers, createStore} from 'redux';
 import * as apis from '../apis';
-import sidebar from '../sidebar';
 import {reducer as reduxReducer, uiReducer} from './';
 
 const storeEnhancer = () => {
@@ -57,7 +56,6 @@ const appReducer = combineReducers({
   services: reduxReducer('Service'),
   serviceAccounts: reduxReducer('ServiceAccount'),
   statefulSets: reduxReducer('StatefulSet'),
-  sidebar: sidebar.reducer,
   ui: uiReducer
 });
 
