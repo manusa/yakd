@@ -16,7 +16,7 @@
  */
 import React from 'react';
 import {name, namespace, sortByCreationTimeStamp, uid} from '../metadata';
-import s from './';
+import {api, selectors} from './';
 import {Icon, Link, Table} from '../components';
 import ResourceList from '../components/ResourceList';
 
@@ -30,7 +30,7 @@ const headers = [
 ];
 
 const Rows = ({secrets}) => {
-  const deleteSecret = secret => async () => await s.api.delete(secret);
+  const deleteSecret = secret => async () => await api.deleteSecret(secret);
   return secrets.sort(sortByCreationTimeStamp).map(secret => (
     <Table.ResourceRow key={uid(secret)} resource={secret}>
       <Table.Cell>
@@ -41,7 +41,7 @@ const Rows = ({secrets}) => {
           {namespace(secret)}
         </Link.Namespace>
       </Table.Cell>
-      <Table.Cell>{s.selectors.type(secret)}</Table.Cell>
+      <Table.Cell>{selectors.type(secret)}</Table.Cell>
       <Table.Cell>
         <Table.DeleteButton onClick={deleteSecret(secret)} />
       </Table.Cell>
@@ -49,10 +49,10 @@ const Rows = ({secrets}) => {
   ));
 };
 
-const List = ({resources, loadedResources, crudDelete, ...properties}) => (
-  <ResourceList headers={headers} resources={resources} {...properties}>
-    <Rows secrets={resources} />
-  </ResourceList>
+export const List = ResourceList.resourceListConnect('secrets')(
+  ({resources, loadedResources, crudDelete, ...properties}) => (
+    <ResourceList headers={headers} resources={resources} {...properties}>
+      <Rows secrets={resources} />
+    </ResourceList>
+  )
 );
-
-export default ResourceList.resourceListConnect('secrets')(List);

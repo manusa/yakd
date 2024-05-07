@@ -24,7 +24,7 @@ import {CronJobsList} from '../cronjobs';
 import {CustomResourceDefinitionsList} from '../customresourcedefinitions';
 import {DeploymentsList} from '../deployments';
 import {DeploymentConfigsList} from '../deploymentconfigs';
-import * as ds from '../daemonsets';
+import {DaemonSetsList} from '../daemonsets';
 import * as ep from '../endpoints';
 import {HorizontalPodAutoscalersList} from '../horizontalpodautoscalers';
 import {IngressesList} from '../ingresses';
@@ -33,7 +33,7 @@ import {NamespacesList} from '../namespaces';
 import p from '../pods';
 import {PersistentVolumeClaimsList} from '../persistentvolumeclaims';
 import {PersistentVolumesList} from '../persistentvolumes';
-import s from '../secrets';
+import {SecretsList} from '../secrets';
 import {StatefulSetsList} from '../statefulsets';
 import {ServicesList} from '../services';
 import * as sa from '../serviceaccounts';
@@ -78,7 +78,7 @@ const Results = ({query, selectedNamespace}) => {
         nameLike={query}
         namespace={selectedNamespace}
       />
-      <ds.List
+      <DaemonSetsList
         {...commonProps}
         title='DaemonSets'
         nameLike={query}
@@ -156,7 +156,7 @@ const Results = ({query, selectedNamespace}) => {
         nameLike={query}
         namespace={selectedNamespace}
       />
-      <s.List
+      <SecretsList
         {...commonProps}
         title='Secrets'
         nameLike={query}

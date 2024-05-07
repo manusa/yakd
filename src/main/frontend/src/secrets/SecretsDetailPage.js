@@ -17,7 +17,7 @@
 import React, {useState} from 'react';
 import {connect} from 'react-redux';
 import {withParams} from '../router';
-import s from './';
+import {api, selectors} from './';
 import {Details} from '../metadata';
 import {Form, Icon, ResourceDetailPage} from '../components';
 
@@ -58,24 +58,6 @@ const DataField = ({label, value}) => {
   );
 };
 
-const SecretsDetailPage = ({secret}) => (
-  <ResourceDetailPage
-    kind='Secrets'
-    path='secrets'
-    resource={secret}
-    deleteFunction={s.api.delete}
-    body={
-      <Form>
-        <Details resource={secret} />
-        <Form.Field label='Type'>x{s.selectors.type(secret)}</Form.Field>
-        {Object.entries(s.selectors.data(secret)).map(([key, value]) => (
-          <DataField key={key} label={key} value={value} />
-        ))}
-      </Form>
-    }
-  />
-);
-
 const mapStateToProps = ({secrets}) => ({
   secrets
 });
@@ -87,6 +69,26 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
   secret: stateProps.secrets[ownProps.params.uid]
 });
 
-export default withParams(
-  connect(mapStateToProps, null, mergeProps)(SecretsDetailPage)
+export const SecretsDetailPage = withParams(
+  connect(
+    mapStateToProps,
+    null,
+    mergeProps
+  )(({secret}) => (
+    <ResourceDetailPage
+      kind='Secrets'
+      path='secrets'
+      resource={secret}
+      deleteFunction={api.deleteSecret}
+      body={
+        <Form>
+          <Details resource={secret} />
+          <Form.Field label='Type'>{selectors.type(secret)}</Form.Field>
+          {Object.entries(selectors.data(secret)).map(([key, value]) => (
+            <DataField key={key} label={key} value={value} />
+          ))}
+        </Form>
+      }
+    />
+  ))
 );

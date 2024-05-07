@@ -20,7 +20,7 @@ import {withParams} from '../router';
 import {api, selectors} from './';
 import {Details, namespace} from '../metadata';
 import {Card, Form, ResourceDetailPage} from '../components';
-import secrets from '../secrets';
+import {SecretsList} from '../secrets';
 
 const mapStateToProps = ({serviceAccounts}) => ({
   serviceAccounts
@@ -50,14 +50,14 @@ export const ServiceAccountsDetailPage = withParams(
         </Form>
       }
     >
-      <secrets.List
+      <SecretsList
         title='Secrets'
         titleVariant={Card.titleVariants.medium}
         className='mt-2'
         namespace={namespace(serviceAccount)}
         names={selectors.secretsNames(serviceAccount)}
       />
-      <secrets.List
+      <SecretsList
         title='Image Pull Secrets'
         titleVariant={Card.titleVariants.medium}
         className='mt-2'
