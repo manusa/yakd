@@ -16,17 +16,18 @@
  */
 import React from 'react';
 import {DashboardPage, FilterBar} from '../components';
-import rc from './';
+import {ReplicationControllersList} from './';
 import {useUiNamespace} from '../redux';
 
-const ReplicationControllersPage = () => {
+export const ReplicationControllersPage = () => {
   const {selectedNamespace} = useUiNamespace();
   return (
     <DashboardPage title='ReplicationControllers'>
       <FilterBar />
-      <rc.List className='mt-4' namespace={selectedNamespace} />
+      <ReplicationControllersList
+        className='mt-4'
+        namespace={selectedNamespace}
+      />
     </DashboardPage>
   );
 };
-
-export default ReplicationControllersPage;

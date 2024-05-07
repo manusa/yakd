@@ -20,36 +20,8 @@ import {withParams} from '../router';
 import {Details, uid} from '../metadata';
 import {ContainerList} from '../containers';
 import pods from '../pods';
-import rc from './';
+import {api, selectors} from './';
 import {Card, Form, ResourceDetailPage} from '../components';
-
-const ReplicationControllersDetailPage = ({replicationController}) => (
-  <ResourceDetailPage
-    kind='ReplicationControllers'
-    path='replicationcontrollers'
-    resource={replicationController}
-    isReadyFunction={rc.selectors.isReady}
-    deleteFunction={rc.api.delete}
-    body={
-      <Form>
-        <Details resource={replicationController} />
-      </Form>
-    }
-  >
-    <ContainerList
-      title='Containers'
-      titleVariant={Card.titleVariants.medium}
-      className='mt-2'
-      containers={rc.selectors.containers(replicationController)}
-    />
-    <pods.List
-      title='Pods'
-      titleVariant={Card.titleVariants.medium}
-      className='mt-2'
-      ownerUid={uid(replicationController)}
-    />
-  </ResourceDetailPage>
-);
 
 const mapStateToProps = ({replicationControllers}) => ({
   replicationControllers
@@ -63,6 +35,36 @@ const mergeProps = (
   replicationController: replicationControllers[uid]
 });
 
-export default withParams(
-  connect(mapStateToProps, null, mergeProps)(ReplicationControllersDetailPage)
+export const ReplicationControllersDetailPage = withParams(
+  connect(
+    mapStateToProps,
+    null,
+    mergeProps
+  )(({replicationController}) => (
+    <ResourceDetailPage
+      kind='ReplicationControllers'
+      path='replicationcontrollers'
+      resource={replicationController}
+      isReadyFunction={selectors.isReady}
+      deleteFunction={api.deleteRc}
+      body={
+        <Form>
+          <Details resource={replicationController} />
+        </Form>
+      }
+    >
+      <ContainerList
+        title='Containers'
+        titleVariant={Card.titleVariants.medium}
+        className='mt-2'
+        containers={selectors.containers(replicationController)}
+      />
+      <pods.List
+        title='Pods'
+        titleVariant={Card.titleVariants.medium}
+        className='mt-2'
+        ownerUid={uid(replicationController)}
+      />
+    </ResourceDetailPage>
+  ))
 );
