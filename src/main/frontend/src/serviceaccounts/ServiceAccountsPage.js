@@ -15,7 +15,7 @@
  *
  */
 import React from 'react';
-import {List} from './';
+import {ServiceAccountsList} from './';
 import {DashboardPage, FilterBar} from '../components';
 import {useUiNamespace} from '../redux';
 
@@ -24,7 +24,7 @@ export const ServiceAccountsPage = () => {
   return (
     <DashboardPage title='ServiceAccounts'>
       <FilterBar />
-      <List className='mt-4' namespace={selectedNamespace} />
+      <ServiceAccountsList className='mt-4' namespace={selectedNamespace} />
     </DashboardPage>
   );
 };

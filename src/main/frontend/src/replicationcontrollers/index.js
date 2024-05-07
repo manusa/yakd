@@ -14,20 +14,9 @@
  * limitations under the License.
  *
  */
-import api from './api';
-import selectors from './selectors';
-import List from './List';
-import ReplicationControllersDetailPage from './ReplicationControllersDetailPage';
-import ReplicationControllersEditPage from './ReplicationControllersEditPage';
-import ReplicationControllersPage from './ReplicationControllersPage';
-
-const index = {
-  api,
-  selectors,
-  List,
-  ReplicationControllersDetailPage,
-  ReplicationControllersEditPage,
-  ReplicationControllersPage
-};
-
-export default index;
+export * as api from './api';
+export * as selectors from './selectors';
+export {List as ReplicationControllersList} from './List';
+export {ReplicationControllersDetailPage} from './ReplicationControllersDetailPage';
+export {ReplicationControllersEditPage} from './ReplicationControllersEditPage';
+export {ReplicationControllersPage} from './ReplicationControllersPage';

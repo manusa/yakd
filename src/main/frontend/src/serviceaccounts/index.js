@@ -16,7 +16,7 @@
  */
 export * as api from './api';
 export * as selectors from './selectors';
-export {List} from './List';
+export {List as ServiceAccountsList} from './List';
 export {ServiceAccountsDetailPage} from './ServiceAccountsDetailPage';
 export {ServiceAccountsEditPage} from './ServiceAccountsEditPage';
 export {ServiceAccountsPage} from './ServiceAccountsPage';

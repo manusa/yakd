@@ -14,31 +14,27 @@
  * limitations under the License.
  *
  */
-const selectors = {};
-
-selectors.statusReplicas = replicationController =>
+export const statusReplicas = replicationController =>
   replicationController?.status?.replicas ?? 0;
 
-selectors.statusReadyReplicas = replicationController =>
+export const statusReadyReplicas = replicationController =>
   replicationController?.status?.readyReplicas ?? 0;
 
-selectors.isReady = replicationController =>
-  selectors.statusReplicas(replicationController) ===
-  selectors.statusReadyReplicas(replicationController);
+export const isReady = replicationController =>
+  statusReplicas(replicationController) ===
+  statusReadyReplicas(replicationController);
 
-selectors.specReplicas = replicationController =>
+export const specReplicas = replicationController =>
   replicationController?.spec?.replicas ?? 0;
 
-selectors.containers = replicationController =>
+export const containers = replicationController =>
   replicationController?.spec?.template?.spec?.containers ?? [];
 
 // Selectors for array of ReplicationControllers
 
-selectors.readyCount = replicationControllers =>
+export const readyCount = replicationControllers =>
   replicationControllers.reduce(
     (count, replicationController) =>
-      selectors.isReady(replicationController) ? count + 1 : count,
+      isReady(replicationController) ? count + 1 : count,
     0
   );
-
-export default selectors;

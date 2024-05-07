@@ -36,10 +36,10 @@ import {PersistentVolumesList} from '../persistentvolumes';
 import {SecretsList} from '../secrets';
 import {StatefulSetsList} from '../statefulsets';
 import {ServicesList} from '../services';
-import * as sa from '../serviceaccounts';
+import {ServiceAccountsList} from '../serviceaccounts';
 import {setQuery} from '../redux';
 import {ReplicaSetsList} from '../replicasets';
-import rc from '../replicationcontrollers';
+import {ReplicationControllersList} from '../replicationcontrollers';
 import {RolesList} from '../roles';
 import {RoutesList} from '../routes';
 import {Card, DashboardPage, FilterBar, Textfield} from '../components';
@@ -108,7 +108,7 @@ const Results = ({query, selectedNamespace}) => {
         nameLike={query}
         namespace={selectedNamespace}
       />
-      <rc.List
+      <ReplicationControllersList
         {...commonProps}
         title='ReplicationControllers'
         nameLike={query}
@@ -162,7 +162,7 @@ const Results = ({query, selectedNamespace}) => {
         nameLike={query}
         namespace={selectedNamespace}
       />
-      <sa.List
+      <ServiceAccountsList
         {...commonProps}
         title='ServiceAccounts'
         nameLike={query}

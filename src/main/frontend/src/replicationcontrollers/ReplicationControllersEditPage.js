@@ -17,10 +17,10 @@
 import React from 'react';
 import {withParams} from '../router';
 import {name} from '../metadata';
-import rc from './';
+import {api} from './';
 import {Link, ResourceEditPage} from '../components';
 
-const ReplicationControllersEditPage = ({params: {uid}}) => (
+export const ReplicationControllersEditPage = withParams(({params: {uid}}) => (
   <ResourceEditPage
     kind='ReplicationControllers'
     path='replicationcontrollers'
@@ -29,9 +29,7 @@ const ReplicationControllersEditPage = ({params: {uid}}) => (
         {name(resource)}
       </Link.RouterLink>
     )}
-    save={async resource => await rc.api.update(resource)}
+    save={async resource => await api.update(resource)}
     resourceFromState={state => state.replicationControllers[uid]}
   />
-);
-
-export default withParams(ReplicationControllersEditPage);
+));

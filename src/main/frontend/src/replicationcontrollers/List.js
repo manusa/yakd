@@ -17,7 +17,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {name, namespace, sortByCreationTimeStamp, uid} from '../metadata';
-import rc from './';
+import {api, selectors} from './';
 import {Icon, Link, Table} from '../components';
 import ResourceList from '../components/ResourceList';
 
@@ -33,7 +33,7 @@ const headers = [
 
 const Rows = ({replicationControllers}) => {
   const deleteReplicationController = replicationController => async () =>
-    await rc.api.delete(replicationController);
+    await api.deleteRc(replicationController);
   return replicationControllers
     .sort(sortByCreationTimeStamp)
     .map(replicationController => (
@@ -44,12 +44,12 @@ const Rows = ({replicationControllers}) => {
         <Table.Cell className='whitespace-nowrap w-3 text-center'>
           <Icon
             className={
-              rc.selectors.isReady(replicationController)
+              selectors.isReady(replicationController)
                 ? 'text-green-500'
                 : 'text-red-500'
             }
             icon={
-              rc.selectors.isReady(replicationController)
+              selectors.isReady(replicationController)
                 ? 'fa-check'
                 : 'fa-exclamation-circle'
             }
@@ -66,7 +66,7 @@ const Rows = ({replicationControllers}) => {
           {namespace(replicationController)}
         </Table.Cell>
         <Table.Cell className='whitespace-nowrap'>
-          {rc.selectors.specReplicas(replicationController)}
+          {selectors.specReplicas(replicationController)}
         </Table.Cell>
         <Table.Cell className='whitespace-nowrap text-center'>
           <Table.DeleteButton
@@ -77,20 +77,14 @@ const Rows = ({replicationControllers}) => {
     ));
 };
 
-const List = ({
-  resources,
-  ownerUid,
-  crudDelete,
-  loadedResources,
-  ...properties
-}) => (
-  <ResourceList headers={headers} resources={resources} {...properties}>
-    <Rows replicationControllers={resources} />
-  </ResourceList>
+export const List = ResourceList.resourceListConnect('replicationControllers')(
+  ({resources, ownerUid, crudDelete, loadedResources, ...properties}) => (
+    <ResourceList headers={headers} resources={resources} {...properties}>
+      <Rows replicationControllers={resources} />
+    </ResourceList>
+  )
 );
 
 List.propTypes = {
   ownerUid: PropTypes.string
 };
-
-export default ResourceList.resourceListConnect('replicationControllers')(List);

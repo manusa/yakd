@@ -22,7 +22,7 @@ import {ContainerList} from '../containers';
 import {api, selectors} from './';
 import pods from '../pods';
 import {ReplicasField} from '../replicasets';
-import rc from '../replicationcontrollers';
+import {ReplicationControllersList} from '../replicationcontrollers';
 import {Card, Form, Icon, Link, ResourceDetailPage} from '../components';
 
 const mapStateToProps = ({deploymentConfigs, replicationControllers}) => ({
@@ -88,7 +88,7 @@ export const DeploymentConfigsDetailPage = withParams(
         className='mt-2'
         containers={selectors.containers(deploymentConfig)}
       />
-      <rc.List
+      <ReplicationControllersList
         title='Replication Controller'
         titleVariant={Card.titleVariants.medium}
         className='mt-2'

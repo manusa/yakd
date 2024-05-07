@@ -79,7 +79,11 @@ import {
   PersistentVolumesDetailPage
 } from './persistentvolumes';
 import pods from './pods';
-import rc from './replicationcontrollers';
+import {
+  ReplicationControllersPage,
+  ReplicationControllersDetailPage,
+  ReplicationControllersEditPage
+} from './replicationcontrollers';
 import {apiGroupsSet, setError, setOffline} from './redux';
 import {RolesPage, RolesDetailPage, RolesEditPage} from './roles';
 import {RoutesPage, RoutesDetailPage, RoutesEditPage} from './routes';
@@ -316,17 +320,17 @@ export const App = () => {
         <Route
           exact
           path='/replicationcontrollers'
-          element={<rc.ReplicationControllersPage />}
+          element={<ReplicationControllersPage />}
         />
         <Route
           exact
           path='/replicationcontrollers/:uid'
-          element={<rc.ReplicationControllersDetailPage />}
+          element={<ReplicationControllersDetailPage />}
         />
         <Route
           exact
           path='/replicationcontrollers/:uid/edit'
-          element={<rc.ReplicationControllersEditPage />}
+          element={<ReplicationControllersEditPage />}
         />
         <Route exact path='/roles' element={<RolesPage />} />
         <Route exact path='/roles/:uid' element={<RolesDetailPage />} />
