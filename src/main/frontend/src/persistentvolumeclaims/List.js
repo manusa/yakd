@@ -15,9 +15,8 @@
  *
  */
 import React from 'react';
-import {useDispatch} from 'react-redux';
 import {name, namespace, sortByCreationTimeStamp, uid} from '../metadata';
-import {crudDelete, useFilteredResources, useUiLoadedResources} from '../redux';
+import {useFilteredResources} from '../redux';
 import {Icon, Link, ResourceListV2, Table} from '../components';
 import {api, selectors} from './';
 
@@ -33,11 +32,8 @@ const headers = [
 ];
 
 const Rows = ({persistentVolumeClaims}) => {
-  const dispatch = useDispatch();
-  const deletePersistentVolumeClaim = persistentVolumeClaim => async () => {
+  const deletePersistentVolumeClaim = persistentVolumeClaim => async () =>
     await api.deletePvc(persistentVolumeClaim);
-    dispatch(crudDelete(persistentVolumeClaim)); // TODO: Implement Hook
-  };
   return persistentVolumeClaims
     .sort(sortByCreationTimeStamp)
     .map(persistentVolumeClaim => (
@@ -80,14 +76,8 @@ export const List = ({...properties}) => {
     resource: 'persistentVolumeClaims',
     filters: {...properties}
   });
-  const {loadedResources} = useUiLoadedResources();
   return (
-    <ResourceListV2
-      headers={headers}
-      resources={resources}
-      loading={!loadedResources['PersistentVolumeClaim']}
-      {...properties}
-    >
+    <ResourceListV2 headers={headers} resources={resources} {...properties}>
       <Rows persistentVolumeClaims={resources} />
     </ResourceListV2>
   );
