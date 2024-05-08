@@ -16,9 +16,9 @@
  */
 import React from 'react';
 import {name, sortByCreationTimeStamp, uid} from '../metadata';
+import {useFilteredResources} from '../redux';
+import {Icon, Link, ResourceListV2, Table} from '../components';
 import {api, selectors} from './';
-import {Icon, Link, Table} from '../components';
-import ResourceList from '../components/ResourceList';
 
 const headers = [
   <span>
@@ -30,11 +30,9 @@ const headers = [
   ''
 ];
 
-const Rows = ({persistentVolumes, crudDelete}) => {
-  const deletePersistentVolume = persistentVolume => async () => {
+const Rows = ({persistentVolumes}) => {
+  const deletePersistentVolume = persistentVolume => async () =>
     await api.deletePv(persistentVolume);
-    crudDelete(persistentVolume);
-  };
   return persistentVolumes
     .sort(sortByCreationTimeStamp)
     .map(persistentVolume => (
@@ -65,15 +63,14 @@ const Rows = ({persistentVolumes, crudDelete}) => {
     ));
 };
 
-export const List = ResourceList.resourceListConnect('persistentVolumes')(
-  ({resources, loadedResources, crudDelete, ...properties}) => (
-    <ResourceList
-      headers={headers}
-      resources={resources}
-      loading={!loadedResources['PersistentVolume']}
-      {...properties}
-    >
-      <Rows persistentVolumes={resources} crudDelete={crudDelete} />
-    </ResourceList>
-  )
-);
+export const List = ({...properties}) => {
+  const resources = useFilteredResources({
+    resource: 'persistentVolumes',
+    filters: {...properties}
+  });
+  return (
+    <ResourceListV2 headers={headers} resources={resources} {...properties}>
+      <Rows persistentVolumes={resources} />
+    </ResourceListV2>
+  );
+};

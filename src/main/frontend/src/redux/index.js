@@ -18,5 +18,10 @@ export * from './actions';
 export {useFilteredResources} from './hooks';
 export {reducer} from './reducer';
 export {toObjectReducer, resourcesBy} from './selectors';
-export {uiReducer, useUiNamespace, useUiSidebar} from './ui-reducer';
+export {
+  uiReducer,
+  useUiLoadedResources,
+  useUiNamespace,
+  useUiSidebar
+} from './ui-reducer';
 export {store} from './store';

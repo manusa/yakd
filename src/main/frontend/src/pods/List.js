@@ -15,11 +15,9 @@
  *
  */
 import React from 'react';
-import PropTypes from 'prop-types';
-import {connect} from 'react-redux';
 import {name, namespace, sortByCreationTimeStamp, uid} from '../metadata';
-import {Icon, Link, Table} from '../components';
-import ResourceList from '../components/ResourceList';
+import {useFilteredResources} from '../redux';
+import {Icon, Link, ResourceListV2, Table} from '../components';
 import {api, selectors, StatusIcon} from './';
 
 const headers = [
@@ -87,35 +85,17 @@ const Rows = ({pods}) => {
   ));
 };
 
-const mergeProps = (stateProps, dispatchProps, ownProps) => ({
-  ...stateProps,
-  ...dispatchProps,
-  ...ownProps,
-  resources: Object.values(selectors.podsBy(stateProps.resources, ownProps))
-});
-
-export const List = connect(
-  ResourceList.mapStateToProps('pods'),
-  null,
-  mergeProps
-)(
-  ({
-    resources,
-    nodeName,
-    ownerUids,
-    ownerUid,
-    crudDelete,
-    loadedResources,
-    ...properties
-  }) => (
-    <ResourceList headers={headers} resources={resources} {...properties}>
+export const List = ({...properties}) => {
+  const filteredResources = useFilteredResources({
+    resource: 'pods',
+    filters: {...properties}
+  });
+  const resources = Object.values(
+    selectors.podsBy(filteredResources, properties)
+  );
+  return (
+    <ResourceListV2 headers={headers} resources={resources} {...properties}>
       <Rows pods={resources} />
-    </ResourceList>
-  )
-);
-
-List.propTypes = {
-  nodeName: PropTypes.string,
-  ownerUids: PropTypes.arrayOf(PropTypes.string),
-  namespace: PropTypes.string
+    </ResourceListV2>
+  );
 };

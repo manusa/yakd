@@ -15,12 +15,10 @@
  *
  */
 import React from 'react';
-import {connect} from 'react-redux';
 import {name, namespace, sortByCreationTimeStamp, uid} from '../metadata';
+import {useFilteredResources} from '../redux';
+import {Icon, Link, ResourceListV2, Table} from '../components';
 import {api, selectors} from './';
-import {resourcesBy} from '../redux';
-import {Icon, Link, Table} from '../components';
-import ResourceList from '../components/ResourceList';
 
 const headers = [
   '',
@@ -83,23 +81,14 @@ const Rows = ({deployments}) => {
   ));
 };
 
-const mapStateToProps = ({deployments}) => ({
-  deployments
-});
-
-const mergeProps = (stateProps, dispatchProps, ownProps) => ({
-  ...stateProps,
-  ...dispatchProps,
-  ...ownProps,
-  deployments: Object.values(resourcesBy(stateProps.deployments, ownProps))
-});
-
-export const List = connect(
-  mapStateToProps,
-  null,
-  mergeProps
-)(({deployments, ...properties}) => (
-  <ResourceList headers={headers} resources={deployments} {...properties}>
-    <Rows deployments={deployments} />
-  </ResourceList>
-));
+export const List = ({...properties}) => {
+  const resources = useFilteredResources({
+    resource: 'deployments',
+    filters: {...properties}
+  });
+  return (
+    <ResourceListV2 headers={headers} resources={resources} {...properties}>
+      <Rows deployments={resources} />
+    </ResourceListV2>
+  );
+};

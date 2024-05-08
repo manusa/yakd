@@ -16,9 +16,9 @@
  */
 import React from 'react';
 import {name, namespace, sortByCreationTimeStamp, uid} from '../metadata';
+import {useFilteredResources} from '../redux';
+import {Icon, Link, ResourceListV2, Table} from '../components';
 import {api, selectors} from './';
-import {Icon, Link, Table} from '../components';
-import ResourceList from '../components/ResourceList';
 
 const headers = [
   <span>
@@ -30,10 +30,9 @@ const headers = [
   ''
 ];
 
-const Rows = ({ingresses, crudDelete}) => {
+const Rows = ({ingresses}) => {
   const deleteIngress = ingress => async () => {
     await api.deleteIng(ingress);
-    crudDelete(ingress);
   };
   return ingresses.sort(sortByCreationTimeStamp).map(ingress => (
     <Table.ResourceRow key={uid(ingress)} resource={ingress}>
@@ -68,14 +67,14 @@ const Rows = ({ingresses, crudDelete}) => {
   ));
 };
 
-export const List = ResourceList.resourceListConnect('ingresses')(
-  ({resources, loadedResources, crudDelete, ...properties}) => (
-    <ResourceList headers={headers} resources={resources} {...properties}>
-      <Rows
-        ingresses={resources}
-        loadedResources={loadedResources}
-        crudDelete={crudDelete}
-      />
-    </ResourceList>
-  )
-);
+export const List = ({...properties}) => {
+  const resources = useFilteredResources({
+    resource: 'ingresses',
+    filters: {...properties}
+  });
+  return (
+    <ResourceListV2 headers={headers} resources={resources} {...properties}>
+      <Rows ingresses={resources} />
+    </ResourceListV2>
+  );
+};

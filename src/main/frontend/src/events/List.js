@@ -15,11 +15,10 @@
  *
  */
 import React from 'react';
-import {connect} from 'react-redux';
 import {uid} from '../metadata';
+import {useFilteredResources} from '../redux';
+import {Age, Icon, Link, ResourceListV2, Table} from '../components';
 import {selectors} from './';
-import {Age, Icon, Link, Table} from '../components';
-import ResourceList from '../components/ResourceList';
 
 const headers = [
   '',
@@ -147,28 +146,20 @@ const filterEvents = (events = [], {namespace} = undefined) =>
       return acc;
     }, {});
 
-const mapStateToProps = ({events}) => ({
-  events
-});
-
-const mergeProps = (stateProps, dispatchProps, ownProps) => ({
-  ...stateProps,
-  ...dispatchProps,
-  ...ownProps,
-  events: Object.values(filterEvents(stateProps.events, ownProps))
-});
-
-export const List = connect(
-  mapStateToProps,
-  null,
-  mergeProps
-)(({events, ...properties}) => (
-  <ResourceList
-    title='Latest Events'
-    headers={headers}
-    resources={events}
-    {...properties}
-  >
-    <Rows events={events} />
-  </ResourceList>
-));
+export const List = ({...properties}) => {
+  const filteredResources = useFilteredResources({
+    resource: 'events',
+    filters: {...properties}
+  });
+  const resources = Object.values(filterEvents(filteredResources, properties));
+  return (
+    <ResourceListV2
+      title='Latest Events'
+      headers={headers}
+      resources={resources}
+      {...properties}
+    >
+      <Rows events={resources} />
+    </ResourceListV2>
+  );
+};
