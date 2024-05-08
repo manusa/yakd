@@ -15,15 +15,11 @@
  *
  */
 import React, {useState} from 'react';
-import {bindActionCreators} from 'redux';
-import {connect} from 'react-redux';
-import {crudDelete} from '../redux';
 import {name, namespace, sortByCreationTimeStamp, uid} from '../metadata';
-import {api, selectors} from './';
 import {selectors as crdSelectors} from '../customresourcedefinitions';
-import {Icon, Link, Table} from '../components';
 import {ResourceEditModal} from '../editor';
-import ResourceList from '../components/ResourceList';
+import {Icon, Link, ResourceListV2, Table} from '../components';
+import {api, selectors} from './';
 
 const headers = customResourceDefinition => {
   const ret = [
@@ -73,29 +69,17 @@ const Rows = ({
   ));
 };
 
-const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      crudDelete
-    },
-    dispatch
-  );
-
-export const List = connect(
-  null,
-  mapDispatchToProps
-)(({
+export const List = ({
   customResources,
   customResourceDefinition,
   version,
   deleteResourceCallback,
-  crudDelete,
   ...properties
 }) => {
-  const [editedResource, editResource] = useState(null);
+  const [editedResource, setEditedResource] = useState(null);
   return (
     <>
-      <ResourceList
+      <ResourceListV2
         headers={headers(customResourceDefinition)}
         resources={customResources}
         {...properties}
@@ -104,10 +88,10 @@ export const List = connect(
           customResources={customResources}
           customResourceDefinition={customResourceDefinition}
           version={version}
-          editResource={editResource}
+          editResource={setEditedResource}
           deleteResourceCallback={deleteResourceCallback}
         />
-      </ResourceList>
+      </ResourceListV2>
       <ResourceEditModal
         resource={editedResource}
         title={`${selectors.apiVersion(editedResource)} - ${
@@ -116,8 +100,8 @@ export const List = connect(
             : ''
         }${name(editedResource)}`}
         save={toSave => api.update(customResourceDefinition, version)(toSave)}
-        close={() => editResource(null)}
+        close={() => setEditedResource(null)}
       />
     </>
   );
-});
+};
