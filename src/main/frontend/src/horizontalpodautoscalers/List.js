@@ -16,8 +16,8 @@
  */
 import React from 'react';
 import {name, namespace, sortByCreationTimeStamp, uid} from '../metadata';
-import {Icon, Link, Table} from '../components';
-import ResourceList from '../components/ResourceList';
+import {useFilteredResources} from '../redux';
+import {Icon, Link, ResourceListV2, Table} from '../components';
 import {api, selectors} from './';
 
 const headers = [
@@ -78,13 +78,14 @@ const Rows = ({horizontalPodAutoscalers}) => {
     ));
 };
 
-export const List = ResourceList.resourceListConnect(
-  'horizontalPodAutoscalers'
-)(({resources, crudDelete, loadedResources, ...properties}) => (
-  <ResourceList headers={headers} resources={resources} {...properties}>
-    <Rows
-      horizontalPodAutoscalers={resources}
-      loadedResources={loadedResources}
-    />
-  </ResourceList>
-));
+export const List = ({...properties}) => {
+  const resources = useFilteredResources({
+    resource: 'horizontalPodAutoscalers',
+    filters: {...properties}
+  });
+  return (
+    <ResourceListV2 headers={headers} resources={resources} {...properties}>
+      <Rows horizontalPodAutoscalers={resources} />
+    </ResourceListV2>
+  );
+};

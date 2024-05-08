@@ -15,7 +15,6 @@
  *
  */
 import React from 'react';
-import {connect} from 'react-redux';
 import {
   KeyValueList,
   labels,
@@ -23,9 +22,9 @@ import {
   sortByCreationTimeStamp,
   uid
 } from '../metadata';
+import {useFilteredResources} from '../redux';
+import {Icon, Link, ResourceListV2, Table} from '../components';
 import {selectors} from './';
-import {Icon, Link, Table} from '../components';
-import ResourceList from '../components/ResourceList';
 
 const headers = [
   '',
@@ -69,12 +68,14 @@ const Rows = ({nodes}) => {
   ));
 };
 
-const mapStateToProps = ({nodes}) => ({
-  nodes: Object.values(nodes)
-});
-
-export const List = connect(mapStateToProps)(({nodes, ...properties}) => (
-  <ResourceList headers={headers} resources={nodes} {...properties}>
-    <Rows nodes={nodes} />
-  </ResourceList>
-));
+export const List = ({...properties}) => {
+  const resources = useFilteredResources({
+    resource: 'nodes',
+    filters: {...properties}
+  });
+  return (
+    <ResourceListV2 headers={headers} resources={resources} {...properties}>
+      <Rows nodes={resources} />
+    </ResourceListV2>
+  );
+};

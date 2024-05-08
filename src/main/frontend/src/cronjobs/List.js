@@ -16,9 +16,9 @@
  */
 import React from 'react';
 import {name, namespace, sortByCreationTimeStamp, uid} from '../metadata';
+import {useFilteredResources} from '../redux';
+import {Icon, Link, ResourceListV2, Table} from '../components';
 import {api, selectors} from './';
-import {Icon, Link, Table} from '../components';
-import ResourceList from '../components/ResourceList';
 
 const headers = [
   '',
@@ -66,10 +66,14 @@ const Rows = ({cronJobs}) => {
   ));
 };
 
-export const List = ResourceList.resourceListConnect('cronJobs')(
-  ({resources, crudDelete, loadedResources, ...properties}) => (
-    <ResourceList headers={headers} resources={resources} {...properties}>
-      <Rows cronJobs={resources} loadedResources={loadedResources} />
-    </ResourceList>
-  )
-);
+export const List = ({...properties}) => {
+  const resources = useFilteredResources({
+    resource: 'cronJobs',
+    filters: {...properties}
+  });
+  return (
+    <ResourceListV2 headers={headers} resources={resources} {...properties}>
+      <Rows cronJobs={resources} />
+    </ResourceListV2>
+  );
+};

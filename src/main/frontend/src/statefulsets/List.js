@@ -16,9 +16,9 @@
  */
 import React from 'react';
 import {name, namespace, sortByCreationTimeStamp, uid} from '../metadata';
+import {useFilteredResources} from '../redux';
+import {Icon, Link, ResourceListV2, Table} from '../components';
 import {api, selectors} from './';
-import {Icon, Link, Table} from '../components';
-import ResourceList from '../components/ResourceList';
 
 const headers = [
   '',
@@ -83,10 +83,14 @@ const Rows = ({statefulSets}) => {
   ));
 };
 
-export const List = ResourceList.resourceListConnect('statefulSets')(
-  ({resources, crudDelete, loadedResources, ...properties}) => (
-    <ResourceList headers={headers} resources={resources} {...properties}>
-      <Rows statefulSets={resources} loadedResources={loadedResources} />
-    </ResourceList>
-  )
-);
+export const List = ({...properties}) => {
+  const resources = useFilteredResources({
+    resource: 'statefulSets',
+    filters: {...properties}
+  });
+  return (
+    <ResourceListV2 headers={headers} resources={resources} {...properties}>
+      <Rows statefulSets={resources} />
+    </ResourceListV2>
+  );
+};

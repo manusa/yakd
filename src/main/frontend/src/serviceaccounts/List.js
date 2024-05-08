@@ -24,9 +24,9 @@ import {
   sortByCreationTimeStamp,
   uid
 } from '../metadata';
+import {useFilteredResources} from '../redux';
+import {Age, Icon, Link, ResourceListV2, Table} from '../components';
 import {api} from './';
-import {Age, Icon, Link, Table} from '../components';
-import ResourceList from '../components/ResourceList';
 
 const headers = [
   <span>
@@ -68,10 +68,14 @@ const Rows = ({serviceAccounts}) => {
   ));
 };
 
-export const List = ResourceList.resourceListConnect('serviceAccounts')(
-  ({resources, crudDelete, loadedResources, ...properties}) => (
-    <ResourceList headers={headers} resources={resources} {...properties}>
-      <Rows serviceAccounts={resources} loadedResources={loadedResources} />
-    </ResourceList>
-  )
-);
+export const List = ({...properties}) => {
+  const resources = useFilteredResources({
+    resource: 'serviceAccounts',
+    filters: {...properties}
+  });
+  return (
+    <ResourceListV2 headers={headers} resources={resources} {...properties}>
+      <Rows serviceAccounts={resources} />
+    </ResourceListV2>
+  );
+};

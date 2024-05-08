@@ -15,11 +15,10 @@
  *
  */
 import React from 'react';
-import PropTypes from 'prop-types';
 import {name, namespace, sortByCreationTimeStamp, uid} from '../metadata';
+import {useFilteredResources} from '../redux';
+import {Icon, ResourceListV2, Table} from '../components';
 import {api, selectors} from './';
-import {Icon, Table} from '../components';
-import ResourceList from '../components/ResourceList';
 
 const headers = [
   '',
@@ -60,14 +59,14 @@ const Rows = ({replicaSets}) => {
   ));
 };
 
-export const List = ResourceList.resourceListConnect('replicaSets')(
-  ({resources, ownerUid, crudDelete, loadedResources, ...properties}) => (
-    <ResourceList headers={headers} resources={resources} {...properties}>
+export const List = ({...properties}) => {
+  const resources = useFilteredResources({
+    resource: 'replicaSets',
+    filters: {...properties}
+  });
+  return (
+    <ResourceListV2 headers={headers} resources={resources} {...properties}>
       <Rows replicaSets={resources} />
-    </ResourceList>
-  )
-);
-
-List.propTypes = {
-  ownerUid: PropTypes.string
+    </ResourceListV2>
+  );
 };

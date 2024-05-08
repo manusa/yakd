@@ -97,6 +97,14 @@ const actionSidebarToggleItem = item => ({
 });
 
 // Hooks
+export const useUiLoadedResources = () => {
+  const loadedResources = useSelector(
+    ({ui: {loadedResources}}) => loadedResources,
+    shallowEqual
+  );
+  return {loadedResources};
+};
+
 export const useUiNamespace = () => {
   const dispatch = useDispatch();
   const selectNamespace = namespace =>

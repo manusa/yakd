@@ -22,9 +22,9 @@ import {
   sortByCreationTimeStamp,
   uid
 } from '../metadata';
+import {useFilteredResources} from '../redux';
+import {Icon, Link, Tooltip, Table, ResourceListV2} from '../components';
 import {api} from './';
-import {Icon, Link, Tooltip, Table} from '../components';
-import ResourceList from '../components/ResourceList';
 
 const headers = [
   <span>
@@ -65,10 +65,14 @@ const Rows = ({roles}) => {
   ));
 };
 
-export const List = ResourceList.resourceListConnect('roles')(
-  ({resources, loadedResources, crudDelete, ...properties}) => (
-    <ResourceList headers={headers} resources={resources} {...properties}>
+export const List = ({...properties}) => {
+  const resources = useFilteredResources({
+    resource: 'roles',
+    filters: {...properties}
+  });
+  return (
+    <ResourceListV2 headers={headers} resources={resources} {...properties}>
       <Rows roles={resources} />
-    </ResourceList>
-  )
-);
+    </ResourceListV2>
+  );
+};

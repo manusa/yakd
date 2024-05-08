@@ -16,9 +16,9 @@
  */
 import React from 'react';
 import {name, namespace, sortByCreationTimeStamp, uid} from '../metadata';
+import {useFilteredResources} from '../redux';
+import {Icon, Link, ResourceListV2, Table} from '../components';
 import {api} from './';
-import {Icon, Link, Table} from '../components';
-import ResourceList from '../components/ResourceList';
 
 const headers = [
   <span>
@@ -50,10 +50,14 @@ const Rows = ({configMaps}) => {
   ));
 };
 
-export const List = ResourceList.resourceListConnect('configMaps')(
-  ({resources, loadedResources, crudDelete, ...properties}) => (
-    <ResourceList headers={headers} resources={resources} {...properties}>
+export const List = ({...properties}) => {
+  const resources = useFilteredResources({
+    resource: 'configMaps',
+    filters: {...properties}
+  });
+  return (
+    <ResourceListV2 headers={headers} resources={resources} {...properties}>
       <Rows configMaps={resources} />
-    </ResourceList>
-  )
-);
+    </ResourceListV2>
+  );
+};

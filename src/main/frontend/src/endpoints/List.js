@@ -15,7 +15,6 @@
  *
  */
 import React from 'react';
-import {api, selectors} from './';
 import {
   creationTimestamp,
   name,
@@ -23,8 +22,9 @@ import {
   sortByCreationTimeStamp,
   uid
 } from '../metadata';
-import {Age, Icon, Link, Table} from '../components';
-import ResourceList from '../components/ResourceList';
+import {useFilteredResources} from '../redux';
+import {Age, Icon, Link, ResourceListV2, Table} from '../components';
+import {api, selectors} from './';
 
 const headers = [
   <span>
@@ -62,10 +62,14 @@ const Rows = ({endpoints}) => {
   ));
 };
 
-export const List = ResourceList.resourceListConnect('endpoints')(
-  ({resources, loadedResources, crudDelete, ...properties}) => (
-    <ResourceList headers={headers} resources={resources} {...properties}>
+export const List = ({...properties}) => {
+  const resources = useFilteredResources({
+    resource: 'endpoints',
+    filters: {...properties}
+  });
+  return (
+    <ResourceListV2 headers={headers} resources={resources} {...properties}>
       <Rows endpoints={resources} />
-    </ResourceList>
-  )
-);
+    </ResourceListV2>
+  );
+};

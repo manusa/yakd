@@ -15,11 +15,10 @@
  *
  */
 import React from 'react';
-import {connect} from 'react-redux';
 import {name, sortByCreationTimeStamp, uid} from '../metadata';
+import {useFilteredResources} from '../redux';
+import {Icon, Link, ResourceListV2, Table} from '../components';
 import {api, selectors, GroupLink} from './';
-import {Icon, Link, Table} from '../components';
-import ResourceList from '../components/ResourceList';
 
 const headers = [
   <span>
@@ -68,29 +67,17 @@ const Rows = ({customResourceDefinitions}) => {
     ));
 };
 
-const mapStateToProps = ({customResourceDefinitions}) => ({
-  customResourceDefinitions
-});
-
-const mergeProps = (stateProps, dispatchProps, ownProps) => ({
-  ...stateProps,
-  ...dispatchProps,
-  ...ownProps,
-  customResourceDefinitions: Object.values(
-    selectors.crdsBy(stateProps.customResourceDefinitions, ownProps)
-  )
-});
-
-export const List = connect(
-  mapStateToProps,
-  null,
-  mergeProps
-)(({customResourceDefinitions, group, ...properties}) => (
-  <ResourceList
-    headers={headers}
-    resources={customResourceDefinitions}
-    {...properties}
-  >
-    <Rows customResourceDefinitions={customResourceDefinitions} />
-  </ResourceList>
-));
+export const List = ({...properties}) => {
+  const filteredResources = useFilteredResources({
+    resource: 'customResourceDefinitions',
+    filters: {...properties}
+  });
+  const resources = Object.values(
+    selectors.crdsBy(filteredResources, properties)
+  );
+  return (
+    <ResourceListV2 headers={headers} resources={resources} {...properties}>
+      <Rows customResourceDefinitions={resources} />
+    </ResourceListV2>
+  );
+};

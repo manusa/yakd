@@ -57,5 +57,6 @@ export const ResourceListV2 = ({
 ResourceListV2.propTypes = {
   resources: PropTypes.arrayOf(PropTypes.object).isRequired,
   children: PropTypes.node.isRequired,
-  title: PropTypes.string
+  title: PropTypes.string,
+  loading: PropTypes.bool
 };

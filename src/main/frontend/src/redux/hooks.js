@@ -16,11 +16,9 @@
  */
 
 import {shallowEqual, useSelector} from 'react-redux';
-import {useUiNamespace} from './ui-reducer';
 import {resourcesBy} from './selectors';
 
 export const useFilteredResources = ({resource, filters = {}}) => {
-  const {namespace} = useUiNamespace();
   const allResources = useSelector(state => state[resource], shallowEqual);
-  return Object.values(resourcesBy(allResources, {namespace, ...filters}));
+  return Object.values(resourcesBy(allResources, {...filters}));
 };
