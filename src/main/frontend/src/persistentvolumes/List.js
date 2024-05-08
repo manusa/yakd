@@ -15,9 +15,8 @@
  *
  */
 import React from 'react';
-import {useDispatch} from 'react-redux';
 import {name, sortByCreationTimeStamp, uid} from '../metadata';
-import {crudDelete, useFilteredResources, useUiLoadedResources} from '../redux';
+import {useFilteredResources} from '../redux';
 import {Icon, Link, ResourceListV2, Table} from '../components';
 import {api, selectors} from './';
 
@@ -32,11 +31,8 @@ const headers = [
 ];
 
 const Rows = ({persistentVolumes}) => {
-  const dispatch = useDispatch();
-  const deletePersistentVolume = persistentVolume => async () => {
+  const deletePersistentVolume = persistentVolume => async () =>
     await api.deletePv(persistentVolume);
-    dispatch(crudDelete(persistentVolume)); // TODO: Implement Hook
-  };
   return persistentVolumes
     .sort(sortByCreationTimeStamp)
     .map(persistentVolume => (
@@ -72,14 +68,8 @@ export const List = ({...properties}) => {
     resource: 'persistentVolumes',
     filters: {...properties}
   });
-  const {loadedResources} = useUiLoadedResources();
   return (
-    <ResourceListV2
-      headers={headers}
-      resources={resources}
-      loading={!loadedResources['PersistentVolume']}
-      {...properties}
-    >
+    <ResourceListV2 headers={headers} resources={resources} {...properties}>
       <Rows persistentVolumes={resources} />
     </ResourceListV2>
   );

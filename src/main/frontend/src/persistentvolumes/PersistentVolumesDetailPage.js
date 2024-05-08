@@ -43,7 +43,7 @@ export const PersistentVolumesDetailPage = withParams(
       kind='PersistentVolumes'
       path='persistentvolumes'
       resource={persistentVolume}
-      deleteFunction={api.deletePv()}
+      deleteFunction={api.deletePv}
       body={
         <>
           <Form>
