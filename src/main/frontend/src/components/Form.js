@@ -28,7 +28,8 @@ export const Form = ({formClassName, className, children}) => (
 Form.widths = {
   full: 'w-full',
   half: 'w-full md:w-1/2',
-  third: 'w-full md:w-1/3'
+  third: 'w-full md:w-1/3',
+  quarter: 'w-full md:w-1/4'
 };
 
 Form.Field = ({

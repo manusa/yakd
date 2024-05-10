@@ -48,7 +48,8 @@ import {
   ServiceAccountIcon,
   ServiceIcon,
   StatefulSetIcon,
-  YAKDLogo
+  YAKDLogo,
+  RoleBindingIcon
 } from '../components';
 
 import './SideBar.css';
@@ -261,6 +262,9 @@ const NavSection = ({
           </K8sNavItem>
           <K8sNavItem to='/roles' Icon={RoleIcon}>
             Roles
+          </K8sNavItem>
+          <K8sNavItem to='/rolebindings' Icon={RoleBindingIcon}>
+            RoleBindings
           </K8sNavItem>
           <K8sNavItem to='/secrets' Icon={SecretIcon}>
             Secrets

@@ -42,7 +42,8 @@ import {
   SecretIcon,
   ServiceIcon,
   ServiceAccountIcon,
-  StatefulSetIcon
+  StatefulSetIcon,
+  RoleBindingIcon
 } from './';
 
 const variants = {
@@ -168,6 +169,9 @@ Link.ReplicationController = ({...props}) => (
   <Link.ResourceLink Icon={ReplicaSetIcon} {...props} />
 );
 Link.Role = ({...props}) => <Link.ResourceLink Icon={RoleIcon} {...props} />;
+Link.RoleBinding = ({...props}) => (
+  <Link.ResourceLink Icon={RoleBindingIcon} {...props} />
+);
 Link.Route = ({...props}) => <Link.ResourceLink Icon={RouteIcon} {...props} />;
 Link.Secret = ({...props}) => (
   <Link.ResourceLink Icon={SecretIcon} {...props} />

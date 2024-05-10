@@ -50,6 +50,7 @@ const appReducer = combineReducers({
   pods: reduxReducer('Pod'),
   replicaSets: reduxReducer('ReplicaSet'),
   replicationControllers: reduxReducer('ReplicationController'),
+  roleBindings: reduxReducer('RoleBinding'),
   roles: reduxReducer('Role'),
   routes: reduxReducer('Route'),
   secrets: reduxReducer('Secret'),

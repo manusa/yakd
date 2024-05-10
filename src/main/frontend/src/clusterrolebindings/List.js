@@ -30,7 +30,7 @@ const headers = [
   <span key='name'>
     <Icon className='fa-id-card' /> Name
   </span>,
-  'Role',
+  'Cluster Role',
   <span key='age'>
     <Icon stylePrefix='far' icon='fa-clock' /> Age
   </span>,
