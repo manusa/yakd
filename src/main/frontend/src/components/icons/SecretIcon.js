@@ -16,8 +16,8 @@
  */
 import React from 'react';
 
-const Job = ({...props}) => (
-  <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18.035 17.5' {...props}>
+export const SecretIcon = ({...props}) => (
+  <svg viewBox='0 0 18.035 17.5' {...props}>
     <path
       d='M8.958.463a1.136 1.126 0 00-.435.11l-5.94 2.838a1.136 1.126 0 00-.614.764L.504 10.55a1.136 1.126 0 00.154.864 1.136 1.126 0 00.064.09l4.112 5.111a1.136 1.126 0 00.888.424l6.592-.001a1.136 1.126 0 00.888-.424l4.11-5.112a1.136 1.126 0 00.22-.953l-1.468-6.375a1.136 1.126 0 00-.615-.764L9.51.573a1.136 1.126 0 00-.55-.11z'
       fill='#326ce5'
@@ -39,10 +39,42 @@ const Job = ({...props}) => (
       overflow='visible'
       fill='#fff'
     />
-    <g fill='#fff'>
-      <path d='M4.764 10.796h2.203v2.143H4.764zM7.916 10.796h2.203v2.143H7.916zM11.068 10.796h2.203v2.143h-2.203zM11.068 7.646h2.203V9.79h-2.203zM7.926 7.68h2.203v2.142H7.926zM4.784 7.68h2.203v2.142H4.784zM11.068 4.562h2.203v2.143h-2.203z' />
+    <g transform='translate(-.936 -.4)'>
+      <path
+        d='M10.414 8.091h3.709M8.298 5.975h5.825M5.784 5.975h1.458'
+        fill='none'
+        stroke='#fff'
+        strokeWidth={0.794}
+        strokeLinejoin='round'
+        strokeMiterlimit={10}
+      />
+      <path
+        d='M7.718 8.432h0c0-1.167 1.011-2.112 2.259-2.112 1.247 0 2.258.945 2.258 2.112h-1.056 0c0-.583-.538-1.056-1.202-1.056-.664 0-1.202.473-1.202 1.056z'
+        fill='#fff'
+        fillRule='evenodd'
+        stroke='#326ce5'
+        strokeWidth={0.265}
+        strokeLinecap='square'
+        strokeMiterlimit={10}
+      />
+      <path
+        d='M10.414 10.208h3.709M8.298 12.325h5.825M5.784 12.325h1.458'
+        fill='none'
+        stroke='#fff'
+        strokeWidth={0.794}
+        strokeLinejoin='round'
+        strokeMiterlimit={10}
+      />
+      <path
+        d='M7.162 8.37h5.617v3.657H7.162z'
+        fill='#fff'
+        fillRule='evenodd'
+        stroke='#326ce5'
+        strokeWidth={0.265}
+        strokeLinecap='square'
+        strokeMiterlimit={10}
+      />
+      <circle r={0.555} cy={10.198} cx={9.971} fill='#326ce5' />
     </g>
   </svg>
 );
-
-export default Job;

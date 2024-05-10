@@ -16,8 +16,7 @@
  */
 import React from 'react';
 import {shallowEqual, useSelector} from 'react-redux';
-import {StatusCard} from '../components';
-import icons from '../components/icons';
+import {StatusCard, NodeIcon} from '../components';
 import {selectors} from './';
 
 export const NodesCard = ({...properties}) => {
@@ -28,7 +27,7 @@ export const NodesCard = ({...properties}) => {
     <StatusCard
       header='Nodes'
       to={'/nodes'}
-      Icon={icons.Node}
+      Icon={NodeIcon}
       ready={ready}
       total={total}
       readyProgress={Math.round((ready / total) * 100)}

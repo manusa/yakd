@@ -18,10 +18,38 @@ import React, {useRef, useLayoutEffect} from 'react';
 import {connect} from 'react-redux';
 import {useMatch} from 'react-router-dom';
 import * as apis from '../apis';
-import i from '../components/icons';
 import {useUiSidebar} from '../redux';
 import * as crd from '../customresourcedefinitions';
-import {Icon, Link} from '../components';
+import {
+  Icon,
+  Link,
+  EndpointsIcon,
+  ClusterRoleBindingIcon,
+  ClusterRoleIcon,
+  ConfigMapIcon,
+  CronJobIcon,
+  CustomResourceDefinitionIcon,
+  DaemonSetIcon,
+  DeploymentConfigIcon,
+  DeploymentIcon,
+  HorizontalPodAutoscalerIcon,
+  IngressIcon,
+  JobIcon,
+  KubernetesIcon,
+  NamespaceIcon,
+  NodeIcon,
+  PersistentVolumeClaimIcon,
+  PersistentVolumeIcon,
+  PodIcon,
+  ReplicaSetIcon,
+  RoleIcon,
+  RouteIcon,
+  SecretIcon,
+  ServiceAccountIcon,
+  ServiceIcon,
+  StatefulSetIcon,
+  YAKDLogo
+} from '../components';
 
 import './SideBar.css';
 
@@ -117,13 +145,13 @@ const NavSection = ({
       <IconNavItem to='/search' icon='fa-search'>
         Search
       </IconNavItem>
-      <K8sNavItem to='/' Icon={i.Kubernetes}>
+      <K8sNavItem to='/' Icon={KubernetesIcon}>
         Home
       </K8sNavItem>
-      <K8sNavItem to='/nodes' Icon={i.Node}>
+      <K8sNavItem to='/nodes' Icon={NodeIcon}>
         Nodes
       </K8sNavItem>
-      <K8sNavItem to='/namespaces' Icon={i.Namespace}>
+      <K8sNavItem to='/namespaces' Icon={NamespaceIcon}>
         Namespaces
       </K8sNavItem>
       <div>
@@ -133,35 +161,35 @@ const NavSection = ({
           label='Workloads'
           icon='fa-cubes'
         >
-          <K8sNavItem to='/pods' Icon={i.Pod}>
+          <K8sNavItem to='/pods' Icon={PodIcon}>
             Pods
           </K8sNavItem>
-          <K8sNavItem to='/deployments' Icon={i.Deployment}>
+          <K8sNavItem to='/deployments' Icon={DeploymentIcon}>
             Deployments
           </K8sNavItem>
           {isOpenShift && (
-            <K8sNavItem to='/deploymentconfigs' Icon={i.DeploymentConfig}>
+            <K8sNavItem to='/deploymentconfigs' Icon={DeploymentConfigIcon}>
               Deployment Configs
             </K8sNavItem>
           )}
-          <K8sNavItem to='/statefulsets' Icon={i.StatefulSet}>
+          <K8sNavItem to='/statefulsets' Icon={StatefulSetIcon}>
             StatefulSets
           </K8sNavItem>
-          <K8sNavItem to='/cronjobs' Icon={i.CronJob}>
+          <K8sNavItem to='/cronjobs' Icon={CronJobIcon}>
             CronJobs
           </K8sNavItem>
-          <K8sNavItem to='/jobs' Icon={i.Job}>
+          <K8sNavItem to='/jobs' Icon={JobIcon}>
             Jobs
           </K8sNavItem>
-          <K8sNavItem to='/daemonsets' Icon={i.DaemonSet}>
+          <K8sNavItem to='/daemonsets' Icon={DaemonSetIcon}>
             DaemonSets
           </K8sNavItem>
-          <K8sNavItem to='/replicationcontrollers' Icon={i.ReplicaSet}>
+          <K8sNavItem to='/replicationcontrollers' Icon={ReplicaSetIcon}>
             Replication Controllers
           </K8sNavItem>
           <K8sNavItem
             to='/horizontalpodautoscalers'
-            Icon={i.HorizontalPodAutoscaler}
+            Icon={HorizontalPodAutoscalerIcon}
           >
             Horizontal Pod Autoscalers
           </K8sNavItem>
@@ -172,17 +200,17 @@ const NavSection = ({
           label='Network'
           icon='fa-network-wired'
         >
-          <K8sNavItem to='/services' Icon={i.Service}>
+          <K8sNavItem to='/services' Icon={ServiceIcon}>
             Services
           </K8sNavItem>
-          <K8sNavItem to='/endpoints' Icon={i.Endpoints}>
+          <K8sNavItem to='/endpoints' Icon={EndpointsIcon}>
             Endpoints
           </K8sNavItem>
-          <K8sNavItem to='/ingresses' Icon={i.Ingress}>
+          <K8sNavItem to='/ingresses' Icon={IngressIcon}>
             Ingresses
           </K8sNavItem>
           {isOpenShift && (
-            <K8sNavItem to='/routes' Icon={i.Route}>
+            <K8sNavItem to='/routes' Icon={RouteIcon}>
               Routes
             </K8sNavItem>
           )}
@@ -193,10 +221,10 @@ const NavSection = ({
           label='Configuration'
           icon='fa-list'
         >
-          <K8sNavItem to='/configmaps' Icon={i.ConfigMap}>
+          <K8sNavItem to='/configmaps' Icon={ConfigMapIcon}>
             ConfigMaps
           </K8sNavItem>
-          <K8sNavItem to='/secrets' Icon={i.Secret}>
+          <K8sNavItem to='/secrets' Icon={SecretIcon}>
             Secrets
           </K8sNavItem>
         </NavGroup>
@@ -206,12 +234,12 @@ const NavSection = ({
           label='Storage'
           icon='fa-database'
         >
-          <K8sNavItem to='/persistentvolumes' Icon={i.PersistentVolume}>
+          <K8sNavItem to='/persistentvolumes' Icon={PersistentVolumeIcon}>
             PersistentVolumes
           </K8sNavItem>
           <K8sNavItem
             to='/persistentvolumeclaims'
-            Icon={i.PersistentVolumeClaim}
+            Icon={PersistentVolumeClaimIcon}
           >
             PersistentVolume Claims
           </K8sNavItem>
@@ -222,19 +250,19 @@ const NavSection = ({
           label='Access Control'
           icon='fa-shield-alt'
         >
-          <K8sNavItem to='/serviceaccounts' Icon={i.ServiceAccount}>
+          <K8sNavItem to='/serviceaccounts' Icon={ServiceAccountIcon}>
             ServiceAccounts
           </K8sNavItem>
-          <K8sNavItem to='/clusterroles' Icon={i.ClusterRole}>
+          <K8sNavItem to='/clusterroles' Icon={ClusterRoleIcon}>
             ClusterRoles
           </K8sNavItem>
-          <K8sNavItem to='/clusterrolebindings' Icon={i.ClusterRoleBinding}>
+          <K8sNavItem to='/clusterrolebindings' Icon={ClusterRoleBindingIcon}>
             ClusterRoleBindings
           </K8sNavItem>
-          <K8sNavItem to='/roles' Icon={i.Role}>
+          <K8sNavItem to='/roles' Icon={RoleIcon}>
             Roles
           </K8sNavItem>
-          <K8sNavItem to='/secrets' Icon={i.Secret}>
+          <K8sNavItem to='/secrets' Icon={SecretIcon}>
             Secrets
           </K8sNavItem>
         </NavGroup>
@@ -246,7 +274,7 @@ const NavSection = ({
         >
           <K8sNavItem
             to='/customresourcedefinitions'
-            Icon={i.CustomResourceDefinition}
+            Icon={CustomResourceDefinitionIcon}
           >
             Definitions
           </K8sNavItem>
@@ -300,7 +328,7 @@ export const SideBar = connect(mapStateToProps)(({
           variant={Link.variants.none}
           className='flex flex-col items-center'
         >
-          <i.YAKDLogo kubernetesColor='#FFFFFF' className='block h-8 lg:h-12' />
+          <YAKDLogo kubernetesColor='#FFFFFF' className='block h-8 lg:h-12' />
           <div className='text-white text-lg lg:text-xl mt-2 mx-2 font-semibold'>
             Kubernetes Dashboard
           </div>

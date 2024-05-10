@@ -16,7 +16,7 @@
  */
 import React from 'react';
 
-const ReplicaSet = ({...props}) => (
+export const CustomResourceDefinitionIcon = ({...props}) => (
   <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18.035 17.5' {...props}>
     <path
       d='M8.958.463a1.136 1.126 0 00-.435.11l-5.94 2.838a1.136 1.126 0 00-.614.764L.504 10.55a1.136 1.126 0 00.154.864 1.136 1.126 0 00.064.09l4.112 5.111a1.136 1.126 0 00.888.424l6.592-.001a1.136 1.126 0 00.888-.424l4.11-5.112a1.136 1.126 0 00.22-.953l-1.468-6.375a1.136 1.126 0 00-.615-.764L9.51.573a1.136 1.126 0 00-.55-.11z'
@@ -39,42 +39,9 @@ const ReplicaSet = ({...props}) => (
       overflow='visible'
       fill='#fff'
     />
-    <g>
-      <path
-        d='M7.294 5.047h6.525v4.584H7.294z'
-        fill='#326ce5'
-        fillRule='evenodd'
-        stroke='#fff'
-        strokeWidth={0.529}
-        strokeLinecap='square'
-        strokeLinejoin='round'
-        strokeMiterlimit={10}
-        strokeDasharray='1.58700001,1.58700001'
-        strokeDashoffset={3.666}
-      />
-      <path
-        d='M5.755 6.458h6.525v4.584H5.755z'
-        fill='#326ce5'
-        fillRule='evenodd'
-        stroke='#fff'
-        strokeWidth={0.529}
-        strokeLinecap='square'
-        strokeLinejoin='round'
-        strokeMiterlimit={10}
-        strokeDasharray='1.58743756,1.58743756'
-        strokeDashoffset={3.879}
-      />
-      <path d='M4.216 7.87h6.525v4.583H4.216z' fill='#fff' fillRule='evenodd' />
-      <path
-        d='M4.216 7.87h6.525v4.583H4.216z'
-        fill='none'
-        stroke='#fff'
-        strokeWidth={0.529}
-        strokeLinejoin='round'
-        strokeMiterlimit={10}
-      />
-    </g>
+    <path
+      d='M13.277 8.52h-.693V6.671a.926.926 0 00-.924-.924H9.813v-.693a1.155 1.155 0 00-2.31 0v.693H5.657a.922.922 0 00-.919.924v1.755h.688a1.248 1.248 0 010 2.494h-.692v1.755c0 .508.415.924.923.924h1.755v-.693a1.248 1.248 0 012.494 0v.693h1.755a.926.926 0 00.924-.924v-1.847h.693a1.155 1.155 0 000-2.31z'
+      fill='#fff'
+    />
   </svg>
 );
-
-export default ReplicaSet;

@@ -16,8 +16,8 @@
  */
 import React from 'react';
 
-const HorizontalPodAutoscaler = ({...props}) => (
-  <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18.035 17.5' {...props}>
+export const ConfigMapIcon = ({...props}) => (
+  <svg viewBox='0 0 18.035 17.5' {...props}>
     <path
       d='M8.958.463a1.136 1.126 0 00-.435.11l-5.94 2.838a1.136 1.126 0 00-.614.764L.504 10.55a1.136 1.126 0 00.154.864 1.136 1.126 0 00.064.09l4.112 5.111a1.136 1.126 0 00.888.424l6.592-.001a1.136 1.126 0 00.888-.424l4.11-5.112a1.136 1.126 0 00.22-.953l-1.468-6.375a1.136 1.126 0 00-.615-.764L9.51.573a1.136 1.126 0 00-.55-.11z'
       fill='#326ce5'
@@ -39,17 +39,31 @@ const HorizontalPodAutoscaler = ({...props}) => (
       overflow='visible'
       fill='#fff'
     />
-    <g fillRule='evenodd'>
+    <g transform='translate(-.875 -.716)'>
       <path
-        d='M1.994 8.75l2.068-2v1h.762v-3h8.387v3h.762v-1l2.069 2-2.07 2v-1h-.76v3H4.823v-3h-.762v1z'
-        fill='#fff'
+        d='M8.237 6.291h5.825M5.723 6.291h1.458'
+        fill='none'
+        stroke='#fff'
+        strokeWidth={0.794}
+        strokeLinejoin='round'
+        strokeMiterlimit={10}
       />
       <path
-        d='M5.804 6.573l3.214-.9 3.214.9-3.214.901zM5.804 6.918v3.307l2.994 1.603.015-4.044zM12.232 6.918v3.307l-2.995 1.603-.015-4.044z'
-        fill='#326ce5'
+        d='M10.354 8.408h3.708'
+        fill='none'
+        stroke='#fff'
+        strokeWidth={0.794}
+        strokeLinejoin='round'
+        strokeMiterlimit={10}
+      />
+      <path
+        d='M7.84 8.408h1.458M10.354 10.525h3.708M7.84 10.525h1.458M8.237 12.641h5.825M5.723 12.641h1.458'
+        fill='none'
+        stroke='#fff'
+        strokeWidth={0.794}
+        strokeLinejoin='round'
+        strokeMiterlimit={10}
       />
     </g>
   </svg>
 );
-
-export default HorizontalPodAutoscaler;

@@ -16,8 +16,8 @@
  */
 import React from 'react';
 
-const PersistentVolumeClaim = ({...props}) => (
-  <svg viewBox='0 0 18.035 17.5' {...props}>
+export const ReplicaSetIcon = ({...props}) => (
+  <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18.035 17.5' {...props}>
     <path
       d='M8.958.463a1.136 1.126 0 00-.435.11l-5.94 2.838a1.136 1.126 0 00-.614.764L.504 10.55a1.136 1.126 0 00.154.864 1.136 1.126 0 00.064.09l4.112 5.111a1.136 1.126 0 00.888.424l6.592-.001a1.136 1.126 0 00.888-.424l4.11-5.112a1.136 1.126 0 00.22-.953l-1.468-6.375a1.136 1.126 0 00-.615-.764L9.51.573a1.136 1.126 0 00-.55-.11z'
       fill='#326ce5'
@@ -39,16 +39,40 @@ const PersistentVolumeClaim = ({...props}) => (
       overflow='visible'
       fill='#fff'
     />
-    <path
-      d='M13.647 7.229h0c0 .621-2.073 1.125-4.63 1.125-2.556 0-4.628-.504-4.628-1.125h0c0-.621 2.072-1.125 4.629-1.125 2.556 0 4.629.504 4.629 1.125v3.042c0 .622-2.073 1.125-4.63 1.125-2.556 0-4.628-.503-4.628-1.125V7.23'
-      fill='none'
-      stroke='#fff'
-      strokeWidth={0.529}
-      strokeLinejoin='round'
-      strokeMiterlimit={10}
-      strokeDasharray='2.11666669,.52916668'
-    />
+    <g>
+      <path
+        d='M7.294 5.047h6.525v4.584H7.294z'
+        fill='#326ce5'
+        fillRule='evenodd'
+        stroke='#fff'
+        strokeWidth={0.529}
+        strokeLinecap='square'
+        strokeLinejoin='round'
+        strokeMiterlimit={10}
+        strokeDasharray='1.58700001,1.58700001'
+        strokeDashoffset={3.666}
+      />
+      <path
+        d='M5.755 6.458h6.525v4.584H5.755z'
+        fill='#326ce5'
+        fillRule='evenodd'
+        stroke='#fff'
+        strokeWidth={0.529}
+        strokeLinecap='square'
+        strokeLinejoin='round'
+        strokeMiterlimit={10}
+        strokeDasharray='1.58743756,1.58743756'
+        strokeDashoffset={3.879}
+      />
+      <path d='M4.216 7.87h6.525v4.583H4.216z' fill='#fff' fillRule='evenodd' />
+      <path
+        d='M4.216 7.87h6.525v4.583H4.216z'
+        fill='none'
+        stroke='#fff'
+        strokeWidth={0.529}
+        strokeLinejoin='round'
+        strokeMiterlimit={10}
+      />
+    </g>
   </svg>
 );
-
-export default PersistentVolumeClaim;

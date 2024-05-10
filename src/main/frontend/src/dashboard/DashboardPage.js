@@ -18,10 +18,17 @@ import React, {useState} from 'react';
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 import {clearError} from '../redux';
 import * as apis from '../apis';
-import i from '../components/icons';
 import {name as metadataName} from '../metadata';
 import {selectors as nodeSelectors} from '../nodes';
-import {Alert, Icon, Link, Tooltip} from '../components';
+import {
+  Alert,
+  Icon,
+  Link,
+  Tooltip,
+  MinikubeIcon,
+  OpenShiftIcon,
+  YAKDLogo
+} from '../components';
 import {NewResource} from './NewResource';
 import {NewResourceButton} from './NewResourceButton';
 import {SideBar} from './SideBar';
@@ -63,17 +70,17 @@ const Header = ({setSideBarOpen, title}) => {
               strokeLinejoin='round'
             />
           </svg>
-          <i.YAKDLogo className='block ml-2 h-6' />
+          <YAKDLogo className='block ml-2 h-6' />
         </button>
         <div className='flex relative items-center mx-4 lg:text-xl lg:mx-0 flex-1 truncate'>
           {isMinikube && (
             <Tooltip content='Minikube cluster detected'>
-              <i.Minikube className='h-6 mr-2' />
+              <MinikubeIcon className='h-6 mr-2' />
             </Tooltip>
           )}
           {isOpenShift && (
             <Tooltip content='OpenShift cluster detected'>
-              <i.OpenShift className='h-6 mr-2' />
+              <OpenShiftIcon className='h-6 mr-2' />
             </Tooltip>
           )}
           {title}

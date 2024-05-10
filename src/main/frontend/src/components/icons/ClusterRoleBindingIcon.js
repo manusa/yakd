@@ -16,7 +16,7 @@
  */
 import React from 'react';
 
-const DaemonSet = ({...props}) => (
+export const ClusterRoleBindingIcon = ({...props}) => (
   <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18.035 17.5' {...props}>
     <path
       d='M8.958.463a1.136 1.126 0 00-.435.11l-5.94 2.838a1.136 1.126 0 00-.614.764L.504 10.55a1.136 1.126 0 00.154.864 1.136 1.126 0 00.064.09l4.112 5.111a1.136 1.126 0 00.888.424l6.592-.001a1.136 1.126 0 00.888-.424l4.11-5.112a1.136 1.126 0 00.22-.953l-1.468-6.375a1.136 1.126 0 00-.615-.764L9.51.573a1.136 1.126 0 00-.55-.11z'
@@ -39,47 +39,9 @@ const DaemonSet = ({...props}) => (
       overflow='visible'
       fill='#fff'
     />
-    <g>
-      <path
-        d='M7.302 4.566h6.525v4.583H7.302z'
-        fill='none'
-        stroke='#fff'
-        strokeWidth={0.529}
-        strokeLinecap='square'
-        strokeLinejoin='round'
-        strokeMiterlimit={10}
-        strokeDasharray='1.58743756,1.58743756'
-        strokeDashoffset={3.667}
-      />
-      <path
-        d='M3.944 12.89h7.074'
-        fill='none'
-        stroke='#fff'
-        strokeWidth={0.618}
-      />
-      <path
-        d='M5.763 5.977h6.525v4.584H5.763z'
-        fill='#326ce5'
-        fillRule='evenodd'
-        stroke='#fff'
-        strokeWidth={0.529}
-        strokeLinecap='square'
-        strokeLinejoin='round'
-        strokeMiterlimit={10}
-        strokeDasharray='1.58743756,1.58743756'
-        strokeDashoffset={3.879}
-      />
-      <path
-        d='M4.224 7.389h6.525v4.583H4.224z'
-        fill='none'
-        stroke='#fff'
-        strokeWidth={0.529}
-        strokeLinejoin='round'
-        strokeMiterlimit={10}
-      />
-      <path d='M4.18 7.406h6.525v4.583H4.18z' fill='#fff' fillRule='evenodd' />
-    </g>
+    <path
+      d='M5.89 8.75c0-.66.536-1.197 1.197-1.197H8.63v-.734H7.087a1.932 1.932 0 000 3.862H8.63v-.734H7.087c-.66 0-1.197-.536-1.197-1.197zm1.583.386h3.09v-.772h-3.09zm3.476-2.317H9.404v.734h1.545a1.198 1.198 0 010 2.394H9.404v.734h1.545a1.932 1.932 0 000-3.862z'
+      fill='#fff'
+    />
   </svg>
 );
-
-export default DaemonSet;

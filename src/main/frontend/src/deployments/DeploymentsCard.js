@@ -16,8 +16,7 @@
  */
 import React from 'react';
 import {connect} from 'react-redux';
-import {StatusCard} from '../components';
-import icons from '../components/icons';
+import {StatusCard, DeploymentIcon} from '../components';
 import {selectors} from './';
 
 const mapStateToProps = ({deployments}) => ({
@@ -35,7 +34,7 @@ export const DeploymentsCard = connect(mapStateToProps)(({
     <StatusCard
       header='Deployments'
       to={'/deployments'}
-      Icon={icons.Deployment}
+      Icon={DeploymentIcon}
       ready={ready}
       total={total}
       readyProgress={Math.round((ready / total) * 100)}

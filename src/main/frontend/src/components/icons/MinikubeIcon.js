@@ -16,7 +16,7 @@
  */
 import React from 'react';
 
-const Minikube = ({...props}) => (
+export const MinikubeIcon = ({...props}) => (
   <svg viewBox='0 0 702 683' {...props}>
     <defs>
       <path id='prefix__a' d='M701.06 684.263V1.593H0v682.67z' />
@@ -47,5 +47,3 @@ const Minikube = ({...props}) => (
     </g>
   </svg>
 );
-
-export default Minikube;
