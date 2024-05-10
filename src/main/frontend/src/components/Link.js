@@ -17,8 +17,33 @@
 import React from 'react';
 import {Link as OriginalRouterLink} from 'react-router-dom';
 import {uid} from '../metadata';
-import {Icon} from './';
-import i from './icons';
+import {
+  Icon,
+  EndpointsIcon,
+  ClusterRoleIcon,
+  ClusterRoleBindingIcon,
+  ConfigMapIcon,
+  CronJobIcon,
+  CustomResourceDefinitionIcon,
+  DaemonSetIcon,
+  DeploymentIcon,
+  DeploymentConfigIcon,
+  HorizontalPodAutoscalerIcon,
+  IngressIcon,
+  JobIcon,
+  NamespaceIcon,
+  NodeIcon,
+  PersistentVolumeIcon,
+  PersistentVolumeClaimIcon,
+  PodIcon,
+  ReplicaSetIcon,
+  RoleIcon,
+  RouteIcon,
+  SecretIcon,
+  ServiceIcon,
+  ServiceAccountIcon,
+  StatefulSetIcon
+} from './';
 
 const variants = {
   none: '',
@@ -95,64 +120,66 @@ Link.ResourceLink = ({
 );
 
 Link.ClusterRole = ({...props}) => (
-  <Link.ResourceLink Icon={i.ClusterRole} {...props} />
+  <Link.ResourceLink Icon={ClusterRoleIcon} {...props} />
 );
 Link.ClusterRoleBinding = ({...props}) => (
-  <Link.ResourceLink Icon={i.ClusterRoleBinding} {...props} />
+  <Link.ResourceLink Icon={ClusterRoleBindingIcon} {...props} />
 );
 Link.ConfigMap = ({...props}) => (
-  <Link.ResourceLink Icon={i.ConfigMap} {...props} />
+  <Link.ResourceLink Icon={ConfigMapIcon} {...props} />
 );
 Link.CronJob = ({...props}) => (
-  <Link.ResourceLink Icon={i.CronJob} {...props} />
+  <Link.ResourceLink Icon={CronJobIcon} {...props} />
 );
 Link.CustomResourceDefinition = ({...props}) => (
-  <Link.ResourceLink Icon={i.CustomResourceDefinition} {...props} />
+  <Link.ResourceLink Icon={CustomResourceDefinitionIcon} {...props} />
 );
 Link.DaemonSet = ({...props}) => (
-  <Link.ResourceLink Icon={i.DaemonSet} {...props} />
+  <Link.ResourceLink Icon={DaemonSetIcon} {...props} />
 );
 Link.DeploymentConfig = ({...props}) => (
-  <Link.ResourceLink Icon={i.DeploymentConfig} {...props} />
+  <Link.ResourceLink Icon={DeploymentConfigIcon} {...props} />
 );
 Link.Deployment = ({...props}) => (
-  <Link.ResourceLink Icon={i.Deployment} {...props} />
+  <Link.ResourceLink Icon={DeploymentIcon} {...props} />
 );
 Link.Endpoints = ({...props}) => (
-  <Link.ResourceLink Icon={i.Endpoints} {...props} />
+  <Link.ResourceLink Icon={EndpointsIcon} {...props} />
 );
 Link.HorizontalPodAutoscaler = ({...props}) => (
-  <Link.ResourceLink Icon={i.HorizontalPodAutoscaler} {...props} />
+  <Link.ResourceLink Icon={HorizontalPodAutoscalerIcon} {...props} />
 );
 Link.Ingress = ({...props}) => (
-  <Link.ResourceLink Icon={i.Ingress} {...props} />
+  <Link.ResourceLink Icon={IngressIcon} {...props} />
 );
-Link.Job = ({...props}) => <Link.ResourceLink Icon={i.Job} {...props} />;
+Link.Job = ({...props}) => <Link.ResourceLink Icon={JobIcon} {...props} />;
 Link.Namespace = ({...props}) => (
-  <Link.ResourceLink Icon={i.Namespace} {...props} />
+  <Link.ResourceLink Icon={NamespaceIcon} {...props} />
 );
-Link.Node = ({...props}) => <Link.ResourceLink Icon={i.Node} {...props} />;
+Link.Node = ({...props}) => <Link.ResourceLink Icon={NodeIcon} {...props} />;
 Link.PersistentVolume = ({...props}) => (
-  <Link.ResourceLink Icon={i.PersistentVolume} {...props} />
+  <Link.ResourceLink Icon={PersistentVolumeIcon} {...props} />
 );
 Link.PersistentVolumeClaim = ({...props}) => (
-  <Link.ResourceLink Icon={i.PersistentVolumeClaim} {...props} />
+  <Link.ResourceLink Icon={PersistentVolumeClaimIcon} {...props} />
 );
-Link.Pod = ({...props}) => <Link.ResourceLink Icon={i.Pod} {...props} />;
+Link.Pod = ({...props}) => <Link.ResourceLink Icon={PodIcon} {...props} />;
 Link.ReplicationController = ({...props}) => (
-  <Link.ResourceLink Icon={i.ReplicaSet} {...props} />
+  <Link.ResourceLink Icon={ReplicaSetIcon} {...props} />
 );
-Link.Role = ({...props}) => <Link.ResourceLink Icon={i.Role} {...props} />;
-Link.Route = ({...props}) => <Link.ResourceLink Icon={i.Route} {...props} />;
-Link.Secret = ({...props}) => <Link.ResourceLink Icon={i.Secret} {...props} />;
+Link.Role = ({...props}) => <Link.ResourceLink Icon={RoleIcon} {...props} />;
+Link.Route = ({...props}) => <Link.ResourceLink Icon={RouteIcon} {...props} />;
+Link.Secret = ({...props}) => (
+  <Link.ResourceLink Icon={SecretIcon} {...props} />
+);
 Link.Service = ({...props}) => (
-  <Link.ResourceLink Icon={i.Service} {...props} />
+  <Link.ResourceLink Icon={ServiceIcon} {...props} />
 );
 Link.ServiceAccount = ({...props}) => (
-  <Link.ResourceLink Icon={i.ServiceAccount} {...props} />
+  <Link.ResourceLink Icon={ServiceAccountIcon} {...props} />
 );
 Link.StatefulSet = ({...props}) => (
-  <Link.ResourceLink Icon={i.StatefulSet} {...props} />
+  <Link.ResourceLink Icon={StatefulSetIcon} {...props} />
 );
 
 Link.EditLink = ({path, resource, ...props}) => (

@@ -16,8 +16,7 @@
  */
 import React from 'react';
 import {connect} from 'react-redux';
-import {StatusCard} from '../components';
-import icons from '../components/icons';
+import {StatusCard, PodIcon} from '../components';
 import {selectors} from './';
 
 const mapStateToProps = ({pods}) => ({
@@ -33,7 +32,7 @@ export const PodsCard = connect(mapStateToProps)(({pods, ...properties}) => {
     <StatusCard
       header='Pods'
       to={'/pods'}
-      Icon={icons.Pod}
+      Icon={PodIcon}
       ready={ready}
       succeeded={succeeded}
       total={total}

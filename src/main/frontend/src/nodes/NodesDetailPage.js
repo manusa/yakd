@@ -21,8 +21,7 @@ import {Details, name} from '../metadata';
 import {bytesToHumanReadable, quantityToScalar} from '../metrics';
 import {selectors} from './';
 import {PodsList, selectors as podSelectors} from '../pods';
-import {Card, DonutChart, Form} from '../components';
-import Minikube from '../components/icons/Minikube';
+import {Card, DonutChart, Form, MinikubeIcon} from '../components';
 import {ResourceDetailPage} from '../dashboard';
 
 const Dial = ({
@@ -86,7 +85,7 @@ export const NodesDetailPage = withParams(
         path='nodes'
         resource={node}
         isReadyFunction={selectors.isReady}
-        actions={isMinikube && <Minikube className='ml-2 h-6' />}
+        actions={isMinikube && <MinikubeIcon className='ml-2 h-6' />}
         body={
           <Form>
             <div className='w-full mb-4 flex flex-wrap justify-around'>

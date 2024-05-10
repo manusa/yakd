@@ -16,7 +16,7 @@
  */
 import React from 'react';
 
-const OpenShift = ({...props}) => (
+export const OpenShiftIcon = ({...props}) => (
   <svg
     id='prefix__svg45453'
     xmlns='http://www.w3.org/2000/svg'
@@ -57,5 +57,3 @@ const OpenShift = ({...props}) => (
     />
   </svg>
 );
-
-export default OpenShift;

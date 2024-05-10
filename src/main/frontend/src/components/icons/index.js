@@ -15,64 +15,38 @@
  *
  */
 import React from 'react';
-import ClusterRole from './ClusterRole';
-import ClusterRoleBinding from './ClusterRoleBinding';
-import ConfigMap from './ConfigMap';
-import CronJob from './CronJob';
-import CustomResourceDefinition from './CustomResourceDefinition';
-import DaemonSet from './DaemonSet';
-import Deployment from './Deployment';
-import {Endpoints} from './Endpoints';
-import HorizontalPodAutoscaler from './HorizontalPodAutoscaler';
-import Ingress from './Ingress';
-import Job from './Job';
-import Kubernetes from './Kubernetes';
-import Minikube from './Minikube';
-import Namespace from './Namespace';
-import Node from './Node';
-import OpenShift from './OpenShift';
-import PersistentVolume from './PersistentVolume';
-import PersistentVolumeClaim from './PersistentVolumeClaim';
-import Pod from './Pod';
-import ReplicaSet from './ReplicaSet';
-import Role from './Role';
-import Secret from './Secret';
-import Service from './Service';
-import {ServiceAccount} from './ServiceAccount';
-import StatefulSet from './StatefulSet';
-import {YAKDLogo} from './YAKDLogo';
+import {DeploymentIcon} from './DeploymentIcon';
+import {IngressIcon} from './IngressIcon';
+export {ClusterRoleIcon} from './ClusterRoleIcon';
+export {ClusterRoleBindingIcon} from './ClusterRoleBindingIcon';
+export {ConfigMapIcon} from './ConfigMapIcon';
+export {CronJobIcon} from './CronJobIcon';
+export {CustomResourceDefinitionIcon} from './CustomResourceDefinitionIcon';
+export {DaemonSetIcon} from './DaemonSetIcon';
+export {DeploymentIcon} from './DeploymentIcon';
+export {EndpointsIcon} from './EndpointsIcon';
+export {HorizontalPodAutoscalerIcon} from './HorizontalPodAutoscalerIcon';
+export {IngressIcon} from './IngressIcon';
+export {JobIcon} from './JobIcon';
+export {KubernetesIcon} from './KubernetesIcon';
+export {MinikubeIcon} from './MinikubeIcon';
+export {NamespaceIcon} from './NamespaceIcon';
+export {NodeIcon} from './NodeIcon';
+export {OpenShiftIcon} from './OpenShiftIcon';
+export {PersistentVolumeIcon} from './PersistentVolumeIcon';
+export {PersistentVolumeClaimIcon} from './PersistentVolumeClaimIcon';
+export {PodIcon} from './PodIcon';
+export {ReplicaSetIcon} from './ReplicaSetIcon';
+export {RoleIcon} from './RoleIcon';
+export {SecretIcon} from './SecretIcon';
+export {ServiceIcon} from './ServiceIcon';
+export {ServiceAccountIcon} from './ServiceAccountIcon';
+export {StatefulSetIcon} from './StatefulSetIcon';
+export {YAKDLogo} from './YAKDLogo';
 
-const icons = {};
-
-icons.ClusterRole = ClusterRole;
-icons.ClusterRoleBinding = ClusterRoleBinding;
-icons.ConfigMap = ConfigMap;
-icons.CronJob = CronJob;
-icons.CustomResourceDefinition = CustomResourceDefinition;
-icons.DaemonSet = DaemonSet;
-icons.DeploymentConfig = ({...props}) => (
-  <Deployment kubernetesColor='#db212e' {...props} />
+export const DeploymentConfigIcon = ({...props}) => (
+  <DeploymentIcon kubernetesColor='#db212e' {...props} />
 );
-icons.Deployment = Deployment;
-icons.Endpoints = Endpoints;
-icons.HorizontalPodAutoscaler = HorizontalPodAutoscaler;
-icons.Ingress = Ingress;
-icons.Job = Job;
-icons.Kubernetes = Kubernetes;
-icons.Minikube = Minikube;
-icons.Namespace = Namespace;
-icons.Node = Node;
-icons.OpenShift = OpenShift;
-icons.PersistentVolume = PersistentVolume;
-icons.PersistentVolumeClaim = PersistentVolumeClaim;
-icons.Pod = Pod;
-icons.ReplicaSet = ReplicaSet;
-icons.Role = Role;
-icons.Route = ({...props}) => <Ingress kubernetesColor='#db212e' {...props} />;
-icons.Secret = Secret;
-icons.Service = Service;
-icons.ServiceAccount = ServiceAccount;
-icons.StatefulSet = StatefulSet;
-icons.YAKDLogo = YAKDLogo;
-
-export default icons;
+export const RouteIcon = ({...props}) => (
+  <IngressIcon kubernetesColor='#db212e' {...props} />
+);

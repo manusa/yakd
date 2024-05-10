@@ -16,8 +16,8 @@
  */
 import React from 'react';
 
-const CronJob = ({...props}) => (
-  <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18.035 17.5' {...props}>
+export const ServiceIcon = ({...props}) => (
+  <svg viewBox='0 0 18.035 17.5' {...props}>
     <path
       d='M8.958.463a1.136 1.126 0 00-.435.11l-5.94 2.838a1.136 1.126 0 00-.614.764L.504 10.55a1.136 1.126 0 00.154.864 1.136 1.126 0 00.064.09l4.112 5.111a1.136 1.126 0 00.888.424l6.592-.001a1.136 1.126 0 00.888-.424l4.11-5.112a1.136 1.126 0 00.22-.953l-1.468-6.375a1.136 1.126 0 00-.615-.764L9.51.573a1.136 1.126 0 00-.55-.11z'
       fill='#326ce5'
@@ -39,15 +39,28 @@ const CronJob = ({...props}) => (
       overflow='visible'
       fill='#fff'
     />
-    <g fill='#fff'>
-      <path d='M10.102 3.56v2.143h2.203V3.561zm0 3.085v.546c.259-.061.527-.097.804-.097.497 0 .97.106 1.399.294v-.743zm-6.284.033V8.82h2.203V6.678zm3.142 0V8.82h.928c.31-.52.75-.954 1.275-1.257v-.885zM3.798 9.795v2.142h2.203V9.795zm3.152 0v2.142h.706c-.17-.41-.264-.86-.264-1.33 0-.28.037-.55.1-.812z' />
+    <g>
       <path
-        d='M12.608 7.94a3.21 3.21 0 00-3.2 3.2c0 1.76 1.44 3.2 3.2 3.2 1.76 0 3.2-1.44 3.2-3.2 0-1.76-1.44-3.2-3.2-3.2zm1.344 4.543l-1.664-1.024V9.54h.48v1.664l1.44.864z'
-        clipPath='url(#prefix__b)'
-        transform='translate(-1.57 -.4)'
+        d='M3.595 10.756h2.908v2.041H3.595zM7.564 10.756h2.908v2.041H7.564zM11.532 10.756h2.909v2.041h-2.909zM6.714 4.703h4.608v2.042H6.714z'
+        fill='#fff'
+        fillRule='evenodd'
+      />
+      <path
+        d='M9.018 6.745V8.75H5.05v2.003M9.018 6.745V8.75h3.966v2.003'
+        fill='none'
+        stroke='#fff'
+        strokeWidth={0.529}
+        strokeLinejoin='round'
+        strokeMiterlimit={10}
+      />
+      <path
+        d='M9.01 6.746v2.005h.016v2.003'
+        fill='none'
+        stroke='#fff'
+        strokeWidth={0.529}
+        strokeLinejoin='round'
+        strokeMiterlimit={10}
       />
     </g>
   </svg>
 );
-
-export default CronJob;

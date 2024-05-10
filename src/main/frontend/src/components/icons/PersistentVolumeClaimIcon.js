@@ -16,7 +16,7 @@
  */
 import React from 'react';
 
-const Role = ({...props}) => (
+export const PersistentVolumeClaimIcon = ({...props}) => (
   <svg viewBox='0 0 18.035 17.5' {...props}>
     <path
       d='M8.958.463a1.136 1.126 0 00-.435.11l-5.94 2.838a1.136 1.126 0 00-.614.764L.504 10.55a1.136 1.126 0 00.154.864 1.136 1.126 0 00.064.09l4.112 5.111a1.136 1.126 0 00.888.424l6.592-.001a1.136 1.126 0 00.888-.424l4.11-5.112a1.136 1.126 0 00.22-.953l-1.468-6.375a1.136 1.126 0 00-.615-.764L9.51.573a1.136 1.126 0 00-.55-.11z'
@@ -39,37 +39,14 @@ const Role = ({...props}) => (
       overflow='visible'
       fill='#fff'
     />
-    <g transform='translate(-.865 -1.034)'>
-      <ellipse
-        pointerEvents='none'
-        ry={0.502}
-        rx={0.506}
-        cy={9.949}
-        cx={9.928}
-        fill='#fff'
-      />
-      <path
-        pointerEvents='none'
-        d='M9.99 5.876L6.88 7.25V9.3c0 1.902 1.325 3.679 3.108 4.11 1.78-.431 3.107-2.208 3.107-4.11V7.25zm1.644 5.518H8.343V8.631h.472v-.302c0-.65.532-1.179 1.19-1.179.657 0 1.189.528 1.189 1.18v.3h.44z'
-        fill='#fff'
-      />
-      <path
-        pointerEvents='none'
-        d='M9.988 7.589a.712.712 0 00-.713.708v.296h1.427v-.301a.713.713 0 00-.714-.703z'
-        fill='#fff'
-      />
-      <path
-        fill='none'
-        stroke='#fff'
-        strokeWidth={0.4}
-        strokeLinejoin='round'
-        strokeMiterlimit={10}
-        strokeDasharray='.80000001,.4'
-        strokeDashoffset={4}
-        d='M4.918 5.456h9.93v8.657h-9.93z'
-      />
-    </g>
+    <path
+      d='M13.647 7.229h0c0 .621-2.073 1.125-4.63 1.125-2.556 0-4.628-.504-4.628-1.125h0c0-.621 2.072-1.125 4.629-1.125 2.556 0 4.629.504 4.629 1.125v3.042c0 .622-2.073 1.125-4.63 1.125-2.556 0-4.628-.503-4.628-1.125V7.23'
+      fill='none'
+      stroke='#fff'
+      strokeWidth={0.529}
+      strokeLinejoin='round'
+      strokeMiterlimit={10}
+      strokeDasharray='2.11666669,.52916668'
+    />
   </svg>
 );
-
-export default Role;

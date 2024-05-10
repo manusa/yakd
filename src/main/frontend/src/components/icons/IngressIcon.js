@@ -16,7 +16,7 @@
  */
 import React from 'react';
 
-const Namespace = ({kubernetesColor = '#326ce5', ...props}) => (
+export const IngressIcon = ({kubernetesColor = '#326ce5', ...props}) => (
   <svg viewBox='0 0 18.035 17.5' {...props}>
     <path
       d='M8.958.463a1.136 1.126 0 00-.435.11l-5.94 2.838a1.136 1.126 0 00-.614.764L.504 10.55a1.136 1.126 0 00.154.864 1.136 1.126 0 00.064.09l4.112 5.111a1.136 1.126 0 00.888.424l6.592-.001a1.136 1.126 0 00.888-.424l4.11-5.112a1.136 1.126 0 00.22-.953l-1.468-6.375a1.136 1.126 0 00-.615-.764L9.51.573a1.136 1.126 0 00-.55-.11z'
@@ -40,16 +40,9 @@ const Namespace = ({kubernetesColor = '#326ce5', ...props}) => (
       fill='#fff'
     />
     <path
-      fill='none'
-      stroke='#fff'
-      strokeWidth={0.4}
-      strokeLinejoin='round'
-      strokeMiterlimit={10}
-      strokeDasharray='.80000001,.4'
-      strokeDashoffset={3.44}
-      d='M5.18 5.405h7.674v6.69H5.18z'
+      pointerEvents='none'
+      d='M11.765 12.823h-2.27L4.574 6.667H3.15V4.652h2.315l4.923 6.156h1.377V9.215l3.12 2.6-3.12 2.601zM9.29 8.068l1.099-1.376h1.377v1.594l3.12-2.6-3.12-2.602v1.593h-2.27L8.037 6.501zM5.691 9.433l-1.117 1.4H3.15v2.015h2.315l1.478-1.85z'
+      fill='#fff'
     />
   </svg>
 );
-
-export default Namespace;

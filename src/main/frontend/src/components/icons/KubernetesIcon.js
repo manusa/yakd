@@ -16,7 +16,7 @@
  */
 import React from 'react';
 
-const Kubernetes = ({...props}) => (
+export const KubernetesIcon = ({...props}) => (
   <svg viewBox='0 0 722.846 701.966' {...props}>
     <title>The Kubernetes logo icon</title>
     <path
@@ -44,5 +44,3 @@ const Kubernetes = ({...props}) => (
     />
   </svg>
 );
-
-export default Kubernetes;

@@ -16,6 +16,7 @@
  */
 
 export * from './popup';
+export * from './icons';
 export {Age} from './Age';
 export {Alert} from './Alert';
 export {Card} from './Card';

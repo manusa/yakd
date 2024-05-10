@@ -16,8 +16,7 @@
  */
 import React from 'react';
 import {useNavigate} from 'react-router-dom';
-import {Tooltip} from './';
-import icons from '../components/icons';
+import {Tooltip, KubernetesIcon} from './';
 
 const Progress = ({
   bg = 'bg-orange-400',
@@ -50,7 +49,7 @@ const Progress = ({
 
 export const StatusCard = ({
   header,
-  Icon = icons.k8s,
+  Icon = KubernetesIcon,
   ready = 0,
   succeeded = 0,
   total = 0,
