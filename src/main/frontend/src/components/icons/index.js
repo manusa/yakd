@@ -38,6 +38,7 @@ export {PersistentVolumeClaimIcon} from './PersistentVolumeClaimIcon';
 export {PodIcon} from './PodIcon';
 export {ReplicaSetIcon} from './ReplicaSetIcon';
 export {RoleIcon} from './RoleIcon';
+export {RoleBindingIcon} from './RoleBindingIcon';
 export {SecretIcon} from './SecretIcon';
 export {ServiceIcon} from './ServiceIcon';
 export {ServiceAccountIcon} from './ServiceAccountIcon';

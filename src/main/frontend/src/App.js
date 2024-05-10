@@ -108,6 +108,11 @@ import {
 } from './statefulsets';
 import {startEventSource} from './watch';
 import {Home} from './Home';
+import {
+  RoleBindingsDetailPage,
+  RoleBindingsEditPage,
+  RoleBindingsPage
+} from './rolebindings';
 
 let eventSource;
 let pollResourcesTimeout;
@@ -338,8 +343,19 @@ export const App = () => {
           path='/replicationcontrollers/:uid/edit'
           element={<ReplicationControllersEditPage />}
         />
+        <Route exact path='/rolebindings' element={<RoleBindingsPage />} />
+        <Route
+          exact
+          path='/rolebindings/:uidOrName'
+          element={<RoleBindingsDetailPage />}
+        />
+        <Route
+          exact
+          path='/rolebindings/:uid/edit'
+          element={<RoleBindingsEditPage />}
+        />
         <Route exact path='/roles' element={<RolesPage />} />
-        <Route exact path='/roles/:uid' element={<RolesDetailPage />} />
+        <Route exact path='/roles/:uidOrName' element={<RolesDetailPage />} />
         <Route exact path='/roles/:uid/edit' element={<RolesEditPage />} />
         <Route exact path='/routes' element={<RoutesPage />} />
         <Route exact path='/routes/:uid' element={<RoutesDetailPage />} />

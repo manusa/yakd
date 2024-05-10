@@ -17,10 +17,11 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {withParams} from '../router';
-import {Details} from '../metadata';
+import {byUidOrName, Details, name} from '../metadata';
 import {RuleList} from '../clusterroles';
-import {Form} from '../components';
+import {Card, Form} from '../components';
 import {ResourceDetailPage} from '../dashboard';
+import {RoleBindingsList} from '../rolebindings';
 import {api, selectors} from './';
 
 const mapStateToProps = ({roles}) => ({
@@ -31,7 +32,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
   ...stateProps,
   ...dispatchProps,
   ...ownProps,
-  role: stateProps.roles[ownProps.params.uid]
+  role: byUidOrName(stateProps.roles, ownProps.params.uidOrName)
 });
 
 export const RolesDetailPage = withParams(
@@ -52,6 +53,12 @@ export const RolesDetailPage = withParams(
       }
     >
       <RuleList className='mt-2' rules={selectors.rules(role)} />
+      <RoleBindingsList
+        title='Bindings'
+        titleVariant={Card.titleVariants.medium}
+        className='mt-2'
+        roleRefName={name(role)}
+      />
     </ResourceDetailPage>
   ))
 );

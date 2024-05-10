@@ -39,6 +39,7 @@ import com.marcnuri.yakd.ingresses.IngressResource;
 import com.marcnuri.yakd.namespaces.NamespaceResource;
 import com.marcnuri.yakd.replicaset.ReplicaSetResource;
 import com.marcnuri.yakd.replicationcontrollers.ReplicationControllerResource;
+import com.marcnuri.yakd.rolebindings.RoleBindingResource;
 import com.marcnuri.yakd.roles.RoleResource;
 import com.marcnuri.yakd.routes.RouteResource;
 import com.marcnuri.yakd.secrets.SecretResource;
@@ -93,7 +94,8 @@ public class ApiResource {
   IngressResource ingressResource;
   @Inject
   JobResource jobResource;
-  @Inject NamespaceResource namespaceResource;
+  @Inject
+  NamespaceResource namespaceResource;
   @Inject
   NodeResource nodeResource;
   @Inject
@@ -105,6 +107,8 @@ public class ApiResource {
   @Inject ReplicaSetResource replicaSetResource;
   @Inject
   ReplicationControllerResource replicationControllerResource;
+  @Inject
+  RoleBindingResource roleBindingResource;
   @Inject
   RoleResource roleResource;
   @Inject
@@ -223,6 +227,11 @@ public class ApiResource {
   @Path("/replicationcontrollers")
   public ReplicationControllerResource getReplicationControllerResource() {
     return replicationControllerResource;
+  }
+
+  @Path("/rolebindings")
+  public RoleBindingResource getRoleBindingResource() {
+    return roleBindingResource;
   }
 
   @Path("/roles")
