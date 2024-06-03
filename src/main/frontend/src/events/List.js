@@ -92,15 +92,18 @@ const EventName = ({event}) => {
   return name;
 };
 
+const timestamp = event =>
+  event.lastTimestamp ?? event.eventTime ?? event.metadata.creationTimestamp;
+
 const sort = (ev1, ev2) =>
-  new Date(ev2.lastTimestamp) - new Date(ev1.lastTimestamp);
+  new Date(timestamp(ev2)) - new Date(timestamp(ev1));
 
 const Rows = ({events}) => {
   return events
     .sort(sort)
     .slice(0, 10)
     .map(event => {
-      const lastTimestamp = new Date(event.lastTimestamp);
+      const lastTimestamp = new Date(timestamp(event));
       return (
         <Table.ResourceRow key={uid(event)} resource={event}>
           <Table.Cell className='whitespace-nowrap w-3 text-center'>
