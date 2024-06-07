@@ -90,7 +90,7 @@ import {
   ReplicationControllersDetailPage,
   ReplicationControllersEditPage
 } from './replicationcontrollers';
-import {apiGroupsSet, setError, setOffline} from './redux';
+import {apiGroupsSet, setOffline} from './redux';
 import {RolesPage, RolesDetailPage, RolesEditPage} from './roles';
 import {RoutesPage, RoutesDetailPage, RoutesEditPage} from './routes';
 import {SearchPage} from './search';
@@ -124,9 +124,11 @@ const pollResources = dispatch => {
         apis.api
           .listGroups()
           .then(apiGroups => dispatch(apiGroupsSet(apiGroups)))
+          .then(() => dispatch(setOffline(false)))
       ]);
     } catch (e) {
-      dispatch(setError('Error when polling resources (retrying)'));
+      dispatch(setOffline(true));
+      console.error('Error when polling resources (retrying)');
     }
     if (eventSource.readyState === EventSource.CLOSED) {
       console.error('EventSource connection was lost, reconnecting');
