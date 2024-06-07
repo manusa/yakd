@@ -95,8 +95,7 @@ const EventName = ({event}) => {
 const timestamp = event =>
   event.lastTimestamp ?? event.eventTime ?? event.metadata.creationTimestamp;
 
-const sort = (ev1, ev2) =>
-  new Date(timestamp(ev2)) - new Date(timestamp(ev1));
+const sort = (ev1, ev2) => new Date(timestamp(ev2)) - new Date(timestamp(ev1));
 
 const Rows = ({events}) => {
   return events
