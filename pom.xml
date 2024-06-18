@@ -14,7 +14,7 @@
     <version.jkube>1.16.2</version.jkube>
     <version.assertj>3.26.0</version.assertj>
     <version.exec-maven-plugin>3.2.0</version.exec-maven-plugin>
-    <version.surefire-maven-plugin>3.2.5</version.surefire-maven-plugin>
+    <version.surefire-maven-plugin>3.3.0</version.surefire-maven-plugin>
     <container.image.tag>0.0.0-SNAPSHOT</container.image.tag>
     <jkube.enricher.jkube-service.type>NodePort</jkube.enricher.jkube-service.type>
     <jkube.enricher.jkube-name.name>yakd</jkube.enricher.jkube-name.name>
