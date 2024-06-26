@@ -14,6 +14,8 @@
     <version.jkube>1.16.2</version.jkube>
     <version.assertj>3.26.0</version.assertj>
     <version.exec-maven-plugin>3.2.0</version.exec-maven-plugin>
+    <version.failsafe-maven-plugin>3.3.0</version.failsafe-maven-plugin>
+    <version.selenium>4.22.0</version.selenium>
     <version.surefire-maven-plugin>3.3.0</version.surefire-maven-plugin>
     <container.image.tag>0.0.0-SNAPSHOT</container.image.tag>
     <jkube.enricher.jkube-service.type>NodePort</jkube.enricher.jkube-service.type>
@@ -98,6 +100,12 @@
       <version>${version.assertj}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-java</artifactId>
+      <version>${version.selenium}</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <build>
     <resources>
@@ -120,6 +128,15 @@
             </systemPropertyVariables>
           </configuration>
         </plugin>
+        <plugin>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>${version.failsafe-maven-plugin}</version>
+          <configuration>
+            <systemPropertyVariables>
+              <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+            </systemPropertyVariables>
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
@@ -131,6 +148,17 @@
           <execution>
             <goals>
               <goal>build</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
             </goals>
           </execution>
         </executions>
