@@ -43,7 +43,12 @@ export const ResourceListV2 = ({
     return null;
   }
   return (
-    <Table title={title} titleVariant={titleVariant} className={className}>
+    <Table
+      title={title}
+      titleVariant={titleVariant}
+      className={className}
+      {...properties}
+    >
       <Table.Head columns={headers} />
       <Table.Body>
         <Content headers={headers} resources={resources} loading={loading}>
