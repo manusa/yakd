@@ -104,7 +104,11 @@ const Rows = ({events}) => {
     .map(event => {
       const lastTimestamp = new Date(timestamp(event));
       return (
-        <Table.ResourceRow key={uid(event)} resource={event}>
+        <Table.ResourceRow
+          key={uid(event)}
+          resource={event}
+          data-testid='list__events-row'
+        >
           <Table.Cell className='whitespace-nowrap w-3 text-center'>
             <Icon
               className={
@@ -156,6 +160,7 @@ export const List = ({...properties}) => {
   const resources = Object.values(filterEvents(filteredResources, properties));
   return (
     <ResourceListV2
+      data-testid='list__events'
       title='Latest Events'
       headers={headers}
       resources={resources}
