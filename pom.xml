@@ -14,7 +14,7 @@
     <version.jkube>1.16.2</version.jkube>
     <version.assertj>3.26.3</version.assertj>
     <version.exec-maven-plugin>3.2.0</version.exec-maven-plugin>
-    <version.failsafe-maven-plugin>3.3.0</version.failsafe-maven-plugin>
+    <version.failsafe-maven-plugin>3.3.1</version.failsafe-maven-plugin>
     <version.selenium>4.22.0</version.selenium>
     <version.surefire-maven-plugin>3.3.1</version.surefire-maven-plugin>
     <container.image.tag>0.0.0-SNAPSHOT</container.image.tag>
