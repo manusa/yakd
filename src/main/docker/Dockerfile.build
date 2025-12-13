@@ -13,7 +13,10 @@ RUN ./mvnw -Dcontainer.image.tag=${VERSION} -Pnative package
 
 FROM quay.io/quarkus/quarkus-micro-image:2.0
 
-LABEL MAINTAINER="Marc Nuri <marc@marcnuri.com>"
+LABEL maintainer="Marc Nuri <marc@marcnuri.com>"
+LABEL org.opencontainers.image.source="https://github.com/manusa/yakd"
+LABEL org.opencontainers.image.description="Yet Another Kubernetes Dashboard"
+LABEL org.opencontainers.image.licenses="Apache-2.0"
 
 COPY --from=build /project/target/yakd-runner /
 
