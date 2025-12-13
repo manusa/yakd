@@ -9,6 +9,8 @@ jobs:
   publish-release-image:
     name: Publish YAKD Release
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -29,6 +31,9 @@ jobs:
       - name: Docker Hub Login
         run: |
           echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+      - name: GitHub Container Registry Login
+        run: |
+          echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
       - name: Build and Push
         run: |
           docker buildx build                                               \
@@ -36,5 +41,6 @@ jobs:
             --build-arg VERSION=${GITHUB_REF#refs/tags/v}                   \
             -f src/main/docker/Dockerfile.build                             \
             --tag marcnuri/yakd:${GITHUB_REF#refs/tags/v}                   \
+            --tag ghcr.io/manusa/yakd:${GITHUB_REF#refs/tags/v}             \
             --platform linux/amd64,linux/arm64                              \
             .
