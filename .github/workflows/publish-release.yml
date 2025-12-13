@@ -5,12 +5,22 @@ on:
     tags:
       - 'v*'
 
+env:
+  VERSION: ${{ github.ref_name }}
+
 jobs:
-  publish-release-image:
-    name: Publish YAKD Release
-    runs-on: ubuntu-latest
+  build:
+    name: Build (${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
     permissions:
       packages: write
+    strategy:
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-latest
+          - arch: arm64
+            runner: ubuntu-24.04-arm
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -21,10 +31,6 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-      - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v3
       - name: Package
         run: |
           mvn -Pbuild-frontend clean package
@@ -34,13 +40,41 @@ jobs:
       - name: GitHub Container Registry Login
         run: |
           echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-      - name: Build and Push
+      - name: Build Image
         run: |
-          docker buildx build                                               \
-            --push                                                          \
-            --build-arg VERSION=${GITHUB_REF#refs/tags/v}                   \
-            -f src/main/docker/Dockerfile.build                             \
-            --tag marcnuri/yakd:${GITHUB_REF#refs/tags/v}                   \
-            --tag ghcr.io/manusa/yakd:${GITHUB_REF#refs/tags/v}             \
-            --platform linux/amd64,linux/arm64                              \
+          docker build                                                       \
+            --build-arg VERSION=${VERSION#v}                                 \
+            -f src/main/docker/Dockerfile.build                              \
+            --tag marcnuri/yakd:${VERSION}-${{ matrix.arch }}                \
+            --tag ghcr.io/manusa/yakd:${VERSION}-${{ matrix.arch }}          \
             .
+      - name: Push Images
+        run: |
+          docker push marcnuri/yakd:${VERSION}-${{ matrix.arch }}
+          docker push ghcr.io/manusa/yakd:${VERSION}-${{ matrix.arch }}
+
+  manifest:
+    name: Create Multi-Arch Manifest
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      packages: write
+    steps:
+      - name: Docker Hub Login
+        run: |
+          echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+      - name: GitHub Container Registry Login
+        run: |
+          echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      - name: Create and Push Docker Hub Manifest
+        run: |
+          docker manifest create marcnuri/yakd:${VERSION#v}                  \
+            marcnuri/yakd:${VERSION}-amd64                                   \
+            marcnuri/yakd:${VERSION}-arm64
+          docker manifest push marcnuri/yakd:${VERSION#v}
+      - name: Create and Push GHCR Manifest
+        run: |
+          docker manifest create ghcr.io/manusa/yakd:${VERSION#v}            \
+            ghcr.io/manusa/yakd:${VERSION}-amd64                             \
+            ghcr.io/manusa/yakd:${VERSION}-arm64
+          docker manifest push ghcr.io/manusa/yakd:${VERSION#v}
