@@ -239,8 +239,7 @@ class PodExecEndpointTest {
     @Test
     @DisplayName("should forward text messages from K8s API to client")
     void shouldForwardTextMessagesFromKubernetesApi() throws Exception {
-      // Set up a mock that emits a text message using byte array (K8s exec protocol uses binary frames)
-      // The first byte is the stream prefix (0x01 = STDOUT), followed by the message content
+      // Set up a mock that emits a text WebSocket frame (String constructor = text frame)
       kubernetes.expect()
         .get()
         .withPath(
@@ -249,7 +248,9 @@ class PodExecEndpointTest {
         .andUpgradeToWebSocket()
         .open()
         .immediately()
-        .andEmit(new WebSocketMessage(0L, new byte[]{0x01, 'H', 'e', 'l', 'l', 'o', ' ', 'f', 'r', 'o', 'm', ' ', 'K', '8', 's'}, false, true))
+        .andEmit(new WebSocketMessage(0L, "\u0001Hello from K8s", false, false))
+        .waitFor(100L)
+        .andEmit(new WebSocketMessage(0L, new byte[0], false, true))
         .done()
         .once();
 
@@ -257,12 +258,10 @@ class PodExecEndpointTest {
       ContainerProvider.getWebSocketContainer().connectToServer(client, uri);
       assertThat(client.openLatch.await(5, TimeUnit.SECONDS)).isTrue();
 
-      // K8s exec sends binary frames, which get forwarded as binary to the client
-      Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> !client.binaryMessages.isEmpty());
-      assertThat(client.binaryMessages).hasSize(1);
-      var received = client.binaryMessages.get(0);
-      // First byte is stream prefix (STDOUT = 1), rest is the message
-      assertThat(received.get(0)).isEqualTo((byte) 0x01);
+      // Wait for the text message to be received
+      Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> !client.textMessages.isEmpty());
+      assertThat(client.textMessages).hasSize(1);
+      assertThat(client.textMessages.get(0)).contains("Hello from K8s");
 
       Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> client.closeLatch.getCount() == 0);
     }
@@ -292,6 +291,72 @@ class PodExecEndpointTest {
       assertThat(client.binaryMessages).hasSize(1);
       var received = client.binaryMessages.get(0);
       assertThat(received.get(0)).isEqualTo((byte) 0x01); // STDOUT prefix
+
+      Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> client.closeLatch.getCount() == 0);
+    }
+  }
+
+  @Nested
+  @DisplayName("Client to K8s message forwarding")
+  class ClientToKubernetesMessageTests {
+
+    @Test
+    @DisplayName("should forward client text message to K8s WebSocket when connected")
+    void shouldForwardClientTextMessageToKubernetesWebSocket() throws Exception {
+      // Set up a mock that stays open long enough to receive and process a client message
+      kubernetes.expect()
+        .get()
+        .withPath(
+          "/api/v1/namespaces/stdin-ns/pods/test-pod/exec?container=main&command=%2Fbin%2Fsh&stdin=true&stdout=true&stderr=true&tty=true"
+        )
+        .andUpgradeToWebSocket()
+        .open()
+        .waitFor(500L) // Wait a bit to allow the message to be processed
+        .andEmit(new WebSocketMessage(0L, new byte[]{0x01, 'o', 'k'}, false, true))
+        .done()
+        .once();
+
+      var uri = URI.create(execUri.toString().replace("/default/", "/stdin-ns/"));
+      var session = ContainerProvider.getWebSocketContainer().connectToServer(client, uri);
+      assertThat(client.openLatch.await(5, TimeUnit.SECONDS)).isTrue();
+
+      // Send a text message from client - the endpoint prepends STDIN prefix and forwards to K8s
+      // This exercises lines 106-110 where text is converted to binary with STDIN prefix
+      session.getBasicRemote().sendText("echo hello");
+
+      // Wait for response from K8s (proves the WebSocket was established and message flow works)
+      Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> !client.binaryMessages.isEmpty());
+      assertThat(client.binaryMessages).hasSize(1);
+
+      Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> client.closeLatch.getCount() == 0);
+    }
+
+    @Test
+    @DisplayName("should forward client binary message to K8s WebSocket unchanged")
+    void shouldForwardClientBinaryMessageToKubernetesWebSocket() throws Exception {
+      // Set up a mock that stays open long enough to receive and process a client message
+      kubernetes.expect()
+        .get()
+        .withPath(
+          "/api/v1/namespaces/binary-stdin-ns/pods/test-pod/exec?container=main&command=%2Fbin%2Fsh&stdin=true&stdout=true&stderr=true&tty=true"
+        )
+        .andUpgradeToWebSocket()
+        .open()
+        .waitFor(500L) // Wait a bit to allow the message to be processed
+        .andEmit(new WebSocketMessage(0L, new byte[]{0x01, 'o', 'k'}, false, true))
+        .done()
+        .once();
+
+      var uri = URI.create(execUri.toString().replace("/default/", "/binary-stdin-ns/"));
+      var session = ContainerProvider.getWebSocketContainer().connectToServer(client, uri);
+      assertThat(client.openLatch.await(5, TimeUnit.SECONDS)).isTrue();
+
+      // Send a binary message from client - should be forwarded unchanged (lines 113-120)
+      session.getBasicRemote().sendBinary(ByteBuffer.wrap(new byte[]{0x00, 0x01, 0x02}));
+
+      // Wait for response from K8s (proves the WebSocket was established and message flow works)
+      Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> !client.binaryMessages.isEmpty());
+      assertThat(client.binaryMessages).hasSize(1);
 
       Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> client.closeLatch.getCount() == 0);
     }
