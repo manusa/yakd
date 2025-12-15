@@ -17,8 +17,13 @@
  */
 package com.marcnuri.yakd.pod;
 
+import io.fabric8.kubernetes.api.model.StatusBuilder;
+import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
+import io.fabric8.kubernetes.client.utils.Serialization;
+import io.fabric8.mockwebserver.internal.WebSocketMessage;
 import io.quarkus.test.common.http.TestHTTPResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.kubernetes.client.KubernetesTestServer;
 import io.quarkus.test.kubernetes.client.WithKubernetesTestServer;
 import jakarta.websocket.ClientEndpoint;
 import jakarta.websocket.CloseReason;
@@ -50,6 +55,26 @@ class PodExecEndpointTest {
 
   @TestHTTPResource("/api/v1/pods/default/test-pod/exec/main")
   URI execUri;
+
+  @KubernetesTestServer
+  KubernetesServer kubernetes;
+
+  @BeforeEach
+  void setUp() {
+    for (var container : new String[]{"main", "sidecar"}) {
+      kubernetes.expect()
+        .get()
+        .withPath(
+          "/api/v1/namespaces/default/pods/test-pod/exec?container=" + container + "&command=%2Fbin%2Fsh&stdin=true&stdout=true&stderr=true&tty=true"
+        )
+        .andUpgradeToWebSocket()
+        .open()
+        .immediately()
+        .andEmit(new WebSocketMessage(0L, "\u0003" + Serialization.asJson(new StatusBuilder().withStatus("Success").build()), false, true))
+        .done()
+        .always();
+    }
+  }
 
   @Nested
   @DisplayName("WebSocket connection lifecycle")
