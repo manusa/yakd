@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Created on 2024-12-14
+ * Created on 2025-12-14
  */
 package com.marcnuri.yakd.pod;
 
@@ -59,6 +59,8 @@ class PodExecEndpointTest {
   @KubernetesTestServer
   KubernetesServer kubernetes;
 
+  private TestWebSocketClient client;
+
   @BeforeEach
   void setUp() {
     for (var container : new String[]{"main", "sidecar"}) {
@@ -74,26 +76,25 @@ class PodExecEndpointTest {
         .done()
         .always();
     }
+    client = new TestWebSocketClient();
+  }
+
+  @AfterEach
+  void tearDown() {
+    Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> client.closeLatch.getCount() == 0);
   }
 
   @Nested
   @DisplayName("WebSocket connection lifecycle")
   class ConnectionLifecycleTests {
-
-    private TestWebSocketClient client;
     private Session session;
 
     @BeforeEach
     void setUp() throws Exception {
-      client = new TestWebSocketClient();
       session = ContainerProvider.getWebSocketContainer().connectToServer(client, execUri);
       assertThat(client.openLatch.await(5, TimeUnit.SECONDS)).isTrue();
     }
 
-    @AfterEach
-    void tearDown() {
-      Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> client.closeLatch.getCount() == 0);
-    }
 
     @Test
     @DisplayName("should establish WebSocket connection to endpoint")
@@ -125,19 +126,12 @@ class PodExecEndpointTest {
   @DisplayName("Message transmission")
   class MessageTransmissionTests {
 
-    private TestWebSocketClient client;
     private Session session;
 
     @BeforeEach
     void setUp() throws Exception {
-      client = new TestWebSocketClient();
       session = ContainerProvider.getWebSocketContainer().connectToServer(client, execUri);
       assertThat(client.openLatch.await(5, TimeUnit.SECONDS)).isTrue();
-    }
-
-    @AfterEach
-    void tearDown() {
-      Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> client.closeLatch.getCount() == 0);
     }
 
     @Test
@@ -175,30 +169,32 @@ class PodExecEndpointTest {
     @Test
     @DisplayName("should close connection when K8s API connection fails")
     void shouldCloseOnKubernetesApiError() throws Exception {
-      var client = new TestWebSocketClient();
-      ContainerProvider.getWebSocketContainer().connectToServer(client, execUri);
+      var uri = URI.create(execUri.toString().replace("/main", "/not-mocked"));
+      ContainerProvider.getWebSocketContainer().connectToServer(client, uri);
       assertThat(client.openLatch.await(5, TimeUnit.SECONDS)).isTrue();
 
       Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> client.closeReason.get() != null);
-      assertThat(client.closeReason.get()).isNotNull();
+      assertThat(client.closeReason)
+        .doesNotHaveNullValue()
+        .hasValueMatching(reason -> reason.getCloseCode() == CloseReason.CloseCodes.UNEXPECTED_CONDITION);
     }
 
     @Test
     @DisplayName("should handle connection to different namespace")
     void shouldHandleDifferentNamespace() throws Exception {
-      var client = new TestWebSocketClient();
       var uri = URI.create(execUri.toString().replace("/default/", "/other-namespace/"));
       ContainerProvider.getWebSocketContainer().connectToServer(client, uri);
 
       assertThat(client.openLatch.await(5, TimeUnit.SECONDS)).isTrue();
       Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> client.closeReason.get() != null);
-      assertThat(client.closeReason.get()).isNotNull();
+      assertThat(client.closeReason)
+        .doesNotHaveNullValue()
+        .hasValueMatching(reason -> reason.getCloseCode() == CloseReason.CloseCodes.UNEXPECTED_CONDITION);
     }
 
     @Test
     @DisplayName("should handle connection to different container")
     void shouldHandleDifferentContainer() throws Exception {
-      var client = new TestWebSocketClient();
       var uri = URI.create(execUri.toString().replace("/main", "/sidecar"));
       ContainerProvider.getWebSocketContainer().connectToServer(client, uri);
 
@@ -215,19 +211,20 @@ class PodExecEndpointTest {
     @Test
     @DisplayName("should trigger onClose handler when session closes")
     void shouldTriggerOnCloseHandler() throws Exception {
-      var client = new TestWebSocketClient();
       ContainerProvider.getWebSocketContainer().connectToServer(client, execUri);
       assertThat(client.openLatch.await(5, TimeUnit.SECONDS)).isTrue();
 
       Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> client.closeLatch.getCount() == 0);
-      assertThat(client.closeReason.get()).isNotNull();
+      assertThat(client.closeReason)
+        .doesNotHaveNullValue()
+        .hasValueMatching(reason -> reason.getCloseCode() == CloseReason.CloseCodes.NORMAL_CLOSURE);
     }
 
     @Test
     @DisplayName("should handle rapid open and close cycles")
     void shouldHandleRapidOpenCloseCycles() throws Exception {
       for (int i = 0; i < 3; i++) {
-        var client = new TestWebSocketClient();
+        client = new TestWebSocketClient();
         ContainerProvider.getWebSocketContainer().connectToServer(client, execUri);
         assertThat(client.openLatch.await(5, TimeUnit.SECONDS)).isTrue();
         Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> client.closeLatch.getCount() == 0);
@@ -236,25 +233,126 @@ class PodExecEndpointTest {
   }
 
   @Nested
-  @DisplayName("StandardStream enum")
-  class StandardStreamTests {
+  @DisplayName("Message reception from K8s API")
+  class MessageReceptionTests {
 
     @Test
-    @DisplayName("STDIN should have code 0")
-    void stdinShouldHaveCode0() {
-      assertThat(PodExecEndpoint.StandardStream.STDIN.getStandardStreamCode()).isZero();
+    @DisplayName("should forward text messages from K8s API to client")
+    void shouldForwardTextMessagesFromKubernetesApi() throws Exception {
+      // Set up a mock that emits a text message using byte array (K8s exec protocol uses binary frames)
+      // The first byte is the stream prefix (0x01 = STDOUT), followed by the message content
+      kubernetes.expect()
+        .get()
+        .withPath(
+          "/api/v1/namespaces/text-ns/pods/test-pod/exec?container=main&command=%2Fbin%2Fsh&stdin=true&stdout=true&stderr=true&tty=true"
+        )
+        .andUpgradeToWebSocket()
+        .open()
+        .immediately()
+        .andEmit(new WebSocketMessage(0L, new byte[]{0x01, 'H', 'e', 'l', 'l', 'o', ' ', 'f', 'r', 'o', 'm', ' ', 'K', '8', 's'}, false, true))
+        .done()
+        .once();
+
+      var uri = URI.create(execUri.toString().replace("/default/", "/text-ns/"));
+      ContainerProvider.getWebSocketContainer().connectToServer(client, uri);
+      assertThat(client.openLatch.await(5, TimeUnit.SECONDS)).isTrue();
+
+      // K8s exec sends binary frames, which get forwarded as binary to the client
+      Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> !client.binaryMessages.isEmpty());
+      assertThat(client.binaryMessages).hasSize(1);
+      var received = client.binaryMessages.get(0);
+      // First byte is stream prefix (STDOUT = 1), rest is the message
+      assertThat(received.get(0)).isEqualTo((byte) 0x01);
+
+      Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> client.closeLatch.getCount() == 0);
     }
 
     @Test
-    @DisplayName("STDOUT should have code 1")
-    void stdoutShouldHaveCode1() {
-      assertThat(PodExecEndpoint.StandardStream.STDOUT.getStandardStreamCode()).isEqualTo(1);
+    @DisplayName("should forward binary messages from K8s API to client")
+    void shouldForwardBinaryMessagesFromKubernetesApi() throws Exception {
+      // Set up a mock that emits a binary message
+      kubernetes.expect()
+        .get()
+        .withPath(
+          "/api/v1/namespaces/binary-ns/pods/test-pod/exec?container=main&command=%2Fbin%2Fsh&stdin=true&stdout=true&stderr=true&tty=true"
+        )
+        .andUpgradeToWebSocket()
+        .open()
+        .immediately()
+        .andEmit(new WebSocketMessage(0L, new byte[]{0x01, 'h', 'e', 'l', 'l', 'o'}, false, true))
+        .done()
+        .once();
+
+      var uri = URI.create(execUri.toString().replace("/default/", "/binary-ns/"));
+      ContainerProvider.getWebSocketContainer().connectToServer(client, uri);
+      assertThat(client.openLatch.await(5, TimeUnit.SECONDS)).isTrue();
+
+      // Wait for the binary message to be received
+      Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> !client.binaryMessages.isEmpty());
+      assertThat(client.binaryMessages).hasSize(1);
+      var received = client.binaryMessages.get(0);
+      assertThat(received.get(0)).isEqualTo((byte) 0x01); // STDOUT prefix
+
+      Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> client.closeLatch.getCount() == 0);
+    }
+  }
+
+  @Nested
+  @DisplayName("Client-initiated close")
+  class ClientInitiatedCloseTests {
+
+    @Test
+    @DisplayName("should close K8s WebSocket when client closes session")
+    void shouldCloseKubernetesWebSocketWhenClientCloses() throws Exception {
+      // Set up a mock that stays open longer
+      kubernetes.expect()
+        .get()
+        .withPath(
+          "/api/v1/namespaces/close-ns/pods/test-pod/exec?container=main&command=%2Fbin%2Fsh&stdin=true&stdout=true&stderr=true&tty=true"
+        )
+        .andUpgradeToWebSocket()
+        .open()
+        .waitFor(5000L)
+        .andEmit(new WebSocketMessage(0L, "\u0003Done", false, true))
+        .done()
+        .once();
+
+      var uri = URI.create(execUri.toString().replace("/default/", "/close-ns/"));
+      var session = ContainerProvider.getWebSocketContainer().connectToServer(client, uri);
+      assertThat(client.openLatch.await(5, TimeUnit.SECONDS)).isTrue();
+
+      // Client initiates close
+      session.close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, "Client closing"));
+
+      Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> client.closeLatch.getCount() == 0);
+      assertThat(client.closeReason.get()).isNotNull();
+      assertThat(client.closeReason.get().getCloseCode()).isEqualTo(CloseReason.CloseCodes.NORMAL_CLOSURE);
     }
 
     @Test
-    @DisplayName("STDERR should have code 2")
-    void stderrShouldHaveCode2() {
-      assertThat(PodExecEndpoint.StandardStream.STDERR.getStandardStreamCode()).isEqualTo(2);
+    @DisplayName("should cancel pending WebSocket when client closes before connection established")
+    void shouldCancelPendingWebSocketOnEarlyClose() throws Exception {
+      // Set up a mock with a delay before the WebSocket is ready
+      kubernetes.expect()
+        .get()
+        .withPath(
+          "/api/v1/namespaces/early-close-ns/pods/test-pod/exec?container=main&command=%2Fbin%2Fsh&stdin=true&stdout=true&stderr=true&tty=true"
+        )
+        .andUpgradeToWebSocket()
+        .open()
+        .waitFor(10000L)
+        .andEmit(new WebSocketMessage(0L, "\u0003Done", false, true))
+        .done()
+        .once();
+
+      var uri = URI.create(execUri.toString().replace("/default/", "/early-close-ns/"));
+      var session = ContainerProvider.getWebSocketContainer().connectToServer(client, uri);
+      assertThat(client.openLatch.await(5, TimeUnit.SECONDS)).isTrue();
+
+      // Close immediately before K8s WebSocket message arrives
+      session.close(new CloseReason(CloseReason.CloseCodes.GOING_AWAY, "Early close"));
+
+      Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> client.closeLatch.getCount() == 0);
     }
   }
 
