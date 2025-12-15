@@ -71,7 +71,7 @@ class PodExecEndpointTest {
         )
         .andUpgradeToWebSocket()
         .open()
-        .immediately()
+        .waitFor(200L)
         .andEmit(new WebSocketMessage(0L, "\u0003" + Serialization.asJson(new StatusBuilder().withStatus("Success").build()), false, true))
         .done()
         .always();
