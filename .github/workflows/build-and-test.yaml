@@ -1,6 +1,9 @@
 name: Build and Test
 
 on:
+  push:
+    branches:
+      - main
   pull_request:
 
 jobs:
@@ -23,3 +26,5 @@ jobs:
       - name: Test frontend
         run: |
           cd src/main/frontend && npm test
+      - name: Check license headers
+        run: .github/scripts/check-license-headers.sh
