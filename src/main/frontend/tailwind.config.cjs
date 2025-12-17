@@ -16,7 +16,7 @@
  */
 module.exports = {
   content: [
-    './public/**/*.html',
+    './index.html',
     './src/**/*.{js,jsx}',
   ],
   target: 'relaxed',

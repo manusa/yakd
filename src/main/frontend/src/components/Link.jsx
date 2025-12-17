@@ -92,7 +92,7 @@ Link.sizes = sizes;
 Link.RouterLink = ({
   className,
   children,
-  href = '#',
+  href: _href = '#',
   variant = variants.default,
   size = sizes.normal,
   ...props

@@ -14,14 +14,7 @@
  * limitations under the License.
  *
  */
-const tailwind = require('tailwindcss');
-const autoprefixer = require('autoprefixer');
+import {WebSocket} from 'ws';
 
-const config = {
-  plugins: [
-    tailwind('./tailwind.config.js'),
-    autoprefixer
-  ]
-};
-
-module.exports = config;
+// Polyfill WebSocket for Node.js test environment
+globalThis.WebSocket = WebSocket;

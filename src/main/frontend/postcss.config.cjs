@@ -14,6 +14,14 @@
  * limitations under the License.
  *
  */
-const WebSocket = require('ws');
+const tailwind = require('tailwindcss');
+const autoprefixer = require('autoprefixer');
 
-global.WebSocket = WebSocket;
+const config = {
+  plugins: [
+    tailwind('./tailwind.config.cjs'),
+    autoprefixer
+  ]
+};
+
+module.exports = config;

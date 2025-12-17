@@ -2,6 +2,7 @@
   "name": "yakd",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "dependencies": {
     "ace-builds": "1.33.0",
     "ansi-to-html": "0.7.2",
@@ -13,7 +14,6 @@
     "react-dom": "18.2.0",
     "react-redux": "9.1.0",
     "react-router-dom": "6.22.3",
-    "react-scripts": "5.0.1",
     "react-virtualized": "9.22.6",
     "redux": "5.0.1",
     "xterm": "5.3.0",
@@ -23,32 +23,32 @@
     "yaml": "2.4.5"
   },
   "devDependencies": {
+    "@eslint/js": "8.57.1",
     "@fortawesome/fontawesome-free": "5.14.0",
+    "@vitejs/plugin-react": "4.3.4",
     "autoprefixer": "10.4.22",
+    "eslint": "8.57.1",
     "eslint-config-prettier": "9.1.0",
-    "postcss-cli": "11.0.1",
+    "eslint-plugin-react": "7.37.3",
+    "eslint-plugin-react-hooks": "5.1.0",
+    "jsdom": "25.0.1",
     "prettier": "3.2.5",
     "tailwindcss": "3.4.3",
     "typeface-open-sans": "1.1.13",
+    "vite": "6.0.5",
+    "vitest": "2.1.8",
     "ws": "8.18.3"
   },
   "scripts": {
     "eslint": "eslint src/.",
     "prettier": "prettier 'src/**/*.{js,jsx,ts,tsx,json,css,scss,md}' --ignore-path ../../../.gitignore --write",
     "prestart": "npm run prettier && npm run eslint",
-    "start": "npm run watch:css && react-scripts start",
-    "prebuild": "npm run prettier && npm run eslint && npm run build:css",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "build:css": "postcss src/assets/tailwind-src.css -o src/assets/tailwind.css",
-    "watch:css": "postcss src/assets/tailwind-src.css -o src/assets/tailwind.css"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "prettier"
-    ]
+    "start": "vite",
+    "prebuild": "npm run prettier && npm run eslint",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "browserslist": {
     "production": [

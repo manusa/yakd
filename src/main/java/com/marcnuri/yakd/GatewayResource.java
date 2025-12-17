@@ -37,6 +37,7 @@ public class GatewayResource {
 
   private static final String FALLBACK_RESOURCE = "/index.html";
   private static final Map<String, String> EXTENSION_TYPES = Map.of(
+    "js", "application/javascript",
     "svg", "image/svg+xml"
   );
   private final ApiResource apiResource;

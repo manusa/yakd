@@ -14,5 +14,15 @@
  * limitations under the License.
  *
  */
+import {defineConfig} from 'vitest/config';
+import react from '@vitejs/plugin-react';
 
-export const getApiURL = () => import.meta.env.VITE_API_URL;
+export default defineConfig({
+  plugins: [react()],
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    include: ['src/**/*.test.{js,jsx}'],
+    setupFiles: ['./src/test-utils/vitest.setup.js']
+  }
+});

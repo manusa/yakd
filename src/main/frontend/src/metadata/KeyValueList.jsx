@@ -21,7 +21,7 @@ export const KeyValueList = ({
   leftBg,
   leftTextColor,
   rightBg,
-  rightTextColor,
+  rightTextColor: _rightTextColor,
   keyValues = {},
   maxEntries = 10
 }) => {
