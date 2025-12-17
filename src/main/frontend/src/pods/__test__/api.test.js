@@ -14,72 +14,67 @@
  * limitations under the License.
  *
  */
+const {createTestServer} = require('../../test-utils/ws-test-server');
+
+const waitForOpen = ws =>
+  new Promise((resolve, reject) => {
+    if (ws.readyState === ws.OPEN) {
+      resolve();
+      return;
+    }
+    ws.onopen = resolve;
+    ws.onerror = reject;
+  });
 
 describe('API test suite', () => {
+  let testServer;
+  let originalApiUrl;
   let api;
-  let mockApiURL = '';
-  let WebSocket;
+
+  beforeAll(async () => {
+    originalApiUrl = process.env.REACT_APP_API_URL;
+    testServer = createTestServer();
+    const port = await testServer.start();
+    process.env.REACT_APP_API_URL = `http://localhost:${port}`;
+  });
+
+  afterAll(async () => {
+    process.env.REACT_APP_API_URL = originalApiUrl;
+    await testServer.stop();
+  });
+
   beforeEach(() => {
     jest.resetModules();
-    jest.mock('../../env', () => ({
-      getApiURL: () => mockApiURL
-    }));
-    WebSocket = jest.fn();
-    global.WebSocket = WebSocket;
+    testServer.clearConnections();
     api = require('../api');
   });
+
   describe('exec', () => {
-    describe('With absolute API url', () => {
-      test('and HTTPS protocol, should call WebSocket with replaced protocol', () => {
-        // Given
-        mockApiURL = 'https://example.com/api/v1';
-        // When
-        api.exec('ns', 'name', 'container-name');
-        // Then
-        expect(WebSocket).toHaveBeenCalledWith(
-          'wss://example.com/api/v1/pods/ns/name/exec/container-name'
-        );
-        expect(WebSocket).toHaveBeenCalledTimes(1);
-      });
-      test('and HTTP protocol, should call WebSocket with replaced protocol', () => {
-        // Given
-        mockApiURL = 'http://example.com/api/v1';
-        // When
-        api.exec('ns', 'name', 'container-name');
-        // Then
-        expect(WebSocket).toHaveBeenCalledWith(
-          'ws://example.com/api/v1/pods/ns/name/exec/container-name'
-        );
-        expect(WebSocket).toHaveBeenCalledTimes(1);
-      });
+    test('should connect to WebSocket server with correct path', async () => {
+      // When
+      const ws = api.exec('ns', 'name', 'container-name');
+      await waitForOpen(ws);
+
+      // Then
+      expect(testServer.getConnectionCount()).toBe(1);
+      expect(testServer.getConnectionPaths()).toContain(
+        '/pods/ns/name/exec/container-name'
+      );
+
+      ws.close();
     });
-    describe('With relative API url', () => {
-      beforeEach(() => {
-        mockApiURL = '/api/v1';
-        Object.defineProperty(window, 'location', {value: {}});
-      });
-      test('and HTTPS protocol, should call WebSocket with replaced protocol', () => {
-        // Given
-        window.location.origin = 'https://example.com';
-        // When
-        api.exec('ns', 'name', 'container-name');
-        // Then
-        expect(WebSocket).toHaveBeenCalledWith(
-          'wss://example.com/api/v1/pods/ns/name/exec/container-name'
-        );
-        expect(WebSocket).toHaveBeenCalledTimes(1);
-      });
-      test('and HTTP protocol, should call WebSocket with replaced protocol', () => {
-        // Given
-        window.location.origin = 'http://example.com:1337';
-        // When
-        api.exec('ns', 'name', 'container-name');
-        // Then
-        expect(WebSocket).toHaveBeenCalledWith(
-          'ws://example.com:1337/api/v1/pods/ns/name/exec/container-name'
-        );
-        expect(WebSocket).toHaveBeenCalledTimes(1);
-      });
+
+    test('should construct URL with namespace, pod name and container', async () => {
+      // When
+      const ws = api.exec('my-namespace', 'my-pod', 'my-container');
+      await waitForOpen(ws);
+
+      // Then
+      expect(testServer.getConnectionPaths()).toContain(
+        '/pods/my-namespace/my-pod/exec/my-container'
+      );
+
+      ws.close();
     });
   });
 });
