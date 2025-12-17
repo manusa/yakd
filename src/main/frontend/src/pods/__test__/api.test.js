@@ -14,7 +14,16 @@
  * limitations under the License.
  *
  */
-const {createTestServer} = require('../../test-utils/ws-test-server');
+import {
+  describe,
+  test,
+  expect,
+  beforeAll,
+  afterAll,
+  beforeEach,
+  vi
+} from 'vitest';
+import {createTestServer} from '../../test-utils/ws-test-server.js';
 
 const waitForOpen = ws =>
   new Promise((resolve, reject) => {
@@ -32,21 +41,21 @@ describe('API test suite', () => {
   let api;
 
   beforeAll(async () => {
-    originalApiUrl = process.env.REACT_APP_API_URL;
+    originalApiUrl = import.meta.env.VITE_API_URL;
     testServer = createTestServer();
     const port = await testServer.start();
-    process.env.REACT_APP_API_URL = `http://localhost:${port}`;
+    import.meta.env.VITE_API_URL = `http://localhost:${port}`;
   });
 
   afterAll(async () => {
-    process.env.REACT_APP_API_URL = originalApiUrl;
+    import.meta.env.VITE_API_URL = originalApiUrl;
     await testServer.stop();
   });
 
-  beforeEach(() => {
-    jest.resetModules();
+  beforeEach(async () => {
+    vi.resetModules();
     testServer.clearConnections();
-    api = require('../api');
+    api = await import('../api.js');
   });
 
   describe('exec', () => {

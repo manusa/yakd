@@ -54,7 +54,12 @@ import {
 
 import './SideBar.css';
 
-const RoutedLink = ({to, staticContext, className = '', ...props}) => {
+const RoutedLink = ({
+  to,
+  staticContext: _staticContext,
+  className = '',
+  ...props
+}) => {
   const match = useMatch(`${to}/*`);
   return (
     <Link.RouterLink

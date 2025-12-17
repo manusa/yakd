@@ -19,7 +19,7 @@ const autoprefixer = require('autoprefixer');
 
 const config = {
   plugins: [
-    tailwind('./tailwind.config.js'),
+    tailwind('./tailwind.config.cjs'),
     autoprefixer
   ]
 };

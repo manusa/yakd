@@ -14,9 +14,9 @@
  * limitations under the License.
  *
  */
-const {WebSocketServer} = require('ws');
+import {WebSocketServer} from 'ws';
 
-const createTestServer = () => {
+export const createTestServer = () => {
   let server = null;
   let connections = [];
   let connectionPaths = [];
@@ -65,7 +65,11 @@ const createTestServer = () => {
         return;
       }
       const timeoutId = setTimeout(() => {
-        reject(new Error(`Timed out waiting for WebSocket connection after ${timeout}ms`));
+        reject(
+          new Error(
+            `Timed out waiting for WebSocket connection after ${timeout}ms`
+          )
+        );
       }, timeout);
       connectionResolvers.push(() => {
         clearTimeout(timeoutId);
@@ -85,5 +89,3 @@ const createTestServer = () => {
     getConnectionCount
   };
 };
-
-module.exports = {createTestServer};

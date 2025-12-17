@@ -16,7 +16,7 @@
  */
 import React from 'react';
 
-export const Card = ({className, dispatch, children, ...props}) => (
+export const Card = ({className, dispatch: _dispatch, children, ...props}) => (
   <div
     className={`block overflow-x-auto bg-white shadow border-b border-gray-500 sm:rounded-lg ${
       className ?? ''

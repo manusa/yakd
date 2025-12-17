@@ -14,5 +14,34 @@
  * limitations under the License.
  *
  */
+import {defineConfig} from 'vite';
+import react from '@vitejs/plugin-react';
 
-export const getApiURL = () => import.meta.env.VITE_API_URL;
+export default defineConfig({
+  plugins: [
+    react({
+      include: '**/*.{js,jsx}'
+    })
+  ],
+  build: {
+    outDir: 'build',
+    emptyOutDir: true,
+    rollupOptions: {
+      input: {
+        main: './index.html'
+      }
+    }
+  },
+  server: {
+    port: 3000,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8080',
+        changeOrigin: true
+      }
+    }
+  },
+  css: {
+    postcss: './postcss.config.cjs'
+  }
+});
