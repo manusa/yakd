@@ -24,6 +24,6 @@ export {PodsCard} from './PodsCard';
 export {PodsDetailPage} from './PodsDetailPage';
 export {PodsEditPage} from './PodsEditPage';
 export {PodsExecPage} from './PodsExecPage';
-export {PodsLogsPage} from './PodsLogsPage';
+export {LogRow, PodsLogsPage} from './PodsLogsPage';
 export {PodsPage} from './PodsPage';
 export {StatusIcon} from './StatusIcon';

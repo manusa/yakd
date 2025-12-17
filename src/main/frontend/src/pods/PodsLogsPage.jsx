@@ -30,6 +30,16 @@ import './PodsLogsPage.css';
 
 const ansi = new Convert();
 
+export const LogRow = ({logLine, style}) => (
+  <div
+    className='whitespace-nowrap'
+    style={{...style, width: 'auto'}}
+    dangerouslySetInnerHTML={{
+      __html: dompurify.sanitize(ansi.toHtml(logLine))
+    }}
+  />
+);
+
 const downloadLogs = (log, name, selectedContainer) => {
   const mimeType = 'text/plain';
   const blob = new Blob([log.join('\n')], {type: mimeType});
@@ -70,14 +80,7 @@ export const PodsLogsPage = withParams(
       setSelectedContainer
     } = useLogs(namespace, name, containers);
     const rowRenderer = ({key, index, style}) => (
-      <div
-        key={key}
-        className='whitespace-nowrap'
-        style={{...style, width: 'auto'}}
-        dangerouslySetInnerHTML={{
-          __html: dompurify.sanitize(ansi.toHtml(log[index]))
-        }}
-      />
+      <LogRow key={key} logLine={log[index]} style={style} />
     );
     return (
       <DashboardPage
