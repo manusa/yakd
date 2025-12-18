@@ -15,10 +15,10 @@
  *
  */
 import {useEffect, useRef, useState} from 'react';
-import {Terminal} from 'xterm';
-import {AttachAddon} from 'xterm-addon-attach';
-import {FitAddon} from 'xterm-addon-fit';
-import {WebLinksAddon} from 'xterm-addon-web-links';
+import {Terminal} from '@xterm/xterm';
+import {AttachAddon} from '@xterm/addon-attach';
+import {FitAddon} from '@xterm/addon-fit';
+import {WebLinksAddon} from '@xterm/addon-web-links';
 import {api, useContainers} from './';
 
 const startTerminal = (ref, namespace, name, selectedContainer) => {

@@ -23,7 +23,7 @@ import {Card, Link} from '../components';
 import {DashboardPage} from '../dashboard';
 import {selectors, useExec} from './';
 
-import 'xterm/css/xterm.css';
+import '@xterm/xterm/css/xterm.css';
 
 const mapStateToProps = ({pods}) => ({pods});
 
