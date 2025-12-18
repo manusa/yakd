@@ -22,7 +22,11 @@ export const ContainerDropdown = ({
   selectedContainer,
   onContainerSelect
 }) => (
-  <Dropdown text={selectedContainer?.name ?? ''} closeOnPanelClick={true}>
+  <Dropdown
+    text={selectedContainer?.name ?? ''}
+    closeOnPanelClick={true}
+    data-testid='container-dropdown'
+  >
     {containers.map(c => (
       <Dropdown.Item key={c.name} onClick={() => onContainerSelect(c)}>
         {c.name}
