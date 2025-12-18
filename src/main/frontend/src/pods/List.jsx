@@ -76,6 +76,7 @@ const Rows = ({pods}) => {
           to={`/pods/${uid(pod)}/exec`}
           title='Terminal'
           className='ml-1'
+          data-testid='pod-list__terminal-link'
         >
           <Icon stylePrefix='fas' icon='fa-terminal' />
         </Link.RouterLink>

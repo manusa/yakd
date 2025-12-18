@@ -80,6 +80,7 @@ export const PodsExecPage = withParams(
             <Card.Body padding='p-0' className='relative flex-1 bg-black'>
               <div
                 ref={ref}
+                data-testid='pod-exec__terminal'
                 className='absolute'
                 style={{
                   top: '1rem',
