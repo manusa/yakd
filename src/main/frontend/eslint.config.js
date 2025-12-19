@@ -113,6 +113,7 @@ export default [
         EventSource: 'readonly',
         setTimeout: 'readonly',
         clearTimeout: 'readonly',
+        HTMLCanvasElement: 'readonly',
         // Node.js globals for tests
         process: 'readonly',
         require: 'readonly',
