@@ -106,6 +106,30 @@ npm run prettier
 
 **MOCKS ARE STRICTLY FORBIDDEN.** This project uses black-box testing to ensure refactorings don't break production code. If you believe mocks are required to test a functionality, notify the user first to find an alternative approach. See: https://blog.marcnuri.com/blackbox-whitebox-testing-comparison
 
+### Key Testing Principles
+
+1. **Avoid mocking whenever possible** - Use real implementations
+2. **Use provided test infrastructure** - Don't reinvent testing utilities
+3. **Test actual behavior** - Verify observable outcomes, not implementation details
+4. **Keep tests simple and readable** - Tests should be easy to understand
+5. **Don't tie tests to implementation** - Tests should survive refactoring
+
+### Testing Philosophy
+
+- **Test the public API only** - Tests should be black-box and not access internal/private functions
+- **No mocks** - Use real implementations and integration testing where possible
+- **Behavior over implementation** - Test what the code does, not how it does it
+- Focus on observable behavior and outcomes rather than internal state
+
+### Test Structure Guidelines
+
+- Group scenarios or environment conditions with `beforeXxx` or setup blocks
+- Use nested tests for grouping related cases
+- Each test should assert only one aspect of the spec's behavior (e.g., a test for a component render should have separate tests for the classes it contains, its text content, if it has an icon, etc.)
+- Group the Arrange/Given, Act/When blocks if needed, then add separate cases for the Assert/Then blocks
+- Tests should have descriptive names that describe the spec behavior (e.g., "renders a slashed wifi icon")
+- Add tests for edge cases
+
 ### Backend Tests (Java)
 
 ```bash
