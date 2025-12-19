@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-import {Types} from './';
+import {Types} from './actions';
 
 const belongsToThisReducer = (kind, action) =>
   (action.payload.kind ?? undefined) === kind;
