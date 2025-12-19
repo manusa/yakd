@@ -277,12 +277,12 @@ describe('Fetch wrapper tests', () => {
       expect(result).toEqual([]);
     });
 
-    test('should not override existing kind property due to spread order', () => {
+    test('should override existing kind with provided kind', () => {
       const resources = [{kind: 'OldKind', metadata: {name: 'resource-1'}}];
 
       const result = fixKind('NewKind')(resources);
 
-      expect(result[0].kind).toBe('OldKind');
+      expect(result[0].kind).toBe('NewKind');
     });
 
     test('should work with different Kubernetes resource kinds', () => {

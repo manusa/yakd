@@ -42,7 +42,7 @@ export const toJson = async response =>
   (await processResponse(response)).json();
 
 export const fixKind = kind => resources =>
-  resources.map(resource => ({kind, ...resource}));
+  resources.map(resource => ({...resource, kind}));
 
 export const listResource = (path, kind) => async () => {
   const response = await fetch(`${getApiURL()}/${path}`);
