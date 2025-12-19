@@ -18,3 +18,7 @@ import {WebSocket} from 'ws';
 
 // Polyfill WebSocket for Node.js test environment
 globalThis.WebSocket = WebSocket;
+
+// Stub HTMLCanvasElement.getContext for libraries like xterm.js that use canvas
+// jsdom doesn't implement canvas, so we provide a no-op stub to silence errors
+HTMLCanvasElement.prototype.getContext = () => null;
