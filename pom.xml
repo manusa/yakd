@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.marcnuri.yakd</groupId>
   <artifactId>app</artifactId>
-  <version>${container.image.tag}</version>
+  <version>${revision}</version>
   <name>YAKD :: Application</name>
 
   <properties>
@@ -17,7 +17,8 @@
     <version.failsafe-maven-plugin>3.3.1</version.failsafe-maven-plugin>
     <version.selenium>4.22.0</version.selenium>
     <version.surefire-maven-plugin>3.3.1</version.surefire-maven-plugin>
-    <container.image.tag>0.0.0-SNAPSHOT</container.image.tag>
+    <revision>0.0.0-SNAPSHOT</revision>
+    <container.image.tag>${revision}</container.image.tag>
     <jkube.enricher.jkube-service.type>NodePort</jkube.enricher.jkube-service.type>
     <jkube.enricher.jkube-name.name>yakd</jkube.enricher.jkube-name.name>
     <k8s.namespace>default</k8s.namespace>

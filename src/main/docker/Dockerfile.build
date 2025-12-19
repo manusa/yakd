@@ -8,7 +8,7 @@ COPY --chown=quarkus:quarkus src /project/src
 
 WORKDIR /project
 
-RUN ./mvnw -Dcontainer.image.tag=${VERSION} -Pnative package
+RUN ./mvnw -Drevision=${VERSION} -Pnative package
 
 
 FROM quay.io/quarkus/quarkus-micro-image:2.0
