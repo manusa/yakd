@@ -22,3 +22,13 @@ globalThis.WebSocket = WebSocket;
 // Stub HTMLCanvasElement.getContext for libraries like xterm.js that use canvas
 // jsdom doesn't implement canvas, so we provide a no-op stub to silence errors
 HTMLCanvasElement.prototype.getContext = () => null;
+
+// Suppress useLayoutEffect SSR warning from third-party libraries (e.g., react-redux)
+// when using renderToString for testing. This is safe because effects don't run during SSR.
+const originalConsoleError = console.error;
+console.error = (...args) => {
+  if (args[0]?.includes?.('useLayoutEffect does nothing on the server')) {
+    return;
+  }
+  originalConsoleError.apply(console, args);
+};
