@@ -67,6 +67,7 @@ const Rows = ({pods}) => {
           variant={Link.variants.outline}
           to={`/pods/${uid(pod)}/logs`}
           title='Logs'
+          data-testid='pod-list__logs-link'
         >
           <Icon stylePrefix='far' icon='fa-file-alt' />
         </Link.RouterLink>
