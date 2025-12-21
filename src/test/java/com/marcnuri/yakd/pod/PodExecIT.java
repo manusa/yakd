@@ -29,9 +29,10 @@ import io.quarkus.test.kubernetes.client.KubernetesTestServer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.net.URL;
 import java.time.Duration;
@@ -57,7 +58,10 @@ public class PodExecIT {
 
   @BeforeEach
   void setUp() {
-    wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+    wait = new FluentWait<>(driver)
+      .withTimeout(Duration.ofSeconds(10))
+      .pollingEvery(Duration.ofMillis(100))
+      .ignoring(NoSuchElementException.class);
 
     // Create a mock pod with a container for exec functionality
     kubernetes.getClient().pods().inNamespace(POD_NAMESPACE).resource(new PodBuilder()

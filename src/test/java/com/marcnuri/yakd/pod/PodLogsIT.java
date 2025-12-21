@@ -29,9 +29,10 @@ import io.quarkus.test.kubernetes.client.KubernetesTestServer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.net.URL;
 import java.time.Duration;
@@ -56,7 +57,10 @@ public class PodLogsIT {
 
   @BeforeEach
   void setUp() {
-    wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+    wait = new FluentWait<>(driver)
+      .withTimeout(Duration.ofSeconds(10))
+      .pollingEvery(Duration.ofMillis(100))
+      .ignoring(NoSuchElementException.class);
 
     // Create a mock pod with two containers
     kubernetes.getClient().pods().inNamespace(POD_NAMESPACE).resource(new PodBuilder()
@@ -109,9 +113,7 @@ public class PodLogsIT {
 
   @Test
   void displaysFirstContainerLogs() {
-    // Wait for log content from container-1 to appear
     wait.until(d -> d.findElement(By.cssSelector(".pods-logs-page")).getText().contains("Hello from container 1 logs!"));
-
     assertThat(driver.findElement(By.cssSelector(".pods-logs-page")).getText())
       .contains("Hello from container 1 logs!");
   }
@@ -124,19 +126,13 @@ public class PodLogsIT {
 
   @Test
   void switchingContainerDisplaysCorrectLogs() {
-    // Wait for initial logs from container-1
     wait.until(d -> d.findElement(By.cssSelector(".pods-logs-page")).getText().contains("Hello from container 1 logs!"));
 
-    // Click on the container dropdown to open it
     driver.findElement(By.cssSelector("[data-testid='container-dropdown']")).click();
-
-    // Wait for dropdown to open and click on container-2
     wait.until(d -> !d.findElements(By.xpath("//*[contains(text(), 'container-2')]")).isEmpty());
     driver.findElement(By.xpath("//*[contains(text(), 'container-2')]")).click();
 
-    // Wait for logs from container-2 to appear
     wait.until(d -> d.findElement(By.cssSelector(".pods-logs-page")).getText().contains("Hello from container 2 logs!"));
-
     assertThat(driver.findElement(By.cssSelector(".pods-logs-page")).getText())
       .contains("Hello from container 2 logs!");
   }

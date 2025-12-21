@@ -31,9 +31,10 @@ import io.quarkus.test.kubernetes.client.KubernetesTestServer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.net.URL;
 import java.time.Duration;
@@ -66,7 +67,10 @@ public class HomeIT {
         .withEventTime(new MicroTime("2015-10-21 16:29"))
       .build()).createOr(NonDeletingOperation::update);
     driver.get(url.toString());
-    final Wait<WebDriver> wait = new WebDriverWait(driver, Duration.ofSeconds(1));
+    final Wait<WebDriver> wait = new FluentWait<>(driver)
+      .withTimeout(Duration.ofSeconds(1))
+      .pollingEvery(Duration.ofMillis(100))
+      .ignoring(NoSuchElementException.class);
     wait.until(d -> d.findElement(By.cssSelector(".dashboard-page")).isDisplayed());
   }
 
@@ -85,7 +89,10 @@ public class HomeIT {
   @Test
   void hasEventList() {
     final By selector = By.cssSelector("[data-testid=list__events] [data-testid=list__events-row]");
-    final Wait<WebDriver> wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+    final Wait<WebDriver> wait = new FluentWait<>(driver)
+      .withTimeout(Duration.ofSeconds(5))
+      .pollingEvery(Duration.ofMillis(100))
+      .ignoring(NoSuchElementException.class);
     wait.until(d -> d.findElement(selector).isDisplayed());
     assertThat(driver.findElement(selector).getText())
       .matches("^Pod\\na-pod-1\\nStarted Started container\\n.+");
