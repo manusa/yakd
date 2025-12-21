@@ -15,8 +15,9 @@
  *
  * Created on 2024-06-26, 17:20
  */
-package com.marcnuri.yakd.selenium;
+package com.marcnuri.yakd;
 
+import com.marcnuri.yakd.selenium.IntegrationTestProfile;
 import io.fabric8.kubernetes.api.model.EventBuilder;
 import io.fabric8.kubernetes.api.model.MicroTime;
 import io.fabric8.kubernetes.api.model.ObjectReferenceBuilder;

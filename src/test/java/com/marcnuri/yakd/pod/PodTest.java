@@ -15,8 +15,9 @@
  *
  * Created on 2025-12-15, 10:00
  */
-package com.marcnuri.yakd;
+package com.marcnuri.yakd.pod;
 
+import com.marcnuri.yakd.WatcherUtil;
 import io.fabric8.kubernetes.api.model.PodBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.Watcher;

@@ -15,8 +15,9 @@
  *
  * Created on 2024-12-17, 12:00
  */
-package com.marcnuri.yakd.selenium;
+package com.marcnuri.yakd.pod;
 
+import com.marcnuri.yakd.selenium.IntegrationTestProfile;
 import io.fabric8.kubernetes.api.model.ContainerBuilder;
 import io.fabric8.kubernetes.api.model.PodBuilder;
 import io.fabric8.kubernetes.client.dsl.NonDeletingOperation;
