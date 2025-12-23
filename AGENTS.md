@@ -6,7 +6,7 @@ This file provides guidance to AI coding agents (GitHub Copilot, Claude Code, et
 
 ## Project Overview
 
-This repository contains YAKD (Yet Another Kubernetes Dashboard), a Kubernetes dashboard built with Quarkus (Java 17) for the backend and React for the frontend.
+This repository contains YAKD (Yet Another Kubernetes Dashboard), a Kubernetes dashboard built with Quarkus (Java 21) for the backend and React for the frontend.
 The project provides a web-based UI for managing Kubernetes and OpenShift clusters.
 
 ## Project Structure
@@ -93,7 +93,7 @@ npm run typecheck
 
 ### Java
 
-- Java 17 target
+- Java 21 target
 - Apache License 2.0 headers required on all source files
 - Standard Quarkus/JAX-RS patterns
 
