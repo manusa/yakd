@@ -8,8 +8,8 @@
   <name>YAKD :: Application</name>
 
   <properties>
-    <maven.compiler.source>17</maven.compiler.source>
-    <maven.compiler.target>17</maven.compiler.target>
+    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
     <version.quarkus>3.11.3</version.quarkus>
     <version.jkube>1.16.2</version.jkube>
     <version.assertj>3.26.3</version.assertj>
