@@ -51,12 +51,13 @@ npm install
 npm start  # Vite dev server on port 3000, proxies /api to localhost:8080
 ```
 
-### Linting & Formatting
+### Linting, Formatting & Type Checking
 
 ```bash
 cd src/main/frontend
 npm run eslint
 npm run prettier
+npm run typecheck
 ```
 
 ## Architecture
@@ -101,6 +102,10 @@ npm run prettier
 - Prettier: single quotes, no trailing commas, no bracket spacing
 - ESLint with React hooks plugin
 - Test files in `__test__/` directories following `*.test.js` or `*.test.jsx` pattern
+- **Type checking**: Uses JSDoc annotations with TypeScript's `checkJs` feature (no `.ts` files)
+  - Add `// @ts-check` after the license header to enable type checking for a file
+  - Use JSDoc `@param` annotations for component props
+  - Configuration in `jsconfig.json`
 
 ## Testing
 
