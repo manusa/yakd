@@ -33,7 +33,7 @@ while IFS= read -r file; do
     echo "Missing or incorrect license header: $file"
     MISSING_HEADER=1
   fi
-done < <(git ls-files 'src/main/java/**/*.java' 'src/test/java/**/*.java' 'src/main/frontend/*.js' 'src/main/frontend/src/**/*.js' 'src/main/frontend/src/**/*.css')
+done < <(git ls-files 'src/main/java/**/*.java' 'src/test/java/**/*.java' 'src/main/frontend/*.js' 'src/main/frontend/src/**/*.js' 'src/main/frontend/src/**/*.jsx' 'src/main/frontend/src/**/*.ts' 'src/main/frontend/src/**/*.css')
 
 echo "Checked $COUNT files"
 
