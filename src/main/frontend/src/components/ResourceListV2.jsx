@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-import PropTypes from 'prop-types';
+// @ts-check
 import React from 'react';
 import {Table} from './';
 
@@ -28,6 +28,17 @@ const Content = ({headers, resources, loading, children}) => {
   return <Table.NoResultsRow colSpan={headers.length} />;
 };
 
+/**
+ * @param {Object} props
+ * @param {Object[]} props.resources
+ * @param {React.ReactNode} props.children
+ * @param {React.ReactNode[]} props.headers
+ * @param {string} [props.title]
+ * @param {string} [props.titleVariant]
+ * @param {string} [props.className]
+ * @param {boolean} [props.loading]
+ * @param {boolean} [props.hideWhenNoResults]
+ */
 export const ResourceListV2 = ({
   resources,
   headers,
@@ -57,11 +68,4 @@ export const ResourceListV2 = ({
       </Table.Body>
     </Table>
   );
-};
-
-ResourceListV2.propTypes = {
-  resources: PropTypes.arrayOf(PropTypes.object).isRequired,
-  children: PropTypes.node.isRequired,
-  title: PropTypes.string,
-  loading: PropTypes.bool
 };

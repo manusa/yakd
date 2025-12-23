@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "checkJs": false,
+    "allowJs": true,
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "target": "ES2020",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "skipLibCheck": true,
+    "strict": false,
+    "noEmit": true,
+    "baseUrl": "src"
+  },
+  "include": ["src/**/*.js", "src/**/*.jsx"],
+  "exclude": [
+    "node_modules",
+    "**/node_modules/**",
+    "src/__test__/**",
+    "src/test-utils/**"
+  ]
+}
