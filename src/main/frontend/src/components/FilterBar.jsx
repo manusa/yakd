@@ -14,8 +14,8 @@
  * limitations under the License.
  *
  */
+// @ts-check
 import React from 'react';
-import PropTypes from 'prop-types';
 import {useUiNamespace} from '../redux';
 import {name} from '../metadata';
 import {Dropdown} from './';
@@ -51,14 +51,14 @@ const NamespaceDropdown = () => {
   );
 };
 
+/**
+ * @param {Object} props
+ * @param {string} [props.className]
+ */
 export const FilterBar = ({className = '', ...props}) => {
   return (
     <div className={`flex justify-end ${className}`}>
       <NamespaceDropdown {...props} />
     </div>
   );
-};
-
-FilterBar.propTypes = {
-  className: PropTypes.string
 };

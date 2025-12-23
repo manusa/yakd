@@ -14,8 +14,8 @@
  * limitations under the License.
  *
  */
+// @ts-check
 import React from 'react';
-import PropTypes from 'prop-types';
 import {
   creationTimestamp,
   name,
@@ -28,7 +28,7 @@ import {Age, Icon, Link, ResourceListV2, Table} from '../components';
 
 const headers = [
   <span key='name'>
-    <Icon className='fa-id-card' /> Name
+    <Icon icon='fa-id-card' /> Name
   </span>,
   'Cluster Role',
   <span key='age'>
@@ -71,6 +71,12 @@ const Rows = ({clusterRoleBindings}) => {
     ));
 };
 
+/**
+ * @param {Object} props
+ * @param {string} [props.nodeName]
+ * @param {string[]} [props.ownerUids]
+ * @param {string} [props.namespace]
+ */
 export const List = ({...properties}) => {
   const filteredResources = useFilteredResources({
     resource: 'clusterRoleBindings',
@@ -84,10 +90,4 @@ export const List = ({...properties}) => {
       <Rows clusterRoleBindings={resources} />
     </ResourceListV2>
   );
-};
-
-List.propTypes = {
-  nodeName: PropTypes.string,
-  ownerUids: PropTypes.arrayOf(PropTypes.string),
-  namespace: PropTypes.string
 };
