@@ -1,3 +1,5 @@
+# Mandrel 23.1-java21 is the latest builder image compatible with Java 21
+# Mandrel 24.1+ requires Java 23
 FROM quay.io/quarkus/ubi-quarkus-mandrel-builder-image:23.1-java21 AS build
 
 ARG VERSION=snapshot
@@ -11,6 +13,7 @@ WORKDIR /project
 RUN ./mvnw -Drevision=${VERSION} -Pnative package
 
 
+# quarkus-micro-image 2.0 is the latest micro-image for Quarkus 3.x native applications
 FROM quay.io/quarkus/quarkus-micro-image:2.0
 
 LABEL maintainer="Marc Nuri <marc@marcnuri.com>"
