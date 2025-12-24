@@ -36,18 +36,22 @@ Card.titleVariants = {
 Card.Title = ({
   className,
   children,
-  titleVariant = Card.titleVariants.large
+  titleVariant = Card.titleVariants.large,
+  ...props
 }) => (
   <div
     className={`
       ${titleVariant}
       border-b border-blue-700/25
       ${className ?? ''}`}
+    {...props}
   >
     {children}
   </div>
 );
 
-Card.Body = ({padding = 'p-3', className, children}) => (
-  <div className={`${padding} ${className ?? ''}`}>{children}</div>
+Card.Body = ({padding = 'p-3', className, children, ...props}) => (
+  <div className={`${padding} ${className ?? ''}`} {...props}>
+    {children}
+  </div>
 );

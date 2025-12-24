@@ -21,16 +21,18 @@ import com.marcnuri.yakd.selenium.IntegrationTestProfile;
 import io.fabric8.kubernetes.api.model.ContainerBuilder;
 import io.fabric8.kubernetes.api.model.PodBuilder;
 import io.fabric8.kubernetes.client.dsl.NonDeletingOperation;
-import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
+import io.quarkus.test.kubernetes.client.KubernetesServer;
 import io.quarkus.test.common.http.TestHTTPResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
 import io.quarkus.test.kubernetes.client.KubernetesTestServer;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WindowType;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 
@@ -44,7 +46,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class PodLogsIT {
 
   private static final String POD_UID = "test-pod-uid-logs";
-  private static final String POD_NAME = "test-pod";
+  private static final String POD_NAME = "test-pod-logs";
   private static final String POD_NAMESPACE = "default";
 
   @KubernetesTestServer
@@ -62,7 +64,6 @@ public class PodLogsIT {
       .pollingEvery(Duration.ofMillis(100))
       .ignoring(NoSuchElementException.class);
 
-    // Create a mock pod with two containers
     kubernetes.getClient().pods().inNamespace(POD_NAMESPACE).resource(new PodBuilder()
         .withNewMetadata()
           .withName(POD_NAME)
@@ -96,12 +97,20 @@ public class PodLogsIT {
       .always();
 
     // Load the pods list page and wait for the pod logs link to appear
-    driver.get(url.toString() + "pods");
+    driver.switchTo().newWindow(WindowType.TAB);
+    driver.navigate().to(url.toString() + "pods");
     wait.until(d -> !d.findElements(By.cssSelector("[data-testid='pod-list__logs-link']")).isEmpty());
 
     // Navigate to the logs page by clicking the logs link
     driver.findElement(By.cssSelector("[data-testid='pod-list__logs-link']")).click();
-    wait.until(d -> d.findElement(By.cssSelector(".pods-logs-page")).isDisplayed());
+    wait.until(d -> d.findElement(By.cssSelector(".pods-logs-page [data-testid='pod-logs__content']")).isDisplayed());
+  }
+
+  @AfterEach
+  void tearDown() {
+    // Close the current tab and switch back to the original
+    driver.close();
+    driver.switchTo().window(driver.getWindowHandles().iterator().next());
   }
 
   @Test
@@ -113,8 +122,8 @@ public class PodLogsIT {
 
   @Test
   void displaysFirstContainerLogs() {
-    wait.until(d -> d.findElement(By.cssSelector(".pods-logs-page")).getText().contains("Hello from container 1 logs!"));
-    assertThat(driver.findElement(By.cssSelector(".pods-logs-page")).getText())
+    wait.until(d -> d.findElement(By.cssSelector(".pods-logs-page [data-testid='pod-logs__content']")).getText().contains("Hello from container 1 logs!"));
+    assertThat(driver.findElement(By.cssSelector(".pods-logs-page [data-testid='pod-logs__content']")).getText())
       .contains("Hello from container 1 logs!");
   }
 
@@ -126,14 +135,14 @@ public class PodLogsIT {
 
   @Test
   void switchingContainerDisplaysCorrectLogs() {
-    wait.until(d -> d.findElement(By.cssSelector(".pods-logs-page")).getText().contains("Hello from container 1 logs!"));
+    wait.until(d -> d.findElement(By.cssSelector(".pods-logs-page [data-testid='pod-logs__content']")).getText().contains("Hello from container 1 logs!"));
 
     driver.findElement(By.cssSelector("[data-testid='container-dropdown']")).click();
     wait.until(d -> !d.findElements(By.xpath("//*[contains(text(), 'container-2')]")).isEmpty());
     driver.findElement(By.xpath("//*[contains(text(), 'container-2')]")).click();
 
-    wait.until(d -> d.findElement(By.cssSelector(".pods-logs-page")).getText().contains("Hello from container 2 logs!"));
-    assertThat(driver.findElement(By.cssSelector(".pods-logs-page")).getText())
+    wait.until(d -> d.findElement(By.cssSelector(".pods-logs-page [data-testid='pod-logs__content']")).getText().contains("Hello from container 2 logs!"));
+    assertThat(driver.findElement(By.cssSelector(".pods-logs-page [data-testid='pod-logs__content']")).getText())
       .contains("Hello from container 2 logs!");
   }
 }
