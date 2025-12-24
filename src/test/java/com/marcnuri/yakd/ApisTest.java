@@ -19,8 +19,8 @@ package com.marcnuri.yakd;
 
 import io.fabric8.kubernetes.api.model.APIGroupBuilder;
 import io.fabric8.kubernetes.api.model.APIGroupListBuilder;
-import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.kubernetes.client.KubernetesServer;
 import io.quarkus.test.kubernetes.client.KubernetesTestServer;
 import io.quarkus.test.kubernetes.client.WithKubernetesTestServer;
 import org.junit.jupiter.api.DisplayName;

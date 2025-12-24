@@ -21,16 +21,18 @@ import com.marcnuri.yakd.selenium.IntegrationTestProfile;
 import io.fabric8.kubernetes.api.model.ContainerBuilder;
 import io.fabric8.kubernetes.api.model.PodBuilder;
 import io.fabric8.kubernetes.client.dsl.NonDeletingOperation;
-import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
+import io.quarkus.test.kubernetes.client.KubernetesServer;
 import io.quarkus.test.common.http.TestHTTPResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
 import io.quarkus.test.kubernetes.client.KubernetesTestServer;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WindowType;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 
@@ -44,7 +46,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class PodExecIT {
 
   private static final String POD_UID = "test-pod-uid-12345";
-  private static final String POD_NAME = "test-pod";
+  private static final String POD_NAME = "test-pod-exec";
   private static final String POD_NAMESPACE = "default";
   private static final String CONTAINER_NAME = "test-container";
 
@@ -82,12 +84,20 @@ public class PodExecIT {
       .build()).createOr(NonDeletingOperation::update);
 
     // Load the pods list page and wait for the pod terminal link to appear
-    driver.get(url.toString() + "pods");
+    driver.switchTo().newWindow(WindowType.TAB);
+    driver.navigate().to(url.toString() + "pods");
     wait.until(d -> !d.findElements(By.cssSelector("[data-testid='pod-list__terminal-link']")).isEmpty());
 
     // Navigate to the terminal page by clicking the terminal link
     driver.findElement(By.cssSelector("[data-testid='pod-list__terminal-link']")).click();
     wait.until(d -> d.findElement(By.cssSelector(".dashboard-page")).getText().contains("Terminal"));
+  }
+
+  @AfterEach
+  void tearDown() {
+    // Close the current tab and switch back to the original
+    driver.close();
+    driver.switchTo().window(driver.getWindowHandles().iterator().next());
   }
 
   @Test

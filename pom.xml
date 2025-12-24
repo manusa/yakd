@@ -10,15 +10,15 @@
   <properties>
     <maven.compiler.source>21</maven.compiler.source>
     <maven.compiler.target>21</maven.compiler.target>
-    <version.quarkus>3.11.3</version.quarkus>
+    <version.quarkus>3.30.4</version.quarkus>
     <version.jkube>1.16.2</version.jkube>
     <version.assertj>3.26.3</version.assertj>
     <version.awaitility>4.3.0</version.awaitility>
     <version.commons-io>2.18.0</version.commons-io>
-    <version.exec-maven-plugin>3.2.0</version.exec-maven-plugin>
-    <version.failsafe-maven-plugin>3.3.1</version.failsafe-maven-plugin>
+    <version.exec-maven-plugin>3.6.3</version.exec-maven-plugin>
+    <version.failsafe-maven-plugin>3.5.4</version.failsafe-maven-plugin>
     <version.selenium>4.27.0</version.selenium>
-    <version.surefire-maven-plugin>3.3.1</version.surefire-maven-plugin>
+    <version.surefire-maven-plugin>3.5.4</version.surefire-maven-plugin>
     <revision>0.0.0-SNAPSHOT</revision>
     <container.image.tag>${revision}</container.image.tag>
     <jkube.enricher.jkube-service.type>NodePort</jkube.enricher.jkube-service.type>
@@ -41,12 +41,12 @@
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-resteasy-reactive</artifactId>
+      <artifactId>quarkus-rest</artifactId>
     </dependency>
     <dependency>
       <!-- Take advantage of YAKC Jackson Serializers and Deserializers -->
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-resteasy-reactive-jackson</artifactId>
+      <artifactId>quarkus-rest-jackson</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -85,7 +85,7 @@
     <dependency>
       <!-- WebSocket client -->
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-rest-client-reactive-jackson</artifactId>
+      <artifactId>quarkus-rest-client-jackson</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

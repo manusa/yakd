@@ -129,7 +129,10 @@ export const PodsLogsPage = withParams(
                 </Link>
               </div>
             </Card.Title>
-            <Card.Body className='flex-1 bg-black text-white font-mono text-sm'>
+            <Card.Body
+              data-testid='pod-logs__content'
+              className='flex-1 bg-black text-white font-mono text-sm'
+            >
               <AutoSizer>
                 {({height, width}) => (
                   <List

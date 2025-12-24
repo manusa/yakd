@@ -18,7 +18,7 @@
 package com.marcnuri.yakd.pod;
 
 import io.fabric8.kubernetes.api.model.StatusBuilder;
-import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
+import io.quarkus.test.kubernetes.client.KubernetesServer;
 import io.fabric8.kubernetes.client.utils.Serialization;
 import io.fabric8.mockwebserver.internal.WebSocketMessage;
 import io.quarkus.test.common.http.TestHTTPResource;
