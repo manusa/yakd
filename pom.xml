@@ -12,7 +12,7 @@
     <maven.compiler.target>21</maven.compiler.target>
     <version.quarkus>3.30.4</version.quarkus>
     <version.jkube>1.16.2</version.jkube>
-    <version.assertj>3.26.3</version.assertj>
+    <version.assertj>3.27.7</version.assertj>
     <version.awaitility>4.3.0</version.awaitility>
     <version.commons-io>2.18.0</version.commons-io>
     <version.exec-maven-plugin>3.6.3</version.exec-maven-plugin>
