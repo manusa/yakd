@@ -27,6 +27,8 @@ Feature-per-folder, not layer-per-folder. Each Kubernetes resource type owns:
 
 Redux state lives in `src/main/frontend/src/redux/` with per-resource slices. **This project uses plain Redux** (manual `reducer.js`/`actions.js`, action types like `CRUD_ADD_OR_REPLACE`), **not Redux Toolkit** — don't reach for `createSlice`/`createAsyncThunk`.
 
+**To add a new resource type**, touch all of: the backend package (`<Resource>Resource.java` + `<Resource>Service.java`); the `@Path` delegation in `ApiResource.java`; a frontend feature directory with `index.jsx` + `api.js` + `selectors.js` + List/Detail/Edit components; a slice in `src/main/frontend/src/redux/`; and the route in `src/main/frontend/src/router.jsx`.
+
 ### Barrel exports (enforced)
 
 Every frontend feature directory has an `index.js`/`index.jsx` that re-exports its public surface. **Production code** MUST import through the barrel; tests (`__test__/*.test.{js,jsx}`) import sibling files directly.
@@ -141,7 +143,7 @@ The day-one knowledge. Each tied to a file path so you can verify it didn't drif
 - **`src/main/frontend/vitest.config.js:26`** — global setup at `src/test-utils/vitest.setup.js` runs before every test. Anything jsdom-mutating (matchMedia stubs, etc.) lives there.
 - **`pom.xml:58-63`** — `kubernetes-model-gatewayapi` is excluded from `quarkus-kubernetes-client` (binary size / native-image trim). Don't re-add it without justification.
 - **`pom.xml:120-123`** — `src/main/frontend/build/` is mapped into the JAR at `targetPath=frontend`. A missing or stale `build/` ships zero (or stale) frontend assets silently — `make clean-frontend` before `make build` if you suspect this.
-- **`pom.xml:130-144`** — inside `<pluginManagement>`, both Surefire and Failsafe force `java.util.logging.manager=org.jboss.logmanager.LogManager` (inherited by the failsafe execution at lines 161-170). Removing the system prop breaks every test (Quarkus needs JBoss LogManager).
+- **`pom.xml:127-144`** — inside `<pluginManagement>`, both Surefire (127-135) and Failsafe (136-144) force `java.util.logging.manager=org.jboss.logmanager.LogManager` (declarations at lines 132 and 141; inherited by the failsafe execution at 161-170). Removing the system prop breaks every test (Quarkus needs JBoss LogManager).
 - **`src/test/java/com/marcnuri/yakd/selenium/IntegrationTestProfile.java:30-34`** — sets `quarkus.kubernetes-client.devservices.enabled=false` in addition to the Selenium + Kubernetes test resources. Without it, ITs try to spin up a dev-services container and break in CI.
 - **`pom.xml:247-263`** — the `native` profile auto-activates on `-Dnative` and hardcodes JDK truststore path + `changeit` password into the GraalVM args. JDK relocations can break the native build.
 - **`pom.xml:7,22-23`** — version flows through `${revision}` (default `0.0.0-SNAPSHOT`) and propagates into `container.image.tag`. Release pipeline passes `-Drevision=${VERSION#v}`.
