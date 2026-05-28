@@ -28,6 +28,8 @@ import io.quarkus.test.junit.TestProfile;
 import io.quarkus.test.kubernetes.client.KubernetesTestServer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -43,6 +45,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTest
 @TestProfile(IntegrationTestProfile.class)
+@DisplayName("The pod logs page")
 public class PodLogsIT {
 
   private static final String POD_UID = "test-pod-uid-logs";
@@ -113,27 +116,40 @@ public class PodLogsIT {
     driver.switchTo().window(driver.getWindowHandles().iterator().next());
   }
 
-  @Test
-  void displaysLogsPageWithPodName() {
-    assertThat(driver.findElement(By.cssSelector(".dashboard-page")).getText())
-      .contains("Logs")
-      .contains(POD_NAME);
+  @Nested
+  @DisplayName("when first opened for a 2-container pod")
+  class WhenFirstOpened {
+
+    @Test
+    @DisplayName("includes 'Logs' and the pod name in the page header")
+    void displaysLogsPageWithPodName() {
+      assertThat(driver.findElement(By.cssSelector(".dashboard-page")).getText())
+        .as("dashboard page header text")
+        .contains("Logs")
+        .contains(POD_NAME);
+    }
+
+    @Test
+    @DisplayName("streams the first container's logs into the content area")
+    void displaysFirstContainerLogs() {
+      wait.until(d -> d.findElement(By.cssSelector(".pods-logs-page [data-testid='pod-logs__content']")).getText().contains("Hello from container 1 logs!"));
+      assertThat(driver.findElement(By.cssSelector(".pods-logs-page [data-testid='pod-logs__content']")).getText())
+        .as("pod logs content")
+        .contains("Hello from container 1 logs!");
+    }
+
+    @Test
+    @DisplayName("the container dropdown shows the first container's name")
+    void containerDropdownDisplaysFirstContainerName() {
+      final var dropdown = driver.findElement(By.cssSelector("[data-testid='container-dropdown']"));
+      assertThat(dropdown.getText())
+        .as("container dropdown label")
+        .contains("container-1");
+    }
   }
 
   @Test
-  void displaysFirstContainerLogs() {
-    wait.until(d -> d.findElement(By.cssSelector(".pods-logs-page [data-testid='pod-logs__content']")).getText().contains("Hello from container 1 logs!"));
-    assertThat(driver.findElement(By.cssSelector(".pods-logs-page [data-testid='pod-logs__content']")).getText())
-      .contains("Hello from container 1 logs!");
-  }
-
-  @Test
-  void containerDropdownDisplaysFirstContainerName() {
-    final var dropdown = driver.findElement(By.cssSelector("[data-testid='container-dropdown']"));
-    assertThat(dropdown.getText()).contains("container-1");
-  }
-
-  @Test
+  @DisplayName("switching to container-2 via the dropdown replaces the visible logs with the second container's stream")
   void switchingContainerDisplaysCorrectLogs() {
     wait.until(d -> d.findElement(By.cssSelector(".pods-logs-page [data-testid='pod-logs__content']")).getText().contains("Hello from container 1 logs!"));
 
@@ -143,6 +159,7 @@ public class PodLogsIT {
 
     wait.until(d -> d.findElement(By.cssSelector(".pods-logs-page [data-testid='pod-logs__content']")).getText().contains("Hello from container 2 logs!"));
     assertThat(driver.findElement(By.cssSelector(".pods-logs-page [data-testid='pod-logs__content']")).getText())
+      .as("pod logs content after container switch")
       .contains("Hello from container 2 logs!");
   }
 }

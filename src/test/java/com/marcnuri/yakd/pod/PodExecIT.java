@@ -28,6 +28,8 @@ import io.quarkus.test.junit.TestProfile;
 import io.quarkus.test.kubernetes.client.KubernetesTestServer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -43,6 +45,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTest
 @TestProfile(IntegrationTestProfile.class)
+@DisplayName("The pod terminal page")
 public class PodExecIT {
 
   private static final String POD_UID = "test-pod-uid-12345";
@@ -100,38 +103,51 @@ public class PodExecIT {
     driver.switchTo().window(driver.getWindowHandles().iterator().next());
   }
 
-  @Test
-  void displaysTerminalPageWithPodName() {
-    // Verify page title includes Terminal and pod name
-    assertThat(driver.findElement(By.cssSelector(".dashboard-page")).getText())
-      .contains("Terminal")
-      .contains(POD_NAME);
-  }
+  @Nested
+  @DisplayName("when opened for a running pod")
+  class WhenOpenedForRunningPod {
 
-  @Test
-  void terminalComponentRenders() {
-    // Wait for xterm terminal to render inside the test container
-    wait.until(d -> !d.findElements(By.cssSelector("[data-testid='pod-exec__terminal'] .xterm")).isEmpty());
+    @Test
+    @DisplayName("includes 'Terminal' and the pod name in the page header")
+    void displaysTerminalPageWithPodName() {
+      assertThat(driver.findElement(By.cssSelector(".dashboard-page")).getText())
+        .as("dashboard page header text")
+        .contains("Terminal")
+        .contains(POD_NAME);
+    }
 
-    // Verify xterm container is present and displayed
-    assertThat(driver.findElement(By.cssSelector("[data-testid='pod-exec__terminal'] .xterm")).isDisplayed())
-      .isTrue();
+    @Test
+    @DisplayName("renders an initialized xterm.js terminal component")
+    void terminalComponentRenders() {
+      // Wait for xterm terminal to render inside the test container
+      wait.until(d -> !d.findElements(By.cssSelector("[data-testid='pod-exec__terminal'] .xterm")).isEmpty());
 
-    // Verify xterm creates a screen element (confirms terminal is initialized)
-    wait.until(d -> !d.findElements(By.cssSelector("[data-testid='pod-exec__terminal'] .xterm-screen")).isEmpty());
-    assertThat(driver.findElement(By.cssSelector("[data-testid='pod-exec__terminal'] .xterm-screen")).isDisplayed())
-      .isTrue();
+      // Verify xterm container is present and displayed
+      assertThat(driver.findElement(By.cssSelector("[data-testid='pod-exec__terminal'] .xterm")).isDisplayed())
+        .as("xterm container is visible")
+        .isTrue();
 
-    // Verify xterm helper textarea is present (used for clipboard and input)
-    // This confirms the terminal is fully initialized and interactive
-    assertThat(driver.findElements(By.cssSelector("[data-testid='pod-exec__terminal'] .xterm-helper-textarea")))
-      .isNotEmpty();
-  }
+      // Verify xterm creates a screen element (confirms terminal is initialized)
+      wait.until(d -> !d.findElements(By.cssSelector("[data-testid='pod-exec__terminal'] .xterm-screen")).isEmpty());
+      assertThat(driver.findElement(By.cssSelector("[data-testid='pod-exec__terminal'] .xterm-screen")).isDisplayed())
+        .as("xterm screen element is visible")
+        .isTrue();
 
-  @Test
-  void containerDropdownDisplaysContainerName() {
-    // Verify the container dropdown shows the container name
-    final var dropdown = driver.findElement(By.cssSelector("[data-testid='container-dropdown']"));
-    assertThat(dropdown.getText()).contains(CONTAINER_NAME);
+      // Verify xterm helper textarea is present (used for clipboard and input)
+      // This confirms the terminal is fully initialized and interactive
+      assertThat(driver.findElements(By.cssSelector("[data-testid='pod-exec__terminal'] .xterm-helper-textarea")))
+        .as("xterm helper textarea (clipboard/input) is present")
+        .isNotEmpty();
+    }
+
+    @Test
+    @DisplayName("the container dropdown shows the container's name")
+    void containerDropdownDisplaysContainerName() {
+      // Verify the container dropdown shows the container name
+      final var dropdown = driver.findElement(By.cssSelector("[data-testid='container-dropdown']"));
+      assertThat(dropdown.getText())
+        .as("container dropdown label")
+        .contains(CONTAINER_NAME);
+    }
   }
 }
