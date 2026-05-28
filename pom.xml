@@ -24,6 +24,10 @@
     <jkube.enricher.jkube-service.type>NodePort</jkube.enricher.jkube-service.type>
     <jkube.enricher.jkube-name.name>yakd</jkube.enricher.jkube-name.name>
     <k8s.namespace>default</k8s.namespace>
+    <!-- Surefire-only skip flag. Default false; override with -Dsurefire.skip=true
+         to skip unit tests without affecting Failsafe (ITs). Wired into the
+         Surefire <skip> parameter below. -->
+    <surefire.skip>false</surefire.skip>
   </properties>
 
   <dependencyManagement>
@@ -128,6 +132,7 @@
           <artifactId>maven-surefire-plugin</artifactId>
           <version>${version.surefire-maven-plugin}</version>
           <configuration>
+            <skip>${surefire.skip}</skip>
             <systemPropertyVariables>
               <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
             </systemPropertyVariables>

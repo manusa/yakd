@@ -41,7 +41,7 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
       - name: Build and test
-        run: make verify
+        run: make test-backend
 
   test-frontend:
     name: Frontend tests

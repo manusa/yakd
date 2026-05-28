@@ -42,23 +42,22 @@ native: ## Build native image (frontend + GraalVM native)
 ##@ Test
 
 .PHONY: test-backend
-test-backend: ## Run backend unit tests (no integration tests)
-	mvn test
+test-backend: ## Full backend gate (frontend bundle + unit + ITs via mvn verify)
+	mvn -Pbuild-frontend verify
 
 .PHONY: test-it
-test-it: ## Run Selenium integration tests (requires Chrome on PATH)
-	mvn failsafe:integration-test
+test-it: ## Run Selenium ITs (still goes through mvn verify package; set IT=Class[,Other] to filter)
+	mvn -Pbuild-frontend verify -Dsurefire.skip=true $(if $(IT),-Dit.test='$(IT)',)
 
 .PHONY: test-frontend
 test-frontend: ## Run frontend (Vitest) tests
 	cd $(FRONTEND_DIR) && npm test
 
 .PHONY: test
-test: test-backend test-it test-frontend ## Run all tests (backend + IT + frontend)
+test: test-backend test-frontend ## Run all tests (backend unit + ITs + frontend)
 
 .PHONY: verify
-verify: ## Run the full CI verification (mvn -Pbuild-frontend verify)
-	mvn -Pbuild-frontend verify
+verify: test license-check ## Full local CI mirror (all tests + license-check)
 
 ##@ Development
 
