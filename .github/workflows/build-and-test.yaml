@@ -21,10 +21,8 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
       - name: Build and test
-        run: |
-          mvn -Pbuild-frontend clean verify
+        run: make verify
       - name: Test frontend
-        run: |
-          cd src/main/frontend && npm test
+        run: make test-frontend
       - name: Check license headers
-        run: .github/scripts/check-license-headers.sh
+        run: make license-check
