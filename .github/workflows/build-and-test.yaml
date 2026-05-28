@@ -7,7 +7,16 @@ on:
   pull_request:
 
 jobs:
-  build-and-test:
+  license-check:
+    name: License headers
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Check license headers
+        run: make license-check
+
+  verify:
     name: Build and test
     runs-on: ubuntu-latest
     steps:
@@ -26,7 +35,20 @@ jobs:
           cache: 'maven'
       - name: Build and test
         run: make verify
+
+  test-frontend:
+    name: Frontend tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          cache: 'npm'
+          cache-dependency-path: src/main/frontend/package-lock.json
+      - name: Install frontend dependencies
+        working-directory: src/main/frontend
+        run: npm ci
       - name: Test frontend
         run: make test-frontend
-      - name: Check license headers
-        run: make license-check
