@@ -75,8 +75,8 @@ fmt: ## Format frontend sources (prettier write)
 	cd $(FRONTEND_DIR) && npm run prettier
 
 .PHONY: fmt-check
-fmt-check: ## Check frontend formatting without writing (CI mode)
-	cd $(FRONTEND_DIR) && npm run prettier:check && npm run eslint
+fmt-check: ## Check frontend formatting without writing (symmetric to fmt)
+	cd $(FRONTEND_DIR) && npm run prettier:check
 
 .PHONY: typecheck
 typecheck: ## Run frontend type checking (tsc on jsconfig.json)
