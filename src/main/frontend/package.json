@@ -46,10 +46,11 @@
   "scripts": {
     "eslint": "eslint src/.",
     "prettier": "prettier 'src/**/*.{js,jsx,ts,tsx,json,css,scss,md}' --ignore-path ../../../.gitignore --write",
+    "prettier:check": "prettier 'src/**/*.{js,jsx,ts,tsx,json,css,scss,md}' --ignore-path ../../../.gitignore --check",
     "typecheck": "tsc -p jsconfig.json",
     "prestart": "npm run prettier && npm run eslint && npm run typecheck",
     "start": "vite",
-    "prebuild": "npm run prettier && npm run eslint && npm run typecheck",
+    "prebuild": "npm run prettier:check && npm run eslint && npm run typecheck",
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest run",
