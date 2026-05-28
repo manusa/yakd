@@ -1,245 +1,82 @@
-# YAKD (Yet Another Kubernetes Dashboard) - AI Agents Instructions
+# YAKD — AI Agents Instructions
 
-Always reference these instructions first and fallback to search or bash commands only when you encounter unexpected information that does not match the info here.
+YAKD (Yet Another Kubernetes Dashboard) is a Quarkus (Java 21) + React web UI for Kubernetes and OpenShift clusters. Frontend lives under `src/main/frontend/`, gets built into the backend JAR under `frontend/` (see `pom.xml:120-123`). This file documents what an old hand would tell a new contributor on day one — read this first; fall back to grep only when something here doesn't match what you see.
 
-This file provides guidance to AI coding agents (GitHub Copilot, Claude Code, etc.) when working with code in this repository.
+## Canonical commands
 
-## Project Overview
+Use the `Makefile`. CI runs these exact targets (`.github/workflows/build-and-test.yaml`), so what works for you matches what gates a PR.
 
-This repository contains YAKD (Yet Another Kubernetes Dashboard), a Kubernetes dashboard built with Quarkus (Java 21) for the backend and React for the frontend.
-The project provides a web-based UI for managing Kubernetes and OpenShift clusters.
+| Intent                                | Command                  |
+|---------------------------------------|--------------------------|
+| Fast "still wired together" check     | `make quick-build`       |
+| Full build (frontend + backend)       | `make build`             |
+| Full CI verification (= CI step 1)    | `make verify`            |
+| Backend dev loop (hot reload, :8080)  | `make dev-backend`       |
+| Frontend dev loop (Vite, :3000)       | `make dev-frontend`      |
+| Deploy to local Minikube              | `make deploy-minikube`   |
 
-## Project Structure
-
-- `src/main/java/com/marcnuri/yakd/` - Backend Java source code
-  - `ApiResource.java` - Root JAX-RS resource delegating to sub-resources
-  - `<resource>/` - Package per Kubernetes resource type (pods, deployments, services, etc.)
-- `src/main/frontend/` - React frontend application
-  - `src/` - Frontend source code with per-resource directories
-  - `src/test-utils/` - Test utilities (createTestStore, parseHtml)
-  - `build/` - Production build output (bundled into JAR)
-- `src/test/java/` - Backend tests
-- `src/main/resources/` - Quarkus configuration
-- `docs/` - Kubernetes manifests for deployment
-
-## Build & Development Commands
-
-### Building
-
-```bash
-# Build everything (frontend + backend)
-mvn clean package -Pbuild-frontend
-
-# Build backend only (requires frontend to be pre-built)
-mvn clean package
-
-# Build native image
-mvn clean package -Dnative
-
-# Deploy to Minikube
-eval $(minikube docker-env)
-mvn clean install -Pbuild-frontend,k8s
-```
-
-### Development
-
-```bash
-# Start Quarkus in dev mode (hot reload on port 8080)
-mvn quarkus:dev
-
-# Frontend development (in src/main/frontend/)
-npm install
-npm start  # Vite dev server on port 3000, proxies /api to localhost:8080
-```
-
-### Linting, Formatting & Type Checking
-
-```bash
-cd src/main/frontend
-npm run eslint
-npm run prettier
-npm run typecheck
-```
+`make help` lists every target. Run `dev-backend` and `dev-frontend` side-by-side — the Vite proxy assumes the backend is up.
 
 ## Architecture
 
-**Code is organized by feature, not by function.** Instead of grouping by type (e.g., `services/`, `resources/`), each feature has its own package/directory containing all related code. This allows splitting the codebase at any time without problems.
+Feature-per-folder, not layer-per-folder. Each Kubernetes resource type owns:
+- a backend package: `src/main/java/com/marcnuri/yakd/<resource>/` (`<Resource>Resource.java` for JAX-RS, `<Resource>Service.java` for Fabric8 calls)
+- a frontend directory: `src/main/frontend/src/<resource>/` (List, Detail, Edit components + `api.js` + `selectors.js`)
 
-### Backend (Quarkus)
+`ApiResource.java` is the JAX-RS root; it delegates each `/api/v1/<resource>` to the relevant `*Resource.java`. WebSocket entry points: `PodExecEndpoint.java` (terminal exec) and `WatchResource.java` (resource watches).
 
-- **Entry point**: `KubernetesDashboardApplication.java`
-- **API routing**: `ApiResource.java` - delegates to sub-resources via `@Path` annotations
-- **Feature packages**: Each Kubernetes resource type has its own package (e.g., `pod/`, `deployment/`):
-  - `PodResource.java` - JAX-RS endpoints
-  - `PodService.java` - Business logic using Fabric8 Kubernetes client
-- **WebSocket support**: `PodExecEndpoint.java` for terminal exec, `WatchResource.java` for resource watching
-- **Kubernetes client**: Quarkus Kubernetes Client extension (based on Fabric8)
+Redux state lives in `src/main/frontend/src/redux/` with per-resource slices. **This project uses plain Redux** (manual `reducer.js`/`actions.js`, action types like `CRUD_ADD_OR_REPLACE`), **not Redux Toolkit** — don't reach for `createSlice`/`createAsyncThunk`.
 
-### Frontend (React)
+### Barrel exports (enforced)
 
-- **Feature directories**: Each Kubernetes resource has its own directory (e.g., `pods/`, `deployments/`) containing:
-  - `index.jsx` - Main component/exports
-  - List, Detail, Edit components
-  - `api.js` - API calls specific to that resource
-- **State management**: Redux with slices per resource type in `src/redux/`
-- **Routing**: React Router in `src/router.jsx`
-- **API layer**: `src/fetch.js` for HTTP, per-resource `api.js` files for WebSocket
+Every frontend feature directory has an `index.js`/`index.jsx` that re-exports its public surface. **Production code** MUST import through the barrel; tests (`__test__/*.test.{js,jsx}`) import sibling files directly.
 
-### Key Dependencies
+```javascript
+// Correct (production)
+import {PodsList, api, selectors} from '../pods';
+import {Card, Icon} from '../components';
 
-- **Backend**: Quarkus 3.x, Fabric8 Kubernetes Client, RESTEasy Reactive, Jackson
-- **Frontend**: React 18, Redux, Vite, TailwindCSS, xterm.js, ace-builds, DOMPurify
+// Wrong (production) — bypasses the barrel
+import {PodsList} from '../pods/List';
+import {Card} from '../components/Card';
+```
 
-## Code Style
+Barrel conventions:
+- `export * as api from './api'` (namespaced)
+- `export * as selectors from './selectors'` (namespaced)
+- `export {PodsDetailPage} from './PodsDetailPage'` (named)
+- Rename generic component names semantically: `export {List as PodsList} from './List'`
 
-### Java
+## Code style
 
-- Java 21 target
-- Apache License 2.0 headers required on all source files
-- Standard Quarkus/JAX-RS patterns
+**Java.** Java 21. Apache 2.0 header required on every source file (the license-check script gates this; see Gotchas).
 
-### JavaScript/React
-
-- Prettier: single quotes, no trailing commas, no bracket spacing
-- ESLint with React hooks plugin
-- Test files in `__test__/` directories following `*.test.js` or `*.test.jsx` pattern
-- **Type checking**: Uses JSDoc annotations with TypeScript's `checkJs` feature (no `.ts` files)
-  - Add `// @ts-check` after the license header to enable type checking for a file
-  - Use JSDoc `@param` annotations for component props
-  - Configuration in `jsconfig.json`
-- **Barrel exports**: Every feature directory has an `index.js` that re-exports all public modules
-  - Use `export * as api from './api'` for namespaced API exports
-  - Use `export * as selectors from './selectors'` for namespaced selector exports
-  - Use named exports for components: `export {PodsDetailPage} from './PodsDetailPage'`
-  - Rename generic components semantically: `export {List as PodsList} from './List'`
-  - Always import from the directory barrel, never from individual files:
-    ```javascript
-    // Correct
-    import {PodsList, api, selectors} from '../pods';
-    import {Card, Icon} from '../components';
-
-    // Wrong - bypasses the barrel
-    import {PodsList} from '../pods/List';
-    import {Card} from '../components/Card';
-    ```
+**JavaScript/React.**
+- Prettier config (in `package.json:70-77`): `singleQuote`, `jsxSingleQuote`, `arrowParens: avoid`, `bracketSpacing: false`, `trailingComma: none`. `make fmt` runs it (mutating — see Gotchas).
+- ESLint with `eslint-plugin-react-hooks`; `make lint` runs ESLint + the license-header check.
+- Tests live in `__test__/` directories named `*.test.{js,jsx}`.
+- **Type checking via JSDoc + `// @ts-check`** — see Gotchas for how this actually works (`checkJs: false` in jsconfig.json means the directive is the opt-in, not a no-op).
 
 ## Testing
 
-**MOCKS ARE STRICTLY FORBIDDEN.** This project uses black-box testing to ensure refactorings don't break production code. If you believe mocks are required to test a functionality, notify the user first to find an alternative approach. See: https://blog.marcnuri.com/blackbox-whitebox-testing-comparison
+**MOCKS ARE STRICTLY FORBIDDEN.** Black-box testing only — verifies behavior, survives refactors. If you think you need a mock, ask first. Background: <https://blog.marcnuri.com/blackbox-whitebox-testing-comparison>.
 
-### Key Testing Principles
+Test the public API. One assertion per test. Group related cases with nested `describe` / `beforeXxx`. Descriptive names ("renders a slashed wifi icon", not "test1").
 
-1. **Avoid mocking whenever possible** - Use real implementations
-2. **Use provided test infrastructure** - Don't reinvent testing utilities
-3. **Test actual behavior** - Verify observable outcomes, not implementation details
-4. **Keep tests simple and readable** - Tests should be easy to understand
-5. **Don't tie tests to implementation** - Tests should survive refactoring
+### Preferred: Selenium IT against Fabric8 MockServer
 
-### Testing Philosophy
+Full-stack `*IT.java` tests in `src/test/java/` validate the rendered UI against a mocked Kubernetes API. No real cluster. Highest confidence per minute of test runtime — **this is the preferred test type for full features**.
 
-- **Test the public API only** - Tests should be black-box and not access internal/private functions
-- **No mocks** - Use real implementations and integration testing where possible
-- **Behavior over implementation** - Test what the code does, not how it does it
-- Focus on observable behavior and outcomes rather than internal state
+Infrastructure in `src/test/java/com/marcnuri/yakd/selenium/`: `IntegrationTestProfile` bundles `@WithSelenium` + `@WithKubernetesTestServer`; `SeleniumTestResource` owns the ChromeDriver lifecycle and injects `WebDriver` into test fields.
 
-### Test Structure Guidelines
+Pattern: (1) seed mock resources via `kubernetes.getClient()`; (2) `kubernetes.expect().get().withPath(...).andReturn(...)` for anything outside CRUD; (3) navigate with `driver.get(url + "...")`; (4) wait on `data-testid` selectors with `FluentWait`; (5) assert with AssertJ.
 
-- Group scenarios or environment conditions with `beforeXxx` or setup blocks
-- Use nested tests for grouping related cases
-- Each test should assert only one aspect of the spec's behavior (e.g., a test for a component render should have separate tests for the classes it contains, its text content, if it has an icon, etc.)
-- Group the Arrange/Given, Act/When blocks if needed, then add separate cases for the Assert/Then blocks
-- Tests should have descriptive names that describe the spec behavior (e.g., "renders a slashed wifi icon")
-- Add tests for edge cases
-
-### Backend Tests (Java)
-
-```bash
-# Run all tests (unit + integration)
-mvn verify
-
-# Run only unit tests
-mvn test
-
-# Run a specific test class
-mvn test -Dtest=PodTest
-
-# Run integration tests only
-mvn failsafe:integration-test
-```
-
-Tests use:
-- **Quarkus Test Framework** with `@QuarkusTest` annotation
-- **Kubernetes Test Server** with `@WithKubernetesTestServer` for mocking Kubernetes API
-- **REST Assured** for API testing
-- **AssertJ** for assertions
-- **Awaitility** for async testing
-
-### End-to-End Integration Tests (Selenium + Kubernetes MockServer)
-
-**This is the preferred test type for testing full features.** These tests validate the entire stack (Backend + Frontend) using:
-- **Selenium/Chrome** to test the actual rendered UI
-- **Fabric8 Kubernetes MockServer** to simulate the Kubernetes API
-
-These tests are fast (no real cluster needed) and provide the highest confidence that features work correctly.
-
-**Test files**: `*IT.java` in `src/test/java/` (e.g., `HomeIT.java`, `PodLogsIT.java`, `PodExecIT.java`)
-
-**Key annotations:**
-```java
-@QuarkusTest
-@TestProfile(IntegrationTestProfile.class)
-public class MyFeatureIT {
-  @KubernetesTestServer
-  KubernetesServer kubernetes;  // Mock Kubernetes API
-
-  @TestHTTPResource
-  URL url;                      // Test server URL
-
-  WebDriver driver;             // Selenium WebDriver (auto-injected)
-}
-```
-
-**Test infrastructure** (in `src/test/java/com/marcnuri/yakd/selenium/`):
-- `IntegrationTestProfile.java` - Combines `@WithSelenium` and `@WithKubernetesTestServer`
-- `SeleniumTestResource.java` - Manages Chrome WebDriver lifecycle
-- `@WithSelenium` - Annotation to enable Selenium support
-
-**Pattern:**
-1. Set up mock Kubernetes resources using `kubernetes.getClient()`
-2. Mock API responses with `kubernetes.expect().get().withPath(...).andReturn(...)` if not covered by the CRUD mode
-3. Navigate to pages with `driver.get(url + "path")`
-4. Wait for elements with `FluentWait` and CSS selectors
-5. Assert on rendered content with AssertJ
-
-### Frontend Tests (React/Vitest)
-
-```bash
-cd src/main/frontend
-
-# Run tests once
-npm test
-
-# Run tests in watch mode
-npm run test:watch
-```
-
-Frontend tests use Vitest with:
-- Component tests using `renderToString` from react-dom/server
-- WebSocket tests with custom `ws-test-server.js` utility
-- Test utilities in `src/test-utils/` (createTestStore, parseHtml)
-
-### Test Examples
-
-**End-to-End Integration Test (Selenium + Kubernetes MockServer) - PREFERRED:**
 ```java
 @QuarkusTest
 @TestProfile(IntegrationTestProfile.class)
 public class PodLogsIT {
-  @KubernetesTestServer
-  KubernetesServer kubernetes;
-
-  @TestHTTPResource
-  URL url;
+  @KubernetesTestServer KubernetesServer kubernetes;
+  @TestHTTPResource URL url;
   WebDriver driver;
   Wait<WebDriver> wait;
 
@@ -249,25 +86,17 @@ public class PodLogsIT {
       .withTimeout(Duration.ofSeconds(10))
       .pollingEvery(Duration.ofMillis(100))
       .ignoring(NoSuchElementException.class);
-
-    // Create mock pod
     kubernetes.getClient().pods().inNamespace("default").resource(new PodBuilder()
       .withNewMetadata().withName("test-pod").withUid("test-uid").endMetadata()
       .withNewSpec().withContainers(new ContainerBuilder()
-        .withName("container-1").withImage("busybox").build())
-      .endSpec()
+        .withName("container-1").withImage("busybox").build()).endSpec()
       .withNewStatus().withPhase("Running").endStatus()
       .build()).createOr(NonDeletingOperation::update);
-
-    // Mock log endpoint
     kubernetes.expect().get()
       .withPath("/api/v1/namespaces/default/pods/test-pod/log?...")
-      .andReturn(200, "Hello from logs!")
-      .always();
-
-    // Navigate and wait for page
+      .andReturn(200, "Hello from logs!").always();
     driver.navigate().to(url.toString() + "pods");
-    wait.until(d -> d.findElement(By.cssSelector("[data-testid='pod-list']")).isDisplayed());
+    wait.until(d -> d.findElement(By.cssSelector("[data-testid='pod-list__logs-link']")).isDisplayed());
   }
 
   @Test
@@ -278,28 +107,17 @@ public class PodLogsIT {
 }
 ```
 
-**JavaScript (Vitest) - Nested describe with setup:**
+UI elements that tests need to find are marked with `data-testid`. Most newer IDs follow `<feature>__<element>` (e.g. `pod-list__logs-link`, `pod-logs__content`); older ones use single tokens (e.g. `container-dropdown`). Prefer `data-testid` over class names or text content when adding new selectors.
+
+### Frontend tests (Vitest)
+
+Component tests render via `renderToString` from `react-dom/server` and parse with `parseHtml`. Stores come from `createTestStore` (both in `src/test-utils/`). WebSocket tests use the custom `ws-test-server.js` harness. Nested `describe` groups per concern, one assertion per test:
+
 ```javascript
 describe('FilterBar component tests', () => {
-  describe('rendering', () => {
-    test('should render as a div element', () => {
-      const doc = renderFilterBar();
-      const container = doc.body.firstChild;
-      expect(container.tagName.toLowerCase()).toBe('div');
-    });
-
-    test('should render with flex layout', () => {
-      const doc = renderFilterBar();
-      const container = doc.body.firstChild;
-      expect(container.classList.contains('flex')).toBe(true);
-    });
-  });
-
   describe('namespace dropdown', () => {
     test('should show selected namespace name when one is selected', () => {
-      const doc = renderFilterBar({
-        ui: {selectedNamespace: 'kube-system'}
-      });
+      const doc = renderFilterBar({ui: {selectedNamespace: 'kube-system'}});
       const button = doc.querySelector('button');
       expect(button.textContent).toContain('kube-system');
     });
@@ -307,77 +125,48 @@ describe('FilterBar component tests', () => {
 });
 ```
 
-**Java (JUnit 5) - Backend API test:**
-```java
-@QuarkusTest
-@WithKubernetesTestServer
-class PodTest {
-  @Inject
-  KubernetesClient kubernetesClient;
+## Operational gotchas
 
-  @Test
-  @DisplayName("GET /api/v1/pods/{namespace}/{name} - Should get the pod")
-  void get() {
-    kubernetesClient.pods().resource(new PodBuilder()
-      .withNewMetadata().withName("to-get").endMetadata().build())
-      .create();
-    when()
-      .get("/api/v1/pods/" + kubernetesClient.getConfiguration().getNamespace() + "/to-get")
-      .then()
-      .statusCode(200)
-      .body("metadata.name", is("to-get"));
-  }
-}
-```
+The day-one knowledge. Each tied to a file path so you can verify it didn't drift.
 
-## Common Tasks
+- **`src/main/frontend/jsconfig.json:3`** — `checkJs: false`. This is **opt-in type-checking**: only files starting with `// @ts-check` (e.g. `components/FilterBar.jsx`, `components/ResourceListV2.jsx`, `clusterrolebindings/List.jsx`) get checked by `tsc`. New files need the directive on the line after the license header to participate. `make typecheck` runs `tsc -p jsconfig.json`.
+- **`src/main/frontend/package.json:50,52`** — `prestart` and `prebuild` hooks run `npm run prettier && npm run eslint && npm run typecheck`. `make dev-frontend`, `make build`, **and `make verify`** (which calls `mvn -Pbuild-frontend verify` → `npm run build` → `prebuild`) all reformat files in-place — a CI-clean tree can come back dirty after the CI gate runs locally.
+- **`src/main/frontend/package.json:48`** — `npm run prettier` uses `--write`. There is no check-only mode; running it always mutates.
+- **`src/main/frontend/postcss.config.cjs` and `tailwind.config.cjs`** — both MUST stay `.cjs`: `package.json:5` sets `"type": "module"`, and `vite.config.js:45` explicitly points at `postcss.config.cjs`. Renaming to `.js` silently breaks Tailwind class generation.
+- **`src/main/frontend/src/test-utils/vitest.setup.js:22-24`** — stubs `HTMLCanvasElement.prototype.getContext = () => null` because jsdom has no 2D canvas. Tests touching xterm.js or anything canvas-backed can't assert on canvas output; mock at a higher layer.
+- **`src/main/resources/application.properties:2-5`** — CORS is pinned to `http://localhost:3000`; that's why `dev-frontend` (Vite on :3000) can call the backend on :8080 in dev without flags.
+- **`src/main/resources/application.properties:11-12`** — `%test` profile remaps `yakd.frontend.root` to `/frontend-test`. If you hardcode `/frontend` anywhere it will break only under `mvn test`.
+- **`src/main/resources/application.properties:1`** — `quarkus.package.output-name=yakd` renames the legacy/fast-jar thin JAR. The runnable artifact for a JVM build lives in `target/quarkus-app/` (Quarkus 3.x fast-jar layout); the Docker image (`Dockerfile.build`) ships `target/yakd-runner` (native binary), not the JAR.
+- **`src/main/frontend/vite.config.js:37-42`** — Vite dev server proxies `/api/*` to `http://localhost:8080`. `make dev-backend` must be running alongside `make dev-frontend` or API calls return ECONNREFUSED.
+- **`src/main/frontend/vitest.config.js:26`** — global setup at `src/test-utils/vitest.setup.js` runs before every test. Anything jsdom-mutating (matchMedia stubs, etc.) lives there.
+- **`pom.xml:58-63`** — `kubernetes-model-gatewayapi` is excluded from `quarkus-kubernetes-client` (binary size / native-image trim). Don't re-add it without justification.
+- **`pom.xml:120-123`** — `src/main/frontend/build/` is mapped into the JAR at `targetPath=frontend`. A missing or stale `build/` ships zero (or stale) frontend assets silently — `make clean-frontend` before `make build` if you suspect this.
+- **`pom.xml:130-144`** — inside `<pluginManagement>`, both Surefire and Failsafe force `java.util.logging.manager=org.jboss.logmanager.LogManager` (inherited by the failsafe execution at lines 161-170). Removing the system prop breaks every test (Quarkus needs JBoss LogManager).
+- **`src/test/java/com/marcnuri/yakd/selenium/IntegrationTestProfile.java:30-34`** — sets `quarkus.kubernetes-client.devservices.enabled=false` in addition to the Selenium + Kubernetes test resources. Without it, ITs try to spin up a dev-services container and break in CI.
+- **`pom.xml:247-263`** — the `native` profile auto-activates on `-Dnative` and hardcodes JDK truststore path + `changeit` password into the GraalVM args. JDK relocations can break the native build.
+- **`pom.xml:7,22-23`** — version flows through `${revision}` (default `0.0.0-SNAPSHOT`) and propagates into `container.image.tag`. Release pipeline passes `-Drevision=${VERSION#v}`.
+- **`src/test/java/com/marcnuri/yakd/selenium/SeleniumTestResource.java:42-55`** — uses `ChromeDriverService` directly with the `chrome` binary; **Chrome must be on PATH**. Headless mode (`--headless=new`) is on by default; flip with `@WithSelenium(headless = false)` when you need to see what's rendering.
+- **`.github/scripts/check-license-headers.sh:36`** — uses `git ls-files`, so brand-new files you forgot to `git add` are **silently skipped**. Always `git add` before `make license-check`. Globs cover `.java`, `.js`, `.jsx`, `.ts`, `.css` only.
+- **`.github/workflows/publish-snapshot.yml:33` and `publish-release.yml:36`** — release pipelines still call raw `mvn -Pbuild-frontend clean package`, **not** `make`. If you change the build, update the workflows too.
+- **`src/main/docker/Dockerfile.build:11,21`** — multi-stage native build; output binary is hardcoded as `yakd-runner` (no version suffix). `--build-arg VERSION=...` only affects `-Drevision=` during Maven.
+- **`src/main/jkube/cluster-admin-crb.yml`** — sole file in `src/main/jkube/`; **hand-written**, not generated. Uses Maven property `${k8s.namespace}` (default `default`, set in `pom.xml:26`).
 
-### Adding a New Kubernetes Resource Type
+## CI reproduction
 
-1. **Backend**: Create a new package in `src/main/java/com/marcnuri/yakd/<resource>/`
-   - `<Resource>Resource.java` - JAX-RS endpoints
-   - `<Resource>Service.java` - Business logic using Fabric8 client
-2. **Register in ApiResource.java**: Add `@Path` delegation to the new resource
-3. **Frontend**: Create a new directory in `src/main/frontend/src/<resource>/`
-   - `index.jsx` - Main exports
-   - `api.js` - API calls
-   - `selectors.js` - Redux selectors
-4. **Add to Redux store** in `src/main/frontend/src/redux/`
-5. **Add routing** in `src/main/frontend/src/router.jsx`
-
-### Running Full Validation
+`.github/workflows/build-and-test.yaml` runs exactly three steps. Reproduce locally:
 
 ```bash
-# Backend: run tests
-mvn verify
-
-# Frontend: lint, format, typecheck, and test
-cd src/main/frontend && npm run eslint && npm run prettier && npm run typecheck && npm test
+make verify          # mvn -Pbuild-frontend verify (the gate)
+make test-frontend   # vitest
+make license-check   # .github/scripts/check-license-headers.sh
 ```
+
+Release/snapshot pipelines (`publish-snapshot.yml`, `publish-release.yml`) build multi-arch images (`amd64` + `arm64`) and stitch them with `docker manifest create`. Required GitHub secrets: `DOCKER_USERNAME`, `DOCKER_PASSWORD` (Docker Hub); `GITHUB_TOKEN` is provided automatically (GHCR). Release tag `v1.2.3` → image tag `1.2.3` (strip via `${VERSION#v}`).
 
 ## Troubleshooting
 
-### Frontend build fails with "frontend not found"
+**`*IT.java` fails with ChromeDriver errors.** Chrome isn't on PATH (see Selenium gotcha above). Tests run headless; flip with `@WithSelenium(headless = false)` to see the actual browser when debugging locally.
 
-The frontend must be built before the backend JAR can be packaged. Use the `-Pbuild-frontend` profile:
-```bash
-mvn clean package -Pbuild-frontend
-```
+**"Connection refused" on port 8080 during tests.** Another Quarkus is already on :8080. `@QuarkusTest` boots its own server. Kill the dev instance.
 
-### E2E integration tests fail with "ChromeDriver" errors
-
-The end-to-end tests (`*IT.java` with `IntegrationTestProfile`) require Chrome to be installed. The tests run headless by default. Ensure Chrome is available in your PATH. Switch to headful mode if necessary and check with the human what's actually rendering.
-
-### Tests fail with "Connection refused" on port 8080
-
-When running backend tests, ensure no other Quarkus instance is running on port 8080. The `@QuarkusTest` annotation starts its own test server.
-
-### License header check fails in CI
-
-All source files require Apache License 2.0 headers. Add the header to new files or use your IDE's template feature to include it automatically.
-
-## Important Notes
-
-- Frontend must be built before packaging the backend JAR (use `-Pbuild-frontend` profile)
-- The frontend dev server proxies `/api` requests to `localhost:8080` where Quarkus runs
-- License headers are checked in CI - all source files require Apache 2.0 headers
+**Frontend looks stale after a build.** `src/main/frontend/build/` cached an older bundle (see `pom.xml:120-123` gotcha). Run `make clean-frontend && make build`.
