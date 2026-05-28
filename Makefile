@@ -74,6 +74,10 @@ dev-frontend: ## Start Vite dev server on :3000 (proxies /api to :8080 — run d
 fmt: ## Format frontend sources (prettier write)
 	cd $(FRONTEND_DIR) && npm run prettier
 
+.PHONY: fmt-check
+fmt-check: ## Check frontend formatting without writing (symmetric to fmt)
+	cd $(FRONTEND_DIR) && npm run prettier:check
+
 .PHONY: typecheck
 typecheck: ## Run frontend type checking (tsc on jsconfig.json)
 	cd $(FRONTEND_DIR) && npm run typecheck
