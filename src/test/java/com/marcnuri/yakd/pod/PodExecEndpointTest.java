@@ -121,19 +121,39 @@ class PodExecEndpointTest {
   @DisplayName("Message transmission")
   class MessageTransmissionTests {
 
-    private Session session;
-
-    @BeforeEach
-    void setUp() throws Exception {
-      session = ContainerProvider.getWebSocketContainer().connectToServer(client, execUri);
+    // Connects to a dedicated exec mock and blocks until the upstream WebSocket is confirmed
+    // connected. The mock emits an "OPEN" marker on connect that the endpoint forwards to the
+    // client; awaiting it is required because the endpoint silently drops client input until its
+    // upstream is established. A never-matched expectation keeps the mock open afterwards (without
+    // it the mock auto-closes the instant its queues drain, which would race the blocking send).
+    // The session is then closed *causally* by the send below: the endpoint forwards the input and
+    // the mock rejects the unexpected frame with a protocol-error close, which can only happen
+    // after the send - so there is no timed-close race (the original cause of the flake).
+    private Session connectAndAwaitUpstream(String namespace) throws Exception {
+      kubernetes.expect()
+        .get()
+        .withPath(
+          "/api/v1/namespaces/" + namespace + "/pods/test-pod/exec?container=main&command=%2Fbin%2Fsh&stdin=true&stdout=true&stderr=true&tty=true"
+        )
+        .andUpgradeToWebSocket()
+        .open()
+        .waitFor(0L).andEmit("OPEN")
+        .expect("yakd-keep-open").andEmit("").always()
+        .done()
+        .always();
+      var uri = URI.create(execUri.toString().replace("/default/", "/" + namespace + "/"));
+      var session = ContainerProvider.getWebSocketContainer().connectToServer(client, uri);
       assertThat(client.openLatch.await(5, TimeUnit.SECONDS)).isTrue();
+      Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> client.textMessages.contains("OPEN"));
+      return session;
     }
 
     @Test
     @DisplayName("should accept text message")
     void shouldAcceptTextMessage() throws Exception {
+      var session = connectAndAwaitUpstream("text-msg-ns");
       session.getBasicRemote().sendText("echo hello");
-      // Session closes after K8s API error, message was accepted without exception
+      // The endpoint forwarded the input; the mock rejected it and closed the connection.
       Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> client.closeReason.get() != null);
       assertThat(client.closeReason.get()).isNotNull();
     }
@@ -141,6 +161,7 @@ class PodExecEndpointTest {
     @Test
     @DisplayName("should accept binary message")
     void shouldAcceptBinaryMessage() throws Exception {
+      var session = connectAndAwaitUpstream("binary-msg-ns");
       session.getBasicRemote().sendBinary(ByteBuffer.wrap(new byte[]{0x00, 0x01, 0x02, 0x03}));
       Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> client.closeReason.get() != null);
       assertThat(client.closeReason.get()).isNotNull();
@@ -149,6 +170,25 @@ class PodExecEndpointTest {
     @Test
     @DisplayName("should handle multiple messages in sequence")
     void shouldHandleMultipleMessages() throws Exception {
+      // The mock accepts the first two inputs (keeping the session open) so all three blocking
+      // sends complete; the unexpected third input triggers the causal close.
+      kubernetes.expect()
+        .get()
+        .withPath(
+          "/api/v1/namespaces/multi-msg-ns/pods/test-pod/exec?container=main&command=%2Fbin%2Fsh&stdin=true&stdout=true&stderr=true&tty=true"
+        )
+        .andUpgradeToWebSocket()
+        .open()
+        .waitFor(0L).andEmit("OPEN")
+        .expect("\u0000command1").andEmit("").always()
+        .expect("\u0000command2").andEmit("").always()
+        .done()
+        .always();
+      var uri = URI.create(execUri.toString().replace("/default/", "/multi-msg-ns/"));
+      var session = ContainerProvider.getWebSocketContainer().connectToServer(client, uri);
+      assertThat(client.openLatch.await(5, TimeUnit.SECONDS)).isTrue();
+      Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> client.textMessages.contains("OPEN"));
+
       session.getBasicRemote().sendText("command1");
       session.getBasicRemote().sendText("command2");
       session.getBasicRemote().sendText("command3");
