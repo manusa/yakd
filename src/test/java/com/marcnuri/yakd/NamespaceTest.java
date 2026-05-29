@@ -25,11 +25,13 @@ import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.kubernetes.client.WithKubernetesTestServer;
 import jakarta.inject.Inject;
 import org.awaitility.Awaitility;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -45,6 +47,11 @@ class NamespaceTest {
   KubernetesClient kubernetesClient;
   @TestHTTPResource
   URL url;
+
+  @AfterEach
+  void cleanUp() {
+    kubernetesClient.namespaces().delete();
+  }
 
   @Test
   @DisplayName("GET /api/v1/namespaces - Should list namespaces")
@@ -85,7 +92,9 @@ class NamespaceTest {
       // When
       Awaitility.await()
         .atMost(10, TimeUnit.SECONDS)
-        .until(() -> watch.events().stream().anyMatch(watchEvent -> Watcher.Action.ADDED.equals(watchEvent.type())));
+        .until(() -> watch.events().stream().anyMatch(watchEvent ->
+          Watcher.Action.ADDED.equals(watchEvent.type())
+            && "to-watch".equals(((Map<String, ?>) watchEvent.object().get("metadata")).get("name"))));
       // Then
       assertThat(watch.events())
         .extracting("object.kind", "object.metadata.name")
