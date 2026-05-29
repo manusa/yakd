@@ -166,6 +166,28 @@ make license-check   # Apache header check — CI's `license-check` job
 
 Or one-shot via `make check` — it chains the same three targets through Make composition (`check: test license-check`, `test: test-app test-frontend`).
 
+### Reproducing contention/timing flakes
+
+Some `@QuarkusTest` tests (notably the WebSocket suites like `PodExecEndpointTest`) only flake under CPU contention. **Reproduce contention with a CPU-limited Docker container — NOT `yes`/CPU-burner loops on the host.** Burner loops saturate the developer's machine and make it unusable; a `--cpus`-constrained container reproduces the same ~2-vCPU pressure (the documented root cause for this flake class) without touching host responsiveness. Run the loop offline against the host `~/.m2`:
+
+```bash
+mkdir -p /tmp/flake-logs
+docker run --rm --cpus=2 \
+  -e HOME=/tmp \
+  -v "$PWD":/work -w /work \
+  -v "$HOME/.m2":/m2 \
+  -v /tmp/flake-logs:/logs \
+  --user "$(id -u):$(id -g)" --entrypoint bash \
+  maven:3.9.9-eclipse-temurin-21 -c '
+    for i in $(seq 1 50); do
+      mvn -o -s /m2/settings.xml -Dmaven.repo.local=/m2/repository \
+        clean test -Dtest=PodExecEndpointTest -Dquarkus.build.skip=true > /logs/run-$i.log 2>&1 \
+        && echo "run $i PASS" || echo "run $i FAIL"
+    done'
+```
+
+Gotchas (each will silently waste a loop if missed): `~/.m2` mounts to `/m2`, so the repo is `/m2/repository` — point `-Dmaven.repo.local` there, not `/m2`. Pass `-s /m2/settings.xml` so offline marker-matching (`_remote.repositories` repo ids — the project resolves some artifacts from redhat repos) succeeds. `--entrypoint bash` skips the image's `mvn-entrypoint.sh`, which fails trying to `mkdir /root` under `--user`. **Use `clean test` every iteration, not incremental `test`** — re-running `mvn test` in a loop over a shared `target/` progressively corrupts the Quarkus app-model cache (manifests after ~20 iterations as `ClassNotFoundException` / `404 Not Found` on the WS upgrade across *all* groups, which is a harness artifact, not a real flake).
+
 Release/snapshot pipelines (`publish-snapshot.yml`, `publish-release.yml`) build multi-arch images (`amd64` + `arm64`) and stitch them with `docker manifest create`. Required GitHub secrets: `DOCKER_USERNAME`, `DOCKER_PASSWORD` (Docker Hub); `GITHUB_TOKEN` is provided automatically (GHCR). Release tag `v1.2.3` → image tag `1.2.3` (strip via `${VERSION#v}`).
 
 ## Troubleshooting
