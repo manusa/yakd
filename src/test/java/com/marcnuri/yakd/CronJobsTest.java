@@ -21,11 +21,13 @@ import io.fabric8.kubernetes.api.model.ObjectMeta;
 import io.fabric8.kubernetes.api.model.batch.v1.CronJobBuilder;
 import io.fabric8.kubernetes.api.model.batch.v1.Job;
 import io.fabric8.kubernetes.client.KubernetesClient;
+import io.fabric8.kubernetes.client.Watcher;
 import io.quarkus.test.common.http.TestHTTPResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.kubernetes.client.WithKubernetesTestServer;
 import jakarta.inject.Inject;
 import org.awaitility.Awaitility;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -50,6 +52,13 @@ class CronJobsTest {
   KubernetesClient kubernetesClient;
   @TestHTTPResource
   URL url;
+
+  @AfterEach
+  void cleanUp() {
+    final var namespace = kubernetesClient.getConfiguration().getNamespace();
+    kubernetesClient.batch().v1().cronjobs().inNamespace(namespace).delete();
+    kubernetesClient.batch().v1().jobs().inNamespace(namespace).delete();
+  }
 
   @Test
   @DisplayName("DELETE /api/v1/cronjobs/{namespace}/{name} - Should delete the Cron Job")
@@ -128,8 +137,9 @@ class CronJobsTest {
       // When
       Awaitility.await()
         .atMost(10, TimeUnit.SECONDS)
-        .until(() -> watch.events().stream()
-          .anyMatch(watchEvent -> ((Map<String, ?>)watchEvent.object().get("metadata")).get("name").equals("to-watch")));
+        .until(() -> watch.events().stream().anyMatch(watchEvent ->
+          Watcher.Action.ADDED.equals(watchEvent.type())
+            && "to-watch".equals(((Map<String, ?>) watchEvent.object().get("metadata")).get("name"))));
       // Then
       assertThat(watch.events())
         .extracting("object.kind", "object.metadata.name")
