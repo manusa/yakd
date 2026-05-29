@@ -10,8 +10,8 @@ Use the `Makefile`. CI runs these exact targets (`.github/workflows/build-and-te
 |---------------------------------------|--------------------------|
 | Fast "still wired together" check     | `make quick-build`       |
 | Full build (frontend + backend)       | `make build`             |
-| Backend gate (CI's `verify` job)      | `make test-backend`      |
-| Full local CI mirror (all CI jobs)    | `make verify`            |
+| Test the Quarkus app (CI's `app-tests` job) | `make test-app`    |
+| Full local CI mirror — am I ready to push? | `make check`         |
 | Backend dev loop (hot reload, :8080)  | `make dev-backend`       |
 | Frontend dev loop (Vite, :3000)       | `make dev-frontend`      |
 | Deploy to local Minikube              | `make deploy-minikube`   |
@@ -156,15 +156,15 @@ The day-one knowledge. Each tied to a file path so you can verify it didn't drif
 
 ## CI reproduction
 
-`.github/workflows/build-and-test.yaml` runs three jobs in parallel (`license-check`, `verify`, `test-frontend`). Reproduce locally:
+`.github/workflows/build-and-test.yaml` runs three jobs in parallel (`license-check`, `app-tests`, `frontend-tests`). Reproduce locally:
 
 ```bash
-make test-backend    # mvn -Pbuild-frontend verify (frontend bundle + unit + ITs) — CI's `verify` job
-make test-frontend   # vitest — CI's `test-frontend` job
-make license-check   # .github/scripts/check-license-headers.sh — CI's `license-check` job
+make test-app        # Java unit + Selenium UI against the packaged app — CI's `app-tests` job
+make test-frontend   # Vitest — CI's `frontend-tests` job
+make license-check   # Apache header check — CI's `license-check` job
 ```
 
-Or one-shot via `make verify` — it chains the same three targets through Make composition (`verify: test license-check`, `test: test-backend test-frontend`).
+Or one-shot via `make check` — it chains the same three targets through Make composition (`check: test license-check`, `test: test-app test-frontend`).
 
 Release/snapshot pipelines (`publish-snapshot.yml`, `publish-release.yml`) build multi-arch images (`amd64` + `arm64`) and stitch them with `docker manifest create`. Required GitHub secrets: `DOCKER_USERNAME`, `DOCKER_PASSWORD` (Docker Hub); `GITHUB_TOKEN` is provided automatically (GHCR). Release tag `v1.2.3` → image tag `1.2.3` (strip via `${VERSION#v}`).
 

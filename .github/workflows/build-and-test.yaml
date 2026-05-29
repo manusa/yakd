@@ -23,8 +23,8 @@ jobs:
       - name: Check license headers
         run: make license-check
 
-  verify:
-    name: Build and test
+  app-tests:
+    name: App tests (Java unit + Selenium UI)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -40,10 +40,10 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
           cache: 'maven'
-      - name: Build and test
-        run: make test-backend
+      - name: Test the app
+        run: make test-app
 
-  test-frontend:
+  frontend-tests:
     name: Frontend tests
     runs-on: ubuntu-latest
     steps:

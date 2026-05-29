@@ -41,23 +41,23 @@ native: ## Build native image (frontend + GraalVM native)
 
 ##@ Test
 
-.PHONY: test-backend
-test-backend: ## Full backend gate (frontend bundle + unit + ITs via mvn verify)
+.PHONY: test-app
+test-app: ## Test the Quarkus app (Java unit + Selenium UI against the packaged app)
 	mvn -Pbuild-frontend verify
 
 .PHONY: test-it
-test-it: ## Run Selenium ITs (still goes through mvn verify package; set IT=Class[,Other] to filter)
+test-it: ## Iteration helper: only the Selenium UI tests (set IT=Class[,Other] to filter)
 	mvn -Pbuild-frontend verify -Dsurefire.skip=true $(if $(IT),-Dit.test='$(IT)',)
 
 .PHONY: test-frontend
-test-frontend: ## Run frontend (Vitest) tests
+test-frontend: ## Frontend unit tests (Vitest — does not boot Quarkus or drive a browser)
 	cd $(FRONTEND_DIR) && npm test
 
 .PHONY: test
-test: test-backend test-frontend ## Run all tests (backend unit + ITs + frontend)
+test: test-app test-frontend ## Run all tests (test-app + test-frontend)
 
-.PHONY: verify
-verify: test license-check ## Full local CI mirror (all tests + license-check)
+.PHONY: check
+check: test license-check ## Full local CI mirror — "am I ready to push?" (test + license-check)
 
 ##@ Development
 
