@@ -10,7 +10,8 @@ Use the `Makefile`. CI runs these exact targets (`.github/workflows/build-and-te
 |---------------------------------------|--------------------------|
 | Fast "still wired together" check     | `make quick-build`       |
 | Full build (frontend + backend)       | `make build`             |
-| Full CI verification (= CI step 1)    | `make verify`            |
+| Test the Quarkus app (CI's `app-tests` job) | `make test-app`    |
+| Full local CI mirror — am I ready to push? | `make check`         |
 | Backend dev loop (hot reload, :8080)  | `make dev-backend`       |
 | Frontend dev loop (Vite, :3000)       | `make dev-frontend`      |
 | Deploy to local Minikube              | `make deploy-minikube`   |
@@ -140,11 +141,12 @@ The day-one knowledge. Each tied to a file path so you can verify it didn't drif
 - **`src/main/resources/application.properties:1`** — `quarkus.package.output-name=yakd` renames the legacy/fast-jar thin JAR. The runnable artifact for a JVM build lives in `target/quarkus-app/` (Quarkus 3.x fast-jar layout); the Docker image (`Dockerfile.build`) ships `target/yakd-runner` (native binary), not the JAR.
 - **`src/main/frontend/vite.config.js:37-42`** — Vite dev server proxies `/api/*` to `http://localhost:8080`. `make dev-backend` must be running alongside `make dev-frontend` or API calls return ECONNREFUSED.
 - **`src/main/frontend/vitest.config.js:26`** — global setup at `src/test-utils/vitest.setup.js` runs before every test. Anything jsdom-mutating (matchMedia stubs, etc.) lives there.
-- **`pom.xml:58-63`** — `kubernetes-model-gatewayapi` is excluded from `quarkus-kubernetes-client` (binary size / native-image trim). Don't re-add it without justification.
-- **`pom.xml:120-123`** — `src/main/frontend/build/` is mapped into the JAR at `targetPath=frontend`. A missing or stale `build/` ships zero (or stale) frontend assets silently — `make clean-frontend` before `make build` if you suspect this.
-- **`pom.xml:127-144`** — inside `<pluginManagement>`, both Surefire (127-135) and Failsafe (136-144) force `java.util.logging.manager=org.jboss.logmanager.LogManager` (declarations at lines 132 and 141; inherited by the failsafe execution at 161-170). Removing the system prop breaks every test (Quarkus needs JBoss LogManager).
+- **`pom.xml:62-67`** — `kubernetes-model-gatewayapi` is excluded from `quarkus-kubernetes-client` (binary size / native-image trim). Don't re-add it without justification.
+- **`pom.xml:124-127`** — `src/main/frontend/build/` is mapped into the JAR at `targetPath=frontend`. A missing or stale `build/` ships zero (or stale) frontend assets silently — `make clean-frontend` before `make build` if you suspect this.
+- **`pom.xml:131-149`** — inside `<pluginManagement>`, both Surefire (131-140) and Failsafe (141-149) force `java.util.logging.manager=org.jboss.logmanager.LogManager` (declarations at lines 137 and 146; inherited by the failsafe execution at 165-175). Removing the system prop breaks every test (Quarkus needs JBoss LogManager).
+- **`pom.xml:27-30,135`** — custom property `<surefire.skip>false</surefire.skip>` is wired into Surefire's `<skip>` parameter (line 135). This is what makes `-Dsurefire.skip=true` actually skip Surefire **without** also killing Failsafe — Surefire's built-in `skip` is bound to `maven.test.skip`, which would skip both. Don't strip the property or the binding during a pom cleanup; `make test-it` depends on it.
 - **`src/test/java/com/marcnuri/yakd/selenium/IntegrationTestProfile.java:30-34`** — sets `quarkus.kubernetes-client.devservices.enabled=false` in addition to the Selenium + Kubernetes test resources. Without it, ITs try to spin up a dev-services container and break in CI.
-- **`pom.xml:247-263`** — the `native` profile auto-activates on `-Dnative` and hardcodes JDK truststore path + `changeit` password into the GraalVM args. JDK relocations can break the native build.
+- **`pom.xml:252-268`** — the `native` profile auto-activates on `-Dnative` and hardcodes JDK truststore path + `changeit` password into the GraalVM args. JDK relocations can break the native build.
 - **`pom.xml:7,22-23`** — version flows through `${revision}` (default `0.0.0-SNAPSHOT`) and propagates into `container.image.tag`. Release pipeline passes `-Drevision=${VERSION#v}`.
 - **`src/test/java/com/marcnuri/yakd/selenium/SeleniumTestResource.java:42-55`** — uses `ChromeDriverService` directly with the `chrome` binary; **Chrome must be on PATH**. Headless mode (`--headless=new`) is on by default; flip with `@WithSelenium(headless = false)` when you need to see what's rendering.
 - **`.github/scripts/check-license-headers.sh:36`** — uses `git ls-files`, so brand-new files you forgot to `git add` are **silently skipped**. Always `git add` before `make license-check`. Globs cover `.java`, `.js`, `.jsx`, `.ts`, `.css` only.
@@ -154,13 +156,15 @@ The day-one knowledge. Each tied to a file path so you can verify it didn't drif
 
 ## CI reproduction
 
-`.github/workflows/build-and-test.yaml` runs exactly three steps. Reproduce locally:
+`.github/workflows/build-and-test.yaml` runs three jobs in parallel (`license-check`, `app-tests`, `frontend-tests`). Reproduce locally:
 
 ```bash
-make verify          # mvn -Pbuild-frontend verify (the gate)
-make test-frontend   # vitest
-make license-check   # .github/scripts/check-license-headers.sh
+make test-app        # Java unit + Selenium UI against the packaged app — CI's `app-tests` job
+make test-frontend   # Vitest — CI's `frontend-tests` job
+make license-check   # Apache header check — CI's `license-check` job
 ```
+
+Or one-shot via `make check` — it chains the same three targets through Make composition (`check: test license-check`, `test: test-app test-frontend`).
 
 Release/snapshot pipelines (`publish-snapshot.yml`, `publish-release.yml`) build multi-arch images (`amd64` + `arm64`) and stitch them with `docker manifest create`. Required GitHub secrets: `DOCKER_USERNAME`, `DOCKER_PASSWORD` (Docker Hub); `GITHUB_TOKEN` is provided automatically (GHCR). Release tag `v1.2.3` → image tag `1.2.3` (strip via `${VERSION#v}`).
 

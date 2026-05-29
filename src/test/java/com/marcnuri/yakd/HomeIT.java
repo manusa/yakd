@@ -28,6 +28,8 @@ import io.quarkus.test.junit.TestProfile;
 import io.quarkus.test.kubernetes.client.KubernetesServer;
 import io.quarkus.test.kubernetes.client.KubernetesTestServer;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -37,12 +39,12 @@ import org.openqa.selenium.support.ui.Wait;
 
 import java.net.URL;
 import java.time.Duration;
-import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTest
 @TestProfile(IntegrationTestProfile.class)
+@DisplayName("The home page")
 public class HomeIT {
 
   @KubernetesTestServer
@@ -73,27 +75,38 @@ public class HomeIT {
     wait.until(d -> d.findElement(By.cssSelector(".dashboard-page")).isDisplayed());
   }
 
-  @Test
-  void hasDocumentTitle() {
-    assertThat(driver.getTitle())
-      .isEqualTo("YAKD - Kubernetes Dashboard");
-  }
+  @Nested
+  @DisplayName("when the dashboard page is loaded")
+  class WhenDashboardPageIsLoaded {
 
-  @Test
-  void hasFooter() {
-    assertThat(driver.findElement(By.cssSelector(".dashboard-page footer")).getText())
-      .matches("Copyright © 2020-\\d{4} Marc Nuri - Licensed under the Apache License 2.0");
-  }
+    @Test
+    @DisplayName("sets the browser tab title to YAKD - Kubernetes Dashboard")
+    void setsBrowserTabTitle() {
+      assertThat(driver.getTitle())
+        .as("browser tab title")
+        .isEqualTo("YAKD - Kubernetes Dashboard");
+    }
 
-  @Test
-  void hasEventList() {
-    final By selector = By.cssSelector("[data-testid=list__events] [data-testid=list__events-row]");
-    final Wait<WebDriver> wait = new FluentWait<>(driver)
-      .withTimeout(Duration.ofSeconds(5))
-      .pollingEvery(Duration.ofMillis(100))
-      .ignoring(NoSuchElementException.class);
-    wait.until(d -> d.findElement(selector).isDisplayed());
-    assertThat(driver.findElement(selector).getText())
-      .matches("^Pod\\na-pod-1\\nStarted Started container\\n.+");
+    @Test
+    @DisplayName("renders the Apache 2.0 copyright footer")
+    void rendersCopyrightFooter() {
+      assertThat(driver.findElement(By.cssSelector(".dashboard-page footer")).getText())
+        .as("dashboard footer text")
+        .matches("Copyright © 2020-\\d{4} Marc Nuri - Licensed under the Apache License 2.0");
+    }
+
+    @Test
+    @DisplayName("lists the seeded pod event in the events table")
+    void listsSeededPodEvent() {
+      final By selector = By.cssSelector("[data-testid=list__events] [data-testid=list__events-row]");
+      final Wait<WebDriver> wait = new FluentWait<>(driver)
+        .withTimeout(Duration.ofSeconds(5))
+        .pollingEvery(Duration.ofMillis(100))
+        .ignoring(NoSuchElementException.class);
+      wait.until(d -> d.findElement(selector).isDisplayed());
+      assertThat(driver.findElement(selector).getText())
+        .as("events table row text")
+        .matches("^Pod\\na-pod-1\\nStarted Started container\\n.+");
+    }
   }
 }
