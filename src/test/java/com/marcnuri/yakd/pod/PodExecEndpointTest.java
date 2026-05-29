@@ -17,9 +17,7 @@
  */
 package com.marcnuri.yakd.pod;
 
-import io.fabric8.kubernetes.api.model.StatusBuilder;
 import io.quarkus.test.kubernetes.client.KubernetesServer;
-import io.fabric8.kubernetes.client.utils.Serialization;
 import io.fabric8.mockwebserver.internal.WebSocketMessage;
 import io.quarkus.test.common.http.TestHTTPResource;
 import io.quarkus.test.junit.QuarkusTest;
@@ -63,6 +61,11 @@ class PodExecEndpointTest {
 
   @BeforeEach
   void setUp() {
+    // Each shared mock settles the WebSocket upgrade by emitting an "OPEN" marker the endpoint
+    // forwards to the client (awaited as the upstream-connected gate) and is kept open by a
+    // never-matched expectation so it does not auto-close the instant its queues drain. Tests
+    // drive the close deterministically with a client-initiated session.close(...) rather than a
+    // shared wall-clock timer, which avoids the timed-close race fixed in #1830 (see #1834).
     for (var container : new String[]{"main", "sidecar"}) {
       kubernetes.expect()
         .get()
@@ -71,8 +74,8 @@ class PodExecEndpointTest {
         )
         .andUpgradeToWebSocket()
         .open()
-        .waitFor(200L)
-        .andEmit(new WebSocketMessage(0L, "\u0003" + Serialization.asJson(new StatusBuilder().withStatus("Success").build()), false, true))
+        .waitFor(0L).andEmit("OPEN")
+        .expect("yakd-keep-open").andEmit("").always()
         .done()
         .always();
     }
@@ -88,6 +91,7 @@ class PodExecEndpointTest {
     void setUp() throws Exception {
       session = ContainerProvider.getWebSocketContainer().connectToServer(client, execUri);
       assertThat(client.openLatch.await(5, TimeUnit.SECONDS)).isTrue();
+      Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> client.textMessages.contains("OPEN"));
     }
 
 
@@ -99,7 +103,8 @@ class PodExecEndpointTest {
 
     @Test
     @DisplayName("should receive close reason when connection closes")
-    void shouldReceiveCloseReason() {
+    void shouldReceiveCloseReason() throws Exception {
+      session.close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, "Client closing"));
       Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> client.closeReason.get() != null);
       assertThat(client.closeReason.get()).isNotNull();
     }
@@ -110,9 +115,11 @@ class PodExecEndpointTest {
       var client2 = new TestWebSocketClient();
       var session2 = ContainerProvider.getWebSocketContainer().connectToServer(client2, execUri);
       assertThat(client2.openLatch.await(5, TimeUnit.SECONDS)).isTrue();
+      Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> client2.textMessages.contains("OPEN"));
 
       assertThat(session.getId()).isNotEqualTo(session2.getId());
 
+      session2.close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, "Client closing"));
       Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> client2.closeLatch.getCount() == 0);
     }
   }
@@ -231,9 +238,11 @@ class PodExecEndpointTest {
     @DisplayName("should handle connection to different container")
     void shouldHandleDifferentContainer() throws Exception {
       var uri = URI.create(execUri.toString().replace("/main", "/sidecar"));
-      ContainerProvider.getWebSocketContainer().connectToServer(client, uri);
+      var session = ContainerProvider.getWebSocketContainer().connectToServer(client, uri);
 
       assertThat(client.openLatch.await(5, TimeUnit.SECONDS)).isTrue();
+      Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> client.textMessages.contains("OPEN"));
+      session.close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, "Client closing"));
       Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> client.closeReason.get() != null);
       assertThat(client.closeReason.get()).isNotNull();
     }
@@ -246,9 +255,11 @@ class PodExecEndpointTest {
     @Test
     @DisplayName("should trigger onClose handler when session closes")
     void shouldTriggerOnCloseHandler() throws Exception {
-      ContainerProvider.getWebSocketContainer().connectToServer(client, execUri);
+      var session = ContainerProvider.getWebSocketContainer().connectToServer(client, execUri);
       assertThat(client.openLatch.await(5, TimeUnit.SECONDS)).isTrue();
+      Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> client.textMessages.contains("OPEN"));
 
+      session.close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, "Client closing"));
       Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> client.closeLatch.getCount() == 0);
       assertThat(client.closeReason)
         .doesNotHaveNullValue()
@@ -260,8 +271,10 @@ class PodExecEndpointTest {
     void shouldHandleRapidOpenCloseCycles() throws Exception {
       for (int i = 0; i < 3; i++) {
         client = new TestWebSocketClient();
-        ContainerProvider.getWebSocketContainer().connectToServer(client, execUri);
+        var session = ContainerProvider.getWebSocketContainer().connectToServer(client, execUri);
         assertThat(client.openLatch.await(5, TimeUnit.SECONDS)).isTrue();
+        Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> client.textMessages.contains("OPEN"));
+        session.close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, "Client closing"));
         Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> client.closeLatch.getCount() == 0);
       }
     }
