@@ -23,6 +23,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
@@ -40,15 +41,27 @@ public class SeleniumTestResource implements QuarkusTestResourceConfigurableLife
 
   @Override
   public Map<String, String> start() {
-    chromeDriverService = new ChromeDriverService.Builder()
-      .usingAnyFreePort()
-      .build();
+    final ChromeDriverService.Builder serviceBuilder = new ChromeDriverService.Builder()
+      .usingAnyFreePort();
+    // Platforms without a Selenium Manager-resolvable driver (e.g. linux-arm64, where there is no
+    // Chrome-for-Testing build) can supply an explicit driver via webdriver.chrome.driver/CHROME_DRIVER_BIN.
+    final String driverPath = configured("webdriver.chrome.driver", "CHROME_DRIVER_BIN");
+    if (driverPath != null) {
+      serviceBuilder.usingDriverExecutable(new File(driverPath));
+    }
+    chromeDriverService = serviceBuilder.build();
     try {
       chromeDriverService.start();
     } catch (IOException exception) {
       throw new IllegalStateException("Unable to start ChromeDriverService", exception);
     }
     final ChromeOptions chromeOptions = new ChromeOptions();
+    // Likewise, a non-default browser binary (e.g. Chromium) can be supplied via
+    // webdriver.chrome.binary/CHROME_BIN; unset falls back to the auto-detected browser.
+    final String browserBinary = configured("webdriver.chrome.binary", "CHROME_BIN");
+    if (browserBinary != null) {
+      chromeOptions.setBinary(browserBinary);
+    }
     if (headless) {
       chromeOptions.addArguments("--headless=new");
     }
@@ -69,5 +82,15 @@ public class SeleniumTestResource implements QuarkusTestResourceConfigurableLife
   @Override
   public void inject(TestInjector testInjector) {
     testInjector.injectIntoFields(chromeDriver, new TestInjector.MatchesType(WebDriver.class));
+  }
+
+  // Resolves an optional path from a system property first, then an environment variable.
+  // Returns null when neither is set, preserving the default Selenium Manager-based behavior.
+  private static String configured(String systemProperty, String environmentVariable) {
+    String value = System.getProperty(systemProperty);
+    if (value == null || value.isBlank()) {
+      value = System.getenv(environmentVariable);
+    }
+    return value == null || value.isBlank() ? null : value;
   }
 }
