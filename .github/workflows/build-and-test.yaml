@@ -23,8 +23,23 @@ jobs:
       - name: Check license headers
         run: make license-check
 
-  app-tests:
-    name: App tests (Java unit + Selenium UI)
+  unit-tests:
+    name: Unit tests (Java)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Setup Java 21
+        uses: actions/setup-java@v5
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+      - name: Run unit tests
+        run: make test-unit
+
+  it-tests:
+    name: Integration tests (Selenium UI)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -40,8 +55,8 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
           cache: 'maven'
-      - name: Test the app
-        run: make test-app
+      - name: Run integration tests
+        run: make test-it
 
   frontend-tests:
     name: Frontend tests

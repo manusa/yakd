@@ -10,7 +10,9 @@ Use the `Makefile`. CI runs these exact targets (`.github/workflows/build-and-te
 |---------------------------------------|--------------------------|
 | Fast "still wired together" check     | `make quick-build`       |
 | Full build (frontend + backend)       | `make build`             |
-| Test the Quarkus app (CI's `app-tests` job) | `make test-app`    |
+| Test the Quarkus app — all of it (local)    | `make test-app`    |
+| Java unit tests only (CI's `unit-tests` job) | `make test-unit`  |
+| Selenium UI tests only (CI's `it-tests` job) | `make test-it`    |
 | Full local CI mirror — am I ready to push? | `make check`         |
 | Backend dev loop (hot reload, :8080)  | `make dev-backend`       |
 | Frontend dev loop (Vite, :3000)       | `make dev-frontend`      |
@@ -156,15 +158,16 @@ The day-one knowledge. Each tied to a file path so you can verify it didn't drif
 
 ## CI reproduction
 
-`.github/workflows/build-and-test.yaml` runs three jobs in parallel (`license-check`, `app-tests`, `frontend-tests`). Reproduce locally:
+`.github/workflows/build-and-test.yaml` runs four jobs in parallel (`license-check`, `unit-tests`, `it-tests`, `frontend-tests`). The Surefire (unit) and Failsafe (Selenium IT) phases are split into separate jobs so their Quarkus boots overlap instead of stacking. Reproduce locally:
 
 ```bash
-make test-app        # Java unit + Selenium UI against the packaged app — CI's `app-tests` job
+make test-unit       # Java unit tests (Surefire, no frontend) — CI's `unit-tests` job
+make test-it         # Selenium UI tests (Failsafe + frontend) — CI's `it-tests` job
 make test-frontend   # Vitest — CI's `frontend-tests` job
 make license-check   # Apache header check — CI's `license-check` job
 ```
 
-Or one-shot via `make check` — it chains the same three targets through Make composition (`check: test license-check`, `test: test-app test-frontend`).
+`make test-app` runs the unit + Selenium phases together in one Quarkus build (the efficient local all-in-one; CI splits them across the `unit-tests` + `it-tests` jobs for wall-clock parallelism). Or one-shot via `make check` (`check: test license-check`, `test: test-app test-frontend`).
 
 ### Reproducing contention/timing flakes
 
