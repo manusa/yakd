@@ -41,17 +41,16 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
       - name: Provision Chromium for Selenium
-        # arm64 Linux has no Google Chrome and no Chrome-for-Testing build, so Selenium Manager
-        # cannot resolve a driver. Install Chromium + a matching chromedriver instead.
-        uses: browser-actions/setup-chrome@v1
-        with:
-          install-chromedriver: true
-      - name: Export browser + driver paths
+        # arm64 Linux has no Google Chrome / Chrome-for-Testing build (so Selenium Manager cannot
+        # resolve a driver) and browser-actions/setup-chrome does not support arm64. The Chromium
+        # snap ships a matching chromium.chromedriver, so install that and resolve both paths.
         run: |
-          chrome_bin="$(command -v chrome || command -v chromium || command -v chromium-browser || true)"
-          driver_bin="$(command -v chromedriver || true)"
-          echo "Resolved CHROME_BIN=$chrome_bin"
-          echo "Resolved CHROME_DRIVER_BIN=$driver_bin"
+          set -x
+          sudo snap install chromium
+          chrome_bin="$(command -v chromium || echo /snap/bin/chromium)"
+          driver_bin="$(command -v chromium.chromedriver || echo /snap/bin/chromium.chromedriver)"
+          "$chrome_bin" --version
+          "$driver_bin" --version
           echo "CHROME_BIN=$chrome_bin" >> "$GITHUB_ENV"
           echo "CHROME_DRIVER_BIN=$driver_bin" >> "$GITHUB_ENV"
       - name: Test the app
