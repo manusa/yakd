@@ -45,8 +45,12 @@ native: ## Build native image (frontend + GraalVM native)
 test-app: ## Test the Quarkus app (Java unit + Selenium UI against the packaged app)
 	mvn -Pbuild-frontend verify
 
+.PHONY: test-unit
+test-unit: ## Java unit tests only (Surefire — no frontend bundle, no Selenium/browser)
+	mvn test
+
 .PHONY: test-it
-test-it: ## Iteration helper: only the Selenium UI tests (set IT=Class[,Other] to filter)
+test-it: ## Selenium UI tests only (Failsafe + frontend bundle; set IT=Class[,Other] to filter)
 	mvn -Pbuild-frontend verify -Dsurefire.skip=true $(if $(IT),-Dit.test='$(IT)',)
 
 .PHONY: test-frontend
