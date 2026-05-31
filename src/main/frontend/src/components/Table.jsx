@@ -108,6 +108,7 @@ Table.DeleteButton = ({...props}) => (
     title='Delete'
     iconStylePrefix='far'
     icon='fa-trash-alt'
+    data-testid='resource-list__delete'
     {...props}
   />
 );

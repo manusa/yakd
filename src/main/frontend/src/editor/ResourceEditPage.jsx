@@ -86,6 +86,7 @@ export const ResourceEditPage = ({
                 disabled={saving}
                 className='select-none'
                 onClick={handleSave}
+                data-testid='resource-edit__save'
               >
                 {saving ? (
                   <Spinner size={'w-3 h-3'} className='inline-flex mr-2' />

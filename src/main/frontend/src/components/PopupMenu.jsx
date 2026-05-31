@@ -54,6 +54,7 @@ export const PopupMenu = ({
         aria-haspopup='true'
         aria-expanded={panelVisible}
         onClick={togglePanel}
+        data-testid='popup-menu__trigger'
         className={`
           ml-1 border-0 outline-none focus:outline-none text-center
           ${textColor} hover:text-gray-500 active:${textColorActive} `}

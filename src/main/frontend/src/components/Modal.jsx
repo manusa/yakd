@@ -20,7 +20,8 @@ export const Modal = ({
   visible,
   // Adds padding to keep sidebar visible when modal is open
   preserveSideBar = true,
-  children
+  children,
+  ...props
 }) => {
   if (!visible) {
     return '';
@@ -41,6 +42,8 @@ export const Modal = ({
           role='dialog'
           aria-modal='true'
           aria-labelledby='modal-headline'
+          data-testid='modal'
+          {...props}
         >
           {children}
         </div>
