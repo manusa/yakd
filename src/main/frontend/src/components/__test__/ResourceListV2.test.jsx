@@ -286,4 +286,13 @@ describe('ResourceListV2 component tests', () => {
       expect(container.getAttribute('data-testid')).toBe('my-table');
     });
   });
+
+  describe('data-testid hooks', () => {
+    test('should emit a default data-testid of "resource-list" on the container when none is provided', () => {
+      const doc = renderList({resources: [{id: 1}]});
+
+      const container = doc.body.firstChild;
+      expect(container.getAttribute('data-testid')).toBe('resource-list');
+    });
+  });
 });

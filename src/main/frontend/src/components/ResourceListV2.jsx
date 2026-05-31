@@ -55,6 +55,7 @@ export const ResourceListV2 = ({
   }
   return (
     <Table
+      data-testid='resource-list'
       title={title}
       titleVariant={titleVariant}
       className={className}

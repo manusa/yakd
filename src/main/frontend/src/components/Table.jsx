@@ -52,6 +52,7 @@ Table.Row = ({children, className = '', ...properties}) => (
 );
 Table.ResourceRow = ({resource, children, ...properties}) => (
   <Table.Row
+    data-testid='resource-list__row'
     className={deletionTimestamp(resource) ? 'line-through' : ''}
     {...properties}
   >
