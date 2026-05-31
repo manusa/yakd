@@ -79,6 +79,7 @@ export const ResourceEditModal = ({
                 onClick={handleSave}
                 disabled={saving}
                 className='mr-2'
+                data-testid='resource-edit__save'
               >
                 {saving ? (
                   <Spinner size={'w-3 h-3'} className='inline-flex mr-2' />
@@ -91,6 +92,7 @@ export const ResourceEditModal = ({
                 title='Cancel'
                 onClick={handleClose}
                 disabled={saving}
+                data-testid='resource-edit__cancel'
               >
                 <Icon
                   stylePrefix='far'

@@ -77,11 +77,17 @@ export const ResourceDetailPage = ({
           {editable && <Link.EditLink path={path} resource={resource} />}
           {actions}
           <PopupMenu>
-            <PopupMenu.Item onClick={() => downloadResource(resource)}>
+            <PopupMenu.Item
+              data-testid='resource-detail__download'
+              onClick={() => downloadResource(resource)}
+            >
               <Icon icon='fa-save' className='mr-2' /> Download
             </PopupMenu.Item>
             {deleteFunction && (
-              <PopupMenu.Item onClick={deleteAction}>
+              <PopupMenu.Item
+                data-testid='resource-detail__delete'
+                onClick={deleteAction}
+              >
                 <Icon stylePrefix='far' icon='fa-trash-alt' className='mr-2' />{' '}
                 Delete
               </PopupMenu.Item>

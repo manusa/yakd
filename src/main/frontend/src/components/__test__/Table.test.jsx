@@ -33,6 +33,11 @@ const renderResourceRow = props => {
   return parseHtml(html);
 };
 
+const renderDeleteButton = props => {
+  const html = renderToString(<Table.DeleteButton {...props} />);
+  return parseHtml(html);
+};
+
 describe('Table component tests', () => {
   describe('ResourceRow data-testid hooks', () => {
     test('should emit a default data-testid of "resource-list__row" on the row when none is provided', () => {
@@ -47,6 +52,22 @@ describe('Table component tests', () => {
 
       const row = doc.querySelector('tr');
       expect(row.getAttribute('data-testid')).toBe('list__events-row');
+    });
+  });
+
+  describe('DeleteButton data-testid hooks', () => {
+    test('should emit a default data-testid of "resource-list__delete" when none is provided', () => {
+      const doc = renderDeleteButton();
+
+      const button = doc.querySelector('a');
+      expect(button.getAttribute('data-testid')).toBe('resource-list__delete');
+    });
+
+    test('should allow overriding the default delete data-testid', () => {
+      const doc = renderDeleteButton({'data-testid': 'pods-list__delete'});
+
+      const button = doc.querySelector('a');
+      expect(button.getAttribute('data-testid')).toBe('pods-list__delete');
     });
   });
 });
