@@ -29,18 +29,23 @@ const NamespaceDropdown = () => {
   } = useUiNamespace();
   return (
     <Dropdown
+      data-testid='filter-bar__namespace'
       closeOnPanelClick={true}
       text={selectedNamespace ?? 'Namespace'}
       textColor={selectedNamespace ? 'text-blue-700' : 'text-gray-500'}
       textColorActive={selectedNamespace ? 'text-blue-800' : null}
     >
-      <Dropdown.Item onClick={clearSelectedNamespace}>
+      <Dropdown.Item
+        data-testid='filter-bar__all-namespaces'
+        onClick={clearSelectedNamespace}
+      >
         All namespaces
       </Dropdown.Item>
       {Object.values(namespaces)
         .map(ns => name(ns))
         .map(namespace => (
           <Dropdown.Item
+            data-testid='filter-bar__namespace-item'
             key={namespace}
             onClick={() => selectNamespace(namespace)}
           >

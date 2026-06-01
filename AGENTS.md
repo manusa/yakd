@@ -112,7 +112,22 @@ public class PodLogsIT {
 }
 ```
 
-UI elements that tests need to find are marked with `data-testid`. Most newer IDs follow `<feature>__<element>` (e.g. `pod-list__logs-link`, `pod-logs__content`); older ones use single tokens (e.g. `container-dropdown`). Prefer `data-testid` over class names or text content when adding new selectors.
+UI elements that tests need to find are marked with `data-testid`. Prefer `data-testid` over class names or text content for anything a test selects.
+
+**Naming convention: `<feature>__<element>`** — double-underscore separator, both parts kebab-case (e.g. `pod-list__logs-link`, `resource-edit__save`, `filter-bar__namespace-item`). A few legacy hooks use a single token (`container-dropdown`); use the two-part form for new ones. For an element that repeats (list rows, menu items), reuse one id across the set and match the specific instance by its visible text.
+
+**Shared components emit overridable defaults.** Components reused across every feature (`ResourceListV2`, `Table.ResourceRow`/`Table.DeleteButton`, `Modal`, `PopupMenu`, the editor Save/Cancel) render a generic default `data-testid` placed **before** the `{...props}` spread, so a caller can override it with a feature-specific id. That is why `events/List.jsx` keeps `list__events`/`list__events-row` while every other list inherits `resource-list`/`resource-list__row`. Stable shared hooks:
+
+| Hook | Element |
+|---|---|
+| `resource-list` / `resource-list__row` | shared list container / row |
+| `resource-list__delete` | list-row delete button |
+| `resource-detail__delete` / `resource-detail__download` | detail-page action items |
+| `resource-edit__save` / `resource-edit__cancel` | YAML editor Save / Cancel |
+| `popup-menu__trigger` | action-menu trigger |
+| `modal` | modal dialog container |
+| `filter-bar__namespace` / `filter-bar__all-namespaces` / `filter-bar__namespace-item` | namespace filter |
+| `side-bar__nav-<route>` | sidebar nav link (e.g. `side-bar__nav-deployments`) |
 
 ### Frontend tests (Vitest)
 
