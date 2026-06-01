@@ -114,6 +114,28 @@ public class DeploymentMutationIT {
     return deployment.getMetadata().getLabels().get("mutation-marker");
   }
 
+  private Integer backendReplicas() {
+    final Deployment deployment = kubernetes.getClient().apps().deployments()
+      .inNamespace(NAMESPACE).withName(DEPLOYMENT_NAME).get();
+    if (deployment == null || deployment.getSpec() == null) {
+      return null;
+    }
+    return deployment.getSpec().getReplicas();
+  }
+
+  private String backendRestartedAt() {
+    final Deployment deployment = kubernetes.getClient().apps().deployments()
+      .inNamespace(NAMESPACE).withName(DEPLOYMENT_NAME).get();
+    if (deployment == null || deployment.getSpec() == null
+      || deployment.getSpec().getTemplate() == null
+      || deployment.getSpec().getTemplate().getMetadata() == null
+      || deployment.getSpec().getTemplate().getMetadata().getAnnotations() == null) {
+      return null;
+    }
+    return deployment.getSpec().getTemplate().getMetadata().getAnnotations()
+      .get("kubectl.kubernetes.io/restartedAt");
+  }
+
   @Nested
   @DisplayName("when deleting from the list page")
   class DeleteFromList {
@@ -171,6 +193,55 @@ public class DeploymentMutationIT {
         "const e = document.querySelector('.ace_editor');"
           + "return e && e.env && e.env.editor ? e.env.editor.getValue() : '';");
       return value == null ? "" : value.toString();
+    }
+  }
+
+  @Nested
+  @DisplayName("when scaling from the detail page")
+  class Scale {
+
+    @BeforeEach
+    void navigate() {
+      final Deployment seeded = kubernetes.getClient().apps().deployments()
+        .inNamespace(NAMESPACE).withName(DEPLOYMENT_NAME).get();
+      assertThat(seeded).as("seeded deployment available before scaling").isNotNull();
+      driver.navigate().to(url.toString() + "deployments/" + seeded.getMetadata().getUid());
+      // The replicas control operates on the resource once the watch has loaded it
+      // into the store; the name only renders after that, so it is a safe gate.
+      wait.until(d -> d.getPageSource().contains(DEPLOYMENT_NAME));
+    }
+
+    @Test
+    @DisplayName("incrementing the replicas persists the new replica count to the backend")
+    void incrementPersistsReplicas() {
+      driver.findElement(By.cssSelector("[data-testid='replicas-field__increment']")).click();
+
+      wait.until(d -> Integer.valueOf(2).equals(backendReplicas()));
+      assertThat(backendReplicas())
+        .as("spec.replicas on the persisted deployment")
+        .isEqualTo(2);
+    }
+  }
+
+  @Nested
+  @DisplayName("when restarting from the list page")
+  class Restart {
+
+    @BeforeEach
+    void navigate() {
+      driver.navigate().to(url.toString() + "deployments");
+      wait.until(d -> listHasDeploymentRow());
+    }
+
+    @Test
+    @DisplayName("clicking restart records a rollout restart on the backend")
+    void restartRecordsRestartedAt() {
+      driver.findElement(By.cssSelector("[data-testid='deployment-list__restart']")).click();
+
+      wait.until(d -> backendRestartedAt() != null);
+      assertThat(backendRestartedAt())
+        .as("kubectl.kubernetes.io/restartedAt annotation on the persisted deployment")
+        .isNotNull();
     }
   }
 }

@@ -66,6 +66,7 @@ const Rows = ({deployments}) => {
       </Table.Cell>
       <Table.Cell className='whitespace-nowrap text-center'>
         <Link
+          data-testid='deployment-list__restart'
           variant={Link.variants.outline}
           onClick={restartDeployment(deployment)}
           title='Restart'
