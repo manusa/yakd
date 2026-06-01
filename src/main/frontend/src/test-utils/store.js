@@ -17,7 +17,11 @@
 // TODO: Replace createStore with configureStore from @reduxjs/toolkit when redux is updated
 // createStore is deprecated: https://redux.js.org/introduction/why-rtk-is-redux-today
 import {combineReducers, createStore} from 'redux';
+// Import the redux barrel before the apis barrel: redux re-exports the
+// production store, whose module-load combineReducers reads apis.apiGroupsReducer.
+// Loading apis first would re-enter it mid-initialization (apis <-> redux cycle).
 import {reducer as reduxReducer, uiReducer} from '../redux';
+import {apiGroupsReducer} from '../apis';
 
 /**
  * Creates a Redux store for testing with optional initial state.
@@ -27,6 +31,8 @@ import {reducer as reduxReducer, uiReducer} from '../redux';
  */
 export const createTestStore = (initialState = {}) => {
   const appReducer = combineReducers({
+    apiGroups: apiGroupsReducer,
+    customResourceDefinitions: reduxReducer('CustomResourceDefinition'),
     namespaces: reduxReducer('Namespace'),
     ui: uiReducer
   });

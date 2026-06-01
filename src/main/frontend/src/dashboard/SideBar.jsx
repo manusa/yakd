@@ -54,6 +54,8 @@ import {
 
 import './SideBar.css';
 
+const navTestId = to => `side-bar__nav-${to.replace(/^\//, '') || 'home'}`;
+
 const RoutedLink = ({
   to,
   staticContext: _staticContext,
@@ -106,14 +108,14 @@ const NavGroup = ({expandedItems, toggleItem, label, icon, children}) => {
 };
 
 const K8sNavItem = ({to, Icon: ComponentIcon, children}) => (
-  <RoutedLink to={to}>
+  <RoutedLink to={to} data-testid={navTestId(to)}>
     <ComponentIcon className='side-bar__nav-item-icon' />
     {children}
   </RoutedLink>
 );
 
 const IconNavItem = ({to, icon, children}) => (
-  <RoutedLink to={to}>
+  <RoutedLink to={to} data-testid={navTestId(to)}>
     <Icon className='side-bar__nav-item-icon' icon={icon} />
     {children}
   </RoutedLink>

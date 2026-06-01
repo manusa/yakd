@@ -349,4 +349,41 @@ describe('FilterBar component tests', () => {
       expect(menu.textContent).toContain(longName);
     });
   });
+
+  describe('data-testid hooks', () => {
+    test('should mark the namespace dropdown with a data-testid', () => {
+      const doc = renderFilterBar();
+
+      const dropdown = doc.querySelector(
+        '[data-testid="filter-bar__namespace"]'
+      );
+      expect(dropdown).not.toBeNull();
+    });
+
+    test('should mark the "All namespaces" option with a data-testid', () => {
+      const doc = renderFilterBar();
+
+      const allNamespaces = doc.querySelector(
+        '[data-testid="filter-bar__all-namespaces"]'
+      );
+      expect(allNamespaces.textContent).toContain('All namespaces');
+    });
+
+    test('should mark each namespace option with a data-testid', () => {
+      const namespaces = {
+        'uid-1': {kind: 'Namespace', metadata: {uid: 'uid-1', name: 'default'}},
+        'uid-2': {
+          kind: 'Namespace',
+          metadata: {uid: 'uid-2', name: 'kube-system'}
+        }
+      };
+
+      const doc = renderFilterBar({namespaces});
+
+      const items = doc.querySelectorAll(
+        '[data-testid="filter-bar__namespace-item"]'
+      );
+      expect(items).toHaveLength(2);
+    });
+  });
 });
