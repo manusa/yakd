@@ -24,11 +24,13 @@ export const ReplicasField = ({replicas, resource, updateReplicas}) => (
       {replicas}
       <div className='flex flex-col ml-2 text-blue-600'>
         <Icon
+          data-testid='replicas-field__increment'
           icon='fa-caret-up'
           className='leading-3 hover:text-blue-800 cursor-pointer'
           onClick={() => updateReplicas(resource, replicas + 1)}
         />
         <Icon
+          data-testid='replicas-field__decrement'
           icon='fa-caret-down'
           className={`leading-3 ${
             replicas > 0

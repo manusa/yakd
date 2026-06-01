@@ -123,6 +123,7 @@ UI elements that tests need to find are marked with `data-testid`. Prefer `data-
 | `resource-list` / `resource-list__row` | shared list container / row |
 | `resource-list__delete` | list-row delete button |
 | `resource-detail__delete` / `resource-detail__download` | detail-page action items |
+| `replicas-field__increment` / `replicas-field__decrement` | scale carets on the shared `ReplicasField` (deployments / statefulsets / deploymentconfigs) |
 | `resource-edit__save` / `resource-edit__cancel` | YAML editor Save / Cancel |
 | `popup-menu__trigger` | action-menu trigger |
 | `modal` | modal dialog container |

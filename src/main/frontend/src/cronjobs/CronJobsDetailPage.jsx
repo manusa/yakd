@@ -31,6 +31,7 @@ const SuspendField = ({cronJob}) => {
       <div className='flex items-center'>
         <div className='flex flex-col mr-1 text-blue-600'>
           <Icon
+            data-testid='cronjob-detail__suspend-toggle'
             icon={isSuspended ? 'fa-play-circle' : 'fa-pause-circle'}
             className='pr-1 py-1 leading-3 hover:text-blue-800 cursor-pointer'
             onClick={toggleSuspend}
