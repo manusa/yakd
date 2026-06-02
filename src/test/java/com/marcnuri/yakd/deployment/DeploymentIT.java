@@ -46,11 +46,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTest
 @TestProfile(IntegrationTestProfile.class)
-@DisplayName("Deployment mutation paths")
-public class DeploymentMutationIT {
+@DisplayName("Deployment")
+public class DeploymentIT {
 
   private static final String NAMESPACE = "default";
   private static final String DEPLOYMENT_NAME = "mutation-it-deployment";
+  private static final String ADDED_DEPLOYMENT_NAME = "watch-added-deployment";
+  private static final String SEEDED_IMAGE = "busybox";
+  private static final String MODIFIED_IMAGE = "nginx:1.25";
   private static final By ROW = By.cssSelector("[data-testid='resource-list__row']");
 
   @KubernetesTestServer
@@ -81,28 +84,42 @@ public class DeploymentMutationIT {
   }
 
   private static Deployment deployment() {
+    return deployment(DEPLOYMENT_NAME);
+  }
+
+  private static Deployment deployment(String name) {
     return new DeploymentBuilder()
       .withNewMetadata()
-        .withName(DEPLOYMENT_NAME)
+        .withName(name)
         .withNamespace(NAMESPACE)
         .addToLabels("mutation-marker", "before-edit")
       .endMetadata()
       .withNewSpec()
         .withReplicas(1)
-        .withNewSelector().addToMatchLabels("app", DEPLOYMENT_NAME).endSelector()
+        .withNewSelector().addToMatchLabels("app", name).endSelector()
         .withNewTemplate()
-          .withNewMetadata().addToLabels("app", DEPLOYMENT_NAME).endMetadata()
+          .withNewMetadata().addToLabels("app", name).endMetadata()
           .withNewSpec()
-            .addNewContainer().withName("container-1").withImage("busybox").endContainer()
+            .addNewContainer().withName("container-1").withImage(SEEDED_IMAGE).endContainer()
           .endSpec()
         .endTemplate()
       .endSpec()
       .build();
   }
 
-  private boolean listHasDeploymentRow() {
+  private boolean listHasRow(String deploymentName) {
     return driver.findElements(ROW).stream()
-      .anyMatch(row -> row.getText().contains(DEPLOYMENT_NAME));
+      .anyMatch(row -> row.getText().contains(deploymentName));
+  }
+
+  private boolean listHasDeploymentRow() {
+    return listHasRow(DEPLOYMENT_NAME);
+  }
+
+  private boolean deploymentRowShowsImage(String image) {
+    return driver.findElements(ROW).stream()
+      .filter(row -> row.getText().contains(DEPLOYMENT_NAME))
+      .anyMatch(row -> row.getText().contains(image));
   }
 
   private String backendMarker() {
@@ -242,6 +259,61 @@ public class DeploymentMutationIT {
       assertThat(backendRestartedAt())
         .as("kubectl.kubernetes.io/restartedAt annotation on the persisted deployment")
         .isNotNull();
+    }
+  }
+
+  @Nested
+  @DisplayName("when the server pushes live watch events")
+  class WatchLiveUpdates {
+
+    @BeforeEach
+    void navigate() {
+      driver.navigate().to(url.toString() + "deployments");
+      // Waiting for the seeded row guarantees the watch SSE stream is connected and
+      // its initial sync has been replayed before the test mutates the cluster, so any
+      // later change can only reach the list through a live watch event.
+      wait.until(d -> listHasDeploymentRow());
+    }
+
+    @Test
+    @DisplayName("a deployment created server-side appears in the list without a refresh")
+    void createdDeploymentAppears() {
+      kubernetes.getClient().apps().deployments().inNamespace(NAMESPACE)
+        .resource(deployment(ADDED_DEPLOYMENT_NAME)).create();
+
+      wait.until(d -> listHasRow(ADDED_DEPLOYMENT_NAME));
+      assertThat(listHasRow(ADDED_DEPLOYMENT_NAME))
+        .as("row for the server-side-created deployment present in the list")
+        .isTrue();
+    }
+
+    @Test
+    @DisplayName("a deployment deleted server-side disappears from the list without a refresh")
+    void deletedDeploymentDisappears() {
+      kubernetes.getClient().apps().deployments().inNamespace(NAMESPACE)
+        .withName(DEPLOYMENT_NAME).delete();
+
+      wait.until(d -> !listHasDeploymentRow());
+      assertThat(listHasDeploymentRow())
+        .as("row for the server-side-deleted deployment still present in the list")
+        .isFalse();
+    }
+
+    @Test
+    @DisplayName("a deployment modified server-side updates its row in place without a refresh")
+    void modifiedDeploymentUpdatesRow() {
+      kubernetes.getClient().apps().deployments().inNamespace(NAMESPACE)
+        .withName(DEPLOYMENT_NAME)
+        .edit(d -> new DeploymentBuilder(d)
+          .editSpec().editTemplate().editSpec()
+            .editFirstContainer().withImage(MODIFIED_IMAGE).endContainer()
+          .endSpec().endTemplate().endSpec()
+          .build());
+
+      wait.until(d -> deploymentRowShowsImage(MODIFIED_IMAGE));
+      assertThat(deploymentRowShowsImage(MODIFIED_IMAGE))
+        .as("deployment row reflects the server-side image change")
+        .isTrue();
     }
   }
 }
