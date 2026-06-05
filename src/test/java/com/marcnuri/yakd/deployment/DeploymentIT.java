@@ -349,6 +349,20 @@ public class DeploymentIT {
     }
 
     @Test
+    @DisplayName("the side bar does not expose the OpenShift navigation items")
+    void sideBarHasNoOpenShiftNav() {
+      driver.navigate().to(url.toString() + "deployments");
+
+      // Gate on the page being fully loaded (watch synced) so the absence below
+      // cannot pass vacuously against a not-yet-rendered side bar; also guards
+      // that OpenShiftIT's /apis expectations stay on its own dedicated profile.
+      wait.until(d -> listHasDeploymentRow());
+      assertThat(driver.findElements(By.cssSelector("[data-testid='side-bar__nav-routes']")))
+        .as("Routes side bar navigation item in vanilla Kubernetes mode")
+        .isEmpty();
+    }
+
+    @Test
     @DisplayName("the detail page renders the deployment's name")
     void detailRendersName() {
       final Deployment seeded = kubernetes.getClient().apps().deployments()
@@ -395,8 +409,12 @@ public class DeploymentIT {
     }
 
     @AfterEach
-    void deleteOtherNamespaceDeployments() {
+    void deleteOtherNamespaceResources() {
       kubernetes.getClient().apps().deployments().inNamespace(OTHER_NAMESPACE).delete();
+      // Delete the seeded Namespace resources too: the mock server outlives this
+      // class, so a leaked namespace would show up in every later FilterBar.
+      kubernetes.getClient().namespaces().withName(OTHER_NAMESPACE).delete();
+      kubernetes.getClient().namespaces().withName(NAMESPACE).delete();
     }
 
     @Test
