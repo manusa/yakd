@@ -233,6 +233,7 @@ export const SearchPage = connect(
     <DashboardPage title='Query cluster resources'>
       <div className='flex mb-4'>
         <Textfield
+          data-testid='search__input'
           className='flex-1  mr-2'
           inputRef={inputRef}
           placeholder='Search'
