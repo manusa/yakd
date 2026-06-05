@@ -74,6 +74,8 @@ Full-stack `*IT.java` tests in `src/test/java/` validate the rendered UI against
 
 Infrastructure in `src/test/java/com/marcnuri/yakd/selenium/`: `IntegrationTestProfile` bundles `@WithSelenium` + `@WithKubernetesTestServer`; `SeleniumTestResource` owns the ChromeDriver lifecycle and injects `WebDriver` into test fields.
 
+**Boot & isolation semantics (measured in #204):** `@QuarkusTest` classes sharing a `@TestProfile` share **one** Quarkus boot *and one Fabric8 mock server* for the whole Failsafe phase — adding an IT class is ~free; only a profile *change* forces a restart, and that same-JVM restart costs ~0.4 s (the first boot of the phase is the expensive one, ~12–22 s on CI). The flip side: seeded resources and `kubernetes.expect()` expectations **outlive your test class**. Delete what you seed in `@AfterEach`, and put any expectation that changes app-wide behavior on a dedicated profile — `OpenShiftIT` runs on `OpenShiftIntegrationTestProfile` precisely because its always-on `/apis` OpenShift discovery would otherwise silently flip every later class into OpenShift mode.
+
 Pattern: (1) seed mock resources via `kubernetes.getClient()`; (2) `kubernetes.expect().get().withPath(...).andReturn(...)` for anything outside CRUD; (3) navigate with `driver.get(url + "...")`; (4) wait on `data-testid` selectors with `FluentWait`; (5) assert with AssertJ.
 
 ```java
