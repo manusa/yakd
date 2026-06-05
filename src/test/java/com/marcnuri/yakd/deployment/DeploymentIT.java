@@ -17,6 +17,7 @@
 package com.marcnuri.yakd.deployment;
 
 import com.marcnuri.yakd.selenium.IntegrationTestProfile;
+import io.fabric8.kubernetes.api.model.NamespaceBuilder;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.api.model.apps.DeploymentBuilder;
 import io.fabric8.kubernetes.client.dsl.NonDeletingOperation;
@@ -88,10 +89,14 @@ public class DeploymentIT {
   }
 
   private static Deployment deployment(String name) {
+    return deployment(name, NAMESPACE);
+  }
+
+  private static Deployment deployment(String name, String namespace) {
     return new DeploymentBuilder()
       .withNewMetadata()
         .withName(name)
-        .withNamespace(NAMESPACE)
+        .withNamespace(namespace)
         .addToLabels("mutation-marker", "before-edit")
       .endMetadata()
       .withNewSpec()
@@ -314,6 +319,142 @@ public class DeploymentIT {
       assertThat(deploymentRowShowsImage(MODIFIED_IMAGE))
         .as("deployment row reflects the server-side image change")
         .isTrue();
+    }
+  }
+
+  @Nested
+  @DisplayName("when viewing the list and detail pages")
+  class ListAndDetail {
+
+    @Test
+    @DisplayName("the list renders a row for the seeded deployment")
+    void listRendersSeededRow() {
+      driver.navigate().to(url.toString() + "deployments");
+
+      wait.until(d -> listHasDeploymentRow());
+      assertThat(listHasDeploymentRow())
+        .as("row for the seeded deployment present in the list")
+        .isTrue();
+    }
+
+    @Test
+    @DisplayName("the list row shows the seeded deployment's container image")
+    void listRowShowsImage() {
+      driver.navigate().to(url.toString() + "deployments");
+
+      wait.until(d -> deploymentRowShowsImage(SEEDED_IMAGE));
+      assertThat(deploymentRowShowsImage(SEEDED_IMAGE))
+        .as("seeded container image shown in the deployment's row")
+        .isTrue();
+    }
+
+    @Test
+    @DisplayName("the detail page renders the deployment's name")
+    void detailRendersName() {
+      final Deployment seeded = kubernetes.getClient().apps().deployments()
+        .inNamespace(NAMESPACE).withName(DEPLOYMENT_NAME).get();
+      assertThat(seeded).as("seeded deployment available before navigating").isNotNull();
+
+      driver.navigate().to(url.toString() + "deployments/" + seeded.getMetadata().getUid());
+
+      wait.until(d -> d.getPageSource().contains(DEPLOYMENT_NAME));
+      assertThat(driver.getPageSource())
+        .as("detail page contents")
+        .contains(DEPLOYMENT_NAME);
+    }
+  }
+
+  @Nested
+  @DisplayName("when filtering the list by namespace")
+  class FilterByNamespace {
+
+    private static final String OTHER_NAMESPACE = "filter-other";
+    private static final String OTHER_DEPLOYMENT_NAME = "filter-other-deployment";
+    private static final By NAMESPACE_ITEM = By.cssSelector("[data-testid='filter-bar__namespace-item']");
+
+    @BeforeEach
+    void seedOtherNamespaceAndFilter() {
+      // The FilterBar lists Namespace resources streamed through the watch, so both
+      // namespaces must exist as actual resources for their dropdown items to render.
+      kubernetes.getClient().namespaces().resource(new NamespaceBuilder()
+        .withNewMetadata().withName(NAMESPACE).endMetadata().build()).createOr(NonDeletingOperation::update);
+      kubernetes.getClient().namespaces().resource(new NamespaceBuilder()
+        .withNewMetadata().withName(OTHER_NAMESPACE).endMetadata().build()).createOr(NonDeletingOperation::update);
+      kubernetes.getClient().apps().deployments().inNamespace(OTHER_NAMESPACE)
+        .resource(deployment(OTHER_DEPLOYMENT_NAME, OTHER_NAMESPACE)).createOr(NonDeletingOperation::update);
+      driver.navigate().to(url.toString() + "deployments");
+      wait.until(d -> listHasDeploymentRow() && listHasRow(OTHER_DEPLOYMENT_NAME));
+      driver.findElement(By.cssSelector("[data-testid='filter-bar__namespace'] button")).click();
+      // Item texts are only visible once the panel is open, so matching by text also
+      // waits for the dropdown to be effectively expanded.
+      wait.until(d -> d.findElements(NAMESPACE_ITEM).stream()
+        .anyMatch(item -> item.getText().equals(NAMESPACE)));
+      driver.findElements(NAMESPACE_ITEM).stream()
+        .filter(item -> item.getText().equals(NAMESPACE))
+        .findFirst().orElseThrow().click();
+    }
+
+    @AfterEach
+    void deleteOtherNamespaceDeployments() {
+      kubernetes.getClient().apps().deployments().inNamespace(OTHER_NAMESPACE).delete();
+    }
+
+    @Test
+    @DisplayName("selecting a namespace hides deployments from other namespaces")
+    void hidesOtherNamespaceRows() {
+      wait.until(d -> !listHasRow(OTHER_DEPLOYMENT_NAME));
+      assertThat(listHasRow(OTHER_DEPLOYMENT_NAME))
+        .as("row for the other-namespace deployment still present after filtering")
+        .isFalse();
+    }
+
+    @Test
+    @DisplayName("selecting a namespace keeps deployments in that namespace visible")
+    void keepsSelectedNamespaceRows() {
+      wait.until(d -> !listHasRow(OTHER_DEPLOYMENT_NAME));
+      assertThat(listHasDeploymentRow())
+        .as("row for the selected-namespace deployment present after filtering")
+        .isTrue();
+    }
+  }
+
+  @Nested
+  @DisplayName("when searching cluster resources globally")
+  class GlobalSearch {
+
+    private static final By SEARCH_INPUT = By.cssSelector("[data-testid='search__input']");
+
+    @BeforeEach
+    void navigate() {
+      driver.navigate().to(url.toString() + "search");
+      wait.until(d -> d.findElement(SEARCH_INPUT).isDisplayed());
+    }
+
+    @Test
+    @DisplayName("a query matching the seeded deployment shows its row in the results")
+    void matchingQueryShowsRow() {
+      driver.findElement(SEARCH_INPUT).sendKeys(DEPLOYMENT_NAME);
+
+      wait.until(d -> listHasDeploymentRow());
+      assertThat(listHasDeploymentRow())
+        .as("row for the seeded deployment present in the search results")
+        .isTrue();
+    }
+
+    @Test
+    @DisplayName("narrowing the query to a non-matching term hides the results")
+    void nonMatchingQueryHidesRows() {
+      driver.findElement(SEARCH_INPUT).sendKeys(DEPLOYMENT_NAME);
+      // Gate on the matching row first so its later absence proves the query
+      // narrowed the results rather than the store never having synced.
+      wait.until(d -> listHasDeploymentRow());
+
+      driver.findElement(SEARCH_INPUT).sendKeys("-no-match");
+
+      wait.until(d -> !listHasDeploymentRow());
+      assertThat(listHasDeploymentRow())
+        .as("deployment row still present after narrowing the query to a non-matching term")
+        .isFalse();
     }
   }
 }

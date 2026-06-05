@@ -24,7 +24,8 @@ export const Textfield = ({
   placeholder,
   icon,
   inputRef,
-  borderColor = 'border-gray-300'
+  borderColor = 'border-gray-300',
+  ...props
 }) => (
   <div
     className={`
@@ -40,6 +41,7 @@ export const Textfield = ({
       type='text'
       className='flex-1 outline-none'
       placeholder={placeholder}
+      {...props}
       value={value}
       onChange={onChange}
     />
