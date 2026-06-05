@@ -16,7 +16,7 @@
  */
 package com.marcnuri.yakd;
 
-import com.marcnuri.yakd.selenium.IntegrationTestProfile;
+import com.marcnuri.yakd.selenium.OpenShiftIntegrationTestProfile;
 import io.fabric8.kubernetes.api.model.APIGroupBuilder;
 import io.fabric8.kubernetes.api.model.APIGroupListBuilder;
 import io.fabric8.kubernetes.api.model.APIResourceListBuilder;
@@ -47,7 +47,7 @@ import java.time.Duration;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTest
-@TestProfile(IntegrationTestProfile.class)
+@TestProfile(OpenShiftIntegrationTestProfile.class)
 @DisplayName("OpenShift mode")
 public class OpenShiftIT {
 

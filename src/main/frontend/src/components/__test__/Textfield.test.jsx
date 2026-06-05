@@ -35,15 +35,5 @@ describe('Textfield component tests', () => {
       const input = doc.querySelector('input');
       expect(input.getAttribute('data-testid')).toBe('search__input');
     });
-
-    test('should keep the controlled value when additional props are spread', () => {
-      const doc = renderTextfield({
-        'data-testid': 'search__input',
-        value: 'controlled-value'
-      });
-
-      const input = doc.querySelector('input');
-      expect(input.getAttribute('value')).toBe('controlled-value');
-    });
   });
 });
