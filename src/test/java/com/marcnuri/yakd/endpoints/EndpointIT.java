@@ -16,75 +16,36 @@
  */
 package com.marcnuri.yakd.endpoints;
 
+import com.marcnuri.yakd.selenium.AbstractResourceIT;
 import com.marcnuri.yakd.selenium.IntegrationTestProfile;
 import io.fabric8.kubernetes.api.model.Endpoints;
 import io.fabric8.kubernetes.api.model.EndpointsBuilder;
-import io.fabric8.kubernetes.client.dsl.NonDeletingOperation;
-import io.quarkus.test.common.http.TestHTTPResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
-import io.quarkus.test.kubernetes.client.KubernetesServer;
-import io.quarkus.test.kubernetes.client.KubernetesTestServer;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WindowType;
-import org.openqa.selenium.support.ui.FluentWait;
-import org.openqa.selenium.support.ui.Wait;
-
-import java.net.URL;
-import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTest
 @TestProfile(IntegrationTestProfile.class)
 @DisplayName("Endpoint")
-public class EndpointIT {
+public class EndpointIT extends AbstractResourceIT<Endpoints> {
 
-  private static final String NAMESPACE = "default";
-  private static final String ENDPOINT_NAME = "it-endpoint";
   private static final String ADDRESS_IP = "10.40.50.60";
-  private static final By ROW = By.cssSelector("[data-testid='resource-list__row']");
 
-  @KubernetesTestServer
-  KubernetesServer kubernetes;
-
-  @TestHTTPResource
-  URL url;
-  WebDriver driver;
-  Wait<WebDriver> wait;
-
-  @BeforeEach
-  void setUp() {
-    wait = new FluentWait<>(driver)
-      .withTimeout(Duration.ofSeconds(10))
-      .pollingEvery(Duration.ofMillis(100))
-      .ignoring(NoSuchElementException.class)
-      .ignoring(StaleElementReferenceException.class);
-    kubernetes.getClient().endpoints().inNamespace(NAMESPACE)
-      .resource(endpoint()).createOr(NonDeletingOperation::update);
-    driver.switchTo().newWindow(WindowType.TAB);
+  public EndpointIT() {
+    super("endpoints");
   }
 
-  @AfterEach
-  void tearDown() {
-    kubernetes.getClient().endpoints().inNamespace(NAMESPACE).delete();
-    driver.close();
-    driver.switchTo().window(driver.getWindowHandles().iterator().next());
-  }
-
-  private static Endpoints endpoint() {
+  @Override
+  protected Endpoints resource(String name) {
     return new EndpointsBuilder()
       .withNewMetadata()
-        .withName(ENDPOINT_NAME)
-        .withNamespace(NAMESPACE)
+        .withName(name)
+        .withNamespace("default")
       .endMetadata()
       .addNewSubset()
         .addNewAddress()
@@ -100,29 +61,24 @@ public class EndpointIT {
       .build();
   }
 
-  private boolean listHasEndpointRow() {
-    return driver.findElements(ROW).stream()
-      .anyMatch(row -> row.getText().contains(ENDPOINT_NAME));
-  }
-
-  private String seededUid() {
-    final Endpoints seeded = kubernetes.getClient().endpoints()
-      .inNamespace(NAMESPACE).withName(ENDPOINT_NAME).get();
-    assertThat(seeded).as("seeded endpoint available").isNotNull();
-    return seeded.getMetadata().getUid();
-  }
-
   @Nested
   @DisplayName("when viewing the list and detail pages")
   class ListAndDetail {
 
+    private String name;
+
+    @BeforeEach
+    void seedResource() {
+      name = seed("to-view");
+    }
+
     @Test
     @DisplayName("the list renders a row for the seeded endpoint")
     void listRendersSeededRow() {
-      driver.navigate().to(url.toString() + "endpoints");
+      openList();
 
-      wait.until(d -> listHasEndpointRow());
-      assertThat(listHasEndpointRow())
+      awaitRow(name);
+      assertThat(hasRow(name))
         .as("row for the seeded endpoint present in the list")
         .isTrue();
     }
@@ -130,14 +86,14 @@ public class EndpointIT {
     @Test
     @DisplayName("the detail page renders the endpoint's subset address")
     void detailRendersAddress() {
-      driver.navigate().to(url.toString() + "endpoints/" + seededUid());
+      openDetail(seededUid(name));
 
       // The address IP can only come from the seeded resource's subsets, so its
       // presence proves the detail page rendered the resource loaded via the watch.
-      wait.until(d -> d.getPageSource().contains(ADDRESS_IP));
-      assertThat(driver.getPageSource())
+      awaitPageContains(ADDRESS_IP);
+      assertThat(pageContains(ADDRESS_IP))
         .as("endpoint detail page contents")
-        .contains(ADDRESS_IP);
+        .isTrue();
     }
   }
 
@@ -147,22 +103,22 @@ public class EndpointIT {
   @DisplayName("when deleting from the list page")
   class DeleteFromList {
 
+    private String name;
+
     @BeforeEach
     void navigate() {
-      driver.navigate().to(url.toString() + "endpoints");
-      wait.until(d -> listHasEndpointRow());
+      name = seed("to-delete");
+      openList();
+      awaitRow(name);
     }
 
     @Test
     @DisplayName("clicking delete removes the endpoint's row from the list")
     void deleteRemovesRow() {
-      driver.findElements(ROW).stream()
-        .filter(row -> row.getText().contains(ENDPOINT_NAME))
-        .findFirst().orElseThrow()
-        .findElement(By.cssSelector("[data-testid='resource-list__delete']")).click();
+      deleteRow(name);
 
-      wait.until(d -> !listHasEndpointRow());
-      assertThat(listHasEndpointRow())
+      awaitNoRow(name);
+      assertThat(hasRow(name))
         .as("endpoint row still present after delete")
         .isFalse();
     }

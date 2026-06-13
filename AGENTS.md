@@ -132,6 +132,20 @@ UI elements that tests need to find are marked with `data-testid`. Prefer `data-
 | `filter-bar__namespace` / `filter-bar__all-namespaces` / `filter-bar__namespace-item` | namespace filter |
 | `side-bar__nav-<route>` | sidebar nav link (e.g. `side-bar__nav-deployments`) |
 
+### Shared per-resource IT scaffold
+
+Most per-resource ITs extend **`AbstractResourceIT<T>`** and reuse **`ResourceUi`** (both in `src/test/java/com/marcnuri/yakd/selenium/`) so each file declares only what is resource-specific. The base owns the injected `WebDriver`/`KubernetesServer`/URL, a per-test isolated browser tab, the tuned `FluentWait`, and scope-agnostic backend helpers (`seed`/`seededUid`/`label` via fabric8's `client.resource(obj)`, which keys off the object's own metadata and so serves namespaced *and* cluster-scoped types alike). It declares **no** `@Nested`/`@Test` — every test stays visible in the subclass so the file reads as a spec.
+
+To add one: `class FooIT extends AbstractResourceIT<Foo>` with `@QuarkusTest @TestProfile(...) @DisplayName("Foo")`, a `super("<route>")` constructor, and one `resource(String name)` builder. Each `@Nested` group seeds a distinctly-named resource via `seed("to-view")` / `seed("to-delete")` / `seed("to-edit")` and calls the inherited delegates: `openList()`/`openDetail(uid)`/`openEditor(uid)`/`open(path)`, `awaitRow`/`awaitNoRow`/`hasRow`/`rowShows`/`deleteRow`, `awaitPageContains`/`pageContains`, `awaitEditorContains`/`editorReplace`/`save`, `seededUid(name)`/`label(name,key)`, and `await(BooleanSupplier)`. See `ConfigMapIT` for the canonical triad.
+
+Conventions:
+- **No-edit resources** (`Endpoint`, `Namespace`) simply omit the `EditAndSave` group — there is nothing to disable.
+- **Resource-specific behavior** (scale carets, the cronjob suspend toggle, namespace filter, global search) goes in extra `@Nested` groups that drive bespoke elements through the inherited `protected WebDriver driver` (see `DeploymentIT`, `CronJobMutationIT`).
+- **Cluster-scoped discovery**: `ClusterRole`/`ClusterRoleBinding` call `RbacDiscovery.advertise(kubernetes)` in a `@BeforeEach`; OpenShift ITs call `OpenShiftDiscovery.advertise(kubernetes)` and run on `OpenShiftIntegrationTestProfile` (its always-on discovery must not leak — see the boot/isolation note above).
+- **Multi-resource ITs** (`ClusterScopedResourceIT` — two types in one class) reuse `ResourceUi` by composition instead of extending the single-type base.
+- **Per-test naming & isolation**: each group seeds `<route>-<random>-<suffix>`, so no two tests share backend state and the base `@AfterEach` deletes exactly what it seeded. That independence is also the prerequisite for a possible future experiment running a class's tests concurrently — note that actually enabling `@Execution(CONCURRENT)` would additionally need a WebDriver per test/thread, since the injected one is shared and Selenium drivers are not thread-safe.
+- Genuinely page-specific ITs that don't follow the resource list/detail/edit shape stay standalone (`HomeIT` dashboard; `PodExecIT`/`PodLogsIT` terminal & log streaming).
+
 ### Frontend tests (Vitest)
 
 Component tests render via `renderToString` from `react-dom/server` and parse with `parseHtml`. Stores come from `createTestStore` (both in `src/test-utils/`). WebSocket tests use the custom `ws-test-server.js` harness. Nested `describe` groups per concern, one assertion per test:

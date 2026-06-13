@@ -16,76 +16,36 @@
  */
 package com.marcnuri.yakd.ingresses;
 
+import com.marcnuri.yakd.selenium.AbstractResourceIT;
 import com.marcnuri.yakd.selenium.IntegrationTestProfile;
 import io.fabric8.kubernetes.api.model.networking.v1.Ingress;
 import io.fabric8.kubernetes.api.model.networking.v1.IngressBuilder;
-import io.fabric8.kubernetes.client.dsl.NonDeletingOperation;
-import io.quarkus.test.common.http.TestHTTPResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
-import io.quarkus.test.kubernetes.client.KubernetesServer;
-import io.quarkus.test.kubernetes.client.KubernetesTestServer;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WindowType;
-import org.openqa.selenium.support.ui.FluentWait;
-import org.openqa.selenium.support.ui.Wait;
-
-import java.net.URL;
-import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTest
 @TestProfile(IntegrationTestProfile.class)
 @DisplayName("Ingress")
-public class IngressIT {
+public class IngressIT extends AbstractResourceIT<Ingress> {
 
-  private static final String NAMESPACE = "default";
-  private static final String INGRESS_NAME = "it-ingress";
   private static final String DETAIL_MARKER = "ingress-detail-marker";
-  private static final By ROW = By.cssSelector("[data-testid='resource-list__row']");
 
-  @KubernetesTestServer
-  KubernetesServer kubernetes;
-
-  @TestHTTPResource
-  URL url;
-  WebDriver driver;
-  Wait<WebDriver> wait;
-
-  @BeforeEach
-  void setUp() {
-    wait = new FluentWait<>(driver)
-      .withTimeout(Duration.ofSeconds(10))
-      .pollingEvery(Duration.ofMillis(100))
-      .ignoring(NoSuchElementException.class)
-      .ignoring(StaleElementReferenceException.class);
-    kubernetes.getClient().network().v1().ingresses().inNamespace(NAMESPACE)
-      .resource(ingress()).createOr(NonDeletingOperation::update);
-    driver.switchTo().newWindow(WindowType.TAB);
+  public IngressIT() {
+    super("ingresses");
   }
 
-  @AfterEach
-  void tearDown() {
-    kubernetes.getClient().network().v1().ingresses().inNamespace(NAMESPACE).delete();
-    driver.close();
-    driver.switchTo().window(driver.getWindowHandles().iterator().next());
-  }
-
-  private static Ingress ingress() {
+  @Override
+  protected Ingress resource(String name) {
     return new IngressBuilder()
       .withNewMetadata()
-        .withName(INGRESS_NAME)
-        .withNamespace(NAMESPACE)
+        .withName(name)
+        .withNamespace("default")
         .addToLabels("mutation-marker", "before-edit")
         .addToLabels("detail-marker", DETAIL_MARKER)
       .endMetadata()
@@ -109,38 +69,24 @@ public class IngressIT {
       .build();
   }
 
-  private boolean listHasIngressRow() {
-    return driver.findElements(ROW).stream()
-      .anyMatch(row -> row.getText().contains(INGRESS_NAME));
-  }
-
-  private String seededUid() {
-    final Ingress seeded = kubernetes.getClient().network().v1().ingresses()
-      .inNamespace(NAMESPACE).withName(INGRESS_NAME).get();
-    assertThat(seeded).as("seeded ingress available").isNotNull();
-    return seeded.getMetadata().getUid();
-  }
-
-  private String backendMarker() {
-    final Ingress ingress = kubernetes.getClient().network().v1().ingresses()
-      .inNamespace(NAMESPACE).withName(INGRESS_NAME).get();
-    if (ingress == null || ingress.getMetadata().getLabels() == null) {
-      return null;
-    }
-    return ingress.getMetadata().getLabels().get("mutation-marker");
-  }
-
   @Nested
   @DisplayName("when viewing the list and detail pages")
   class ListAndDetail {
 
+    private String name;
+
+    @BeforeEach
+    void seedResource() {
+      name = seed("to-view");
+    }
+
     @Test
     @DisplayName("the list renders a row for the seeded ingress")
     void listRendersSeededRow() {
-      driver.navigate().to(url.toString() + "ingresses");
+      openList();
 
-      wait.until(d -> listHasIngressRow());
-      assertThat(listHasIngressRow())
+      awaitRow(name);
+      assertThat(hasRow(name))
         .as("row for the seeded ingress present in the list")
         .isTrue();
     }
@@ -148,14 +94,14 @@ public class IngressIT {
     @Test
     @DisplayName("the detail page renders the ingress's label")
     void detailRendersLabel() {
-      driver.navigate().to(url.toString() + "ingresses/" + seededUid());
+      openDetail(seededUid(name));
 
       // The label value can only come from the seeded resource's metadata, so its
       // presence proves the detail page rendered the resource loaded via the watch.
-      wait.until(d -> d.getPageSource().contains(DETAIL_MARKER));
-      assertThat(driver.getPageSource())
+      awaitPageContains(DETAIL_MARKER);
+      assertThat(pageContains(DETAIL_MARKER))
         .as("ingress detail page contents")
-        .contains(DETAIL_MARKER);
+        .isTrue();
     }
   }
 
@@ -163,22 +109,22 @@ public class IngressIT {
   @DisplayName("when deleting from the list page")
   class DeleteFromList {
 
+    private String name;
+
     @BeforeEach
     void navigate() {
-      driver.navigate().to(url.toString() + "ingresses");
-      wait.until(d -> listHasIngressRow());
+      name = seed("to-delete");
+      openList();
+      awaitRow(name);
     }
 
     @Test
     @DisplayName("clicking delete removes the ingress's row from the list")
     void deleteRemovesRow() {
-      driver.findElements(ROW).stream()
-        .filter(row -> row.getText().contains(INGRESS_NAME))
-        .findFirst().orElseThrow()
-        .findElement(By.cssSelector("[data-testid='resource-list__delete']")).click();
+      deleteRow(name);
 
-      wait.until(d -> !listHasIngressRow());
-      assertThat(listHasIngressRow())
+      awaitNoRow(name);
+      assertThat(hasRow(name))
         .as("ingress row still present after delete")
         .isFalse();
     }
@@ -188,32 +134,25 @@ public class IngressIT {
   @DisplayName("when editing and saving the YAML")
   class EditAndSave {
 
+    private String name;
+
     @BeforeEach
     void navigate() {
-      driver.navigate().to(url.toString() + "ingresses/" + seededUid() + "/edit");
-      wait.until(d -> aceValue((JavascriptExecutor) d).contains("before-edit"));
+      name = seed("to-edit");
+      openEditor(seededUid(name));
+      awaitEditorContains("before-edit");
     }
 
     @Test
     @DisplayName("saving the edited YAML persists the change to the backend")
     void savePersistsChange() {
-      ((JavascriptExecutor) driver).executeScript(
-        "const ed = document.querySelector('.ace_editor').env.editor;"
-          + "ed.setValue(ed.getValue().replace('before-edit', 'after-edit'), 1);");
+      editorReplace("before-edit", "after-edit");
+      save();
 
-      driver.findElement(By.cssSelector("[data-testid='resource-edit__save']")).click();
-
-      wait.until(d -> "after-edit".equals(backendMarker()));
-      assertThat(backendMarker())
+      await(() -> "after-edit".equals(label(name, "mutation-marker")));
+      assertThat(label(name, "mutation-marker"))
         .as("mutation-marker label on the persisted ingress")
         .isEqualTo("after-edit");
-    }
-
-    private String aceValue(JavascriptExecutor js) {
-      final Object value = js.executeScript(
-        "const e = document.querySelector('.ace_editor');"
-          + "return e && e.env && e.env.editor ? e.env.editor.getValue() : '';");
-      return value == null ? "" : value.toString();
     }
   }
 }

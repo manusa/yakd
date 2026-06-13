@@ -16,78 +16,41 @@
  */
 package com.marcnuri.yakd.cronjobs;
 
+import com.marcnuri.yakd.selenium.AbstractResourceIT;
 import com.marcnuri.yakd.selenium.IntegrationTestProfile;
 import io.fabric8.kubernetes.api.model.batch.v1.CronJob;
 import io.fabric8.kubernetes.api.model.batch.v1.CronJobBuilder;
-import io.fabric8.kubernetes.client.dsl.NonDeletingOperation;
-import io.quarkus.test.common.http.TestHTTPResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
-import io.quarkus.test.kubernetes.client.KubernetesServer;
-import io.quarkus.test.kubernetes.client.KubernetesTestServer;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WindowType;
-import org.openqa.selenium.support.ui.FluentWait;
-import org.openqa.selenium.support.ui.Wait;
-
-import java.net.URL;
-import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTest
 @TestProfile(IntegrationTestProfile.class)
 @DisplayName("CronJob mutation paths")
-public class CronJobMutationIT {
+public class CronJobMutationIT extends AbstractResourceIT<CronJob> {
 
-  private static final String NAMESPACE = "default";
-  private static final String CRONJOB_NAME = "mutation-it-cronjob";
   private static final By TOGGLE = By.cssSelector("[data-testid='cronjob-detail__suspend-toggle']");
 
-  @KubernetesTestServer
-  KubernetesServer kubernetes;
-
-  @TestHTTPResource
-  URL url;
-  WebDriver driver;
-  Wait<WebDriver> wait;
-
-  @BeforeEach
-  void setUp() {
-    wait = new FluentWait<>(driver)
-      .withTimeout(Duration.ofSeconds(10))
-      .pollingEvery(Duration.ofMillis(100))
-      .ignoring(NoSuchElementException.class)
-      .ignoring(StaleElementReferenceException.class);
-    kubernetes.getClient().batch().v1().cronjobs().inNamespace(NAMESPACE)
-      .resource(cronJob(false)).createOr(NonDeletingOperation::update);
-    driver.switchTo().newWindow(WindowType.TAB);
+  public CronJobMutationIT() {
+    super("cronjobs");
   }
 
-  @AfterEach
-  void tearDown() {
-    kubernetes.getClient().batch().v1().cronjobs().inNamespace(NAMESPACE).delete();
-    driver.close();
-    driver.switchTo().window(driver.getWindowHandles().iterator().next());
-  }
-
-  private static CronJob cronJob(boolean suspend) {
+  @Override
+  protected CronJob resource(String name) {
     return new CronJobBuilder()
       .withNewMetadata()
-        .withName(CRONJOB_NAME)
-        .withNamespace(NAMESPACE)
+        .withName(name)
+        .withNamespace("default")
       .endMetadata()
       .withNewSpec()
         .withSchedule("*/1 * * * *")
-        .withSuspend(suspend)
+        .withSuspend(false)
         .withNewJobTemplate()
           .withNewSpec()
             .withNewTemplate()
@@ -102,16 +65,12 @@ public class CronJobMutationIT {
       .build();
   }
 
-  // Navigate to the detail page of the seeded CronJob and wait until the watch has
-  // loaded it into the store. The toggle renders fa-pause-circle for an undefined
-  // resource too (specSuspend(undefined) === false), so the name only renders once
-  // the resource is loaded and is the safe gate before trusting the toggle state.
-  private void navigateToDetail() {
-    final CronJob seeded = kubernetes.getClient().batch().v1().cronjobs()
-      .inNamespace(NAMESPACE).withName(CRONJOB_NAME).get();
-    assertThat(seeded).as("seeded cronjob available before navigating").isNotNull();
-    driver.navigate().to(url.toString() + "cronjobs/" + seeded.getMetadata().getUid());
-    wait.until(d -> d.getPageSource().contains(CRONJOB_NAME));
+  // The toggle renders fa-pause-circle for an undefined resource too (specSuspend(undefined) ===
+  // false), so the name only renders once the resource is loaded and is the safe gate before
+  // trusting the toggle state.
+  private void navigateToDetail(String name) {
+    openDetail(seededUid(name));
+    awaitPageContains(name);
   }
 
   // The toggle renders fa-pause-circle while running and fa-play-circle while suspended,
@@ -121,9 +80,9 @@ public class CronJobMutationIT {
       .anyMatch(e -> e.getAttribute("class").contains(iconClass));
   }
 
-  private Boolean backendSuspended() {
+  private Boolean backendSuspended(String name) {
     final CronJob cronJob = kubernetes.getClient().batch().v1().cronjobs()
-      .inNamespace(NAMESPACE).withName(CRONJOB_NAME).get();
+      .inNamespace("default").withName(name).get();
     if (cronJob == null || cronJob.getSpec() == null) {
       return null;
     }
@@ -134,10 +93,13 @@ public class CronJobMutationIT {
   @DisplayName("when suspending a running cronjob")
   class Suspend {
 
+    private String name;
+
     @BeforeEach
     void navigate() {
-      navigateToDetail();
-      wait.until(d -> toggleShows("fa-pause-circle"));
+      name = seed("to-suspend");
+      navigateToDetail(name);
+      await(() -> toggleShows("fa-pause-circle"));
     }
 
     @Test
@@ -145,8 +107,8 @@ public class CronJobMutationIT {
     void toggleSuspends() {
       driver.findElement(TOGGLE).click();
 
-      wait.until(d -> Boolean.TRUE.equals(backendSuspended()));
-      assertThat(backendSuspended())
+      await(() -> Boolean.TRUE.equals(backendSuspended(name)));
+      assertThat(backendSuspended(name))
         .as("spec.suspend on the persisted cronjob")
         .isTrue();
     }
@@ -156,12 +118,15 @@ public class CronJobMutationIT {
   @DisplayName("when resuming a suspended cronjob")
   class Resume {
 
+    private String name;
+
     @BeforeEach
     void navigate() {
-      kubernetes.getClient().batch().v1().cronjobs().inNamespace(NAMESPACE).withName(CRONJOB_NAME)
+      name = seed("to-resume");
+      kubernetes.getClient().batch().v1().cronjobs().inNamespace("default").withName(name)
         .edit(cronJob -> new CronJobBuilder(cronJob).editSpec().withSuspend(true).endSpec().build());
-      navigateToDetail();
-      wait.until(d -> toggleShows("fa-play-circle"));
+      navigateToDetail(name);
+      await(() -> toggleShows("fa-play-circle"));
     }
 
     @Test
@@ -169,8 +134,8 @@ public class CronJobMutationIT {
     void toggleResumes() {
       driver.findElement(TOGGLE).click();
 
-      wait.until(d -> Boolean.FALSE.equals(backendSuspended()));
-      assertThat(backendSuspended())
+      await(() -> Boolean.FALSE.equals(backendSuspended(name)));
+      assertThat(backendSuspended(name))
         .as("spec.suspend on the persisted cronjob")
         .isFalse();
     }
