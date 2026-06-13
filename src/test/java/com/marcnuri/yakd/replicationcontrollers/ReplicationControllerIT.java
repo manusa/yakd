@@ -16,84 +16,44 @@
  */
 package com.marcnuri.yakd.replicationcontrollers;
 
+import com.marcnuri.yakd.selenium.AbstractResourceIT;
 import com.marcnuri.yakd.selenium.IntegrationTestProfile;
 import io.fabric8.kubernetes.api.model.ReplicationController;
 import io.fabric8.kubernetes.api.model.ReplicationControllerBuilder;
-import io.fabric8.kubernetes.client.dsl.NonDeletingOperation;
-import io.quarkus.test.common.http.TestHTTPResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
-import io.quarkus.test.kubernetes.client.KubernetesServer;
-import io.quarkus.test.kubernetes.client.KubernetesTestServer;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WindowType;
-import org.openqa.selenium.support.ui.FluentWait;
-import org.openqa.selenium.support.ui.Wait;
-
-import java.net.URL;
-import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTest
 @TestProfile(IntegrationTestProfile.class)
 @DisplayName("ReplicationController")
-public class ReplicationControllerIT {
+public class ReplicationControllerIT extends AbstractResourceIT<ReplicationController> {
 
-  private static final String NAMESPACE = "default";
-  private static final String RC_NAME = "it-replication-controller";
   private static final String DETAIL_MARKER = "replication-controller-detail-marker";
-  private static final By ROW = By.cssSelector("[data-testid='resource-list__row']");
 
-  @KubernetesTestServer
-  KubernetesServer kubernetes;
-
-  @TestHTTPResource
-  URL url;
-  WebDriver driver;
-  Wait<WebDriver> wait;
-
-  @BeforeEach
-  void setUp() {
-    wait = new FluentWait<>(driver)
-      .withTimeout(Duration.ofSeconds(10))
-      .pollingEvery(Duration.ofMillis(100))
-      .ignoring(NoSuchElementException.class)
-      .ignoring(StaleElementReferenceException.class);
-    kubernetes.getClient().replicationControllers().inNamespace(NAMESPACE)
-      .resource(replicationController()).createOr(NonDeletingOperation::update);
-    driver.switchTo().newWindow(WindowType.TAB);
+  public ReplicationControllerIT() {
+    super("replicationcontrollers");
   }
 
-  @AfterEach
-  void tearDown() {
-    kubernetes.getClient().replicationControllers().inNamespace(NAMESPACE).delete();
-    driver.close();
-    driver.switchTo().window(driver.getWindowHandles().iterator().next());
-  }
-
-  private static ReplicationController replicationController() {
+  @Override
+  protected ReplicationController resource(String name) {
     return new ReplicationControllerBuilder()
       .withNewMetadata()
-        .withName(RC_NAME)
-        .withNamespace(NAMESPACE)
+        .withName(name)
+        .withNamespace("default")
         .addToLabels("mutation-marker", "before-edit")
         .addToLabels("detail-marker", DETAIL_MARKER)
       .endMetadata()
       .withNewSpec()
         .withReplicas(1)
-        .addToSelector("app", RC_NAME)
+        .addToSelector("app", name)
         .withNewTemplate()
-          .withNewMetadata().addToLabels("app", RC_NAME).endMetadata()
+          .withNewMetadata().addToLabels("app", name).endMetadata()
           .withNewSpec()
             .addNewContainer().withName("container-1").withImage("busybox").endContainer()
           .endSpec()
@@ -102,38 +62,24 @@ public class ReplicationControllerIT {
       .build();
   }
 
-  private boolean listHasReplicationControllerRow() {
-    return driver.findElements(ROW).stream()
-      .anyMatch(row -> row.getText().contains(RC_NAME));
-  }
-
-  private String seededUid() {
-    final ReplicationController seeded = kubernetes.getClient().replicationControllers()
-      .inNamespace(NAMESPACE).withName(RC_NAME).get();
-    assertThat(seeded).as("seeded replication controller available").isNotNull();
-    return seeded.getMetadata().getUid();
-  }
-
-  private String backendMarker() {
-    final ReplicationController replicationController = kubernetes.getClient()
-      .replicationControllers().inNamespace(NAMESPACE).withName(RC_NAME).get();
-    if (replicationController == null || replicationController.getMetadata().getLabels() == null) {
-      return null;
-    }
-    return replicationController.getMetadata().getLabels().get("mutation-marker");
-  }
-
   @Nested
   @DisplayName("when viewing the list and detail pages")
   class ListAndDetail {
 
+    private String name;
+
+    @BeforeEach
+    void seedResource() {
+      name = seed("to-view");
+    }
+
     @Test
     @DisplayName("the list renders a row for the seeded replication controller")
     void listRendersSeededRow() {
-      driver.navigate().to(url.toString() + "replicationcontrollers");
+      openList();
 
-      wait.until(d -> listHasReplicationControllerRow());
-      assertThat(listHasReplicationControllerRow())
+      awaitRow(name);
+      assertThat(hasRow(name))
         .as("row for the seeded replication controller present in the list")
         .isTrue();
     }
@@ -141,14 +87,14 @@ public class ReplicationControllerIT {
     @Test
     @DisplayName("the detail page renders the replication controller's label")
     void detailRendersLabel() {
-      driver.navigate().to(url.toString() + "replicationcontrollers/" + seededUid());
+      openDetail(seededUid(name));
 
       // The label value can only come from the seeded resource's metadata, so its
       // presence proves the detail page rendered the resource loaded via the watch.
-      wait.until(d -> d.getPageSource().contains(DETAIL_MARKER));
-      assertThat(driver.getPageSource())
+      awaitPageContains(DETAIL_MARKER);
+      assertThat(pageContains(DETAIL_MARKER))
         .as("replication controller detail page contents")
-        .contains(DETAIL_MARKER);
+        .isTrue();
     }
   }
 
@@ -156,22 +102,22 @@ public class ReplicationControllerIT {
   @DisplayName("when deleting from the list page")
   class DeleteFromList {
 
+    private String name;
+
     @BeforeEach
     void navigate() {
-      driver.navigate().to(url.toString() + "replicationcontrollers");
-      wait.until(d -> listHasReplicationControllerRow());
+      name = seed("to-delete");
+      openList();
+      awaitRow(name);
     }
 
     @Test
     @DisplayName("clicking delete removes the replication controller's row from the list")
     void deleteRemovesRow() {
-      driver.findElements(ROW).stream()
-        .filter(row -> row.getText().contains(RC_NAME))
-        .findFirst().orElseThrow()
-        .findElement(By.cssSelector("[data-testid='resource-list__delete']")).click();
+      deleteRow(name);
 
-      wait.until(d -> !listHasReplicationControllerRow());
-      assertThat(listHasReplicationControllerRow())
+      awaitNoRow(name);
+      assertThat(hasRow(name))
         .as("replication controller row still present after delete")
         .isFalse();
     }
@@ -181,32 +127,25 @@ public class ReplicationControllerIT {
   @DisplayName("when editing and saving the YAML")
   class EditAndSave {
 
+    private String name;
+
     @BeforeEach
     void navigate() {
-      driver.navigate().to(url.toString() + "replicationcontrollers/" + seededUid() + "/edit");
-      wait.until(d -> aceValue((JavascriptExecutor) d).contains("before-edit"));
+      name = seed("to-edit");
+      openEditor(seededUid(name));
+      awaitEditorContains("before-edit");
     }
 
     @Test
     @DisplayName("saving the edited YAML persists the change to the backend")
     void savePersistsChange() {
-      ((JavascriptExecutor) driver).executeScript(
-        "const ed = document.querySelector('.ace_editor').env.editor;"
-          + "ed.setValue(ed.getValue().replace('before-edit', 'after-edit'), 1);");
+      editorReplace("before-edit", "after-edit");
+      save();
 
-      driver.findElement(By.cssSelector("[data-testid='resource-edit__save']")).click();
-
-      wait.until(d -> "after-edit".equals(backendMarker()));
-      assertThat(backendMarker())
+      await(() -> "after-edit".equals(label(name, "mutation-marker")));
+      assertThat(label(name, "mutation-marker"))
         .as("mutation-marker label on the persisted replication controller")
         .isEqualTo("after-edit");
-    }
-
-    private String aceValue(JavascriptExecutor js) {
-      final Object value = js.executeScript(
-        "const e = document.querySelector('.ace_editor');"
-          + "return e && e.env && e.env.editor ? e.env.editor.getValue() : '';");
-      return value == null ? "" : value.toString();
     }
   }
 }

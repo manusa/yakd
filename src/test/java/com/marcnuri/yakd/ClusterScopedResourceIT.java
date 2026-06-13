@@ -17,6 +17,7 @@
 package com.marcnuri.yakd;
 
 import com.marcnuri.yakd.selenium.IntegrationTestProfile;
+import com.marcnuri.yakd.selenium.ResourceUi;
 import io.fabric8.kubernetes.api.model.GenericKubernetesResourceBuilder;
 import io.fabric8.kubernetes.api.model.Node;
 import io.fabric8.kubernetes.api.model.NodeBuilder;
@@ -35,25 +36,18 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WindowType;
-import org.openqa.selenium.support.ui.FluentWait;
-import org.openqa.selenium.support.ui.Wait;
 
 import java.net.URL;
-import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+// Two distinct resource types are exercised in one class, so this reuses the ResourceUi plumbing
+// by composition rather than extending the single-type AbstractResourceIT.
 @QuarkusTest
 @TestProfile(IntegrationTestProfile.class)
 @DisplayName("Cluster-scoped resources")
 public class ClusterScopedResourceIT {
-
-  private static final By ROW = By.cssSelector("[data-testid='resource-list__row']");
 
   @KubernetesTestServer
   KubernetesServer kubernetes;
@@ -61,27 +55,16 @@ public class ClusterScopedResourceIT {
   @TestHTTPResource
   URL url;
   WebDriver driver;
-  Wait<WebDriver> wait;
+  ResourceUi ui;
 
   @BeforeEach
-  void setUp() {
-    wait = new FluentWait<>(driver)
-      .withTimeout(Duration.ofSeconds(10))
-      .pollingEvery(Duration.ofMillis(100))
-      .ignoring(NoSuchElementException.class)
-      .ignoring(StaleElementReferenceException.class);
-    driver.switchTo().newWindow(WindowType.TAB);
+  void openTab() {
+    ui = ResourceUi.openTab(driver, url);
   }
 
   @AfterEach
-  void tearDown() {
-    driver.close();
-    driver.switchTo().window(driver.getWindowHandles().iterator().next());
-  }
-
-  private boolean listHasRow(String text) {
-    return driver.findElements(ROW).stream()
-      .anyMatch(row -> row.getText().contains(text));
+  void closeTab() {
+    ui.closeTab();
   }
 
   @Nested
@@ -126,10 +109,10 @@ public class ClusterScopedResourceIT {
     @Test
     @DisplayName("the list renders a row for the seeded node")
     void listRendersSeededRow() {
-      driver.navigate().to(url.toString() + "nodes");
+      ui.openList("nodes");
 
-      wait.until(d -> listHasRow(NODE_NAME));
-      assertThat(listHasRow(NODE_NAME))
+      ui.await(() -> ui.hasRow(NODE_NAME));
+      assertThat(ui.hasRow(NODE_NAME))
         .as("row for the seeded node present in the list")
         .isTrue();
     }
@@ -137,14 +120,14 @@ public class ClusterScopedResourceIT {
     @Test
     @DisplayName("the name-keyed detail page renders the node's kubelet version")
     void detailRendersKubeletVersion() {
-      driver.navigate().to(url.toString() + "nodes/" + NODE_NAME);
+      ui.openDetail("nodes", NODE_NAME);
 
       // The kubelet version can only come from the seeded node's status, so its
       // presence proves the detail page rendered the resource loaded via the watch.
-      wait.until(d -> d.getPageSource().contains(KUBELET_VERSION));
-      assertThat(driver.getPageSource())
+      ui.await(() -> ui.pageContains(KUBELET_VERSION));
+      assertThat(ui.pageContains(KUBELET_VERSION))
         .as("node detail page contents")
-        .contains(KUBELET_VERSION);
+        .isTrue();
     }
   }
 
@@ -208,10 +191,10 @@ public class ClusterScopedResourceIT {
     @Test
     @DisplayName("the list renders a row for the seeded custom resource definition")
     void listRendersSeededRow() {
-      driver.navigate().to(url.toString() + "customresourcedefinitions");
+      ui.openList("customresourcedefinitions");
 
-      wait.until(d -> listHasRow(CRD_NAME));
-      assertThat(listHasRow(CRD_NAME))
+      ui.await(() -> ui.hasRow(CRD_NAME));
+      assertThat(ui.hasRow(CRD_NAME))
         .as("row for the seeded custom resource definition present in the list")
         .isTrue();
     }
@@ -219,26 +202,26 @@ public class ClusterScopedResourceIT {
     @Test
     @DisplayName("the detail page renders the custom resource definition's kind")
     void detailRendersKind() {
-      driver.navigate().to(url.toString() + "customresourcedefinitions/" + customResourceDefinitionUid());
+      ui.openDetail("customresourcedefinitions", customResourceDefinitionUid());
 
       // Case-sensitive match: 'Widget' can only come from the CRD's spec.names.kind
       // (the CRD name only contains the lowercase plural form).
-      wait.until(d -> d.getPageSource().contains("Widget"));
-      assertThat(driver.getPageSource())
+      ui.await(() -> ui.pageContains("Widget"));
+      assertThat(ui.pageContains("Widget"))
         .as("custom resource definition detail page contents")
-        .contains("Widget");
+        .isTrue();
     }
 
     @Test
     @DisplayName("the detail page lists the seeded custom resource instance")
     void detailListsCustomResourceInstance() {
-      driver.navigate().to(url.toString() + "customresourcedefinitions/" + customResourceDefinitionUid());
+      ui.openDetail("customresourcedefinitions", customResourceDefinitionUid());
 
       // Custom resource instances are not watched: the embedded list is fetched on
       // demand through the backend's dynamic-client REST endpoint, so this row
       // proves that path end-to-end.
-      wait.until(d -> listHasRow(CUSTOM_RESOURCE_NAME));
-      assertThat(listHasRow(CUSTOM_RESOURCE_NAME))
+      ui.await(() -> ui.hasRow(CUSTOM_RESOURCE_NAME));
+      assertThat(ui.hasRow(CUSTOM_RESOURCE_NAME))
         .as("row for the seeded custom resource instance present in the detail page")
         .isTrue();
     }
