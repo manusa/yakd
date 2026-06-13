@@ -34,6 +34,9 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
 });
 
 const Target = ({targetRef}) => {
+  if (!targetRef) {
+    return null;
+  }
   const Component = Link[targetRef.kind] ?? Fragment;
   return (
     <Component to={`/${targetRef.kind.toLowerCase()}s/${targetRef.uid}`}>

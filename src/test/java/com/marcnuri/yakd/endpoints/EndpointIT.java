@@ -22,10 +22,13 @@ import io.fabric8.kubernetes.api.model.Endpoints;
 import io.fabric8.kubernetes.api.model.EndpointsBuilder;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -35,6 +38,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class EndpointIT extends AbstractResourceIT<Endpoints> {
 
   private static final String ADDRESS_IP = "10.40.50.60";
+  private static final String NO_TARGET_REF_IP = "10.40.50.61";
 
   public EndpointIT() {
     super("endpoints");
@@ -50,8 +54,8 @@ public class EndpointIT extends AbstractResourceIT<Endpoints> {
       .addNewSubset()
         .addNewAddress()
           .withIp(ADDRESS_IP)
-          // The detail page's Target component dereferences address.targetRef.kind without a
-          // null guard, so the address must carry a targetRef or the detail render would throw.
+          // Carries a targetRef so the detail page's Target component renders the resource link;
+          // the absent-targetRef path is covered by the NoTargetRef group below (see #208).
           .withNewTargetRef()
             .withKind("Pod").withName("it-target-pod").withUid("it-target-pod-uid")
           .endTargetRef()
@@ -121,6 +125,52 @@ public class EndpointIT extends AbstractResourceIT<Endpoints> {
       assertThat(hasRow(name))
         .as("endpoint row still present after delete")
         .isFalse();
+    }
+  }
+
+  // Regression coverage for #208: a subset address is not required to carry a targetRef (it is
+  // absent for manually-managed Endpoints, addresses not backed by a Pod, and notReadyAddresses).
+  // The detail page's Target component must render such an address instead of crashing. This
+  // resource shape differs from resource(String), so it is seeded directly and cleaned up here
+  // rather than through the base seed()/AfterEach (which only tracks the resource(String) shape).
+  @Nested
+  @DisplayName("when a subset address has no targetRef")
+  class NoTargetRef {
+
+    private Endpoints endpoint;
+
+    @BeforeEach
+    void seedResource() {
+      endpoint = new EndpointsBuilder()
+        .withNewMetadata()
+          .withName("endpoints-no-target-ref-" + UUID.randomUUID().toString().substring(0, 8))
+          .withNamespace("default")
+        .endMetadata()
+        .addNewSubset()
+          .addNewAddress().withIp(NO_TARGET_REF_IP).endAddress()
+          .addNewPort().withName("http").withPort(8080).withProtocol("TCP").endPort()
+        .endSubset()
+        .build();
+      kubernetes.getClient().resource(endpoint).create();
+    }
+
+    @AfterEach
+    void deleteResource() {
+      kubernetes.getClient().resource(endpoint).delete();
+    }
+
+    @Test
+    @DisplayName("the detail page renders the address instead of crashing")
+    void detailRendersAddressWithoutTargetRef() {
+      final String uid = kubernetes.getClient().resource(endpoint).get().getMetadata().getUid();
+      openDetail(uid);
+
+      // The IP can only come from the seeded subset address, so its presence proves the detail
+      // page rendered the address even though it has no targetRef (before the fix the render threw).
+      awaitPageContains(NO_TARGET_REF_IP);
+      assertThat(pageContains(NO_TARGET_REF_IP))
+        .as("endpoint detail page renders the address that has no targetRef")
+        .isTrue();
     }
   }
 }
