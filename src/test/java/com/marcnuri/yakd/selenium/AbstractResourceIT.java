@@ -45,13 +45,14 @@ import static org.assertj.core.api.Assertions.assertThat;
  * which keys off the object's own metadata, so the same code serves both namespaced and
  * cluster-scoped resources.
  *
- * <p><strong>Naming &amp; isolation.</strong> The constructor derives a per-class random base name;
- * {@link #seed(String)} appends a behavior suffix (e.g. {@code "to-delete"}), so every test seeds a
- * distinctly-named resource and no two tests in a class share backend state. This keeps the tests
- * mutually independent and is a prerequisite for a possible future experiment running them
- * concurrently within a class — note that actually enabling {@code @Execution(CONCURRENT)} would
- * additionally require a WebDriver per test/thread, as the one injected here is shared and Selenium
- * drivers are not thread-safe.
+ * <p><strong>Naming &amp; isolation.</strong> The constructor derives a random base name; under the
+ * default {@code PER_METHOD} lifecycle the class is instantiated once per {@code @Test}, so the base
+ * is re-randomized for every test, not shared across a class. {@link #seed(String)} appends a
+ * behavior suffix (e.g. {@code "to-delete"}), so every test seeds a distinctly-named resource and no
+ * two tests share backend state. This keeps the tests mutually independent and is a prerequisite for
+ * a possible future experiment running them concurrently within a class — note that actually
+ * enabling {@code @Execution(CONCURRENT)} would additionally require a WebDriver per test/thread, as
+ * the one injected here is shared and Selenium drivers are not thread-safe.
  *
  * @param <T> the Kubernetes resource type under test
  */
