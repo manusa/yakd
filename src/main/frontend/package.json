@@ -28,7 +28,7 @@
     "@types/react": "18.3.18",
     "@types/react-dom": "18.3.5",
     "@types/react-virtualized": "9.22.3",
-    "@vitejs/plugin-react": "4.3.4",
+    "@vitejs/plugin-react": "6.0.2",
     "autoprefixer": "10.4.24",
     "eslint": "8.57.1",
     "eslint-config-prettier": "9.1.0",
@@ -39,7 +39,7 @@
     "tailwindcss": "3.4.3",
     "typeface-open-sans": "1.1.13",
     "typescript": "5.9.3",
-    "vite": "6.4.2",
+    "vite": "8.0.16",
     "vitest": "4.1.0",
     "ws": "8.19.0"
   },
