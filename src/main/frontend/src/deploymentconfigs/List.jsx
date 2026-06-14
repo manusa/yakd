@@ -75,6 +75,7 @@ const Rows = ({deploymentConfigs}) => {
         </Table.Cell>
         <Table.Cell className='whitespace-nowrap text-center'>
           <Link
+            data-testid='deploymentconfig-list__restart'
             variant={Link.variants.outline}
             onClick={restartDC(deploymentConfig)}
             title='Restart'

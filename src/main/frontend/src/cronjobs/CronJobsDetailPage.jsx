@@ -71,6 +71,7 @@ export const CronJobsDetailPage = withParams(
       deleteFunction={api.deleteCj}
       actions={
         <Link
+          data-testid='cronjob-detail__trigger'
           className='ml-2'
           size={Link.sizes.small}
           variant={Link.variants.outline}
