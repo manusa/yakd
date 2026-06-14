@@ -68,6 +68,7 @@ const Rows = ({statefulSets}) => {
       </Table.Cell>
       <Table.Cell className='whitespace-nowrap text-center'>
         <Link
+          data-testid='statefulset-list__restart'
           variant={Link.variants.outline}
           onClick={restartStatefulSet(statefulSet)}
           title='Restart'

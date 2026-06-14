@@ -53,6 +53,7 @@ public class OpenShiftIT extends AbstractResourceIT<Route> {
       .withNewMetadata()
         .withName(name)
         .withNamespace("default")
+        .addToLabels("mutation-marker", "before-edit")
       .endMetadata()
       .withNewSpec()
         .withHost(ROUTE_HOST)
@@ -134,6 +135,97 @@ public class OpenShiftIT extends AbstractResourceIT<Route> {
       assertThat(pageContains(ROUTE_HOST))
         .as("route detail page contents")
         .isTrue();
+    }
+  }
+
+  @Nested
+  @DisplayName("when deleting a route from the list page")
+  class RouteDeleteFromList {
+
+    private String name;
+
+    @BeforeEach
+    void navigate() {
+      name = seed("to-delete");
+      openList();
+      awaitRow(name);
+    }
+
+    @Test
+    @DisplayName("clicking delete removes the route's row from the list")
+    void deleteRemovesRow() {
+      deleteRow(name);
+
+      awaitNoRow(name);
+      assertThat(hasRow(name))
+        .as("route row still present after delete")
+        .isFalse();
+    }
+  }
+
+  @Nested
+  @DisplayName("when editing and saving a route's YAML")
+  class RouteEditAndSave {
+
+    private String name;
+
+    @BeforeEach
+    void navigate() {
+      name = seed("to-edit");
+      openEditor(seededUid(name));
+      awaitEditorContains("before-edit");
+    }
+
+    @Test
+    @DisplayName("saving the edited YAML persists the change to the backend")
+    void savePersistsChange() {
+      editorReplace("before-edit", "after-edit");
+      save();
+
+      await(() -> "after-edit".equals(label(name, "mutation-marker")));
+      assertThat(label(name, "mutation-marker"))
+        .as("mutation-marker label on the persisted route")
+        .isEqualTo("after-edit");
+    }
+  }
+
+  @Nested
+  @DisplayName("when the server pushes live route watch events")
+  class RouteWatchLiveUpdates {
+
+    private String name;
+
+    @BeforeEach
+    void navigate() {
+      name = seed("to-watch");
+      openList();
+      // Waiting for the seeded row guarantees the watch stream is connected and its initial sync
+      // has replayed before the test mutates the cluster, so any later change can only reach the
+      // list through a live watch event.
+      awaitRow(name);
+    }
+
+    @Test
+    @DisplayName("a route created server-side appears in the list without a refresh")
+    void createdRouteAppears() {
+      final String added = seed("watch-added");
+
+      awaitRow(added);
+      assertThat(hasRow(added))
+        .as("row for the server-side-created route present in the list")
+        .isTrue();
+    }
+
+    @Test
+    @DisplayName("a route deleted server-side disappears from the list without a refresh")
+    void deletedRouteDisappears() {
+      kubernetes.getClient().resources(Route.class)
+        .inNamespace("default").withName(name).delete();
+
+      awaitNoRow(name);
+      assertThat(hasRow(name))
+        .as("row for the server-side-deleted route still present in the list")
+        .isFalse();
     }
   }
 }

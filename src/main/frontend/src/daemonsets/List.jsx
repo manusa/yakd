@@ -64,6 +64,7 @@ const Rows = ({daemonSets}) => {
       </Table.Cell>
       <Table.Cell className='whitespace-nowrap text-center'>
         <Link
+          data-testid='daemonset-list__restart'
           variant={Link.variants.outline}
           onClick={restart(daemonSet)}
           title='Restart'
