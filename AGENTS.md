@@ -225,6 +225,25 @@ Gotchas (each will silently waste a loop if missed): `~/.m2` mounts to `/m2`, so
 
 Release/snapshot pipelines (`publish-snapshot.yml`, `publish-release.yml`) build multi-arch images (`amd64` + `arm64`) and stitch them with `docker manifest create`. Required GitHub secrets: `DOCKER_USERNAME`, `DOCKER_PASSWORD` (Docker Hub); `GITHUB_TOKEN` is provided automatically (GHCR). Release tag `v1.2.3` → image tag `1.2.3` (strip via `${VERSION#v}`).
 
+### Cutting a release
+
+Releases are **tag-driven** — there is no version to bump in `pom.xml` (the version flows from the tag through `${revision}`; see the `pom.xml:7,22-23` gotcha). Pushing a `v*` tag triggers `publish-release.yml`.
+
+1. **Ensure `main` is green and is exactly what you want shipped.** The release workflow runs **no tests** — the only safety net is the CI that already gated the merged PRs. Run `make check` locally to confirm.
+2. **Tag `main` and push** (tags so far are lightweight; the last release was `v0.0.9`):
+   ```bash
+   git tag v1.2.3
+   git push origin v1.2.3
+   ```
+   The push triggers `publish-release.yml`, which builds per-arch native images and publishes the multi-arch manifest to **both** registries: `marcnuri/yakd:1.2.3` (Docker Hub) and `ghcr.io/manusa/yakd:1.2.3` (GHCR).
+3. **Create the GitHub Release** — the pipeline does **not** do this, but every prior release has one, so it's part of the process. Use GitHub's auto-generated notes (the `## What's Changed` + PR list + compare link format):
+   ```bash
+   gh release create v1.2.3 --generate-notes --latest
+   ```
+
+Notes:
+- **Snapshots are automatic**: every push to `main` publishes `:snapshot` multi-arch images via `publish-snapshot.yml` — no action needed.
+
 ## Troubleshooting
 
 **`*IT.java` fails with ChromeDriver errors.** Chrome isn't on PATH (see Selenium gotcha above). Tests run headless; flip with `@WithSelenium(headless = false)` to see the actual browser when debugging locally.
