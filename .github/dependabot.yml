@@ -5,6 +5,10 @@ updates:
     schedule:
       interval: weekly
     versioning-strategy: increase
+    groups:
+      xterm:
+        patterns:
+          - "@xterm/*"
   - package-ecosystem: maven
     directory: /
     schedule:
