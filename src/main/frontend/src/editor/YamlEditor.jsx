@@ -15,11 +15,17 @@
  *
  */
 import React from 'react';
-import AceEditor from 'react-ace';
+import ReactAce from 'react-ace';
 
 import 'ace-builds/src-noconflict/mode-yaml';
 import 'ace-builds/src-noconflict/theme-twilight';
 import 'ace-builds/src-noconflict/ext-searchbox';
+
+// react-ace is a CommonJS-only package: its component is `module.exports.default`.
+// Vite/rolldown's ESM interop no longer unwraps that to the default import, so
+// resolve it explicitly (works whether the interop hands back the component or the
+// module namespace).
+const AceEditor = ReactAce.default ?? ReactAce;
 
 export const YamlEditor = ({onChange = () => {}, value = ''}) => (
   <AceEditor
