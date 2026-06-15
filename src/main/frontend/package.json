@@ -41,7 +41,7 @@
     "typescript": "5.9.3",
     "vite": "8.0.16",
     "vitest": "4.1.9",
-    "ws": "8.19.0"
+    "ws": "8.21.0"
   },
   "scripts": {
     "eslint": "eslint src/. --max-warnings=0",
