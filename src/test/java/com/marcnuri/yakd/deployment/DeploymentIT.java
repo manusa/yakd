@@ -367,6 +367,23 @@ public class DeploymentIT extends AbstractResourceIT<Deployment> {
         .as("row for the selected-namespace deployment present after filtering")
         .isTrue();
     }
+
+    @Test
+    @DisplayName("clearing the filter with All namespaces restores other-namespace rows")
+    void allNamespacesRestoresRows() {
+      // The @BeforeEach filtered to "default", so the other-namespace deployment is hidden.
+      awaitNoRow(OTHER_DEPLOYMENT_NAME);
+      driver.findElement(By.cssSelector("[data-testid='filter-bar__namespace'] button")).click();
+      final By allNamespaces = By.cssSelector("[data-testid='filter-bar__all-namespaces']");
+      await(() -> !driver.findElements(allNamespaces).isEmpty()
+        && driver.findElement(allNamespaces).isDisplayed());
+      driver.findElement(allNamespaces).click();
+
+      await(() -> hasRow(OTHER_DEPLOYMENT_NAME));
+      assertThat(hasRow(OTHER_DEPLOYMENT_NAME))
+        .as("row for the other-namespace deployment restored after clearing the filter")
+        .isTrue();
+    }
   }
 
   @Nested

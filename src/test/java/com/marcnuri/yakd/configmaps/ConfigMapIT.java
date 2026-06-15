@@ -18,14 +18,19 @@ package com.marcnuri.yakd.configmaps;
 
 import com.marcnuri.yakd.selenium.AbstractResourceIT;
 import com.marcnuri.yakd.selenium.IntegrationTestProfile;
+import com.marcnuri.yakd.selenium.SeleniumTestResource;
 import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.api.model.ConfigMapBuilder;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -136,6 +141,62 @@ public class ConfigMapIT extends AbstractResourceIT<ConfigMap> {
       assertThat(label(name, "mutation-marker"))
         .as("mutation-marker label on the persisted config map")
         .isEqualTo("after-edit");
+    }
+  }
+
+  @Nested
+  @DisplayName("when deleting from the detail page action menu")
+  class DeleteFromDetail {
+
+    private String name;
+
+    @BeforeEach
+    void navigate() {
+      name = seed("to-delete-detail");
+      openDetail(seededUid(name));
+      // The name only renders once the detail page has loaded the resource, so it gates the action.
+      awaitPageContains(name);
+    }
+
+    @Test
+    @DisplayName("clicking delete removes the config map from the backend")
+    void deleteRemovesResource() {
+      deleteFromDetail();
+
+      await(() -> !exists(name));
+      assertThat(exists(name))
+        .as("config map still present in the backend after detail-page delete")
+        .isFalse();
+    }
+  }
+
+  @Nested
+  @DisplayName("when downloading from the detail page action menu")
+  class DownloadFromDetail {
+
+    private String name;
+
+    @BeforeEach
+    void navigate() {
+      name = seed("to-download");
+      openDetail(seededUid(name));
+      awaitPageContains(name);
+    }
+
+    @Test
+    @DisplayName("clicking download writes the config map YAML to a file")
+    void downloadWritesYaml() throws Exception {
+      downloadFromDetail();
+
+      // Read on demand (not via @ConfigProperty) so this Selenium-only property never becomes a
+      // required config value at the boot of unrelated @QuarkusTest unit tests.
+      final String downloadDirectory = ConfigProvider.getConfig()
+        .getValue(SeleniumTestResource.DOWNLOAD_DIRECTORY_PROPERTY, String.class);
+      final Path downloaded = Path.of(downloadDirectory, name + ".yaml");
+      await(() -> Files.exists(downloaded));
+      assertThat(Files.readString(downloaded))
+        .as("downloaded config map YAML contents")
+        .contains(DETAIL_MARKER);
     }
   }
 }

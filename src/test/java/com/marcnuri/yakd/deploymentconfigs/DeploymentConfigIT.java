@@ -211,6 +211,18 @@ public class DeploymentConfigIT extends AbstractResourceIT<DeploymentConfig> {
         .as("spec.replicas on the persisted deployment config")
         .isEqualTo(2);
     }
+
+    @Test
+    @DisplayName("decrementing the replicas persists the new replica count to the backend")
+    void decrementPersistsReplicas() {
+      // The seeded deployment config starts at one replica, so a single decrement scales it to zero.
+      driver.findElement(By.cssSelector("[data-testid='replicas-field__decrement']")).click();
+
+      await(() -> Integer.valueOf(0).equals(backendReplicas(name)));
+      assertThat(backendReplicas(name))
+        .as("spec.replicas on the persisted deployment config")
+        .isEqualTo(0);
+    }
   }
 
   @Nested
