@@ -1,0 +1,15 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /src/main/frontend
+    schedule:
+      interval: weekly
+    versioning-strategy: increase
+  - package-ecosystem: maven
+    directory: /
+    schedule:
+      interval: weekly
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
