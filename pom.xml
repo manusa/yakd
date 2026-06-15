@@ -16,7 +16,7 @@
     <version.awaitility>4.3.0</version.awaitility>
     <version.commons-io>2.21.0</version.commons-io>
     <version.exec-maven-plugin>3.6.3</version.exec-maven-plugin>
-    <version.failsafe-maven-plugin>3.5.4</version.failsafe-maven-plugin>
+    <version.failsafe-maven-plugin>3.5.6</version.failsafe-maven-plugin>
     <version.selenium>4.44.0</version.selenium>
     <version.surefire-maven-plugin>3.5.4</version.surefire-maven-plugin>
     <revision>0.0.0-SNAPSHOT</revision>
