@@ -27,7 +27,7 @@ import {Age, Icon, Link, ResourceListV2, Table} from '../components';
 import {api, selectors} from './';
 
 const headers = [
-  <span>
+  <span key='name'>
     <Icon className='fa-id-card' /> Name
   </span>,
   'Namespace',

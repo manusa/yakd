@@ -27,11 +27,11 @@ import {Icon, Link, Tooltip, Table, ResourceListV2} from '../components';
 import {api} from './';
 
 const headers = [
-  <span>
+  <span key='name'>
     <Icon className='fa-id-card' /> Name
   </span>,
   'Namespace',
-  <span>
+  <span key='time'>
     <Icon stylePrefix='far' icon='fa-clock' /> Time
   </span>,
   ''

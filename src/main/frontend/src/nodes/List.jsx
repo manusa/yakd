@@ -28,13 +28,13 @@ import {selectors} from './';
 
 const headers = [
   '',
-  <span className='whitespace-nowrap'>
+  <span key='name' className='whitespace-nowrap'>
     <Icon icon='fa-id-card' /> Name
   </span>,
-  <span className='whitespace-nowrap'>
+  <span key='roles' className='whitespace-nowrap'>
     <Icon icon='fa-server' /> Roles
   </span>,
-  <span>
+  <span key='labels'>
     <Icon icon='fa-tags' /> Labels
   </span>
 ];

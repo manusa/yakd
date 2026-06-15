@@ -44,7 +44,7 @@
     "ws": "8.19.0"
   },
   "scripts": {
-    "eslint": "eslint src/.",
+    "eslint": "eslint src/. --max-warnings=0",
     "prettier": "prettier 'src/**/*.{js,jsx,ts,tsx,json,css,scss,md}' --ignore-path ../../../.gitignore --write",
     "prettier:check": "prettier 'src/**/*.{js,jsx,ts,tsx,json,css,scss,md}' --ignore-path ../../../.gitignore --check",
     "typecheck": "tsc -p jsconfig.json",

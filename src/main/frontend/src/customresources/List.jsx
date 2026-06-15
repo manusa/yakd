@@ -23,7 +23,7 @@ import {api, selectors} from './';
 
 const headers = customResourceDefinition => {
   const ret = [
-    <span>
+    <span key='name'>
       <Icon className='fa-id-card' /> Name
     </span>
   ];

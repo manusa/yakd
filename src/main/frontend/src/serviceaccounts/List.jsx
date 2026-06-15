@@ -29,11 +29,11 @@ import {Age, Icon, Link, ResourceListV2, Table} from '../components';
 import {api} from './';
 
 const headers = [
-  <span>
+  <span key='name'>
     <Icon icon='fa-id-card' /> Name
   </span>,
   'Namespace',
-  <span>
+  <span key='labels'>
     <Icon icon='fa-tags' /> Labels
   </span>,
   'Age',
