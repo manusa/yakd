@@ -24,7 +24,7 @@
   "devDependencies": {
     "@eslint/js": "8.57.1",
     "@fortawesome/fontawesome-free": "5.14.0",
-    "@types/lodash": "4.17.23",
+    "@types/lodash": "4.17.24",
     "@types/react": "18.3.18",
     "@types/react-dom": "18.3.5",
     "@types/react-virtualized": "9.22.3",
