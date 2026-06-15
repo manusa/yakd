@@ -22,7 +22,7 @@ import {api, selectors} from './';
 
 const headers = [
   '',
-  <span>
+  <span key='name'>
     <Icon icon='fa-id-card' /> Name
   </span>,
   'Namespace',

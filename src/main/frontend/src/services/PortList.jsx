@@ -18,7 +18,7 @@ import React from 'react';
 import {Icon, Table} from '../components';
 
 const headers = [
-  <span>
+  <span key='name'>
     <Icon icon='fa-id-card' /> Name
   </span>,
   'App Protocol',

@@ -23,12 +23,12 @@ import {selectors} from './';
 const headers = [
   '',
   'Type',
-  <span>
+  <span key='name'>
     <Icon icon='fa-id-card' /> Name
   </span>,
   'Reason',
   'Event',
-  <div className='text-right'>
+  <div key='last-seen' className='text-right'>
     <Icon stylePrefix='far' icon='fa-clock' /> Last Seen
   </div>
 ];

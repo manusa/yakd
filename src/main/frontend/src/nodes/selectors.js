@@ -69,5 +69,5 @@ export const isMinikube = nodes =>
   Object.values(nodes)
     .filter(node => name(node) === 'minikube')
     .filter(node => labels(node)['minikube.k8s.io/name'] === 'minikube')
-    .filter(node => labels(node).hasOwnProperty('minikube.k8s.io/version'))
+    .filter(node => Object.hasOwn(labels(node), 'minikube.k8s.io/version'))
     .length === 1;

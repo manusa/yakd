@@ -21,7 +21,7 @@ import {Icon, Link, ResourceListV2, Table} from '../components';
 import {api, selectors, GroupLink} from './';
 
 const headers = [
-  <span>
+  <span key='name'>
     <Icon className='fa-id-card' /> Name
   </span>,
   'Group',
