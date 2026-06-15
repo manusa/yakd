@@ -113,6 +113,11 @@ public abstract class AbstractResourceIT<T extends HasMetadata> {
     return resource.getMetadata().getName();
   }
 
+  /** Whether a previously {@link #seed(String) seeded} resource still exists on the server. */
+  protected boolean exists(String name) {
+    return fetch(name) != null;
+  }
+
   /** The server-assigned uid of a previously {@link #seed(String) seeded} resource. */
   protected String seededUid(String name) {
     final HasMetadata stored = fetch(name);
@@ -171,6 +176,14 @@ public abstract class AbstractResourceIT<T extends HasMetadata> {
 
   protected void deleteRow(String name) {
     ui.deleteRow(name);
+  }
+
+  protected void deleteFromDetail() {
+    ui.deleteFromDetail();
+  }
+
+  protected void downloadFromDetail() {
+    ui.downloadFromDetail();
   }
 
   protected void awaitRow(String name) {

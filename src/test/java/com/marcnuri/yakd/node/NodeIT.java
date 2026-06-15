@@ -189,5 +189,15 @@ public class NodeIT extends AbstractResourceIT<Node> {
         .as("allocatable memory rendered in the node's Memory dial")
         .isTrue();
     }
+
+    @Test
+    @DisplayName("the Memory dial renders the summed requested memory from scheduled pods")
+    void memoryDialShowsRequested() {
+      // 321Mi requested by the scheduled pod, rendered human-readable by the UI.
+      awaitPageContains("321 MiB");
+      assertThat(pageContains("321 MiB"))
+        .as("requested memory rendered in the node's Memory dial")
+        .isTrue();
+    }
   }
 }

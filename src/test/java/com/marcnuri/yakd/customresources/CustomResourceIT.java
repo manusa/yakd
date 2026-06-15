@@ -174,5 +174,22 @@ public class CustomResourceIT {
         .as("mutation-marker label on the persisted custom resource instance")
         .isEqualTo("after-edit");
     }
+
+    @Test
+    @DisplayName("editing and cancelling discards the change without persisting")
+    void cancelDiscardsChange() {
+      driver.findElement(By.linkText(instanceName)).click();
+      ui.await(() -> ui.editorContains("before-edit"));
+
+      ui.editorReplace("before-edit", "after-edit-cancelled");
+      driver.findElement(By.cssSelector("[data-testid='resource-edit__cancel']")).click();
+      // Cancel unmounts the modal; waiting for it to close proves Cancel fired before we assert
+      // that nothing was persisted.
+      ui.await(() -> driver.findElements(By.cssSelector("[data-testid='resource-edit__cancel']")).isEmpty());
+
+      assertThat(backendMutationMarker())
+        .as("mutation-marker label unchanged after cancelling the edit")
+        .isEqualTo("before-edit");
+    }
   }
 }

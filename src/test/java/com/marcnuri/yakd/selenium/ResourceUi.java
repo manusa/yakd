@@ -42,6 +42,9 @@ public class ResourceUi {
   private static final By ROW = By.cssSelector("[data-testid='resource-list__row']");
   private static final By ROW_DELETE = By.cssSelector("[data-testid='resource-list__delete']");
   private static final By EDIT_SAVE = By.cssSelector("[data-testid='resource-edit__save']");
+  private static final By POPUP_TRIGGER = By.cssSelector("[data-testid='popup-menu__trigger']");
+  private static final By DETAIL_DELETE = By.cssSelector("[data-testid='resource-detail__delete']");
+  private static final By DETAIL_DOWNLOAD = By.cssSelector("[data-testid='resource-detail__download']");
 
   private final WebDriver driver;
   private final URL url;
@@ -124,6 +127,26 @@ public class ResourceUi {
 
   public boolean pageContains(String text) {
     return driver.getPageSource().contains(text);
+  }
+
+  /**
+   * Opens the detail-page action menu and clicks its Delete item. The menu items are in the DOM but
+   * CSS-hidden until the trigger is clicked, so this opens the popup and waits for the item to be
+   * visible before clicking it.
+   */
+  public void deleteFromDetail() {
+    clickDetailMenuItem(DETAIL_DELETE);
+  }
+
+  /** Opens the detail-page action menu and clicks its Download item. See {@link #deleteFromDetail()}. */
+  public void downloadFromDetail() {
+    clickDetailMenuItem(DETAIL_DOWNLOAD);
+  }
+
+  private void clickDetailMenuItem(By item) {
+    driver.findElement(POPUP_TRIGGER).click();
+    await(() -> !driver.findElements(item).isEmpty() && driver.findElement(item).isDisplayed());
+    driver.findElement(item).click();
   }
 
   // --- YAML editor ---
