@@ -23,7 +23,7 @@ import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.api.model.ConfigMapBuilder;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -40,9 +40,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ConfigMapIT extends AbstractResourceIT<ConfigMap> {
 
   private static final String DETAIL_MARKER = "config-map-detail-marker";
-
-  @ConfigProperty(name = SeleniumTestResource.DOWNLOAD_DIRECTORY_PROPERTY)
-  String downloadDirectory;
 
   public ConfigMapIT() {
     super("configmaps");
@@ -191,6 +188,10 @@ public class ConfigMapIT extends AbstractResourceIT<ConfigMap> {
     void downloadWritesYaml() throws Exception {
       downloadFromDetail();
 
+      // Read on demand (not via @ConfigProperty) so this Selenium-only property never becomes a
+      // required config value at the boot of unrelated @QuarkusTest unit tests.
+      final String downloadDirectory = ConfigProvider.getConfig()
+        .getValue(SeleniumTestResource.DOWNLOAD_DIRECTORY_PROPERTY, String.class);
       final Path downloaded = Path.of(downloadDirectory, name + ".yaml");
       await(() -> Files.exists(downloaded));
       assertThat(Files.readString(downloaded))
