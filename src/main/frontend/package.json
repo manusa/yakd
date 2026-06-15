@@ -13,7 +13,7 @@
     "dompurify": "3.4.0",
     "lodash": "4.18.1",
     "react": "18.2.0",
-    "react-ace": "11.0.1",
+    "react-ace": "14.0.1",
     "react-dom": "18.2.0",
     "react-redux": "9.2.0",
     "react-router-dom": "6.30.4",
