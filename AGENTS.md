@@ -1,6 +1,6 @@
 # YAKD — AI Agents Instructions
 
-YAKD (Yet Another Kubernetes Dashboard) is a Quarkus (Java 21) + React web UI for Kubernetes and OpenShift clusters. Frontend lives under `src/main/frontend/`, gets built into the backend JAR under `frontend/` (see `pom.xml:120-123`). This file documents what an old hand would tell a new contributor on day one — read this first; fall back to grep only when something here doesn't match what you see.
+YAKD (Yet Another Kubernetes Dashboard) is a Quarkus (Java 25) + React web UI for Kubernetes and OpenShift clusters. Frontend lives under `src/main/frontend/`, gets built into the backend JAR under `frontend/` (see `pom.xml:120-123`). This file documents what an old hand would tell a new contributor on day one — read this first; fall back to grep only when something here doesn't match what you see.
 
 ## Canonical commands
 
@@ -54,7 +54,7 @@ Barrel conventions:
 
 ## Code style
 
-**Java.** Java 21. Apache 2.0 header required on every source file (the license-check script gates this; see Gotchas).
+**Java.** Java 25. Apache 2.0 header required on every source file (the license-check script gates this; see Gotchas).
 
 **JavaScript/React.**
 - Prettier config (in `package.json:70-77`): `singleQuote`, `jsxSingleQuote`, `arrowParens: avoid`, `bracketSpacing: false`, `trailingComma: none`. `make fmt` runs it (mutating — see Gotchas).
@@ -213,7 +213,7 @@ docker run --rm --cpus=2 \
   -v "$HOME/.m2":/m2 \
   -v /tmp/flake-logs:/logs \
   --user "$(id -u):$(id -g)" --entrypoint bash \
-  maven:3.9.9-eclipse-temurin-21 -c '
+  maven:3.9.16-eclipse-temurin-25 -c '
     for i in $(seq 1 50); do
       mvn -o -s /m2/settings.xml -Dmaven.repo.local=/m2/repository \
         clean test -Dtest=PodExecEndpointTest -Dquarkus.build.skip=true > /logs/run-$i.log 2>&1 \

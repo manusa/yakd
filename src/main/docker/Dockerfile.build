@@ -1,4 +1,4 @@
-FROM quay.io/quarkus/ubi-quarkus-mandrel-builder-image:23.1-java21 AS build
+FROM quay.io/quarkus/ubi10-quarkus-mandrel-builder-image:jdk-25 AS build
 
 ARG VERSION=snapshot
 
@@ -11,7 +11,7 @@ WORKDIR /project
 RUN ./mvnw -Drevision=${VERSION} -Pnative package
 
 
-FROM quay.io/quarkus/quarkus-micro-image:2.0
+FROM quay.io/quarkus/ubi10-quarkus-micro-image:2.0
 
 LABEL maintainer="Marc Nuri <marc@marcnuri.com>"
 LABEL org.opencontainers.image.source="https://github.com/manusa/yakd"
