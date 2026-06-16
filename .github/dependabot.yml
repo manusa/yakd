@@ -6,6 +6,12 @@ updates:
       interval: weekly
     versioning-strategy: increase
     groups:
+      react:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
       xterm:
         patterns:
           - "@xterm/*"
