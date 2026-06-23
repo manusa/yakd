@@ -9,7 +9,7 @@
 
   <properties>
     <maven.compiler.release>25</maven.compiler.release>
-    <version.quarkus>3.36.2</version.quarkus>
+    <version.quarkus>3.37.0</version.quarkus>
     <version.jkube>1.16.2</version.jkube>
     <version.assertj>3.27.7</version.assertj>
     <version.awaitility>4.3.0</version.awaitility>
