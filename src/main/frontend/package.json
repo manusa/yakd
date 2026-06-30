@@ -22,7 +22,7 @@
     "yaml": "2.9.0"
   },
   "devDependencies": {
-    "@eslint/js": "8.57.1",
+    "@eslint/js": "10.0.1",
     "@fortawesome/fontawesome-free": "5.14.0",
     "@types/lodash": "4.17.24",
     "@types/react": "19.2.17",
