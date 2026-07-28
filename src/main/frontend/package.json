@@ -16,7 +16,7 @@
     "react-ace": "14.0.1",
     "react-dom": "19.2.7",
     "react-redux": "9.3.0",
-    "react-router-dom": "6.30.4",
+    "react-router-dom": "7.18.1",
     "react-virtualized": "9.22.6",
     "redux": "5.0.1",
     "yaml": "2.9.0"
