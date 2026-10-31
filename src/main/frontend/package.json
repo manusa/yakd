@@ -28,7 +28,7 @@
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
     "@types/react-virtualized": "9.22.3",
-    "@vitejs/plugin-react": "6.0.2",
+    "@vitejs/plugin-react": "6.1.2",
     "autoprefixer": "10.4.24",
     "eslint": "10.14.0",
     "eslint-config-prettier": "10.1.8",
