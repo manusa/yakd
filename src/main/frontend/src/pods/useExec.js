@@ -47,7 +47,10 @@ export const useExec = (namespace, name, containers) => {
   useEffect(() => {
     if (!terminal && ref.current && namespace && name && selectedContainer) {
       setTerminal(startTerminal(ref, namespace, name, selectedContainer));
-    } else if (terminal && terminal.selectedContainer !== selectedContainer) {
+    } else if (
+      terminal &&
+      terminal.selectedContainer?.name !== selectedContainer?.name
+    ) {
       window.removeEventListener('resize', terminal.resizeEventListener);
       terminal.dispose();
       terminal.webSocket.close(); // https://github.com/xtermjs/xterm.js/issues/663
