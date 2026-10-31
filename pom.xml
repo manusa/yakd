@@ -9,11 +9,13 @@
 
   <properties>
     <maven.compiler.release>25</maven.compiler.release>
-    <version.quarkus>3.38.0</version.quarkus>
+    <version.quarkus>3.40.1.1</version.quarkus>
     <version.jkube>1.20.0</version.jkube>
     <version.assertj>3.27.7</version.assertj>
     <version.awaitility>4.3.0</version.awaitility>
     <version.commons-io>2.22.0</version.commons-io>
+    <version.guava>33.7.2-jre</version.guava>
+    <version.opentelemetry>1.67.0</version.opentelemetry>
     <version.exec-maven-plugin>3.6.3</version.exec-maven-plugin>
     <version.failsafe-maven-plugin>3.5.6</version.failsafe-maven-plugin>
     <version.selenium>4.46.0</version.selenium>
@@ -31,6 +33,21 @@
 
   <dependencyManagement>
     <dependencies>
+      <!-- Transitive overrides for security fixes not yet in quarkus-bom.
+           Declared before the quarkus-bom import so they take precedence.
+           Drop each one once quarkus-bom manages an equal or newer version. -->
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${version.guava}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.opentelemetry</groupId>
+        <artifactId>opentelemetry-bom</artifactId>
+        <version>${version.opentelemetry}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
       <dependency>
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-bom</artifactId>
@@ -77,7 +94,7 @@
     <!-- Test dependencies -->
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-junit5</artifactId>
+      <artifactId>quarkus-junit</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
