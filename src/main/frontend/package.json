@@ -22,7 +22,7 @@
     "yaml": "2.9.0"
   },
   "devDependencies": {
-    "@eslint/js": "8.57.1",
+    "@eslint/js": "10.0.1",
     "@fortawesome/fontawesome-free": "5.14.0",
     "@types/lodash": "4.17.24",
     "@types/react": "19.2.17",
@@ -30,7 +30,7 @@
     "@types/react-virtualized": "9.22.3",
     "@vitejs/plugin-react": "6.0.2",
     "autoprefixer": "10.4.24",
-    "eslint": "8.57.1",
+    "eslint": "10.14.0",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-react": "7.37.5",
     "eslint-plugin-react-hooks": "7.1.1",
@@ -42,6 +42,11 @@
     "vite": "8.3.5",
     "vitest": "4.1.12",
     "ws": "8.21.0"
+  },
+  "overrides": {
+    "eslint-plugin-react": {
+      "eslint": "$eslint"
+    }
   },
   "scripts": {
     "eslint": "eslint src/. --max-warnings=0",
