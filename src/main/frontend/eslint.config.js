@@ -86,7 +86,8 @@ export default [
     },
     settings: {
       react: {
-        version: 'detect'
+        // 'detect' relies on context.getFilename(), removed in ESLint 10
+        version: '19.2'
       }
     },
     rules: {
@@ -97,7 +98,7 @@ export default [
       'react/display-name': 'off',
       'react/jsx-key': 'warn',
       'no-prototype-builtins': 'warn',
-      'no-unused-vars': ['error', {argsIgnorePattern: '^_', varsIgnorePattern: '^_'}]
+      'no-unused-vars': ['error', {argsIgnorePattern: '^_', varsIgnorePattern: '^_', caughtErrors: 'none'}]
     }
   },
   {
