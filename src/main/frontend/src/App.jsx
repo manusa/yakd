@@ -160,7 +160,9 @@ export const App = () => {
     return onUnmount;
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
   return (
-    <Router>
+    // React Router 7 wraps location updates in startTransition by default, which
+    // makes controlled inputs bound to search params (SearchPage) drop keystrokes
+    <Router useTransitions={false}>
       <Routes>
         <Route exact path='/' element={<Home />} />
         <Route
