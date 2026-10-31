@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
-    "@fortawesome/fontawesome-free": "5.14.0",
+    "@fortawesome/fontawesome-free": "7.3.1",
     "@types/lodash": "4.17.27",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
