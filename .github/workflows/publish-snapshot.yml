@@ -4,10 +4,16 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
+
+concurrency:
+  group: publish-snapshot
+  cancel-in-progress: true
 
 jobs:
   build:
     name: Build (${{ matrix.arch }})
+    if: github.ref == 'refs/heads/main'
     runs-on: ${{ matrix.runner }}
     permissions:
       packages: write
@@ -15,9 +21,9 @@ jobs:
       matrix:
         include:
           - arch: amd64
-            runner: ubuntu-latest
+            runner: ubuntu-26.04
           - arch: arm64
-            runner: ubuntu-24.04-arm
+            runner: ubuntu-26.04-arm
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -36,14 +42,20 @@ jobs:
         run: |
           mvn -Pbuild-frontend clean package
       - name: Docker Hub Login
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: |
-          echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
       - name: GitHub Container Registry Login
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
       - name: Build Image
         run: |
           docker build                                                       \
+            --provenance=false                                               \
             --build-arg VERSION=snapshot                                     \
             -f src/main/docker/Dockerfile.build                              \
             --tag marcnuri/yakd:snapshot-${{ matrix.arch }}                  \
@@ -56,26 +68,31 @@ jobs:
 
   manifest:
     name: Create Multi-Arch Manifest
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     needs: build
     permissions:
       packages: write
     steps:
       - name: Docker Hub Login
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: |
-          echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
       - name: GitHub Container Registry Login
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
       - name: Create and Push Docker Hub Manifest
         run: |
-          docker manifest create marcnuri/yakd:snapshot                      \
+          docker buildx imagetools create                                    \
+            --tag marcnuri/yakd:snapshot                                     \
             marcnuri/yakd:snapshot-amd64                                     \
             marcnuri/yakd:snapshot-arm64
-          docker manifest push marcnuri/yakd:snapshot
       - name: Create and Push GHCR Manifest
         run: |
-          docker manifest create ghcr.io/manusa/yakd:snapshot                \
+          docker buildx imagetools create                                    \
+            --tag ghcr.io/manusa/yakd:snapshot                               \
             ghcr.io/manusa/yakd:snapshot-amd64                               \
             ghcr.io/manusa/yakd:snapshot-arm64
-          docker manifest push ghcr.io/manusa/yakd:snapshot
