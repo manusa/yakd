@@ -17,7 +17,7 @@
 import React from 'react';
 import {describe, test, expect} from 'vitest';
 import {renderToString} from 'react-dom/server';
-import {StaticRouter} from 'react-router-dom/server';
+import {StaticRouter} from 'react-router-dom';
 import {Provider} from 'react-redux';
 import {createTestStore, parseHtml} from '../../test-utils';
 import {SideBar} from '../SideBar';
