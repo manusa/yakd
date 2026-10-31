@@ -10,7 +10,9 @@
     "skipLibCheck": true,
     "strict": false,
     "noEmit": true,
-    "baseUrl": "src"
+    "paths": {
+      "*": ["./src/*"]
+    }
   },
   "include": ["src/**/*.js", "src/**/*.jsx"],
   "exclude": [
