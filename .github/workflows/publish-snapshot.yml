@@ -13,6 +13,7 @@ concurrency:
 jobs:
   build:
     name: Build (${{ matrix.arch }})
+    if: github.ref == 'refs/heads/main'
     runs-on: ${{ matrix.runner }}
     permissions:
       packages: write
