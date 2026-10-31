@@ -14,14 +14,13 @@
  * limitations under the License.
  *
  */
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 
 export const useContainers = containers => {
-  const [selectedContainer, setSelectedContainer] = useState(null);
-  useEffect(() => {
-    if (selectedContainer === null && containers && containers.length > 0) {
-      setSelectedContainer(containers[0]);
-    }
-  }, [containers, selectedContainer, setSelectedContainer]);
+  const [chosenContainer, setSelectedContainer] = useState(null);
+  // Until the user picks one, default to the first container (derived, not synced via an effect)
+  const selectedContainer =
+    chosenContainer ??
+    (containers && containers.length > 0 ? containers[0] : null);
   return {selectedContainer, setSelectedContainer};
 };

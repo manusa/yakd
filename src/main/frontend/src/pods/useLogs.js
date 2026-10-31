@@ -18,60 +18,58 @@ import {useEffect, useRef, useState} from 'react';
 import throttle from 'lodash/throttle';
 import {api, useContainers} from './';
 
-const LOADING_MESSAGE = 'Loading logs...';
+const LOADING_LOG = ['Loading logs...'];
 
-const initEventSource = (
-  namespace,
-  name,
-  selectedContainer,
-  throttledSetLog
-) => {
-  const es = api.logs(namespace, name, selectedContainer.name);
+const initEventSource = (namespace, name, containerName, setLog) => {
+  const es = api.logs(namespace, name, containerName);
   es.onopen = () => {
     es.currentLog = [];
-    throttledSetLog(['Waiting for container to log messages...']);
+    setLog(['Waiting for container to log messages...']);
   };
   es.onmessage = ({data}) => {
     es.currentLog.push(data);
-    throttledSetLog([...es.currentLog]);
+    setLog([...es.currentLog]);
   };
   es.addEventListener('log-complete', () => {
     es.close();
   });
-  es.selectedContainer = selectedContainer;
   return es;
 };
 
 export const useLogs = (namespace, name, containers) => {
   const listRef = useRef();
   const {selectedContainer, setSelectedContainer} = useContainers(containers);
-  const [log, setLog] = useState([LOADING_MESSAGE]);
+  const containerName = selectedContainer?.name;
+  const logKey =
+    namespace && name && containerName
+      ? `${namespace}/${name}/${containerName}`
+      : null;
+  // Lines are tagged with the stream they belong to, so switching containers
+  // shows the loading message until the new stream reports (derived state)
+  const [logState, setLogState] = useState({key: null, lines: LOADING_LOG});
   const [follow, setFollow] = useState(true);
-  const throttledSetLog = throttle(setLog, 100, {trailing: true});
-  const [eventSource, setEventSource] = useState();
   useEffect(() => {
-    if (!eventSource && namespace && name && selectedContainer) {
-      setEventSource(
-        initEventSource(namespace, name, selectedContainer, throttledSetLog)
-      );
-    } else if (
-      eventSource &&
-      eventSource.selectedContainer !== selectedContainer
-    ) {
-      eventSource.close();
-      throttledSetLog([LOADING_MESSAGE]);
-      setEventSource(
-        initEventSource(namespace, name, selectedContainer, throttledSetLog)
-      );
+    if (!logKey) {
+      return undefined;
     }
-  }, [eventSource, namespace, name, throttledSetLog, selectedContainer]);
+    const throttledSetLog = throttle(
+      lines => setLogState({key: logKey, lines}),
+      100,
+      {trailing: true}
+    );
+    const es = initEventSource(namespace, name, containerName, throttledSetLog);
+    return () => {
+      throttledSetLog.cancel();
+      es.close();
+    };
+  }, [logKey, namespace, name, containerName]);
+  const log = logState.key === logKey ? logState.lines : LOADING_LOG;
   useEffect(() => {
     if (follow) {
       const {current} = listRef;
       current.scrollToRow(current.props.rowCount);
     }
   }, [log, follow]);
-  useEffect(() => () => eventSource && eventSource.close(), [eventSource]);
   return {
     listRef,
     log,
