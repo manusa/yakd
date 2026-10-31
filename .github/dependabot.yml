@@ -5,6 +5,8 @@ updates:
     schedule:
       interval: weekly
     versioning-strategy: increase
+    cooldown:
+      default-days: 7
     groups:
       react:
         patterns:
@@ -19,7 +21,11 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    cooldown:
+      default-days: 7
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
+    cooldown:
+      default-days: 7
