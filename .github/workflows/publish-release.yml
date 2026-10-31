@@ -72,13 +72,13 @@ jobs:
           echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
       - name: Create and Push Docker Hub Manifest
         run: |
-          docker manifest create marcnuri/yakd:${VERSION#v}                  \
+          docker buildx imagetools create                                    \
+            --tag marcnuri/yakd:${VERSION#v}                                 \
             marcnuri/yakd:${VERSION}-amd64                                   \
             marcnuri/yakd:${VERSION}-arm64
-          docker manifest push marcnuri/yakd:${VERSION#v}
       - name: Create and Push GHCR Manifest
         run: |
-          docker manifest create ghcr.io/manusa/yakd:${VERSION#v}            \
+          docker buildx imagetools create                                    \
+            --tag ghcr.io/manusa/yakd:${VERSION#v}                           \
             ghcr.io/manusa/yakd:${VERSION}-amd64                             \
             ghcr.io/manusa/yakd:${VERSION}-arm64
-          docker manifest push ghcr.io/manusa/yakd:${VERSION#v}
