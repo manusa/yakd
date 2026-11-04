@@ -16,7 +16,8 @@
  */
 import React from 'react';
 import {connect} from 'react-redux';
-import {AutoSizer, List} from 'react-virtualized';
+import {List} from 'react-virtualized';
+import {AutoSizer} from 'react-virtualized-auto-sizer';
 import Convert from 'ansi-to-html';
 import dompurify from 'dompurify';
 import {withParams} from '../router';
@@ -30,9 +31,10 @@ import './PodsLogsPage.css';
 
 const ansi = new Convert();
 
-export const LogRow = ({logLine, style}) => (
+export const LogRow = ({logLine, role, style}) => (
   <div
     className='whitespace-nowrap'
+    role={role}
     style={{...style, width: 'auto'}}
     dangerouslySetInnerHTML={{
       __html: dompurify.sanitize(ansi.toHtml(logLine))
@@ -73,6 +75,7 @@ export const PodsLogsPage = withParams(
   )(({uid, namespace, name, containers}) => {
     const {
       listRef,
+      onListResize,
       log,
       follow,
       setFollow,
@@ -133,19 +136,26 @@ export const PodsLogsPage = withParams(
               data-testid='pod-logs__content'
               className='flex-1 bg-black text-white font-mono text-sm'
             >
-              <AutoSizer>
-                {({height, width}) => (
-                  <List
-                    ref={listRef}
-                    height={height}
-                    width={width}
-                    rowCount={log.length}
-                    rowHeight={19}
-                    rowRenderer={rowRenderer}
-                    className='custom-scroll-dark'
-                  />
-                )}
-              </AutoSizer>
+              <AutoSizer
+                // Zero-sized wrapper (like react-virtualized 9's AutoSizer) so the
+                // List doesn't keep the card body from shrinking when resized
+                style={{height: 0, width: 0, overflow: 'visible'}}
+                onResize={onListResize}
+                renderProp={({height, width}) =>
+                  height !== undefined && width !== undefined ? (
+                    <List
+                      ref={listRef}
+                      aria-label='Pod logs'
+                      height={height}
+                      width={width}
+                      rowCount={log.length}
+                      rowHeight={19}
+                      rowRenderer={rowRenderer}
+                      className='custom-scroll-dark'
+                    />
+                  ) : null
+                }
+              />
             </Card.Body>
           </Card>
         </div>

@@ -17,7 +17,8 @@
     "react-dom": "19.3.1",
     "react-redux": "9.3.1",
     "react-router-dom": "7.18.5",
-    "react-virtualized": "9.22.6",
+    "react-virtualized": "10.0.0",
+    "react-virtualized-auto-sizer": "2.0.4",
     "redux": "5.0.1",
     "yaml": "2.9.1"
   },
@@ -27,7 +28,6 @@
     "@types/lodash": "4.17.27",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
-    "@types/react-virtualized": "9.22.3",
     "@vitejs/plugin-react": "6.1.2",
     "autoprefixer": "10.6.2",
     "eslint": "10.14.0",

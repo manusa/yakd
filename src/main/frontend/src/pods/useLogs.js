@@ -38,6 +38,10 @@ const initEventSource = (namespace, name, containerName, setLog) => {
 
 export const useLogs = (namespace, name, containers) => {
   const listRef = useRef();
+  // The List only mounts once AutoSizer has measured its container, and keeps
+  // its scroll offset when resized, so following must scroll again whenever
+  // AutoSizer reports a new size
+  const [listSize, setListSize] = useState(null);
   const {selectedContainer, setSelectedContainer} = useContainers(containers);
   const containerName = selectedContainer?.name;
   const logKey =
@@ -66,12 +70,12 @@ export const useLogs = (namespace, name, containers) => {
   const log = logState.key === logKey ? logState.lines : LOADING_LOG;
   useEffect(() => {
     if (follow) {
-      const {current} = listRef;
-      current.scrollToRow(current.props.rowCount);
+      listRef.current?.scrollToRow({index: log.length - 1});
     }
-  }, [log, follow]);
+  }, [log, follow, listSize]);
   return {
     listRef,
+    onListResize: setListSize,
     log,
     follow,
     setFollow,
