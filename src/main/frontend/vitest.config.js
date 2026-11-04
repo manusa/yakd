@@ -23,6 +23,16 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     include: ['src/**/*.test.{js,jsx}'],
-    setupFiles: ['./src/test-utils/vitest.setup.js']
+    setupFiles: ['./src/test-utils/vitest.setup.js'],
+    server: {
+      deps: {
+        // Workaround for a react-virtualized 10.0.0 packaging bug: its ESM build
+        // imports 'dom-helpers/scrollbarSize', a directory (dom-helpers 5 has no
+        // exports map) that Node's ESM loader rejects. Inlining lets Vite
+        // resolve it, as it does for the app build. Remove this once a
+        // react-virtualized release imports a file path there instead.
+        inline: ['react-virtualized']
+      }
+    }
   }
 });

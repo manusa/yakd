@@ -32,6 +32,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WindowType;
@@ -40,6 +42,8 @@ import org.openqa.selenium.support.ui.Wait;
 
 import java.net.URL;
 import java.time.Duration;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -51,6 +55,8 @@ public class PodLogsIT {
   private static final String POD_UID = "test-pod-uid-logs";
   private static final String POD_NAME = "test-pod-logs";
   private static final String POD_NAMESPACE = "default";
+  private static final String LONG_LOG_POD_NAME = "test-pod-long-logs";
+  private static final String LONG_LOG_LAST_LINE = "Last line of the long log!";
 
   @KubernetesTestServer
   KubernetesServer kubernetes;
@@ -139,6 +145,25 @@ public class PodLogsIT {
     }
 
     @Test
+    @DisplayName("exposes each log line as a list item")
+    void exposesLogLinesAsListItems() {
+      final var listItems = By.cssSelector(".pods-logs-page [data-testid='pod-logs__content'] [role='listitem']");
+      wait.until(d -> d.findElements(listItems).stream().anyMatch(e -> e.getText().contains("Hello from container 1 logs!")));
+      assertThat(driver.findElements(listItems))
+        .as("pod logs list items")
+        .anyMatch(e -> e.getText().contains("Hello from container 1 logs!"));
+    }
+
+    @Test
+    @DisplayName("labels the log list for assistive technologies")
+    void labelsLogList() {
+      final var list = wait.until(d -> d.findElement(By.cssSelector(".pods-logs-page [data-testid='pod-logs__content'] [role='list']")));
+      assertThat(list.getDomAttribute("aria-label"))
+        .as("log list accessible name")
+        .isEqualTo("Pod logs");
+    }
+
+    @Test
     @DisplayName("the container dropdown shows the first container's name")
     void containerDropdownDisplaysFirstContainerName() {
       final var dropdown = driver.findElement(By.cssSelector("[data-testid='container-dropdown']"));
@@ -161,5 +186,100 @@ public class PodLogsIT {
     assertThat(driver.findElement(By.cssSelector(".pods-logs-page [data-testid='pod-logs__content']")).getText())
       .as("pod logs content after container switch")
       .contains("Hello from container 2 logs!");
+  }
+
+  @Nested
+  @DisplayName("with Follow on (the default), for a pod whose log is longer than the viewport")
+  class FollowingLongLog {
+
+    @BeforeEach
+    void openLongLog() {
+      final var pod = kubernetes.getClient().pods().inNamespace(POD_NAMESPACE).resource(new PodBuilder()
+          .withNewMetadata()
+            .withName(LONG_LOG_POD_NAME)
+            .withNamespace(POD_NAMESPACE)
+          .endMetadata()
+          .withNewSpec()
+            .withContainers(new ContainerBuilder()
+              .withName("long-container")
+              .withImage("busybox")
+              .build())
+          .endSpec()
+          .withNewStatus()
+            .withPhase("Running")
+          .endStatus()
+        .build()).createOr(NonDeletingOperation::update);
+      // Only a window of this log's rows is rendered at any time
+      kubernetes.expect().get()
+        .withPath("/api/v1/namespaces/" + POD_NAMESPACE + "/pods/" + LONG_LOG_POD_NAME + "/log?pretty=true&container=long-container&timestamps=true&follow=true")
+        .andReturn(200, IntStream.rangeClosed(1, 500)
+          .mapToObj(i -> "Long log line " + i)
+          .collect(Collectors.joining("\n", "", "\n" + LONG_LOG_LAST_LINE)))
+        .always();
+      // Open its logs from the pods list (the mock server assigns the uid the link points to)
+      final var logsLink = By.cssSelector("[data-testid='pod-list__logs-link'][href$='/pods/" + pod.getMetadata().getUid() + "/logs']");
+      driver.navigate().to(url.toString() + "pods");
+      wait.until(d -> !d.findElements(logsLink).isEmpty());
+      driver.findElement(logsLink).click();
+      wait.until(d -> d.findElement(By.cssSelector(".pods-logs-page [data-testid='pod-logs__content']")).isDisplayed());
+    }
+
+    @AfterEach
+    void deleteLongLogPod() {
+      kubernetes.getClient().pods().inNamespace(POD_NAMESPACE).withName(LONG_LOG_POD_NAME).delete();
+    }
+
+    @Test
+    @DisplayName("opening the page shows the last line of the log")
+    void showsLastLineWhenOpened() {
+      wait.until(d -> logContent().contains(LONG_LOG_LAST_LINE));
+      assertThat(logContent())
+        .as("pod logs content after streaming a long log")
+        .contains(LONG_LOG_LAST_LINE);
+    }
+
+    @Test
+    @DisplayName("shrinking the window keeps the last line in view")
+    void keepsLastLineInViewWhenWindowShrinks() {
+      final var originalSize = driver.manage().window().getSize();
+      try {
+        driver.manage().window().setSize(new Dimension(1280, 1000));
+        wait.until(d -> logViewportFitsWindow() && logContent().contains(LONG_LOG_LAST_LINE));
+        driver.manage().window().setSize(new Dimension(1280, 600));
+        wait.until(d -> logViewportFitsWindow() && logContent().contains(LONG_LOG_LAST_LINE));
+        assertThat(logContent())
+          .as("pod logs content after shrinking the window")
+          .contains(LONG_LOG_LAST_LINE);
+      } finally {
+        driver.manage().window().setSize(originalSize);
+      }
+    }
+  }
+
+  @Test
+  @DisplayName("shrinking the window shrinks the log viewport to fit the page")
+  void logViewportShrinksWithWindow() {
+    final var originalSize = driver.manage().window().getSize();
+    try {
+      driver.manage().window().setSize(new Dimension(1280, 1000));
+      wait.until(d -> logViewportFitsWindow());
+      driver.manage().window().setSize(new Dimension(1280, 600));
+      wait.until(d -> logViewportFitsWindow());
+      assertThat(logViewportFitsWindow())
+        .as("log viewport fits the shrunk window")
+        .isTrue();
+    } finally {
+      driver.manage().window().setSize(originalSize);
+    }
+  }
+
+  private String logContent() {
+    return driver.findElement(By.cssSelector(".pods-logs-page [data-testid='pod-logs__content']")).getText();
+  }
+
+  private boolean logViewportFitsWindow() {
+    return Boolean.TRUE.equals(((JavascriptExecutor) driver).executeScript(
+      "const list = document.querySelector(\".pods-logs-page [data-testid='pod-logs__content'] .ReactVirtualized__List\");" +
+        "return list !== null && list.offsetHeight > 0 && Math.floor(list.getBoundingClientRect().bottom) <= window.innerHeight;"));
   }
 }

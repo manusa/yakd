@@ -338,6 +338,13 @@ describe('LogRow component integration tests', () => {
       expect(html).toContain('height:19px');
     });
 
+    test('should forward the role prop to the row element', () => {
+      const html = renderToString(
+        <LogRow logLine='Test log line' role='listitem' />
+      );
+      expect(html).toContain('role="listitem"');
+    });
+
     test('should render as div element', () => {
       const logLine = 'Test log line';
       const html = renderLogRow(logLine);
