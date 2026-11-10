@@ -14,7 +14,7 @@
     <version.assertj>3.27.7</version.assertj>
     <version.awaitility>4.3.0</version.awaitility>
     <version.commons-io>2.22.0</version.commons-io>
-    <version.guava>33.7.2-jre</version.guava>
+    <version.guava>33.8.0-jre</version.guava>
     <version.opentelemetry>1.67.0</version.opentelemetry>
     <version.exec-maven-plugin>3.6.4</version.exec-maven-plugin>
     <version.failsafe-maven-plugin>3.6.1</version.failsafe-maven-plugin>
