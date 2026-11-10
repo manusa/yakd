@@ -230,12 +230,12 @@ Release/snapshot pipelines (`publish-snapshot.yml`, `publish-release.yml`) build
 Releases are **tag-driven** — there is no version to bump in `pom.xml` (the version flows from the tag through `${revision}`; see the `pom.xml:7,22-23` gotcha). Pushing a `v*` tag triggers `publish-release.yml`.
 
 1. **Ensure `main` is green and is exactly what you want shipped.** The release workflow runs **no tests** — the only safety net is the CI that already gated the merged PRs. Run `make check` locally to confirm.
-2. **Tag `main` and push** (tags so far are lightweight; the last release was `v0.0.9`):
+2. **Tag `main` and push.** Releases from `v0.0.10` on use a signed annotated tag (`v0.0.9` and earlier are lightweight); the workflow accepts either:
    ```bash
-   git tag v1.2.3
+   git tag -s v1.2.3 -m 'v1.2.3'
    git push origin v1.2.3
    ```
-   The push triggers `publish-release.yml`, which builds per-arch native images and publishes the multi-arch manifest to **both** registries: `marcnuri/yakd:1.2.3` (Docker Hub) and `ghcr.io/manusa/yakd:1.2.3` (GHCR).
+   The push triggers `publish-release.yml`, which builds per-arch native images and publishes the multi-arch manifest to **both** registries: `marcnuri/yakd:1.2.3` (Docker Hub) and `ghcr.io/manusa/yakd:1.2.3` (GHCR). **Wait for that run to succeed** (`gh run watch <run-id> --exit-status`, about 8 minutes) before the next step, so a failed image build never leaves a release without images.
 3. **Create the GitHub Release** — the pipeline does **not** do this, but every prior release has one, so it's part of the process. Use GitHub's auto-generated notes (the `## What's Changed` + PR list + compare link format):
    ```bash
    gh release create v1.2.3 --generate-notes --latest
