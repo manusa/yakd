@@ -53,7 +53,6 @@ const Rows = ({roles}) => {
         <Tooltip
           content={`${creationTimestamp(role).toLocaleDateString()}
                 ${creationTimestamp(role).toLocaleTimeString()}`}
-          className='cursor-default'
         >
           <span>{creationTimestamp(role).toLocaleDateString()}</span>
         </Tooltip>
