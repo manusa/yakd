@@ -29,7 +29,7 @@ const AceEditor = ReactAce.default ?? ReactAce;
 
 export const YamlEditor = ({onChange = () => {}, value = ''}) => (
   <AceEditor
-    className='relative w-full h-full outline-none'
+    className='relative w-full h-full outline-hidden'
     style={{'--scrollbar-color': 'rgba(235, 218, 180, 0.4)'}}
     mode='yaml'
     theme='twilight'

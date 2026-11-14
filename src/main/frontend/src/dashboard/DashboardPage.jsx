@@ -54,7 +54,7 @@ const Header = ({setSideBarOpen, title}) => {
       <div className='flex w-full items-center'>
         <button
           onClick={() => setSideBarOpen(true)}
-          className='flex items-center text-gray-500 focus:outline-none lg:hidden'
+          className='flex items-center text-gray-500 focus:outline-hidden lg:hidden'
         >
           <svg
             className='h-6 w-6'
@@ -126,7 +126,7 @@ export const DashboardPage = ({className, title, children}) => {
         <Header setSideBarOpen={setSideBarOpen} title={title} />
         <main className='flex-1 flex flex-col overflow-x-hidden overflow-y-auto bg-gray-200'>
           <Alert clearError={doClearError}>{error}</Alert>
-          <div className='flex-1 w-100 p-4 relative'>{children}</div>
+          <div className='flex-1 p-4 relative'>{children}</div>
           <Footer />
           <NewResource />
         </main>

@@ -56,7 +56,7 @@ export const PopupMenu = ({
         onClick={togglePanel}
         data-testid='popup-menu__trigger'
         className={`
-          ml-1 border-0 outline-none focus:outline-none text-center
+          ml-1 border-0 outline-hidden focus:outline-hidden text-center
           ${textColor} hover:text-gray-500 active:${textColorActive} `}
       >
         <Icon icon='fa-ellipsis-v' className='px-3' />
@@ -68,7 +68,7 @@ export const PopupMenu = ({
 
 PopupMenu.Item = ({children, ...props}) => (
   <a
-    className='flex items-center px-4 py-2 text-sm leading-5 text-gray-700 cursor-pointer select-none hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900'
+    className='flex items-center px-4 py-2 text-sm leading-5 text-gray-700 cursor-pointer select-none hover:bg-gray-100 hover:text-gray-900 focus:outline-hidden focus:bg-gray-100 focus:text-gray-900'
     {...props}
   >
     {children}

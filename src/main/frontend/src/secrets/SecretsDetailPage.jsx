@@ -40,7 +40,7 @@ const DataField = ({label, value}) => {
         <>
           <a
             href='#ignore'
-            className='inline-block mr-2 focus:outline-none'
+            className='inline-block mr-2 focus:outline-hidden'
             onClick={() => setHidden(!hidden)}
           >
             <Icon icon={hidden ? 'fa-lock' : 'fa-lock-open'} />

@@ -16,12 +16,14 @@
  */
 import {defineConfig} from 'vite';
 import react from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   plugins: [
     react({
       include: '**/*.{js,jsx}'
-    })
+    }),
+    tailwindcss()
   ],
   build: {
     outDir: 'build',
@@ -40,8 +42,5 @@ export default defineConfig({
         changeOrigin: true
       }
     }
-  },
-  css: {
-    postcss: './postcss.config.cjs'
   }
 });

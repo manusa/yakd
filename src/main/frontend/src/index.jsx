@@ -21,7 +21,6 @@ import {store} from './redux';
 import {App} from './App';
 
 import 'typeface-open-sans/index.css';
-import '@fortawesome/fontawesome-free/css/all.min.css';
 import './assets/tailwind-src.css';
 import './assets/scroll.css';
 
