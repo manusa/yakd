@@ -58,11 +58,11 @@ const DropdownMain = ({
         aria-expanded={panelVisible}
         onClick={onClick}
         className={`inline-flex justify-center items-center w-full rounded-md
-          border ${borderColor} px-4 py-2 bg-white text-sm leading-5 font-medium ${textColor} hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:ring-blue active:bg-gray-50 active:${textColorActive} transition ease-in-out duration-150`}
+          border ${borderColor} px-4 py-2 bg-white text-sm leading-5 font-medium ${textColor} hover:text-gray-500 focus:outline-hidden focus:border-blue-300 focus:ring-blue active:bg-gray-50 active:${textColorActive} transition ease-in-out duration-150`}
       >
         {showInput ? (
           <input
-            className='outline-none p-0 m-0'
+            className='outline-hidden p-0 m-0'
             autoFocus
             value={filter}
             onChange={({target: {value}}) => setFilter(value)}
@@ -139,7 +139,7 @@ export const Dropdown = ({
 
 Dropdown.Item = ({children, ...props}) => (
   <a
-    className='block px-4 py-2 text-sm leading-5 text-gray-700 cursor-pointer select-none hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900'
+    className='block px-4 py-2 text-sm leading-5 text-gray-700 cursor-pointer select-none hover:bg-gray-100 hover:text-gray-900 focus:outline-hidden focus:bg-gray-100 focus:text-gray-900'
     {...props}
   >
     {children}

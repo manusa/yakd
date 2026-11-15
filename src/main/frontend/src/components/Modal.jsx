@@ -27,18 +27,18 @@ export const Modal = ({
     return '';
   }
   const zIndex = preserveSideBar ? 'z-10' : 'z-30';
-  const sideBarPadding = preserveSideBar ? ' lg:pl-64' : '';
+  const sideBarPadding = preserveSideBar ? 'lg:pl-64' : '';
   return (
     <div className={`fixed ${zIndex} inset-0 overflow-hidden`}>
       <div
-        className={`flex items-center justify-center min-h-screen${sideBarPadding}`}
+        className={`flex items-center justify-center min-h-screen ${sideBarPadding}`}
       >
         {' '}
         <div className='fixed inset-0 transition-opacity' aria-hidden='true'>
           <div className='absolute inset-0 bg-gray-500 opacity-75' />
         </div>
         <div
-          className='inline-block w-full max-h-screen max-w-6xl overflow-hidden shadow-xl transform transition-all'
+          className='relative inline-block w-full max-h-screen max-w-6xl overflow-hidden shadow-xl transition-all'
           role='dialog'
           aria-modal='true'
           aria-labelledby='modal-headline'

@@ -39,7 +39,7 @@ export const Tooltip = ({
         className={`
           ${visible ? 'visible' : 'invisible'}
           fixed block
-          ${bg} ${color} py-1 px-2 border-0  z-20 font-normal leading-normal text-sm max-w-xs break-words rounded-lg
+          ${bg} ${color} py-1 px-2 border-0  z-20 font-normal leading-normal text-sm max-w-xs wrap-break-word rounded-lg
         `}
         style={{left: `${x + gutter}px`, top: `${y + gutter}px`}}
       >

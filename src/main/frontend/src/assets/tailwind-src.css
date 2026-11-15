@@ -14,6 +14,283 @@
  * limitations under the License.
  *
  */
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+/*
+ * Tailwind 4 puts its CSS in cascade layers, and unlayered CSS beats any
+ * layer. Font Awesome sets line-height, width and display on .fas, so it
+ * goes in a `vendor` layer between Preflight (base) and the utilities.
+ * That keeps v3's outcome: Font Awesome's class selectors beat Preflight's
+ * element and universal ones, and the utilities beat Font Awesome.
+ */
+@layer theme, base, vendor, components, utilities;
+@import 'tailwindcss' source(none);
+@import '@fortawesome/fontawesome-free/css/all.min.css' layer(vendor);
+
+/* Class sources, as listed in the v3 `content` option. */
+@source '../../index.html';
+@source '../**/*.{js,jsx}';
+
+/*
+ * The YAKD theme, ported from the Tailwind CSS v3 tailwind.config.cjs.
+ * That config replaced Tailwind's whole default theme, so this one starts
+ * from a clean slate too. Scales that Tailwind 4 derives from bare values
+ * (spacing multiples, fractions, opacity, z-index, durations, borders,
+ * grid, order, scale, rotate) need no entry.
+ */
+@theme {
+  --*: initial;
+
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+
+  /* transparent and currentColor are built into Tailwind 4. */
+  --color-black: #000;
+  --color-white: #fff;
+
+  --color-gray-100: #f7fafc;
+  --color-gray-200: #edf2f7;
+  --color-gray-300: #e2e8f0;
+  --color-gray-400: #cbd5e0;
+  --color-gray-500: #a0aec0;
+  --color-gray-600: #718096;
+  --color-gray-700: #4a5568;
+  --color-gray-800: #2d3748;
+  --color-gray-900: #1a202c;
+
+  --color-red-100: #fff5f5;
+  --color-red-200: #fed7d7;
+  --color-red-300: #feb2b2;
+  --color-red-400: #fc8181;
+  --color-red-500: #f56565;
+  --color-red-600: #e53e3e;
+  --color-red-700: #c53030;
+  --color-red-800: #9b2c2c;
+  --color-red-900: #742a2a;
+
+  --color-orange-100: #fffaf0;
+  --color-orange-200: #feebc8;
+  --color-orange-300: #fbd38d;
+  --color-orange-400: #f6ad55;
+  --color-orange-500: #ed8936;
+  --color-orange-600: #dd6b20;
+  --color-orange-700: #c05621;
+  --color-orange-800: #9c4221;
+  --color-orange-900: #7b341e;
+
+  --color-yellow-100: #fffff0;
+  --color-yellow-200: #fefcbf;
+  --color-yellow-300: #faf089;
+  --color-yellow-400: #f6e05e;
+  --color-yellow-500: #ecc94b;
+  --color-yellow-600: #d69e2e;
+  --color-yellow-700: #b7791f;
+  --color-yellow-800: #975a16;
+  --color-yellow-900: #744210;
+
+  --color-green-100: #f0fff4;
+  --color-green-200: #c6f6d5;
+  --color-green-300: #9ae6b4;
+  --color-green-400: #68d391;
+  --color-green-500: #48bb78;
+  --color-green-600: #38a169;
+  --color-green-700: #2f855a;
+  --color-green-800: #276749;
+  --color-green-900: #22543d;
+
+  --color-teal-100: #e6fffa;
+  --color-teal-200: #b2f5ea;
+  --color-teal-300: #81e6d9;
+  --color-teal-400: #4fd1c5;
+  --color-teal-500: #38b2ac;
+  --color-teal-600: #319795;
+  --color-teal-700: #2c7a7b;
+  --color-teal-800: #285e61;
+  --color-teal-900: #234e52;
+
+  --color-blue-100: #ebf8ff;
+  --color-blue-200: #bee3f8;
+  --color-blue-300: #90cdf4;
+  --color-blue-400: #63b3ed;
+  --color-blue-500: #4299e1;
+  --color-blue-600: #3182ce;
+  --color-blue-700: #2b6cb0;
+  --color-blue-800: #2c5282;
+  --color-blue-900: #2a4365;
+
+  --color-indigo-100: #ebf4ff;
+  --color-indigo-200: #c3dafe;
+  --color-indigo-300: #a3bffa;
+  --color-indigo-400: #7f9cf5;
+  --color-indigo-500: #667eea;
+  --color-indigo-600: #5a67d8;
+  --color-indigo-700: #4c51bf;
+  --color-indigo-800: #434190;
+  --color-indigo-900: #3c366b;
+
+  --color-purple-100: #faf5ff;
+  --color-purple-200: #e9d8fd;
+  --color-purple-300: #d6bcfa;
+  --color-purple-400: #b794f4;
+  --color-purple-500: #9f7aea;
+  --color-purple-600: #805ad5;
+  --color-purple-700: #6b46c1;
+  --color-purple-800: #553c9a;
+  --color-purple-900: #44337a;
+
+  --color-pink-100: #fff5f7;
+  --color-pink-200: #fed7e2;
+  --color-pink-300: #fbb6ce;
+  --color-pink-400: #f687b3;
+  --color-pink-500: #ed64a6;
+  --color-pink-600: #d53f8c;
+  --color-pink-700: #b83280;
+  --color-pink-800: #97266d;
+  --color-pink-900: #702459;
+
+  /* The v3 spacing scale is 0.25rem steps (p-4 = 1rem); px is built in. */
+  --spacing: 0.25rem;
+
+  --font-sans:
+    'Open Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-serif: Georgia, Cambria, 'Times New Roman', Times, serif;
+  --font-mono:
+    Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  --default-font-family: --theme(--font-sans, initial);
+  --default-mono-font-family: --theme(--font-mono, initial);
+
+  /* Font sizes only: the v3 theme set no per-size line height. */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
+  --text-5xl: 3rem;
+  --text-6xl: 4rem;
+
+  --font-weight-hairline: 100;
+  --font-weight-thin: 200;
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  --font-weight-black: 900;
+
+  --tracking-tighter: -0.05em;
+  --tracking-tight: -0.025em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.025em;
+  --tracking-wider: 0.05em;
+  --tracking-widest: 0.1em;
+
+  /* leading-none is built in; leading-3 to leading-10 follow --spacing. */
+  --leading-tight: 1.25;
+  --leading-snug: 1.375;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+  --leading-loose: 2;
+
+  /* rounded-none and rounded-full are built in. */
+  --radius-sm: 0.125rem;
+  --radius: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+
+  --shadow-xs: 0 0 0 1px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow-md:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+  --shadow-outline: 0 0 0 3px rgba(66, 153, 225, 0.5);
+
+  /* max-w-*; max-w-full and max-w-none are built in. */
+  --container-xs: 20rem;
+  --container-sm: 24rem;
+  --container-md: 28rem;
+  --container-lg: 32rem;
+  --container-xl: 36rem;
+  --container-2xl: 42rem;
+  --container-3xl: 48rem;
+  --container-4xl: 56rem;
+  --container-5xl: 64rem;
+  --container-6xl: 72rem;
+
+  /* ease-linear is built in. The v3 theme set no default transition duration. */
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  --animate-spin: spin 1s linear infinite;
+  --animate-ping: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+  --animate-pulse: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-bounce: bounce 1s infinite;
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes ping {
+    75%,
+    100% {
+      transform: scale(2);
+      opacity: 0;
+    }
+  }
+  @keyframes pulse {
+    50% {
+      opacity: 0.5;
+    }
+  }
+  @keyframes bounce {
+    0%,
+    100% {
+      transform: translateY(-25%);
+      animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+    }
+    50% {
+      transform: none;
+      animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    }
+  }
+}
+
+/*
+ * Tailwind CSS v3 compatibility: v4's Preflight changed a few defaults.
+ * These rules restore the v3 ones so the UI looks the same as before.
+ */
+@layer base {
+  /* v4 defaults the border color to currentcolor; v3 used gray-300. */
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-300);
+  }
+
+  /* v4 uses a semi-transparent currentcolor; v3 used gray-400. */
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--color-gray-400);
+  }
+
+  /* v4 buttons use the default cursor; v3 used a pointer. */
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
+  }
+}

@@ -44,7 +44,6 @@ Table.Body = ({children}) => (
   <tbody className='divide-y divide-gray-300'>{children}</tbody>
 );
 
-// For stripes to work need to add 'even' variant to specific property in tailwind.config.js
 Table.Row = ({children, className = '', ...properties}) => (
   <tr className={`even:bg-gray-200/50 ${className}`} {...properties}>
     {children}

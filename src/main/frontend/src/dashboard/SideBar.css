@@ -25,3 +25,12 @@
 .side-bar__nav-group-icon.fas {
   line-height: 1.8rem;
 }
+/*
+ * Font Awesome icons keep Font Awesome's own width. This file used to load
+ * before Font Awesome, whose `width` won the tie; now that Font Awesome sits
+ * in a cascade layer (see tailwind-src.css), it has to be explicit.
+ */
+.side-bar__nav-group-icon.fas,
+.side-bar__nav-item-icon.fas {
+  width: var(--fa-width, 1.25em);
+}

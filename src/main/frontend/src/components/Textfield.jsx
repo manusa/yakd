@@ -29,7 +29,7 @@ export const Textfield = ({
 }) => (
   <div
     className={`
-    inline-block px-4 py-2 rounded-md shadow-sm bg-white text-gray-700 text-sm leading-5
+    px-4 py-2 rounded-md shadow-sm bg-white text-gray-700 text-sm leading-5
     flex items-center
     border ${borderColor}
     ${className ?? ''}
@@ -39,7 +39,7 @@ export const Textfield = ({
     <input
       ref={inputRef}
       type='text'
-      className='flex-1 outline-none'
+      className='flex-1 outline-hidden'
       placeholder={placeholder}
       {...props}
       value={value}
